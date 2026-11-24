@@ -1,22 +1,21 @@
 {
-  "status": "partial",
-  "dispatch_seq": 6,
-  "phases_completed": 3,
+  "status": "implemented",
+  "dispatch_seq": 9,
+  "phases_completed": 8,
   "phases_total": 8,
-  "summary": "Landed phases 1-3 of 8 in four commits. Phase 2's five-declaration L-level uniform substitution (FormalSystem/ProofSystem/Substitution.lean) compiled clean first try, sorry-free at [propext, Quot.sound] -- the hard prerequisite for a schematic registry row. Phase 3 landed the subsumption matcher, 30 tests across the four plan-named classes, and assert_no_subsumed_entries. Full lake build is green (3018 jobs, 0 errors, 0 warnings), sorry_count 0, zero axioms added. Phase 1 closed COMPLETED WITH EXCLUSIONS: gate evaluation at Dense on a modal fragment is the pipeline's dominant cost and did not complete under batch contention.",
-  "blockers": [
-    "RULING NEEDED before Phase 7: assert_no_subsumed_entries unscoped reports 26 of 190 live registry rows as substitution instances of another row. These are deliberate named laws, not defects -- Combinators.topThm is Combinators.identity at bot and its own proof term is literally 'identity Formula.bot'. Phase 7's task to wire the command globally would turn the build red on 26 hand-curated entries. The command already supports a prefix-scoped form; nothing is wired globally today, so the build is green either way until this is settled."
-  ],
+  "summary": "Closed Phases 4-8 of the theorem-library tableau pipeline in seven commits. The five stages of records/theorem-library.md now run end to end as one command, and the library has its first machine-generated entries: at the ruled bound over a two-atom pool the run decided 3,955 formulas and admitted six non-subsumed schemata, wrote 2,981 gated refutations in the countermodel record's form without admitting them, and registered 2,895 non-admitted outcomes as 48 aggregate conjecture cells. lake build BimodalLib and the full lake build are both green, with all three build-time assertions passing including the prefix-scoped assert_no_subsumed_entries. Phase 7 is COMPLETED WITH EXCLUSIONS: the ModalTemporalBoolean tail (424 of 1,688 decided) was truncated by an untimed CERTIFY stage, and the planned dual declarations have no referent since no temporal schema survived admission.",
+  "blockers": [],
   "artifacts": [
     {
       "type": "summary",
-      "path": "specs/972_theorem_library_tableau_pipeline/summaries/01_tableau-pipeline-into-library-summary.md",
-      "summary": "Phases 1-3 of 8: the gate baseline and measured figures, the L-level uniform substitution as data, and the subsumption matcher with its tests and build-time command."
+      "path": "specs/972_theorem_library_tableau_pipeline/summaries/02_tableau-pipeline-into-library-summary.md",
+      "summary": "Phases 4-8: the Lean-source emitter, the five reserved-stage diagnostics emitters, the stage driver with its executable target and named entry point, the ruled-bound run with admission, and the documentation revision."
     },
     {
-      "type": "other",
-      "path": "specs/972_theorem_library_tableau_pipeline/probes/baseline.md",
-      "summary": "The Phase 1 gate baseline, the four carried figures re-confirmed, the enumeration yield, the four-way DECIDE split, and the eight-gate pass rate per (fragment, frame class)."
+      "type": "plan",
+      "path": "specs/972_theorem_library_tableau_pipeline/plans/02_tableau-pipeline-into-library.md",
+      "summary": "All eight phase markers closed; Phase 7 carries a Reasoned Exclusions record and Phase 8 carries the scoped-verification notes for the batch gate deferral."
     }
-  ]
+  ],
+  "next_steps": "Nothing blocks completion. Four follow-ups are recorded in the summary rather than left implicit: give CERTIFY its own IO.asTask budget (its tableau rebuilds are untimed, which is what truncated ModalTemporalBoolean); flush records incrementally so a killed run is survivable; theorem_library_countermodels is the consumer of data/theorem-library-countermodels.jsonl; and no producer of a RawCertificate from a tableau branch exists, so the ZTime certificate grade is unreachable until one does."
 }

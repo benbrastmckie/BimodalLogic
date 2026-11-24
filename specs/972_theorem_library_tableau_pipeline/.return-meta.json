@@ -1,39 +1,138 @@
 {
-  "status": "planned",
-  "summary": "Blocker-driven plan revision. Wrote plan version 2 (plans/02_tableau-pipeline-into-library.md) alongside the unchanged version 1. Phase 7's non-redundancy wiring is now the prefix-scoped assert_no_subsumed_entries BimodalLib.Theorems.Enumerated per the cycle-6 ruling, with the 26 hand-curated rows out of scope rather than exempted and explicitly not deleted or modified; no baseline file is planned. Phases 4-8 also absorb the three measured corrections (ZTime certificate-only route, extractionFailed as a principal outcome, test library roots in every phase file list), and the cycle-4 complexity bound was re-verified unchanged. Phases 1-3 carry forward verbatim with their closed markers.",
+  "status": "implemented",
+  "summary": "Closed Phases 4-8 of the theorem-library tableau pipeline. The five stages of records/theorem-library.md now run end to end as one command (scripts/theorem-library-pipeline.sh, lean_exe theorem_library_pipeline), and the library has its first machine-generated entries: at the ruled bound over a two-atom pool the run decided 3,955 formulas and admitted six non-subsumed schemata, wrote 2,981 gated refutations in the form the countermodels record will read, and registered 2,895 non-admitted outcomes as 48 aggregate conjecture cells. lake build BimodalLib is green with all three build-time assertions passing, including the prefix-scoped assert_no_subsumed_entries, which caught four defective entries on its first real run and drove a two-pass ADMIT plus a registry snapshot.",
   "blockers": [],
-  "phases_completed": 3,
+  "phases_completed": 8,
   "phases_total": 8,
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 2,
+    "vacuous_introduced_by_this_task": 0,
+    "vacuous_pre_existing_out_of_scope": [
+      "FormalSystem/Semantics/PointTransport.lean:163 (def AnyPoint ... := True; last touched by PR #11)",
+      "FormalSystem/Examples/TemporalStructures.lean:495 (theorem int_domain_universal ... := trivial; last touched by task 756)"
+    ],
+    "axiom_count": 14,
+    "axiom_count_at_base_commit": 14,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/972_theorem_library_tableau_pipeline/plans/02_tableau-pipeline-into-library.md",
-      "summary": "Plan version 2: Phase 7's non-redundancy invariant scoped to BimodalLib.Theorems.Enumerated per the cycle-6 ruling, plus the ZTime certificate-only route, the extractionFailed conjecture path, and the test-library-root rule folded into Phases 4-8. Phases 1-3 preserved verbatim as closed."
+      "type": "summary",
+      "path": "specs/972_theorem_library_tableau_pipeline/summaries/02_tableau-pipeline-into-library-summary.md",
+      "summary": "Phases 4-8: the Lean-source emitter, the five reserved-stage diagnostics emitters, the stage driver and its named entry point, the ruled-bound run with six admitted entries and 48 conjecture cells, and the docs revision."
     }
   ],
-  "next_steps": "Run /orchestrate 972 --implement to execute Phase 4 of the revised plan; Phase 4 depends only on the landed Phase 2 and is enterable immediately.",
+  "completion_data": {
+    "completion_summary": "The theorem library's tableau pipeline runs end to end at the user's ruled bound as one command. Six non-subsumed schemata are admitted as machine-generated registry entries that build sorry-free at [propext, Quot.sound], 2,981 certified refutations are written in the form theorem_library_countermodels will read without being admitted, and 2,895 non-admitted outcomes are registered as 48 aggregate conjecture cells. Non-redundancy over the generated entries is a build invariant.",
+    "roadmap_items": []
+  },
+  "modified_files": [
+    "BimodalLib.lean",
+    "BimodalLib/Conjectures/Enumerated.lean",
+    "BimodalLib/Conjectures/README.md",
+    "BimodalLib/INDEX.md",
+    "BimodalLib/README.md",
+    "BimodalLib/Theorems/Complete.lean",
+    "BimodalLib/Theorems/Enumerated/Base.lean",
+    "BimodalLib/Theorems/Enumerated/README.md",
+    "BimodalLib/Theorems/README.md",
+    "BimodalTools.lean",
+    "BimodalTools/LeanSourceEmit.lean",
+    "BimodalTools/PipelineDiagnostics.lean",
+    "BimodalTools/README.md",
+    "BimodalTools/TheoremLibraryPipelineMain.lean",
+    "BimodalTools/TheoremPipeline.lean",
+    "Tests/BimodalToolsTest.lean",
+    "Tests/BimodalToolsTest/LeanSourceEmitTest.lean",
+    "Tests/BimodalToolsTest/PipelineDiagnosticsTest.lean",
+    "Tests/BimodalToolsTest/README.md",
+    "docs/reference/API_REFERENCE.md",
+    "docs/reference/bimodal-lib.md",
+    "docs/reference/diagnostics.md",
+    "lakefile.toml",
+    "records/theorem-library.md",
+    "scripts/README.md",
+    "scripts/theorem-library-pipeline.sh",
+    "specs/evidence/theorem-library-pipeline/registry-statements.lean",
+    "specs/972_theorem_library_tableau_pipeline/plans/02_tableau-pipeline-into-library.md",
+    "specs/972_theorem_library_tableau_pipeline/summaries/02_tableau-pipeline-into-library-summary.md",
+    "typst/generated/status.typ"
+  ],
+  "proposed_file_scope": [
+    "docs/reference/API_REFERENCE.md",
+    "specs/evidence/theorem-library-pipeline/registry-statements.lean"
+  ],
+  "sapience_notes": [
+    {
+      "subject": "Lean block comments nest, so one opening delimiter in generated text breaks the whole file",
+      "value": "A generated Lean doc comment that interpolates arbitrary text can be broken by a single opening block-comment delimiter, because Lean's block comments NEST: the inner comment it opens is closed by the doc comment's own closing delimiter, leaving the outer unterminated. The diagnostic is 'unterminated comment' reported at END OF FILE, which points nowhere near the cause. Found in BimodalLogic when a recorded reproduce-command carried a scratch path beginning with a slash and a hyphen. Any code generator must sanitize interpolated text, and the sanitizer's own docstring and tests must not spell the delimiters out either."
+    },
+    {
+      "subject": "simpa can close a goal through Classical.choice where simp only cannot",
+      "value": "On Lean v4.33.0-rc1, closing a substitution-transfer goal with `simpa [f, g] using h` routed an arity-2 case through Classical.choice while the arity-0 and arity-1 cases stayed at [propext, Quot.sound] -- the nested ite chain of a two-variable substitution drags it in. Replacing it with `simp only [f, g, reduceIte] at h` then `exact h` gives [propext, Quot.sound] at every arity, because a closed simp lemma list cannot reach a classical lemma. Measured over ten generated registry entries in BimodalLogic. Where an axiom profile is a requirement, prefer simp only with an explicit list over simpa."
+    },
+    {
+      "subject": "A self-subsumption filter implemented as an accumulating fold is order-dependent and misses real redundancies",
+      "value": "Filtering candidates by 'is this an instance of something already accepted?' in a single fold keeps both members of a pair when the LESS general candidate is seen first: the more general one that arrives later is not an instance of it. Measured in BimodalLogic's theorem-library pipeline, where 2 of 10 generated entries survived the fold and were then caught by the build-time invariant. The fix is a separate pass comparing every survivor against every other, with a STRICT test (A subsumes B iff B is an instance of A and not conversely), since mutual instances are renamings rather than redundancies."
+    },
+    {
+      "subject": "A generated-entry admission rule must compare against the whole existing registry, not only against what the run has admitted",
+      "value": "BimodalLogic's theorem-library pipeline read 'unless it is a substitution instance of an entry already present' as 'already admitted by this run', and emitted 2 of 10 entries duplicating a hand-curated law. A compiled driver cannot walk the Lean environment, so the comparison set has to reach it as data: a probe exports each registry row's statement at the canonical schema variables via the existing tag-encoded formula codec, and the driver filters against it. The probe must import the hand-curated registration modules ONLY -- not the generated ones, or a run depends on its own previous output, and not the module where the invariant runs, or the probe is unbuildable exactly when it is needed."
+    },
+    {
+      "subject": "A per-item timeout does not bound work that happens after the timed call",
+      "value": "In BimodalLogic's tableau pipeline, --timeout-ms bounded only the decision procedure; the tableau rebuilds that CERTIFY performs afterwards are pure, untimed computations, and the whole-run --deadline-s was checked only at the top of each loop iteration. One formula therefore held a 2,400-second budget indefinitely, reproducibly, at the same serial across three runs. Compounding it, records were written only after the loop, so killing the stalled run lost every record. Two lessons: a budget must cover every phase of per-item work, not just the one obviously expensive call; and a long run should flush its output incrementally so a kill is survivable."
+    },
+    {
+      "subject": "ZTime gating in BimodalLogic is structurally unavailable, not merely rare",
+      "value": "The eight-gate route behind a theorem-backed refutation (not_valid_of_hasOpen_int) cannot fire at the ZTime frame class: regionLabel and temporalWitness evaluate false on every formula there, so BranchGates.gated is 0 of 11 while Base, Dense and RTime each gate 11 of 11. Confirmed at scale: a ruled-bound run produced 2,981 gated refutations, 0 of them at ZTime (Base 1,047, Dense 967, RTime 967). The witness-family certificate route through decidableCertifies is the only one at ZTime, and nothing in the tree derives such a certificate from a tableau branch -- they are supplied. A ZTime refutation count of zero is therefore the expected outcome and a finding about certificate availability, not a defect."
+    },
+    {
+      "subject": "Fully explicit generated Lean source hits the 100-character and 1500-line limits immediately",
+      "value": "A derivation printed in fully explicit constructor form is hundreds of lines on its own: six admitted entries came to 2,053 lines in BimodalLogic, against a package-wide 1,500-line limit, and every formula argument passes 100 characters. Both limits are warnings, and CI building --wfail makes a warning a failure. A code generator for Lean therefore needs line wrapping from the outset (break on token boundaries, never inside a tactic block) and should pin a file-level long-file baseline to the file's ACTUAL length rather than a round ceiling, so later growth re-trips the linter instead of passing silently. Measuring the live tree for lines over the limit -- zero, everywhere -- was what revealed the limit was enforced before any code was written."
+    },
+    {
+      "subject": "Json.mkObj renders alphabetically, so field order is a property of the source list only",
+      "value": "Lean's Lean.Json.mkObj stores fields in a search tree, so a rendered JSON object is in alphabetical key order and NOT in the order its toJson builds. Any schema claim of the form 'field order is <head keys> ++ <payload keys>' is therefore about the pre-render association list, and a test asserting key order has to read that list. In BimodalLogic's diagnostics records this forced each record type to expose toJsonFields and keys beside toJson; the golden strings are alphabetical for the same reason."
+    }
+  ],
   "metadata": {
-    "session_id": "sess_1795489185_6c2ae6",
-    "agent_type": "reviser-agent",
-    "delegation_path": ["orchestrator", "revise", "reviser-agent"],
-    "revision_mode": "plan_revision",
-    "revision_reason": "blocker: scope of the assert_no_subsumed_entries build invariant (.decisions.json cycle 6 ruling)",
-    "plan_version": 2,
-    "superseded_plan": "specs/972_theorem_library_tableau_pipeline/plans/01_tableau-pipeline-into-library.md",
-    "phases_preserved": [1, 2, 3],
-    "phases_revised": [4, 5, 6, 7, 8],
-    "phases_added": [],
-    "phases_removed": [],
-    "phase_count": 8,
-    "estimated_hours": 14.5,
-    "reports_integrated": ["01_tableau-pipeline-into-library.md"],
-    "decisions_applied": [
-      "cycle 6: prefix-scoped assert_no_subsumed_entries over BimodalLib.Theorems.Enumerated; 26 hand-curated rows out of scope, no baseline file, no row deleted or modified",
-      "cycle 4: Boolean/ModalBoolean at complexity 5, TemporalBoolean/ModalTemporalBoolean at 4; Base for the theorem half, all four frame classes for the countermodel half; every non-subsumed theorem kept, no interestingness filter (re-verified against Decision 9 and Phase 7, found already correct)"
+    "session_id": "sess_1795503166_18953f",
+    "agent_type": "lean-implementation-agent",
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
     ],
-    "validation": "bash .claude/scripts/validate-artifact.sh specs/972_theorem_library_tableau_pipeline/plans/02_tableau-pipeline-into-library.md plan -> [PASS] plan artifact is valid (0 warnings), exit 0",
-    "plan_revision_sentinel": "specs/972_theorem_library_tableau_pipeline/.plan-revised.json",
-    "orchestrator_handoff_written": false,
-    "orchestrator_handoff_note": "Delegation context carried no orchestrator_mode: true and no handoff_path, which is the aux_dispatch plan-revision path; per reviser-agent.md MUST NOT #10 no .orchestrator-handoff.json was written. The on-disk handoff from dispatch_seq 6 still carries the resolved blocker text and is stale by dispatch_seq; blockers are reported empty here."
+    "dispatch_seq": 9,
+    "compliance_check": "passed",
+    "phases_closed_this_dispatch": [
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "phase_markers": {
+      "4": "COMPLETED",
+      "5": "COMPLETED",
+      "6": "COMPLETED",
+      "7": "COMPLETED WITH EXCLUSIONS",
+      "8": "COMPLETED"
+    },
+    "commits": [
+      "ac3265b09 task 972 phase 4: the Lean-source emitter",
+      "4f4ceb7a3 task 972 phase 5: the five reserved-stage emitters",
+      "a4102f372 task 972 phase 6: the driver, its executable target, and the named entry point",
+      "b9fbc49d0 task 972 phase 7: the end-to-end run at the ruled bound, and admission",
+      "280c17a8e task 972 phase 7: registry-statement snapshot probe",
+      "d18f4b882 task 972 phase 8: revise docs, trim the record, and the final gate",
+      "7e413ce5f task 972 phase 8: document the uniform-substitution layer"
+    ],
+    "scoped_verification": "Phase 8 declares Verification Tier: full; the full gate set was DEFERRED to the batch stage per this dispatch's Batch Gate Deferral directive. Scoped discharge: verify-touched.sh -> 84 passed, 1 failed, 10 skipped. The single failure (test-deploy-baseline-lib.sh's deploy warm-cache control) is pre-existing and outside this task's file scope; its subjects live under .claude/**, which no commit of this task touches, and the dispatch independently reports the deployed tree stale for extension core.",
+    "data_outputs_untracked": "data/ is gitignored (.gitignore:108, /data) with zero tracked members, so the four declared data outputs exist and are regenerable by the named entry point but cannot be committed -- the same treatment data/proof-mode-diagnostics.jsonl already gets.",
+    "delegation_depth": 3
   }
 }

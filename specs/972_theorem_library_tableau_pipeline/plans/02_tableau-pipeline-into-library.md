@@ -1,7 +1,7 @@
 # Implementation Plan: Task #972
 
 - **Task**: 972 - Theorem library: tableau pipeline
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 14.5 hours total (~3 hours landed in Phases 1-3; ~11.5 hours remaining)
 - **Dependencies**: `theorem_library_layout_and_registry` (landed), `proof_mode_axiom_audit_and_cost_baseline` (landed)
 - **Research Inputs**: specs/972_theorem_library_tableau_pipeline/reports/01_tableau-pipeline-into-library.md
