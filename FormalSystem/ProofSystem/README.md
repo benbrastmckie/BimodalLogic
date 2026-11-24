@@ -15,6 +15,7 @@ TM logic variants (Base, Dense, Discrete, Dedekind), along with derived facts an
 | `Derivation.lean` | 418 | `DerivationTree` inductive type: 7 inference rules as constructors |
 | `DerivedAxioms.lean` | 329 | The time-reflection mirrors, derived by the TR rule (`DerivedAxioms` namespace) |
 | `LinearityDerivedFacts.lean` | 67 | Derived consequences of `temp_linearity`; non-derivability analysis |
+| `Substitution.lean` | 222 | `substF`: uniform substitution inside L, with the derivation transfer as data (`DerivationTree.subst`) |
 <!-- END GENERATED -->
 
 ## Axiom System

@@ -286,7 +286,7 @@ finding about the filter, not a reason to change the bound.
 
 ---
 
-### Phase 2: The L-Level Uniform Substitution, as Data [NOT STARTED]
+### Phase 2: The L-Level Uniform Substitution, as Data [COMPLETED]
 
 **Goal**: Land the five-declaration mirror of `substPlus`/`PlusDerivationTree.ofTMSubst` at the L
 level, in `FormalSystem/ProofSystem/`, so a concrete extracted derivation can be generalized to a
