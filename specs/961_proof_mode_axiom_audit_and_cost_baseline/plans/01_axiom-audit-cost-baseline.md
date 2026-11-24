@@ -1,7 +1,7 @@
 # Implementation Plan: Proof mode — axiom audit, diagnostics standard and cost baseline
 
 - **Task**: 961 - Proof mode: axiom audit and cost baseline (M13, diagnostics standard)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 13 hours
 - **Dependencies**: None hard. The dependency on the file split is for test-directory layout only. PR #7 (the `lrewrite`/`lsimp` congruence kit) has MERGED, which activates the task's conditional nested-logical-rewrite baseline. PRs #8, #9, #10 remain open.
 - **Research Inputs**: specs/961_proof_mode_axiom_audit_and_cost_baseline/reports/01_axiom-audit-cost-baseline.md
@@ -179,7 +179,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Capture the Build-Free Gate Baseline [NOT STARTED]
+### Phase 1: Capture the Build-Free Gate Baseline [COMPLETED]
 
 **Goal**: Record the pre-change outcome of the two build-free repo-wide gates, so every later
 phase can state its criterion as a delta against a captured baseline rather than as an absolute
