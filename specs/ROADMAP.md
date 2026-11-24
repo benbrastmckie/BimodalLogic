@@ -9,9 +9,9 @@
 
 | Milestone | Status | Tasks done | Review |
 |---|---|---|---|
-| [M7: L-plus at integer time: decidability and route R3](#milestone-m7) | active | 0/6 | none |
+| [M7: L-plus at integer time: decidability and route R3](#milestone-m7) | active | 1/6 | none |
 | [M9: Algebraic representation and MF rigidity](#milestone-m9) | planned | 0/8 | none |
-| [M2: BimodalLib: the evidence base the mode is measured against](#milestone-m2) | active | 5/5 | none |
+| [M2: BimodalLib: the evidence base the mode is measured against](#milestone-m2) | active | 5/5 | prepared |
 | [M13: What the merges leave owed: the signature layer and the follow-ups](#milestone-m13) | active | 0/4 | none |
 | [M1: Repository hygiene](#milestone-m1) | active | 0/7 | none |
 | [M10: The written record: errata, open questions, examples and docs](#milestone-m10) | planned | 0/5 | none |
@@ -31,16 +31,11 @@ See also: [Rules, conventions and repo context](#roadmap-context)
 
 Decide validity of the stability-modal language at integer time in Lean, past the ladder realization theorem to Decidable (PlusValidZTime phi), and settle whether a determinization-free route to completeness exists.
 
-- **Progress**: active -- 0/5 batches, 0/6 tasks done -- 991 now owns the depth-0 gate and heads the milestone; 935, 831 and 713 are free, and the ladder band unparks on 991's verdict
+- **Progress**: active -- 1/5 batches, 1/6 tasks done -- 991 now owns the depth-0 gate and heads the milestone; 935, 831 and 713 are free, and the ladder band unparks on 991's verdict
 - **Review**: none
 - **Gate**: cellLE_zero_const_of_kappa_eq lands sorry-free or CellLEZeroConstOfKappaEq is refuted under ParamsOk; the ladder realization theorem closes; Decidable (PlusValidZTime phi) is stated and proved; and route R3 has a recorded verdict either way.
 
-**Batch 1** -- Who owns the depth-0 gate: a verdict either way unparks M7's whole ladder band
-
-```
-/orchestrate 991 --hard
-991 ready           depth_zero_gate_verdict   <- owns the depth-0 gate: a verdict either way unparks the ladder band and milestone M7
-```
+**Batch 1** (done) -- Who owns the depth-0 gate: a verdict either way unparks M7's whole ladder band
 
 **Batch 2** -- Route R3: does a determinization-free progress measure for L-plus ZTime completeness exist
 
@@ -100,7 +95,7 @@ Ground the representation front in Goldblatt and BRV, bring the Shift-closed Ten
 Give the theorem library its layout by fragment and frame class, fill the fragments the tableau reaches, keep every refutation checked, and make filing by smallest fragment a theorem.
 
 - **Progress**: active -- 2/2 batches, 5/5 tasks done -- 973 is free today -- its edges on 971 and 972 are both discharged -- and is the only work left open here
-- **Review**: none
+- **Review**: prepared on `refs/heads/main` (updated 2026-11-24)
 - **Gate**: BimodalLib builds; every closed derivation outside Theorems/ProofMode/ is registered with its fragment, frame class and substitution class and a check fails on an unregistered one; verdicts and countermodels are admitted only at a stated grade; and the conservativity table is generated from the theorems. 973 is the only open member left here and it enters today.
 
 **Batch 1** (done) -- Whether stability is rightly a Modal family: no file scope, the cheapest de-risking while 977 waits
