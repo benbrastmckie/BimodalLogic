@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.Conservativity.Fragments.Calculus
+import FormalSystem.Metalogic.Conservativity.Fragments.PropComplete
 
 /-!
 # Conservativity of TM over the fragments of its language
@@ -20,4 +21,6 @@ Each entry reads *Module* — *Contents*:
 
 * `Conservativity/Fragments/Calculus.lean` — `Sublanguage`, `CellDerivable`, and the deduction
   theorem inside a sublanguage
+* `Conservativity/Fragments/PropComplete.lean` — `evalProp`, `Tautology`, and
+  `tautology_derivable`: propositional completeness inside a sublanguage
 -/

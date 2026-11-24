@@ -319,26 +319,26 @@ lemmas and a deduction theorem by plain induction, in `FormalSystem`.
 
 ---
 
-### Phase 3: Propositional completeness inside a sublanguage [NOT STARTED]
+### Phase 3: Propositional completeness inside a sublanguage [COMPLETED]
 
 **Goal**: Every propositional tautology over formulas of `L`, with the non-Boolean subformulas
 as variables, is derivable in the cell calculus of `L`.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Conservativity/Fragments/PropComplete.lean`.
-- [ ] Define the valuation of a formula under an assignment of truth values to its non-Boolean
+- [x] Create `FormalSystem/Metalogic/Conservativity/Fragments/PropComplete.lean`.
+- [x] Define the valuation of a formula under an assignment of truth values to its non-Boolean
   subformulas (atoms, `box`, `untl`, `snce` formulas), and "tautology" as true under every such
   assignment.
-- [ ] Port the construction of
+- [x] Port the construction of
   `FormalSystem/Metalogic/Decidability/Propositional/Kalmar.lean` to the cell calculus: the
   signed-literal context, the Kalmár lemma by induction on the formula, elimination of one
   variable at a time using the Phase 2 deduction theorem. Derive the propositional combinators
   needed inside the calculus; do not transport existing `DerivationTree` combinators.
-- [ ] State the main theorem with `L φ` as hypothesis and conclusion in the calculus from the
+- [x] State the main theorem with `L φ` as hypothesis and conclusion in the calculus from the
   empty context.
-- [ ] Add the import to `Fragments.lean`; regenerate `FormalSystem.lean`, `status.typ` and the
+- [x] Add the import to `Fragments.lean`; regenerate `FormalSystem.lean`, `status.typ` and the
   inventory blocks as in Phase 2.
-- [ ] **Decision gate.** If the main theorem is not proved within the phase's budget plus one
+- [x] **Decision gate.** If the main theorem is not proved within the phase's budget plus one
   hour: commit what is green, record the obstruction with `issue-record.sh`, mark the phase
   `[PARTIAL]`, and proceed to Phase 4. Phase 5 then discharges its obligations by hand-derived
   lemmas per translated axiom shape instead of by this theorem.
