@@ -640,14 +640,14 @@ imports it and no suite maps to `scripts/*.sh` in this repository.
 
 ---
 
-### Phase 8: The Baseline Document and the Final Gate [NOT STARTED]
+### Phase 8: The Baseline Document and the Final Gate [COMPLETED]
 
 **Goal**: `docs/development/proof-mode-cost-baseline.md` carrying the figures and the command that
 reproduces them, which closes the task's DONE WHEN, followed by this repository's own complete
 gate set.
 
 **Tasks**:
-- [ ] Create `docs/development/proof-mode-cost-baseline.md` from the Phase 7 script's output —
+- [x] Create `docs/development/proof-mode-cost-baseline.md` from the Phase 7 script's output —
       never transcribed from the research report. Record the provenance line first (measurement
       commit, toolchain pin, Mathlib tag, date) and the reproduction command second, both before
       any figure.
@@ -702,6 +702,43 @@ gate set.
 - The reproduction command printed in the document, run verbatim from a clean checkout of the
   measurement commit, reproduces the document's own figures.
 - The 52 acceptance `example`s are still byte-identical to their base-commit state.
+
+#### Verification Notes (recorded at execution)
+
+**The full gate set was DEFERRED to the batch stage, not independently run.** This dispatch
+carried a batch-gate-deferral directive: `verify-deploy.sh` is owed once per `/orchestrate`
+invocation and discharged at the orchestration close. This task touches no path under `.claude/**`
+and no source-store path, so that set has nothing of this task's to observe.
+
+**Scoped discharge actually run** — the nine named checks above, each directly:
+
+| check | outcome |
+|---|---|
+| `lake build --wfail` (full) | PASS, exit 0, 3017 jobs |
+| `lake test` | PASS, exit 0, 3095 jobs |
+| `lake build BimodalLib BimodalLibTest --wfail` | PASS, exit 0, 3053 jobs |
+| `typst-sync-check.sh --counts-only` | PASS, `MISMATCH_COUNT=0` |
+| `check-module-invariants.sh --no-build` | exit 1 — C12 at exactly 2 and C20 at exactly 9, both identical to the Phase 1 baseline and both naming only out-of-scope files; recorded PASS for this phase |
+| `readme-lint.sh FormalSystem BimodalTools BimodalLib` | exit 1 — 4 new stale dates, identical to the Phase 1 baseline, all under `FormalSystem/`, which this task never touched; recorded PASS for this phase |
+| `check-copyright-headers.sh --strict` | PASS, 0 nonconforming / 0 missing / 862 total |
+| `library-index.sh --no-build --check` | PASS, `INDEX.md is current` |
+| `proof-mode-cost-baseline.sh` | PASS after the pin was advanced to `9dedc3977` (the gate correctly refused at exit 3 on the pre-advance pin — the Phase 6-7 commit had moved the measured surface) |
+
+**Repository-wide aggregate**: `scripts/verify-all.sh` — 6 PASS, 3 FAIL. Every failure is outside
+this task's file scope, confirmed mechanically against `git diff --name-only 889bf7c0..HEAD`:
+`check-module-invariants.sh` and `readme-lint.sh` as above, plus `check-paper-definitions.sh`
+(paper-anchor drift on `lem:uniq` and `thm:s5` in LaTeX manuscript text — this task touched no
+`latex/` file and not `docs/reference/paper-definitions-of-record.md`).
+
+**Two gate findings WERE attributable to this task and were fixed, not waived** (both in Phase 6):
+C5 read `FormalSystem.ProofSystem.DerivationTree` in `BimodalLib/Diagnostics/README.md` as a module
+path; C23 flagged `frameClassOf` in `Emit.lean` as shadowing `BimodalLib.frameClassOf`.
+
+**Gate collision recorded**: an argument-free `verify-touched.sh` escalated to the full 102-suite
+agent-system battery via its OWED fallback (five unmappable working-tree paths, four of them
+`.githooks/*` files this task never touched) and then self-deadlocked on `/run/user/1000/.gate-lock`
+held by its own first pass. Torn down via `TaskStop`; its 8 NEW failures are all under
+`.claude/scripts/tests/`, where this task changed nothing.
 
 ---
 

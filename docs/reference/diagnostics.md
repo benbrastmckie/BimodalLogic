@@ -118,7 +118,7 @@ in `Tests/BimodalTest/Automation/ProofModeAxioms.lean`.
 `heartbeats` is also not comparable **across instruments**. A figure taken by `#reprove_record`
 includes the wrapper's own record assembly and runs consistently larger than the same script
 measured by `#count_heartbeats in`. What is instrument-independent is the shape of the growth, and
-that is what `docs/development/proof-mode-cost-baseline.md` states.
+that is what the [cost baseline](../development/proof-mode-cost-baseline.md) states.
 
 ## Reserved stages
 
@@ -300,8 +300,8 @@ the text.
 ## Related
 
 - `BimodalLib/Diagnostics/README.md` — the directory's own overview
-- `docs/development/proof-mode-cost-baseline.md` — the first dataset produced against this
-  schema, and the figures it carries
+- [proof-mode-cost-baseline.md](../development/proof-mode-cost-baseline.md) — the first dataset
+  produced against this schema, and the figures it carries
 
 ---
 

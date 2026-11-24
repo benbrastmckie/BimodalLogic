@@ -136,6 +136,7 @@ Developer standards, conventions, and contribution workflow:
 - [MODULE_ORGANIZATION.md](development/MODULE_ORGANIZATION.md) - Directory structure and namespace patterns
 - [NONCOMPUTABLE_GUIDE.md](development/NONCOMPUTABLE_GUIDE.md) - Handling noncomputable definitions and Classical logic
 - [PROPERTY_TESTING_GUIDE.md](development/PROPERTY_TESTING_GUIDE.md) - Property-based testing patterns and Plausible usage
+- [proof-mode-cost-baseline.md](development/proof-mode-cost-baseline.md) - Measured cost of the derivation proof mode's scripts, with its reproduction command
 - [QUALITY_METRICS.md](development/QUALITY_METRICS.md) - Quality targets and performance benchmarks
 - [TESTING_STANDARDS.md](development/TESTING_STANDARDS.md) - Test requirements and coverage targets
 - [VERSIONING.md](development/VERSIONING.md) - Semantic versioning policy

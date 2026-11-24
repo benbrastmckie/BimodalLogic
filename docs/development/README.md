@@ -22,6 +22,7 @@ Core standards for code quality and consistency:
 | [REFERENCE_NORMAL_FORM.md](REFERENCE_NORMAL_FORM.md) | The shape of every `## References` block, and the gate baselines a docstring sweep holds constant |
 | [TESTING_STANDARDS.md](TESTING_STANDARDS.md) | Test requirements, coverage targets, and test patterns |
 | [QUALITY_METRICS.md](QUALITY_METRICS.md) | Quality targets and performance benchmarks |
+| [proof-mode-cost-baseline.md](proof-mode-cost-baseline.md) | What the derivation proof mode's scripts cost: the exactly-quadratic `lintro` nesting law, the exactly-linear nested-rewrite law, per-tier figures, the 48-script acceptance corpus, and the one command that reproduces all of it |
 
 ## Practical Guides
 
