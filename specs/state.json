@@ -1399,7 +1399,7 @@
     },
     {
       "project_name": "proof_mode_axiom_audit_and_cost_baseline",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "description": "REVISED: THIS RECORD ALSO FIXES THE DIAGNOSTICS STANDARD (records/theorem-library.md, 'Diagnostics'; records/proof-mode.md, M13), and the adequacy gate now depends on it HARD. In addition to the audit and baseline below: (a) define ONE record schema for every stage of the library pipeline (enumerate, decide, extract, certify, admit, re-prove, compare), a record keyed by statement identifier and stage and carrying fragment, frame class, commit and the command that produced it, with the per-stage fields the record lists; (b) implement the commands that emit the RE-PROVE and COMPARE records for a proof-mode script (outcome, failure class, tactic count and distinct tactics, size of any term-mode escape, elaboration time, size of the derivation built, script length against the hand proof), which the cost script below is the first use of; (c) document the schema and every field at docs/reference/diagnostics.md, since a stage is not complete until its fields are documented. The other stages' emitters are written by `theorem_library_tableau_pipeline` against this schema. Design the schema against the existing dataset records under data/ and BimodalTools/ so that one is not invented beside the other. CONSUMERS: `proof_mode_reprove_perpetuity` (hard), `theorem_library_tableau_pipeline` (hard). COORDINATION WITH OPEN CONTRIBUTIONS. Three stacked pull requests from a collaborator are open against this area: #7 (logical rewriting `lrewrite` / `lsimp`, the congruence kit), #8 (Until/Since introduction, folding and ZTime unfolding, `linduction`, whole-judgment time reflection, `keeping`, strict leads-to rules) and #9 (a semantic mode, asked to be re-proposed separately). If #7 has merged, add one nested logical rewrite to the cost baseline: composed congruence certificates are the terms most likely to be large, and the contribution promised a baseline and recorded none. Report the axiom audit and the cost per tier (views, derivation). MILESTONE M13 (records/proof-mode.md), STREAM: evaluation. Does not wait on the Perpetuity adequacy verdict: it changes no rule and no tactic. It is ordered BEFORE the adequacy gate (`proof_mode_reprove_perpetuity` depends on it) so that the gate report can quote a cost figure. Proof mode: axiom audit and cost baseline. No test states which axioms a proof-mode derivation depends on, and nothing measures the derivation terms the tactics build. (1) Add a test module, on the pattern of Tests/BimodalTest/WalkthroughAxioms.lean, that asserts the axiom set of at least one derivation per tactic family (basic, modal, temporal, discrete) in TM and in TM⁺. (2) Record a baseline: derivation-term size and elaboration time for each acceptance example and for one long script with at least five nested `lintro` steps, since `lintro` discharges through the deduction theorem, which transforms a whole derivation, so cost on long scripts is an open question. Write the figures and the command that reproduces them to docs/development/proof-mode-cost-baseline.md, with the measuring script checked in. DONE WHEN: the audit test passes in `lake test` and the baseline file exists with its reproduction command. Hard dependencies: none; the dependency on the file split is for the test directory layout only. The derivation proof mode lives in FormalSystem/Automation/ProofMode/ (elaborators) and FormalSystem/Theorems/ProofMode/ (tactic-independent derivation-producing rules); FormalSystem/Theorems/ must not import FormalSystem/Automation/. Every tactic must assemble native DerivationTree / PlusDerivationTree constructors and proved rules only; nothing semantic may stand in for a derivation. Every new `throwError` path gets a negative test asserting its message (`#guard_msgs`). The existing acceptance tests must keep passing unchanged. Milestones, lanes and gates are in records/proof-mode.md.",
       "topic": "proof-mode",
@@ -1437,7 +1437,7 @@
         "typst/generated/status.typ"
       ],
       "created": "2026-11-20T07:25:04Z",
-      "last_updated": "2026-11-24T03:26:31Z",
+      "last_updated": "2026-11-24T04:53:02Z",
       "project_number": 961,
       "audit_verdict": {
         "proposal": {
@@ -1541,9 +1541,15 @@
           "path": "specs/961_proof_mode_axiom_audit_and_cost_baseline/plans/01_axiom-audit-cost-baseline.md",
           "type": "plan",
           "summary": "8-phase plan (13h): gate baseline, axiom audit test module, diagnostics record schema plus derivation-size measure, the two emitter commands with #guard_msgs negative tests, the cost probe, docs/reference/diagnostics.md, the measuring script and emitted records, and the baseline document with the final gate."
+        },
+        {
+          "path": "specs/961_proof_mode_axiom_audit_and_cost_baseline/summaries/01_axiom-audit-cost-baseline-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for all eight phases, with the full verify-all.sh delta table and per-failure attribution."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Added the proof-mode axiom audit (14 #guard_msgs-pinned #print axioms rows, one representative script per tactic family in TM and TM-plus, pinning the [propext]/classical boundary rather than only its classical side), the one diagnostics record schema covering all seven library-pipeline stages with the reprove and compare payloads implemented and the other five reserved, the two emitter commands with all eight throwError paths pinned one-for-one, a computable derivation node-count measure, the reference page documenting every field of every stage, a 75-record cost probe, the one-command measuring script with a staleness re-probe and a byte-identical --json determinism contract, and the recorded baseline. Reproduced both measured growth laws exactly on a fresh instrument: lintro nesting is 5n^2+17n+41 in term size with residual zero for n=2..16, and a nested logical rewrite costs exactly +346 term nodes per scope level over d=0..4."
     },
     {
       "project_name": "proof_mode_split_shared_test_and_guide_files",

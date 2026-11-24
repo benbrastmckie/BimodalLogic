@@ -84,7 +84,11 @@
   "metadata": {
     "session_id": "sess_1795489185_6c2ae6",
     "agent_type": "lean-implementation-agent",
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
     "task_dir": "specs/961_proof_mode_axiom_audit_and_cost_baseline",
     "dispatch_seq": 3,
     "compliance_check": "passed",

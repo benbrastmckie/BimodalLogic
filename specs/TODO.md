@@ -13,9 +13,9 @@ next_project_number: 991
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,890,935,960,961,962,977,986,987,988,989 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
-| 2 | 231,282,296,429,497,763,862,869,944,954,955,969,972,984 | 298,428,502,604,761,960,961,962,977,986,989 | algebraic-representation, dataset-enhancement, decidability, ... |
-| 3 | 410,498,499,500,861,873,932,945,973 | 429,497,763,869,944,972 | algebraic-representation, decidability, semantics, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,890,935,960,962,972,977,986,987,988,989 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
+| 2 | 231,282,296,429,497,763,862,869,944,954,955,969,973,984 | 298,428,502,604,761,960,962,972,977,986,989 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 3 | 410,498,499,500,861,873,932,945 | 429,497,763,869,944 | algebraic-representation, decidability, semantics, ... |
 | 4 | 125,411,543,874,875,876,946 | 410,498,499,500,873,945,969 | algebraic-representation, decidability, metalogic, ... |
 | 5 | 430,501,947 | 125,411,946,955,973 | algebraic-representation, decidability, proof-mode |
 | 6 | 412,949,951,963,965 | 178,430,947,954 | decidability, proof-mode |
@@ -136,12 +136,11 @@ next_project_number: 991
     └─ 947 [NOT STARTED] — REVISED: GATE ONE IS A SWEEP OVER A SELECTION OF LIBRARY... (see above)
   └─ 969 [HOLD] — LOCATION (binding over any module path named below): the view...
     └─ 946 [HOLD] — NO ModalTemporal MODULE OR CLASS... (see above)
-961 [PLANNED] — REVISED: THIS RECORD ALSO FIXES THE DIAGNOSTICS STANDARD...
-  └─ 972 [NOT STARTED] — MILESTONE M19 (records/proof-mode.md), LANE: library. Theorem...
-    └─ 973 [NOT STARTED] — MILESTONE M20 (records/proof-mode.md), LANE: library. Theorem...
-      └─ 947 [NOT STARTED] — REVISED: GATE ONE IS A SWEEP OVER A SELECTION OF LIBRARY... (see above)
 962 [NOT STARTED] — MILESTONE M9b (records/proof-mode.md), STREAM: metatheory....
   └─ 953 [NOT STARTED] — With the interface as one class per operator family and... (see above)
+972 [NOT STARTED] — MILESTONE M19 (records/proof-mode.md), LANE: library. Theorem...
+  └─ 973 [NOT STARTED] — MILESTONE M20 (records/proof-mode.md), LANE: library. Theorem...
+    └─ 947 [NOT STARTED] — REVISED: GATE ONE IS A SWEEP OVER A SELECTION OF LIBRARY... (see above)
 986 [NOT STARTED] — Report the real cause when a view fails to apply. applyView...
   └─ 969 [HOLD] — LOCATION (binding over any module path named below): the view... (see above)
 987 [HOLD] — Two follow-ups owed after the temporal rules contribution...
@@ -325,12 +324,13 @@ next_project_number: 991
 ---
 
 ### 961. Proof mode axiom audit and cost baseline
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: proof-mode
 - **Dependencies**: None
 - **Research**: [961_proof_mode_axiom_audit_and_cost_baseline/reports/01_axiom-audit-cost-baseline.md]
 - **Plan**: [961_proof_mode_axiom_audit_and_cost_baseline/plans/01_axiom-audit-cost-baseline.md]
+- **Summary**: [961_proof_mode_axiom_audit_and_cost_baseline/summaries/01_axiom-audit-cost-baseline-summary.md]
 
 **Description**: REVISED: THIS RECORD ALSO FIXES THE DIAGNOSTICS STANDARD (records/theorem-library.md, 'Diagnostics'; records/proof-mode.md, M13), and the adequacy gate now depends on it HARD. In addition to the audit and baseline below: (a) define ONE record schema for every stage of the library pipeline (enumerate, decide, extract, certify, admit, re-prove, compare), a record keyed by statement identifier and stage and carrying fragment, frame class, commit and the command that produced it, with the per-stage fields the record lists; (b) implement the commands that emit the RE-PROVE and COMPARE records for a proof-mode script (outcome, failure class, tactic count and distinct tactics, size of any term-mode escape, elaboration time, size of the derivation built, script length against the hand proof), which the cost script below is the first use of; (c) document the schema and every field at docs/reference/diagnostics.md, since a stage is not complete until its fields are documented. The other stages' emitters are written by `theorem_library_tableau_pipeline` against this schema. Design the schema against the existing dataset records under data/ and BimodalTools/ so that one is not invented beside the other. CONSUMERS: `proof_mode_reprove_perpetuity` (hard), `theorem_library_tableau_pipeline` (hard). COORDINATION WITH OPEN CONTRIBUTIONS. Three stacked pull requests from a collaborator are open against this area: #7 (logical rewriting `lrewrite` / `lsimp`, the congruence kit), #8 (Until/Since introduction, folding and ZTime unfolding, `linduction`, whole-judgment time reflection, `keeping`, strict leads-to rules) and #9 (a semantic mode, asked to be re-proposed separately). If #7 has merged, add one nested logical rewrite to the cost baseline: composed congruence certificates are the terms most likely to be large, and the contribution promised a baseline and recorded none. Report the axiom audit and the cost per tier (views, derivation). MILESTONE M13 (records/proof-mode.md), STREAM: evaluation. Does not wait on the Perpetuity adequacy verdict: it changes no rule and no tactic. It is ordered BEFORE the adequacy gate (`proof_mode_reprove_perpetuity` depends on it) so that the gate report can quote a cost figure. Proof mode: axiom audit and cost baseline. No test states which axioms a proof-mode derivation depends on, and nothing measures the derivation terms the tactics build. (1) Add a test module, on the pattern of Tests/BimodalTest/WalkthroughAxioms.lean, that asserts the axiom set of at least one derivation per tactic family (basic, modal, temporal, discrete) in TM and in TM⁺. (2) Record a baseline: derivation-term size and elaboration time for each acceptance example and for one long script with at least five nested `lintro` steps, since `lintro` discharges through the deduction theorem, which transforms a whole derivation, so cost on long scripts is an open question. Write the figures and the command that reproduces them to docs/development/proof-mode-cost-baseline.md, with the measuring script checked in. DONE WHEN: the audit test passes in `lake test` and the baseline file exists with its reproduction command. Hard dependencies: none; the dependency on the file split is for the test directory layout only. The derivation proof mode lives in FormalSystem/Automation/ProofMode/ (elaborators) and FormalSystem/Theorems/ProofMode/ (tactic-independent derivation-producing rules); FormalSystem/Theorems/ must not import FormalSystem/Automation/. Every tactic must assemble native DerivationTree / PlusDerivationTree constructors and proved rules only; nothing semantic may stand in for a derivation. Every new `throwError` path gets a negative test asserting its message (`#guard_msgs`). The existing acceptance tests must keep passing unchanged. Milestones, lanes and gates are in records/proof-mode.md.
 
