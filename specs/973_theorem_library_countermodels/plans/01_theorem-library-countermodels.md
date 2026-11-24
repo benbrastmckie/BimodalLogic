@@ -570,7 +570,7 @@ accept is a finding to record and, if `decide` does not close, grounds to mark t
 
 ---
 
-### Phase 6: LOOKUP up to renaming of atoms [NOT STARTED]
+### Phase 6: LOOKUP up to renaming of atoms [COMPLETED]
 
 **Goal**: an inference can be looked up in the countermodel library up to renaming of atoms, for
 use by the proof mode's unclosed-leaf route, with a `PlusFormula` companion to the existing

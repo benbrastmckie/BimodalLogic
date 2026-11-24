@@ -14,6 +14,7 @@ import BimodalLib.Conservativity.Table
 import BimodalLib.Conservativity.TemporalBase
 import BimodalLib.Countermodel
 import BimodalLib.Countermodel.Gates
+import BimodalLib.Countermodel.Lookup
 import BimodalLib.Countermodel.Transfer
 import BimodalLib.Countermodels.Boolean.GatedTableau
 import BimodalLib.Countermodels.ModalBoolean.Base

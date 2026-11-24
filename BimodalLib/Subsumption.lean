@@ -36,6 +36,8 @@ binding: `A → A` matches `⊥ → ⊥` and must not match `⊥ → p`.
 
 - `BimodalLib.matchSubst?` — the witness assignment, or `none`
 - `BimodalLib.isSubstInstance` — the `Bool` face
+- `BimodalLib.matchSubstP?` — the same over `PlusFormula`, with the `⊡` case
+- `BimodalLib.isSubstInstanceP` — its `Bool` face
 - `BimodalLib.assert_no_subsumed_entries` — the build-time non-redundancy check
 
 ## References
@@ -53,6 +55,9 @@ namespace BimodalLib
 
 open Lean Meta Elab Command
 open FormalSystem.Syntax FormalSystem.ProofSystem
+-- Only the type name is opened, not the whole namespace: the extended language's defined
+-- operators share spellings with the base language's and would shadow them here.
+open FormalSystem.PlusLanguage (PlusFormula)
 
 /-! ## The matcher -/
 
@@ -89,6 +94,49 @@ def matchSubst? (schema target : Formula) : Option (List (Atom × Formula)) :=
 
 /-- Whether `target` is a substitution instance of `schema`. -/
 def isSubstInstance (schema target : Formula) : Bool := (matchSubst? schema target).isSome
+
+/-! ## The matcher over the extended language
+
+The matcher above is `Formula`-only by type. A countermodel row may be stated in L⁺ (every row
+that mentions `⊡` is), and the proof mode's unclosed-leaf lookup must reach those rows too, so
+the four functions are mirrored here with one extra constructor case.
+
+The mirror is structural and deliberate rather than abstracted over a class: a shared matcher
+would need the language's constructor set as data, which is exactly what the two inductives do
+not share. The agreement check on a recurring variable behaves as it does above — it **fails on
+disagreement** rather than overwriting the earlier binding, so `⊡A → A` matches `⊡⊥ → ⊥` and
+must not match `⊡⊥ → p`.
+-/
+
+/-- Extend an assignment over the extended language with `p ↦ φ`, failing when `p` is already
+bound to something else. -/
+def bindAtomP (acc : List (Atom × PlusFormula)) (p : Atom) (φ : PlusFormula) :
+    Option (List (Atom × PlusFormula)) :=
+  match acc.find? (fun kv => kv.1 = p) with
+  | some kv => if kv.2 = φ then some acc else none
+  | none => some ((p, φ) :: acc)
+
+/-- The extended matcher's worker: match `schema` against `target`, threading the assignment
+built so far. An atom of `schema` matches anything, subject to agreement; every other
+constructor must match head to head, `⊡` included. -/
+def matchSubstPAux : PlusFormula → PlusFormula → List (Atom × PlusFormula) →
+    Option (List (Atom × PlusFormula))
+  | .atom p, target, acc => bindAtomP acc p target
+  | .bot, .bot, acc => some acc
+  | .imp φ₁ ψ₁, .imp φ₂ ψ₂, acc => matchSubstPAux φ₁ φ₂ acc >>= matchSubstPAux ψ₁ ψ₂
+  | .box φ₁, .box φ₂, acc => matchSubstPAux φ₁ φ₂ acc
+  | .stab φ₁, .stab φ₂, acc => matchSubstPAux φ₁ φ₂ acc
+  | .untl φ₁ ψ₁, .untl φ₂ ψ₂, acc => matchSubstPAux φ₁ φ₂ acc >>= matchSubstPAux ψ₁ ψ₂
+  | .snce φ₁ ψ₁, .snce φ₂ ψ₂, acc => matchSubstPAux φ₁ φ₂ acc >>= matchSubstPAux ψ₁ ψ₂
+  | _, _, _ => none
+
+/-- The witness assignment making the extended-language `target` a substitution instance of
+`schema`, or `none`. One structural pass, as in the base-language case. -/
+def matchSubstP? (schema target : PlusFormula) : Option (List (Atom × PlusFormula)) :=
+  matchSubstPAux schema target []
+
+/-- Whether the extended-language `target` is a substitution instance of `schema`. -/
+def isSubstInstanceP (schema target : PlusFormula) : Bool := (matchSubstP? schema target).isSome
 
 /-- The assignment as a function, defaulting to the atom itself off the bound set. -/
 def assignmentOf (acc : List (Atom × Formula)) : Atom → Formula :=
