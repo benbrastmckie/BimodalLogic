@@ -164,29 +164,29 @@ generic parameters. A negative answer here ends the route before `(K4)` is touch
 
 **Tasks**:
 
-- [ ] Create `specs/991_depth_zero_gate_verdict/probe-draft/threshold-depth-sum.lean`, importing
+- [x] Create `specs/991_depth_zero_gate_verdict/probe-draft/threshold-depth-sum.lean`, importing
       `FormalSystem.Metalogic.Decidability.RaySummary.LadderStepFrag` and opening the same
       namespaces as the existing draft probe `probe-draft/ordinary-window-regime.lean`.
-- [ ] Prove the pure-syntax bound `dBack φ + dFwd φ <= (plusSubformulaClosure φ).card` by
+- [x] Prove the pure-syntax bound `dBack φ + dFwd φ <= (plusSubformulaClosure φ).card` by
       structural induction on `φ`. The named decomposition, to be followed rather than re-derived:
       bound `dBack` and `dFwd` SEPARATELY by the cardinalities of two DISJOINT filters of the
       closure -- the `snce`-rooted members and the `untl`-rooted members -- then sum, using that a
       `snce`-rooted formula and an `untl`-rooted formula are never equal.
-- [ ] In the `snce α β` and `untl α β` cases the `+ 1` needs `snce α β ∉ subformulas α ∪
+- [x] In the `snce α β` and `untl α β` cases the `+ 1` needs `snce α β ∉ subformulas α ∪
       subformulas β`. `FormalSystem/PlusLanguage/Subformulas.lean` carries `self_mem_subformulas`,
       the eight constructor-membership lemmas and `subformulas_trans`, but NO size or
       no-self-containment lemma; prove the missing step as a local helper in the probe
       (`sizeOf`-monotonicity along `subformulas`, by induction, closed by `simp` + `omega`).
-- [ ] Chain to the threshold: with `q : Q` giving `1 <= Fintype.card Q`, derive
+- [x] Chain to the threshold: with `q : Q` giving `1 <= Fintype.card Q`, derive
       `dBack φ + dFwd φ <= Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card` via `k <= 2 ^ k`
       (`Nat.lt_two_pow_self`) and `Nat.le_mul_of_pos_left`, then rewrite by `card_prodState` to
       reach `tShort Q φ` and consume `paramsOkK3`'s second conjunct
       `2 * tShort Q φ + tIdle pend + 2 <= Tc`.
-- [ ] Derive the `Tn` form from `paramsOkK3`'s first conjunct `Tc + 2 * ell0 Q φ <= Tn + 1`
+- [x] Derive the `Tn` form from `paramsOkK3`'s first conjunct `Tc + 2 * ell0 Q φ <= Tn + 1`
       together with `1 <= tIdle pend` (`tIdle` is a card plus one), which leaves the needed slack
       of two above `2 * tShort`.
-- [ ] Add `#print axioms` lines for every declaration in the probe and confirm no `sorryAx`.
-- [ ] If the pure-syntax bound genuinely cannot be proved as written: mark this phase `[BLOCKED]`,
+- [x] Add `#print axioms` lines for every declaration in the probe and confirm no `sorryAx`.
+- [ ] If the pure-syntax bound genuinely cannot be proved as written: mark this phase `[BLOCKED]`, *(not triggered: the bound compiled)*
       record what was tried and the goal state reached, and STOP. Do not substitute a
       fixpoint-parameter-only (`Tcof`/`Tnof`) discharge -- it reduces to the same inequality
       through `Tcof`'s own `max` arm and buys nothing -- and do not weaken the schema's parameter
@@ -226,7 +226,7 @@ proceeding to Phase 2.
 
 ---
 
-### Phase 2: Land the two threshold discharges in the library [NOT STARTED]
+### Phase 2: Land the two threshold discharges in the library [COMPLETED]
 
 **Goal**: Move Phase 1's compiled content into the library at its correct sites, so that `ParamsOk`
 supplies `hTc` and `hTn` of `cellAt_const_of_kappa_eq_stepFrag` for every consumer, not only inside
@@ -234,22 +234,22 @@ a probe.
 
 **Tasks**:
 
-- [ ] Add `dBack_add_dFwd_le_closure_card` (and whatever helper lemmas Phase 1 proved it needs) to
+- [x] Add `dBack_add_dFwd_le_closure_card` (and whatever helper lemmas Phase 1 proved it needs) to
       `FormalSystem/Metalogic/Decidability/RaySummary/CounterQuotient.lean`, immediately after
       `dFwd`'s definition -- the site where both depths and `plusSubformulaClosure` are already in
       scope and where no new import is required.
-- [ ] Add `paramsOk_two_depth_sum_le_Tc` and `paramsOk_two_depth_sum_le_Tn` to
+- [x] Add `paramsOk_two_depth_sum_le_Tc` and `paramsOk_two_depth_sum_le_Tn` to
       `FormalSystem/Metalogic/Decidability/RaySummary/LadderStepFrag.lean`, in the section that
       already consumes `ParamsOk` (alongside `Mrel.threshold_le_Tc` and `objHalfK1_of_paramsOk`).
       They are sited there, not in `CounterQuotient.lean`, because `card_prodState` lives in
       `LadderChain.lean`, which `CounterQuotient.lean` does not import.
-- [ ] Give each new declaration a docstring in the module's voice, stating what it buys and which
+- [x] Give each new declaration a docstring in the module's voice, stating what it buys and which
       `ParamsOk` conjunct it consumes. If a declaration earns a `docs/theorem-index.md` row, add the
       `Paper:` line in this phase (C15).
-- [ ] Recompute `LadderStepFrag.lean`'s `longFile` baseline if this phase's additions take it to
+- [x] Recompute `LadderStepFrag.lean`'s `longFile` baseline if this phase's additions take it to *(done: 1753 lines post-edit, baseline 1700 -> 1800)*
       1700 lines or more: `candidate = max(1500, (lines / 100) * 100 + 200)` from the POST-edit line
       count, and the declared value must be `candidate` or `candidate - 100`.
-- [ ] Run `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ` in the
+- [x] Run `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ` in the
       same commit as the Lean edits.
 
 **Timing**: 1.5 hours

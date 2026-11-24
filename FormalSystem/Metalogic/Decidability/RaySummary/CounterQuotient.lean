@@ -689,11 +689,195 @@ def dFwd : PlusFormula → ℕ
   | .snce α β => max (dFwd α) (dFwd β)
   | .stab α => dFwd α
 
+/-! ### The two exactness depths against the subformula closure
+
+`(K4)` reads the two exactness depths and `(K3)` reads the closure's cardinality through
+`tShort`, so a consumer that needs a threshold to dominate `dBack + dFwd` needs the two scales
+compared. They are, and the comparison is pure syntax: `dBack` counts `snce`-rooted closure
+members, `dFwd` counts `untl`-rooted ones, and no member is both. -/
+
+/-- A structural size on `PlusFormula`, used only to rule out a formula's own membership in a
+proper subformula's closure. `sizeOf` would serve, but its `atom` arm reads `Atom`'s own size and
+the arithmetic below is cleaner with a function whose arms are written here. -/
+def plusFsize : PlusFormula → ℕ
+  | .atom _ => 1
+  | .bot => 1
+  | .imp α β => plusFsize α + plusFsize β + 1
+  | .box α => plusFsize α + 1
+  | .untl α β => plusFsize α + plusFsize β + 1
+  | .snce α β => plusFsize α + plusFsize β + 1
+  | .stab α => plusFsize α + 1
+
+/-- **Size is monotone along `subformulas`.** The step `FormalSystem/PlusLanguage/Subformulas.lean`
+does not carry: it has `self_mem_subformulas`, the eight constructor-membership lemmas and
+`subformulas_trans`, but no size or no-self-containment lemma. -/
+theorem plusFsize_le_of_mem_subformulas {ψ φ : PlusFormula}
+    (h : ψ ∈ PlusFormula.subformulas φ) : plusFsize ψ ≤ plusFsize φ := by
+  induction φ with
+  | atom p => simp only [PlusFormula.subformulas, List.mem_singleton] at h; subst h; omega
+  | bot => simp only [PlusFormula.subformulas, List.mem_singleton] at h; subst h; omega
+  | box α ihα | stab α ihα =>
+    simp only [PlusFormula.subformulas, List.mem_cons] at h
+    rcases h with h | h
+    · subst h; omega
+    · have := ihα h; simp only [plusFsize]; omega
+  | imp α β ihα ihβ =>
+    simp only [PlusFormula.subformulas, List.mem_cons, List.mem_append] at h
+    rcases h with h | h | h
+    · subst h; omega
+    · have := ihα h; simp only [plusFsize]; omega
+    · have := ihβ h; simp only [plusFsize]; omega
+  | untl α β ihα ihβ | snce α β ihα ihβ =>
+    -- `subformulas` lists the SECOND component first in the `untl`/`snce` arms.
+    simp only [PlusFormula.subformulas, List.mem_cons, List.mem_append] at h
+    rcases h with h | h | h
+    · subst h; omega
+    · have := ihβ h; simp only [plusFsize]; omega
+    · have := ihα h; simp only [plusFsize]; omega
+
+/-- A closure is monotone along the subformula relation, read off `subformulas_trans`. -/
+theorem closure_subset_of_mem_subformulas {ψ φ : PlusFormula}
+    (h : ψ ∈ PlusFormula.subformulas φ) :
+    plusSubformulaClosure ψ ⊆ plusSubformulaClosure φ := fun χ hχ => by
+  simp only [plusSubformulaClosure, List.mem_toFinset] at hχ ⊢
+  exact PlusFormula.subformulas_trans hχ h
+
+/-- A strictly larger formula is in no proper subformula's closure. -/
+theorem not_mem_closure_of_plusFsize_lt {φ α : PlusFormula}
+    (h : plusFsize α < plusFsize φ) : φ ∉ plusSubformulaClosure α := fun hmem => by
+  simp only [plusSubformulaClosure, List.mem_toFinset] at hmem
+  exact absurd (plusFsize_le_of_mem_subformulas hmem) (by omega)
+
+/-- `snce`-rootedness, as a decidable `Bool`: the shape `dBack` counts. -/
+def isSnceRoot : PlusFormula → Bool
+  | .snce _ _ => true
+  | _ => false
+
+/-- `untl`-rootedness, as a decidable `Bool`: the shape `dFwd` counts. -/
+def isUntlRoot : PlusFormula → Bool
+  | .untl _ _ => true
+  | _ => false
+
+/-- The root count is monotone along the subformula relation, for any root predicate. -/
+theorem card_rootFilter_mono (p : PlusFormula → Bool) {α φ : PlusFormula}
+    (h : α ∈ PlusFormula.subformulas φ) :
+    ((plusSubformulaClosure α).filter (fun ψ => p ψ = true)).card ≤
+      ((plusSubformulaClosure φ).filter (fun ψ => p ψ = true)).card :=
+  Finset.card_le_card
+    (Finset.filter_subset_filter (fun ψ => p ψ = true) (closure_subset_of_mem_subformulas h))
+
+/-- **THE `+ 1` STEP, ONCE, FOR BOTH DEPTHS.** When the root itself carries the counted shape and
+lies in neither component's closure, both components' root counts embed in the root's with the
+root erased, so the larger of them plus one still fits. -/
+theorem card_rootFilter_succ (p : PlusFormula → Bool) {α β φ : PlusFormula} (a b : ℕ)
+    (hroot : p φ = true)
+    (hα : α ∈ PlusFormula.subformulas φ) (hβ : β ∈ PlusFormula.subformulas φ)
+    (hnα : φ ∉ plusSubformulaClosure α) (hnβ : φ ∉ plusSubformulaClosure β)
+    (ha : a ≤ ((plusSubformulaClosure α).filter (fun ψ => p ψ = true)).card)
+    (hb : b ≤ ((plusSubformulaClosure β).filter (fun ψ => p ψ = true)).card) :
+    max a b + 1 ≤ ((plusSubformulaClosure φ).filter (fun ψ => p ψ = true)).card := by
+  set S := (plusSubformulaClosure φ).filter (fun ψ => p ψ = true) with hS
+  have hmem : φ ∈ S := Finset.mem_filter.mpr ⟨self_mem_plusSubformulaClosure φ, hroot⟩
+  have emb : ∀ {γ : PlusFormula}, γ ∈ PlusFormula.subformulas φ →
+      φ ∉ plusSubformulaClosure γ →
+      ((plusSubformulaClosure γ).filter (fun ψ => p ψ = true)) ⊆ S.erase φ := by
+    intro γ hγ hnγ χ hχ
+    obtain ⟨hχ1, hχ2⟩ := Finset.mem_filter.mp hχ
+    refine Finset.mem_erase.mpr ⟨fun heq => hnγ (heq ▸ hχ1), ?_⟩
+    exact Finset.mem_filter.mpr ⟨closure_subset_of_mem_subformulas hγ hχ1, hχ2⟩
+  have cα := Finset.card_le_card (emb hα hnα)
+  have cβ := Finset.card_le_card (emb hβ hnβ)
+  rw [Finset.card_erase_of_mem hmem] at cα cβ
+  have hpos : 1 ≤ S.card := Finset.card_pos.mpr ⟨_, hmem⟩
+  omega
+
+/-- **The backward exactness depth is bounded by the `snce`-rooted closure members.** -/
+theorem dBack_le_card_snceRoot (φ : PlusFormula) :
+    dBack φ ≤ ((plusSubformulaClosure φ).filter (fun ψ => isSnceRoot ψ = true)).card := by
+  induction φ with
+  | atom p => simp [dBack]
+  | bot => simp [dBack]
+  | box α ihα =>
+    have := card_rootFilter_mono isSnceRoot (PlusFormula.box_inner_mem_subformulas α)
+    simp only [dBack]; omega
+  | stab α ihα =>
+    have := card_rootFilter_mono isSnceRoot (PlusFormula.stab_inner_mem_subformulas α)
+    simp only [dBack]; omega
+  | imp α β ihα ihβ =>
+    have ha := card_rootFilter_mono isSnceRoot (PlusFormula.imp_left_mem_subformulas α β)
+    have hb := card_rootFilter_mono isSnceRoot (PlusFormula.imp_right_mem_subformulas α β)
+    simp only [dBack]; omega
+  | untl α β ihα ihβ =>
+    have ha := card_rootFilter_mono isSnceRoot (PlusFormula.untl_right_mem_subformulas β α)
+    have hb := card_rootFilter_mono isSnceRoot (PlusFormula.untl_left_mem_subformulas β α)
+    simp only [dBack]; omega
+  | snce α β ihα ihβ =>
+    simp only [dBack]
+    exact card_rootFilter_succ isSnceRoot _ _ (by simp [isSnceRoot])
+      (PlusFormula.snce_right_mem_subformulas β α) (PlusFormula.snce_left_mem_subformulas β α)
+      (not_mem_closure_of_plusFsize_lt (by simp only [plusFsize]; omega))
+      (not_mem_closure_of_plusFsize_lt (by simp only [plusFsize]; omega)) ihα ihβ
+
+/-- **The forward exactness depth is bounded by the `untl`-rooted closure members.** The mirror of
+`dBack_le_card_snceRoot`, with the `+ 1` step at `untl` instead of `snce`. -/
+theorem dFwd_le_card_untlRoot (φ : PlusFormula) :
+    dFwd φ ≤ ((plusSubformulaClosure φ).filter (fun ψ => isUntlRoot ψ = true)).card := by
+  induction φ with
+  | atom p => simp [dFwd]
+  | bot => simp [dFwd]
+  | box α ihα =>
+    have := card_rootFilter_mono isUntlRoot (PlusFormula.box_inner_mem_subformulas α)
+    simp only [dFwd]; omega
+  | stab α ihα =>
+    have := card_rootFilter_mono isUntlRoot (PlusFormula.stab_inner_mem_subformulas α)
+    simp only [dFwd]; omega
+  | imp α β ihα ihβ =>
+    have ha := card_rootFilter_mono isUntlRoot (PlusFormula.imp_left_mem_subformulas α β)
+    have hb := card_rootFilter_mono isUntlRoot (PlusFormula.imp_right_mem_subformulas α β)
+    simp only [dFwd]; omega
+  | snce α β ihα ihβ =>
+    have ha := card_rootFilter_mono isUntlRoot (PlusFormula.snce_right_mem_subformulas β α)
+    have hb := card_rootFilter_mono isUntlRoot (PlusFormula.snce_left_mem_subformulas β α)
+    simp only [dFwd]; omega
+  | untl α β ihα ihβ =>
+    simp only [dFwd]
+    exact card_rootFilter_succ isUntlRoot _ _ (by simp [isUntlRoot])
+      (PlusFormula.untl_right_mem_subformulas β α) (PlusFormula.untl_left_mem_subformulas β α)
+      (not_mem_closure_of_plusFsize_lt (by simp only [plusFsize]; omega))
+      (not_mem_closure_of_plusFsize_lt (by simp only [plusFsize]; omega)) ihα ihβ
+
+/-- **THE TWO EXACTNESS DEPTHS SUM TO AT MOST THE CLOSURE'S CARDINALITY.** `(K4)`'s two depths and
+`(K3)`'s `tShort` are read on the same scale by this one inequality: `dBack` counts `snce`-rooted
+closure members, `dFwd` counts `untl`-rooted ones, and no closure member is both, so the two
+counts sit in disjoint parts of the closure. -/
+theorem dBack_add_dFwd_le_closure_card (φ : PlusFormula) :
+    dBack φ + dFwd φ ≤ (plusSubformulaClosure φ).card := by
+  classical
+  have h1 := dBack_le_card_snceRoot φ
+  have h2 := dFwd_le_card_untlRoot φ
+  have hsub : (plusSubformulaClosure φ).filter (fun ψ => isUntlRoot ψ = true) ⊆
+      (plusSubformulaClosure φ).filter (fun ψ => ¬ (isSnceRoot ψ = true)) := by
+    intro χ hχ
+    obtain ⟨hχ1, hχ2⟩ := Finset.mem_filter.mp hχ
+    refine Finset.mem_filter.mpr ⟨hχ1, ?_⟩
+    cases χ <;> simp_all [isSnceRoot, isUntlRoot]
+  have hc := Finset.card_le_card hsub
+  have hsplit :
+      ((plusSubformulaClosure φ).filter (fun ψ => isSnceRoot ψ = true)).card +
+        ((plusSubformulaClosure φ).filter (fun ψ => ¬ (isSnceRoot ψ = true))).card =
+          (plusSubformulaClosure φ).card :=
+    Finset.card_filter_add_card_filter_not (fun ψ => isSnceRoot ψ = true)
+  omega
+
 /-- **(K3)'s idle-run slack** `T_idle`: an idle run that revisits an idle object state repeats,
 so the slack is counted by the number of idle object states. An OVER-ESTIMATE of the quantity it
 names; (K3) is a lower bound on `T_c`, so the over-estimate strengthens the condition. -/
 def tIdle {Q : Type} [Fintype Q] (pend : Q → Bool) : ℕ :=
   (Finset.univ.filter (fun q : Q => pend q = false)).card + 1
+
+/-- `(K3)`'s idle-run slack is at least one: it is a cardinality plus one. -/
+theorem one_le_tIdle {Q : Type} [Fintype Q] (pend : Q → Bool) : 1 ≤ tIdle pend := by
+  simp [tIdle]
 
 /-- **(K3)'s short-region threshold** `T_short`: counted by the classes a short region can
 traverse. An OVER-ESTIMATE, entering a lower bound on `T_c`. -/

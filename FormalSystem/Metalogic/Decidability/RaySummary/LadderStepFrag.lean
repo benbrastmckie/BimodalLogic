@@ -185,7 +185,7 @@ stated in this module; every quantity named is a count, and no complexity bound 
 -- split: the row link, its induction scaffold and the path forth over it are one argument, and
 -- the scaffold's three closure clauses are read against `LnkRow`'s own unfolding in this file.
 -- The baseline is raised in place, one chunk at a time, and the linter checks it stays tight.
-set_option linter.style.longFile 1700
+set_option linter.style.longFile 1800
 
 open FormalSystem.Syntax FormalSystem.Semantics FormalSystem.PlusLanguage
 open FormalSystem.Metalogic.Decidability
@@ -1526,6 +1526,64 @@ theorem objHalfK1_of_paramsOk {Q : Type} [Fintype Q] {step : Q → Q → Bool} {
 
 end K1Bridge
 
+/-! ### The two owed thresholds, discharged from `ParamsOk`
+
+`Zrel`'s two countdown thresholds are `2 * (dBack φ + dFwd φ)`, and this module's own docstring
+records that nothing in the tree supplies them from `ParamsOk`.  They are supplied here, through
+`(K3)` alone.  The route is one piece of pure syntax plus two `(K3)` conjuncts:
+`dBack_add_dFwd_le_closure_card` (`CounterQuotient.lean`) bounds the depth sum by the closure's
+cardinality; `k ≤ 2 ^ k` and `1 ≤ card Q` carry that to the type-pigeonhole budget, which
+`card_prodState` reads as `tShort Q φ`; and `(K3)`'s `2 * tShort + tIdle + 2 ≤ Tc` then gives the
+`Tc` form, with `(K3)`'s ordering `Tc + 2 * ell0 ≤ Tn + 1` carrying it to `Tn`.
+
+These two lemmas are what make `cellAt_const_of_kappa_eq_stepFrag`'s threshold hypotheses
+discharegable at GENERIC parameters rather than only at the fixpoint's own outputs. -/
+
+section DepthThreshold
+
+/-- **THE DEPTH SUM SITS UNDER `(K3)`'s SHORT-REGION THRESHOLD.**  The bridge between `(K4)`'s
+scale (the two exactness depths) and `(K3)`'s (the product carrier's cardinality).  `Nonempty Q`
+is what makes `tShort` dominate the closure count rather than merely the closure count times
+zero. -/
+theorem dBack_add_dFwd_le_tShort {Q : Type} [Fintype Q] [Nonempty Q] (φ : PlusFormula) :
+    dBack φ + dFwd φ ≤ tShort Q φ := by
+  have hcard := dBack_add_dFwd_le_closure_card φ
+  have hpow : (plusSubformulaClosure φ).card ≤ 2 ^ (plusSubformulaClosure φ).card :=
+    Nat.le_of_lt Nat.lt_two_pow_self
+  have hmul : 2 ^ (plusSubformulaClosure φ).card ≤
+      Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card :=
+    Nat.le_mul_of_pos_left _ Fintype.card_pos
+  have hts : tShort Q φ = Fintype.card Q * 2 ^ (plusSubformulaClosure φ).card := by
+    rw [tShort, card_prodState]
+  omega
+
+/-- **THE FIRST OWED THRESHOLD, DISCHARGED FROM `ParamsOk`.**  `Zrel`'s countdown threshold
+`2 * (dBack φ + dFwd φ)` is at most `Tc` at every parameter tuple the conditions admit — not only
+at the fixpoint's own outputs.  Consumed conjunct: `(K3)`'s second, `2 * tShort + tIdle + 2 ≤ Tc`,
+with `tIdle + 2 ≥ 3` left as slack. -/
+theorem paramsOk_two_depth_sum_le_Tc {Q : Type} [Fintype Q] [Nonempty Q]
+    (step : Q → Q → Bool) (pend : Q → Bool) (lab : Q → Atom → Bool) (φ : PlusFormula)
+    (Tc Tn P B : ℕ) (hp : ParamsOk step pend lab φ Tc Tn P B) :
+    2 * (dBack φ + dFwd φ) ≤ Tc := by
+  obtain ⟨-, -, ⟨-, hK3b⟩, -⟩ := hp
+  have hts : dBack φ + dFwd φ ≤ tShort Q φ := dBack_add_dFwd_le_tShort φ
+  have hti : 1 ≤ tIdle pend := one_le_tIdle pend
+  omega
+
+/-- **THE SECOND OWED THRESHOLD, DISCHARGED FROM `ParamsOk`.**  The register threshold, the mirror
+of the countdown one.  Consumed conjuncts: `(K3)`'s ordering `Tc + 2 * ell0 ≤ Tn + 1` on top of
+`(K3)`'s second, whose own `tIdle pend + 2 ≥ 3` of slack under `Tc` is exactly what pays for the
+`+ 1` the ordering gives away. -/
+theorem paramsOk_two_depth_sum_le_Tn {Q : Type} [Fintype Q] [Nonempty Q]
+    (step : Q → Q → Bool) (pend : Q → Bool) (lab : Q → Atom → Bool) (φ : PlusFormula)
+    (Tc Tn P B : ℕ) (hp : ParamsOk step pend lab φ Tc Tn P B) :
+    2 * (dBack φ + dFwd φ) ≤ Tn := by
+  obtain ⟨-, -, ⟨hK3a, hK3b⟩, -⟩ := hp
+  have hts : dBack φ + dFwd φ ≤ tShort Q φ := dBack_add_dFwd_le_tShort φ
+  have hti : 1 ≤ tIdle pend := one_le_tIdle pend
+  omega
+
+end DepthThreshold
 /-! ### Count move 1: lengthen a region, with the register offset STATED
 
 The first of the three count moves.  The existing splice layer
