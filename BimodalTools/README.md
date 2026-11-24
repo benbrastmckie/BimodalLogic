@@ -397,6 +397,7 @@ implementation obligation and stays where it is.
 | `ForwardProofGenerator.lean` | 354 | <!-- TODO: add description --> |
 | `InterestingnessMetrics.lean` | 576 | <!-- TODO: add description --> |
 | `JsonParse.lean` | 268 | The tag-format JSON parser: `PState`, the scalar and skip primitives, and `pFormula`; now serving the tableau bridge ONLY — the certificate envelope moved to the verified codec in `CanonicalWire/` |
+| `LeanSourceEmit.lean` | 402 | <!-- TODO: add description --> |
 | `MachineAppendixMain.lean` | 458 | <!-- TODO: add description --> |
 | `PrefilterSoundness.lean` | 172 | <!-- TODO: add description --> |
 | `ProofExtractorMain.lean` | 1,533 | <!-- TODO: add description --> |

@@ -18,6 +18,7 @@ import BimodalTools.FormulaEnumerator
 import BimodalTools.ForwardProofGenerator
 import BimodalTools.InterestingnessMetrics
 import BimodalTools.JsonParse
+import BimodalTools.LeanSourceEmit
 import BimodalTools.PrefilterSoundness
 import BimodalTools.ProofFirstBenchmark
 import BimodalTools.ProofFirstGenerator

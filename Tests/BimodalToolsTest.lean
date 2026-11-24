@@ -9,6 +9,7 @@ import BimodalToolsTest.CanonicalWireTest
 import BimodalToolsTest.CertificateImportTest
 import BimodalToolsTest.DatasetGeneratorTest
 import BimodalToolsTest.InterestingnessTest
+import BimodalToolsTest.LeanSourceEmitTest
 import BimodalToolsTest.TraceCertificateTest
 import BimodalToolsTest.TraceExportTest
 import BimodalToolsTest.TraceExporterE2ETest
