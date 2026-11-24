@@ -1,0 +1,34 @@
+{
+  "status": "researched",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/991_depth_zero_gate_verdict/reports/01_depth-zero-gate-verdict.md",
+      "summary": "Verdict-first depth-0 gate research: neither lifting event is deliverable and the recorded crux is mis-narrowed; four compiled measurements show the collision space is kappa-segregated into two halves (only one discharged), every compiled separating family is stab-rooted so no depth-0 refutation candidate exists, and the landed step-fragment bridge is short by exactly one (K4) token plus two owed thresholds."
+    },
+    {
+      "type": "other",
+      "path": "specs/991_depth_zero_gate_verdict/probe-draft/ordinary-window-regime.lean",
+      "summary": "Task-local draft probe, compiled sorryAx-free (exit 0): kappa_ne_of_regime_cross, regN fixture + regN_isLadderPath, ordinary_window_collision_nonvacuous, diaF_not_stabFree, stab_not_stabFree, paramsOkK4_one_short_of_Zrel_forward_arm."
+    }
+  ],
+  "user_decision": {
+    "question": "The depth-0 gate's recorded crux (is ForwardSlackWitnessed satisfiable at a positive amount) is measurably insufficient to lift the gate: it is one of four independent hypothesis deficits, and the refutation direction has no depth-0 candidate because every compiled separating family carries a stab letter. Which route should own the gate next?",
+    "options": [
+      "Enter the step-fragment bridge - repair paramsOkK4's forward conjunct to 2*dFwd+2 <= B, discharge 2*(dBack+dFwd) <= Tcof/Tnof, and land the depth-0 schema restricted to StepFrag, then re-site the roadmap's Stage 0 crux on the residue (stab-free formulas with an unbounded U/S jump)",
+      "Enter the ordinary window regime c <= n + 1 - land the downward cell inclusion that no declaration in the tree provides, as the missing half of the kappa-segregated collision space",
+      "Continue on ForwardSlackWitnessed (a general multi-type-cell discharge at the consumer shape), accepting that success leaves the gate unlifted",
+      "Leave the gate unowned and re-state the ladder realization theorem against an undecided gate"
+    ],
+    "recommended": "Enter the step-fragment bridge - repair paramsOkK4's forward conjunct to 2*dFwd+2 <= B, discharge 2*(dBack+dFwd) <= Tcof/Tnof, and land the depth-0 schema restricted to StepFrag, then re-site the roadmap's Stage 0 crux on the residue (stab-free formulas with an unbounded U/S jump)",
+    "blocking": true,
+    "obligation": "Discharge the four numeric hypotheses of Zrel_of_kappa_eq (specs/evidence/seam-gluing-ray-product/ladder-step-fragment-gap-depth.lean:731) from ParamsOk, so that cellAt_const_of_kappa_eq_stepFrag (:754) yields CellLEZeroConstOfKappaEq restricted to StepFrag phi as a sorryAx-free theorem under its own name, leaving the reserved name cellLE_zero_const_of_kappa_eq unclaimed."
+  },
+  "metadata": {
+    "session_id": "sess_1795527603_539f56_991",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
