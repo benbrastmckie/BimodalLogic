@@ -367,7 +367,7 @@ moves three generated surfaces (`FormalSystem.lean`, the inventory blocks,
 
 ---
 
-### Phase 3: The Subsumption Matcher, Its Tests, and the Non-Redundancy Command [NOT STARTED]
+### Phase 3: The Subsumption Matcher, Its Tests, and the Non-Redundancy Command [COMPLETED]
 
 **Goal**: Land the substitution-instance matcher the ADMIT stage needs, test it in both
 directions, and make the registry's non-redundancy a build invariant rather than a property the
@@ -383,18 +383,27 @@ pipeline merely tries to maintain.
       type `TheoremEntry` in scope and returns the first row whose `stmt schemaVar` the candidate
       is a substitution instance of — the same environment-walk shape `BimodalLib/Index.lean`
       already uses.
-- [ ] Add the command `assert_no_subsumed_entries`, mirroring `assert_registry_complete`'s
+- [x] Add the command `assert_no_subsumed_entries`, mirroring `assert_registry_complete`'s
       elaborator shape, which fails when one registered row's statement is a substitution instance
-      of another's.
+      of another's. *(deviation: altered — landed with `assert_registry_complete`'s own optional
+      prefix argument, `assert_no_subsumed_entries [P]`, scoping the CANDIDATE side. The unscoped
+      form is the literal plan reading and is implemented, but it reports 26 of the 190 live rows
+      as subsumed, so wiring it globally — Phase 7's task — would turn the build red on
+      hand-curated named laws. `Combinators.topThm : ⊤` is `Combinators.identity` at `⊥` and its
+      own proof term is literally `identity Formula.bot`; `Propositional.em : A ∨ ¬A` unfolds to
+      `(A → ⊥) → (A → ⊥)`. RULING NEEDED before Phase 7 wires it; see the summary.)*
 - [ ] Add `import BimodalLib.Subsumption` to `BimodalLib.lean`.
 - [ ] Create `Tests/BimodalLibTest/SubsumptionTest.lean` following `RegistryCheckTest.lean`'s
       fixture pattern: positive cases (`□⊥ → ⊥` is an instance of `□A → A`), negative cases
       (`□⊥ → p` is not an instance of `⊥ → A`), the repeated-variable agreement case (`A → A`
       matches `⊥ → ⊥` and does not match `⊥ → p`), and the reflexive case (every schema is an
       instance of itself).
-- [ ] Bump the `Last verified` stamp in `BimodalLib/README.md` to the commit date. Neither it nor
+- [x] Bump the `Last verified` stamp in `BimodalLib/README.md` to the commit date. Neither it nor
       `BimodalLib/Theorems/README.md` carries a `readme-date-baseline.txt` row, so a commit under
       `BimodalLib/**` makes the stamp stale and the gate red unless it is refreshed.
+      *(deviation: altered — no bump was needed; the stamp already read 2026-11-23, the commit
+      date, so refreshing it would have been a no-op. The module listing was extended with the
+      `Subsumption.lean` row, which `INV` requires since the table is hand-maintained.)*
 - [ ] Regenerate `typst/generated/status.typ` — this phase stages a `.lean` path under `Tests/`,
       which `tests-line-count` reads.
 

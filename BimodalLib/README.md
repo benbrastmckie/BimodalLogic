@@ -21,6 +21,7 @@ in `scripts/check-module-invariants.sh` asserts it.
 | `Fragment.lean` | The operator families, the four fragments, and the profile of a formula (which primitive operators occur), for `Formula` and for `PlusFormula` |
 | `Registry.lean` | `TheoremEntry`, the kernel-checked row of a registered theorem, and `register_theorem` |
 | `Registry/` | `assert_registry_complete`, the registration check |
+| `Subsumption.lean` | `matchSubst?` and `isSubstInstance`: whether one statement is a substitution instance of another, and `assert_no_subsumed_entries`, the non-redundancy check (optionally scoped to a prefix) |
 | `Theorems/` | The registration lines, by `<Fragment>/<FrameClass>.lean`, and the module that runs the check |
 | `Pairing.lean` | `ReproofEntry` and `reprove X as Y := t` |
 | `Conjecture.lean` | `Conjecture`, a statement with a status and a note and no proof |

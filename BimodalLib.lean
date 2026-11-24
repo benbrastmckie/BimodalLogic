@@ -19,4 +19,5 @@ import BimodalLib.Pairing
 import BimodalLib.ProofFragment
 import BimodalLib.Registry
 import BimodalLib.Registry.Complete
+import BimodalLib.Subsumption
 import BimodalLib.Theorems.Complete

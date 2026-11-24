@@ -5,10 +5,10 @@
 //   scripts/typst-status-counts.sh
 //
 // Reproduces the SYNC-MAP.md Phase 1 ground-truth-counts methodology.
-// Stamped from live source at commit fb36574fa (2026-11-24).
+// Stamped from live source at commit dcee738eb (2026-11-24).
 // ============================================================================
 
-#let stamp-commit = "fb36574fa"
+#let stamp-commit = "dcee738eb"
 #let stamp-date = "2026-11-24"
 
 #let axiom-count = 20
@@ -31,8 +31,8 @@
 // no archived figure can be folded into a live one.
 #let formalsystem-file-count = 799
 #let formalsystem-line-count = 420126
-#let tests-file-count = 103
-#let tests-line-count = 30550
+#let tests-file-count = 104
+#let tests-line-count = 30741
 #let tools-file-count = 40
 #let tools-line-count = 18152
 
