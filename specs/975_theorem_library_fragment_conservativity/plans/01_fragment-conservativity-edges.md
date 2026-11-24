@@ -1,7 +1,7 @@
 # Implementation Plan: Task #975
 
 - **Task**: 975 - Theorem library: fragment conservativity (milestone M22, lane metatheory)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 17 hours
 - **Dependencies**: 971 (`theorem_library_layout_and_registry`, completed) for the generated table and the check on entries; none for the theorems
 - **Research Inputs**: specs/975_theorem_library_fragment_conservativity/reports/01_fragment-conservativity-edges.md
@@ -213,29 +213,29 @@ shape, never `lake exe runLinter --update`.
 Phases within the same wave can execute in parallel. Here each wave holds one phase; see the
 Sequencing decision.
 
-### Phase 1: Land the refutation of the temporal edge at the base class [NOT STARTED]
+### Phase 1: Land the refutation of the temporal edge at the base class [COMPLETED]
 
 **Goal**: `not_conservativeEdge_temporal_base` in `BimodalLib`, with the order semantics, cell
 soundness and the countermodel it rests on.
 
 **Tasks**:
-- [ ] Create `BimodalLib/Conservativity/TemporalBase.lean` from
+- [x] Create `BimodalLib/Conservativity/TemporalBase.lean` from
   `specs/975_theorem_library_fragment_conservativity/scratch/refute_temporal_base.lean`. The
   promotion is not verbatim: move from `namespace Scratch` to `BimodalLib`; rename the `Z_Q`
   abbreviation to `ZQ` (C26); rename the final theorem to `not_conservativeEdge_temporal_base`;
   replace any `show` used for a definitional equality by a named `rfl` lemma; replace
   `import Mathlib.Tactic` by the specific imports needed if the build accepts it.
-- [ ] Add the copyright header and a module docstring stating: what `LTruth` is, that `□` is read
+- [x] Add the copyright header and a module docstring stating: what `LTruth` is, that `□` is read
   as the identity and why that is harmless inside the cell, the witness NF and where TM derives
   it, and that the temporal cell at `.Base` is sound for every serial linear order while TM at
   `.Base` is not.
-- [ ] Add a docstring to every declaration.
-- [ ] Add the import to `BimodalLib.lean`.
-- [ ] `lake build BimodalLib --wfail`.
-- [ ] Confirm `#print axioms BimodalLib.not_conservativeEdge_temporal_base` gives
+- [x] Add a docstring to every declaration.
+- [x] Add the import to `BimodalLib.lean`.
+- [x] `lake build BimodalLib --wfail`.
+- [x] Confirm `#print axioms BimodalLib.not_conservativeEdge_temporal_base` gives
   `propext, Classical.choice, Quot.sound` (run from a scratch file under the task directory, not
   left in the module).
-- [ ] Confirm the module contains no `sorry`, `axiom` or `native_decide`.
+- [x] Confirm the module contains no `sorry`, `axiom` or `native_decide`.
 
 **Timing**: 1.5 hours
 

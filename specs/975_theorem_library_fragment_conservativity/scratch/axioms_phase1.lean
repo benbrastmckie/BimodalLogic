@@ -1,0 +1,2 @@
+import BimodalLib
+#print axioms BimodalLib.not_conservativeEdge_temporal_base
