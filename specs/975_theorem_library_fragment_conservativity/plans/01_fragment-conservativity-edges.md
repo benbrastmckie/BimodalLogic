@@ -576,36 +576,36 @@ refutation or an obstruction; conjecture statuses brought in line.
 
 ---
 
-### Phase 8: Proof fragments of the registered theorems [IN PROGRESS]
+### Phase 8: Proof fragments of the registered theorems [COMPLETED]
 
 **Goal**: The index lists every registered theorem whose reference proof leaves its statement
 cell, each with a reason, and the library fails to build when a listed entry has none.
 
 **Tasks**:
-- [ ] In `BimodalLib/Index.lean` (or a new `BimodalLib/ProofFragment.lean` if the addition
+- [x] In `BimodalLib/Index.lean` (or a new `BimodalLib/ProofFragment.lean` if the addition
   exceeds about 150 lines): for each registry row, compute `proofProfile` of the registered
   derivation at the row's own frame class and at the schema-variable assignment, by evaluating
   the term inside the command.
-- [ ] Measure first: print the rows whose proof profile is not included in the statement profile,
-  by fragment and class. Record the count in the phase notes before writing any reason.
-- [ ] Add a command recording a reason for a named registered theorem (a string constant keyed
+- [x] Measure first: print the rows whose proof profile is not included in the statement profile,
+  by fragment and class. Record the count in the phase notes before writing any reason. *(measured: 3 of 190 rows, all `TemporalBoolean` at `Base`: `discretePropagateBwd`, `discreteSymmBwd`, `discreteSymmFwd`; evaluation succeeded on every row, in about ten seconds)*
+- [x] Add a command recording a reason for a named registered theorem (a string constant keyed
   by the row), and a check command, on the pattern of `assert_registry_complete`, that fails
   when a listed row has neither a proved edge in the Phase 7 registry for its statement cell and
   class nor a recorded reason. A proved edge supplies the reason "the proof can be lowered" with
-  the edge theorem's name.
-- [ ] Record reasons for the listed rows no proved edge covers: for `TemporalBoolean` at `Base`,
+  the edge theorem's name. *(deviation: altered — the check also fails on a reason recorded for a proof that stays inside its cell; `ConservativityEdge` gains a `cell` field so that a proved edge is matched to a statement cell by the row itself)*
+- [x] Record reasons for the listed rows no proved edge covers: for `TemporalBoolean` at `Base`,
   that the edge is refuted and, for NF, NA, NP and what is derived from them, that the proof
   cannot be lowered; for the other three classes, that lowering depends on the registered
-  conjecture, named.
-- [ ] Render the listing as a section of the index; run the check from
+  conjecture, named. *(deviation: altered — only the three `Base` rows are listed, so no reason is recorded at the other classes; the recorded reason says the edge is refuted by NF and that lowering of NP and NA themselves is not settled, since only NF is machine-checked as underivable in the cell)*
+- [x] Render the listing as a section of the index; run the check from
   `BimodalLib/Theorems/Complete.lean` (or beside it) so that `lake build BimodalLib` enforces it.
-- [ ] Add `Tests/BimodalLibTest/ProofFragmentTest.lean` with a fixture row that has a proof
+- [x] Add `Tests/BimodalLibTest/ProofFragmentTest.lean` with a fixture row that has a proof
   outside its cell and no reason, asserting the check fails on it; import it.
-- [ ] **Contingency.** If evaluation fails for some rows (a `noncomputable` derivation, a
+- [x] **Contingency.** If evaluation fails for some rows (a `noncomputable` derivation, a
   timeout): list each such row as "proof profile not computed" and subject it to the same
   check. If evaluation fails for all rows, fall back to kernel reduction with `decide` on
-  `proofProfile d ≤ c` for the closed rows, and record what could not be computed.
-- [ ] `lake build BimodalLib BimodalLibTest --wfail`; `bash scripts/library-index.sh`; stage
+  `proofProfile d ≤ c` for the closed rows, and record what could not be computed. *(deviation: skipped — evaluation succeeded on all rows; the "not computed" path exists in the code and is covered by a unit check)*
+- [x] `lake build BimodalLib BimodalLibTest --wfail`; `bash scripts/library-index.sh`; stage
   `BimodalLib/INDEX.md`.
 
 **Timing**: 2 hours

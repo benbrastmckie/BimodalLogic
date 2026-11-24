@@ -8,4 +8,5 @@ import BimodalLibTest.EdgeTableTest
 import BimodalLibTest.FragmentTest
 import BimodalLibTest.IndexTest
 import BimodalLibTest.PairingTest
+import BimodalLibTest.ProofFragmentTest
 import BimodalLibTest.RegistryCheckTest

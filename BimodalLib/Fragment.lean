@@ -111,6 +111,12 @@ def Profile.opsName (p : Profile) : String :=
   | false, true => "⊡"
   | true, true => "□, ⊡"
 
+/-- The operators of a profile, as text: the name of a cell. -/
+def Profile.cellName (p : Profile) : String :=
+  let ops := (if p.box then ["□"] else []) ++ (if p.stab then ["⊡"] else [])
+    ++ (if p.temporal then ["U, S"] else [])
+  if ops.isEmpty then "no operator" else ", ".intercalate ops
+
 /-- The profile of a formula of the base language. -/
 def profileF : Formula → Profile
   | .atom _ => {}

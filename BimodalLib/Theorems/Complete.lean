@@ -12,6 +12,7 @@ import BimodalLib.Theorems.TemporalBoolean.Base
 import BimodalLib.Theorems.TemporalBoolean.Dense
 import BimodalLib.Theorems.TemporalBoolean.RTime
 import BimodalLib.Theorems.TemporalBoolean.ZTime
+import BimodalLib.ProofFragment
 import BimodalLib.Registry.Complete
 
 /-!
@@ -21,6 +22,12 @@ This module runs the registration check over the published library. It imports t
 `FormalSystem`, so that every module under `FormalSystem/Theorems/` is in scope, and every
 registration module. It fails to build when a closed derivation declared under
 `FormalSystem/Theorems/`, outside its `ProofMode/` directory, has no `register_theorem` line.
+
+It then runs the proof-fragment check: the module fails to build when a registered theorem whose
+reference proof leaves the cell of its statement has neither a proved conservativity edge out of
+that cell nor a reason recorded with `record_proof_fragment`.
 -/
 
 assert_registry_complete
+
+assert_proof_fragments_recorded

@@ -14,6 +14,7 @@ import BimodalLib.Conservativity.TemporalBase
 import BimodalLib.Fragment
 import BimodalLib.Index
 import BimodalLib.Pairing
+import BimodalLib.ProofFragment
 import BimodalLib.Registry
 import BimodalLib.Registry.Complete
 import BimodalLib.Theorems.Complete

@@ -7,6 +7,7 @@ Authors: Benjamin Brast-McKie
 import BimodalLib.Conjecture
 import BimodalLib.Conservativity.Table
 import BimodalLib.Pairing
+import BimodalLib.ProofFragment
 import BimodalLib.Registry.Complete
 
 /-!
@@ -14,9 +15,9 @@ import BimodalLib.Registry.Complete
 
 `library_index` renders, in Markdown, every theorem row, pairing row, conservativity edge and
 conjecture in the environment: theorems by fragment and frame class, second proofs by statement,
-conservativity edges with their verdict, conjectures with their status and note, and, for each
-pair of dual operators, the rows that state a law for the universal operator and declare no
-dual.
+conservativity edges with their verdict, the theorems whose reference proof leaves the cell of
+their statement, conjectures with their status and note, and, for each pair of dual operators,
+the rows that state a law for the universal operator and declare no dual.
 
 The index is a report. It reads the kernel-checked rows and adds nothing to them: the fragment
 and frame class it prints are those of the rows, and the statement it prints is the type of
@@ -393,7 +394,8 @@ def renderIndex : MetaM String := do
     library; do not edit. Regenerate it with that script after registering a theorem, a \
     second proof, a conservativity edge or a conjecture.\n\n" ++ renderTheorems rows ++ "\n"
     ++ (← renderReproofs)
-    ++ "\n" ++ (← renderEdges) ++ "\n" ++ (← renderConjectures) ++ "\n" ++ renderDuals rows
+    ++ "\n" ++ (← renderEdges) ++ "\n" ++ (← renderProofFragments) ++ "\n"
+    ++ (← renderConjectures) ++ "\n" ++ renderDuals rows
 
 /-- `library_index` prints the index of the library, in Markdown, to standard output.
 `library_index to "path"` writes it to a file instead. The index covers the theorem rows,

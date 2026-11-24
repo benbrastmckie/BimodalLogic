@@ -277,6 +277,16 @@ What stands in the way of each open edge.
 - `BimodalLib.Conjectures.temporalBooleanIntoTMRTime`: The translation that proves this edge reads □ as `always`. It needs the S5 laws of `always`, the law `always φ → always Gφ` and replacement of provable equivalents, each derived inside the temporal cell at this class. None is derived in the tree. No completeness theorem is needed.
 - `BimodalLib.Conjectures.temporalBooleanUniformIntoTMBase`: As for the other temporal edges, with one more step: the translation of the axiom `X⊤ → □X⊤` is `X⊤ → always X⊤`, which the temporal cell at the base class does not derive, so it is taken as a hypothesis. Whether that hypothesis is enough is not known.
 
+## Proofs outside the statement cell
+
+3 of the 190 registered theorems have a reference proof that derives a formula outside the cell of the statement. The cell of a statement is the set of its operators; the proof profile is the set of operators of every formula the registered derivation derives, computed at the row's own frame class. Each listed row has a reason: a proved conservativity edge, by which the proof can be lowered into the cell, or a reason recorded with `record_proof_fragment`.
+
+| Declaration | Frame class | Statement cell | Proof profile | Reason |
+|---|---|---|---|---|
+| `FormalSystem.Theorems.ConnectDerived.discretePropagateBwd` | Base | U, S | □, U, S | The derivation routes through NF, X⊤ → G X⊤, which the full system derives through □ (NB, MF and T). The edge out of the temporal cell at the base class is refuted, by NF (BimodalLib.not_conservativeEdge_temporal_base), so no edge theorem lowers this proof. Whether this statement has a derivation within the temporal cell is not settled; the repaired edge BimodalLib.Conjectures.temporalBooleanUniformIntoTMBase would give one from the uniformity of discreteness as a hypothesis. |
+| `FormalSystem.Theorems.ConnectDerived.discreteSymmBwd` | Base | U, S | □, U, S | The derivation routes through NF, X⊤ → G X⊤, which the full system derives through □ (NB, MF and T). The edge out of the temporal cell at the base class is refuted, by NF (BimodalLib.not_conservativeEdge_temporal_base), so no edge theorem lowers this proof. Whether this statement has a derivation within the temporal cell is not settled; the repaired edge BimodalLib.Conjectures.temporalBooleanUniformIntoTMBase would give one from the uniformity of discreteness as a hypothesis. |
+| `FormalSystem.Theorems.ConnectDerived.discreteSymmFwd` | Base | U, S | □, U, S | The derivation routes through NF, X⊤ → G X⊤, which the full system derives through □ (NB, MF and T). The edge out of the temporal cell at the base class is refuted, by NF (BimodalLib.not_conservativeEdge_temporal_base), so no edge theorem lowers this proof. Whether this statement has a derivation within the temporal cell is not settled; the repaired edge BimodalLib.Conjectures.temporalBooleanUniformIntoTMBase would give one from the uniformity of discreteness as a hypothesis. |
+
 ## Conjectures
 
 10 registered conjectures. A conjecture is a statement with no proof; none is a result.

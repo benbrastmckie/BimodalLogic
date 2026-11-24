@@ -16,6 +16,7 @@ import FormalSystem.Theorems.Perpetuity.MonotonicityDuality
 import FormalSystem.Theorems.Perpetuity.Principles
 import FormalSystem.Theorems.Propositional.Core
 import FormalSystem.Theorems.TemporalDerived
+import BimodalLib.ProofFragment
 import BimodalLib.Registry
 
 /-!
@@ -27,6 +28,11 @@ a temporal operator and no modal one, derivable at every frame class.
 Each line registers one declaration by reference; the row is built from the type of the
 declaration, and the fragment and frame class it is filed under here are the ones the row
 computes. Lines are grouped by the module that declares the derivation.
+
+Three rows have a reference proof that passes through `□`: NP, its time reflection, and NA. Each
+is derived from NF, `X⊤ → G X⊤`, which the full system obtains from `X⊤ → □X⊤`. A
+`record_proof_fragment` line after the registration records that, because no conservativity edge
+lowers a proof into the temporal cell at the base class: that edge is refuted, by NF itself.
 -/
 
 -- Declared in `FormalSystem.Theorems.Combinators`.
@@ -37,8 +43,29 @@ register_theorem FormalSystem.ProofSystem.DerivedAxioms.linearUntilLegacy
 register_theorem FormalSystem.Theorems.ConnectDerived.connectFuture
 register_theorem FormalSystem.Theorems.ConnectDerived.connectPast
 register_theorem FormalSystem.Theorems.ConnectDerived.discretePropagateBwd
+record_proof_fragment FormalSystem.Theorems.ConnectDerived.discretePropagateBwd
+  "The derivation routes through NF, X⊤ → G X⊤, which the full system derives through □ \
+  (NB, MF and T). The edge out of the temporal cell at the base class is refuted, by NF \
+  (BimodalLib.not_conservativeEdge_temporal_base), so no edge theorem lowers this proof. \
+  Whether this statement has a derivation within the temporal cell is not settled; the \
+  repaired edge BimodalLib.Conjectures.temporalBooleanUniformIntoTMBase would give one from \
+  the uniformity of discreteness as a hypothesis."
 register_theorem FormalSystem.Theorems.ConnectDerived.discreteSymmBwd
+record_proof_fragment FormalSystem.Theorems.ConnectDerived.discreteSymmBwd
+  "The derivation routes through NF, X⊤ → G X⊤, which the full system derives through □ \
+  (NB, MF and T). The edge out of the temporal cell at the base class is refuted, by NF \
+  (BimodalLib.not_conservativeEdge_temporal_base), so no edge theorem lowers this proof. \
+  Whether this statement has a derivation within the temporal cell is not settled; the \
+  repaired edge BimodalLib.Conjectures.temporalBooleanUniformIntoTMBase would give one from \
+  the uniformity of discreteness as a hypothesis."
 register_theorem FormalSystem.Theorems.ConnectDerived.discreteSymmFwd
+record_proof_fragment FormalSystem.Theorems.ConnectDerived.discreteSymmFwd
+  "The derivation routes through NF, X⊤ → G X⊤, which the full system derives through □ \
+  (NB, MF and T). The edge out of the temporal cell at the base class is refuted, by NF \
+  (BimodalLib.not_conservativeEdge_temporal_base), so no edge theorem lowers this proof. \
+  Whether this statement has a derivation within the temporal cell is not settled; the \
+  repaired edge BimodalLib.Conjectures.temporalBooleanUniformIntoTMBase would give one from \
+  the uniformity of discreteness as a hypothesis."
 register_theorem FormalSystem.Theorems.ConnectDerived.fHImp
 register_theorem FormalSystem.Theorems.ConnectDerived.untlBotFalseThm
 

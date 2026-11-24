@@ -48,6 +48,10 @@ structure ConservativityEdge where
   larger : String
   /-- The frame class of the edge, where it is stated at one. -/
   frameClass : Option FrameClass
+  /-- The cell, when the statement is that the full base system is conservative over it at the
+  row's frame class, or at every class when the row names none. A proof of such an edge lowers
+  every derivation of a formula of the cell into the cell. -/
+  cell : Option Profile := none
   /-- The statement of the edge. -/
   statement : Prop
   /-- What is known of the statement. -/
@@ -108,6 +112,7 @@ def booleanIntoTM : ConservativityEdge where
   smaller := "Boolean"
   larger := "ModalTemporalBoolean, the base system"
   frameClass := none
+  cell := some {}
   statement := ∀ fc : FrameClass, ConservativeEdge {} fc
   verdict := .proved conservativeEdge_boolean
   reference := "BimodalLib.conservativeEdge_boolean"
@@ -118,6 +123,7 @@ def modalBooleanIntoTM : ConservativityEdge where
   smaller := "ModalBoolean, □"
   larger := "ModalTemporalBoolean, the base system"
   frameClass := none
+  cell := some { box := true }
   statement := ∀ fc : FrameClass, ConservativeEdge { box := true } fc
   verdict := .proved conservativeEdge_box
   reference := "BimodalLib.conservativeEdge_box"
@@ -140,6 +146,7 @@ def temporalBooleanIntoTMBase : ConservativityEdge where
   smaller := "TemporalBoolean"
   larger := "ModalTemporalBoolean, the base system"
   frameClass := some .Base
+  cell := some { temporal := true }
   statement := ConservativeEdge { temporal := true } .Base
   verdict := .refuted not_conservativeEdge_temporal_base
   reference := "BimodalLib.not_conservativeEdge_temporal_base"
@@ -157,6 +164,7 @@ def temporalBooleanIntoTMDense : ConservativityEdge where
   smaller := "TemporalBoolean"
   larger := "ModalTemporalBoolean, the base system"
   frameClass := some .Dense
+  cell := some { temporal := true }
   statement := ConservativeEdge { temporal := true } .Dense
   verdict := .open temporalObstruction
   reference := "BimodalLib.Conjectures.temporalBooleanIntoTMDense"
@@ -167,6 +175,7 @@ def temporalBooleanIntoTMZTime : ConservativityEdge where
   smaller := "TemporalBoolean"
   larger := "ModalTemporalBoolean, the base system"
   frameClass := some .ZTime
+  cell := some { temporal := true }
   statement := ConservativeEdge { temporal := true } .ZTime
   verdict := .open temporalObstruction
   reference := "BimodalLib.Conjectures.temporalBooleanIntoTMZTime"
@@ -177,6 +186,7 @@ def temporalBooleanIntoTMRTime : ConservativityEdge where
   smaller := "TemporalBoolean"
   larger := "ModalTemporalBoolean, the base system"
   frameClass := some .RTime
+  cell := some { temporal := true }
   statement := ConservativeEdge { temporal := true } .RTime
   verdict := .open temporalObstruction
   reference := "BimodalLib.Conjectures.temporalBooleanIntoTMRTime"
