@@ -78,12 +78,40 @@ The threshold-carrying relation is landed beside it, with NO verdict on it eithe
    `N(a, b) ≥ T(a, b−1)` and `N(a, b) − 1 ≥ G⁺(a−1, b)`, whose solution is `G⁺ = 2 a`,
    `G⁻ = 2 b + 2`, `T = N = 2 (a + b)`. The relation is indexed by TWO budgets deliberately: a
    single budget `a + b` gives a gap clip of `2 (dBack + dFwd)` but hides that the two arms
-   differ — `2 * dBack` against `2 * dFwd + 2` — an asymmetry `paramsOkK4`'s clip
-   `max (2 dBack + 1) (2 dFwd + 1) 2` does not carry.
-3. **OWED, NOT DISCHARGED.** Wherever the system is instantiated at a formula, the thresholds
-   `2 * (dBack φ + dFwd φ) ≤ Tc` and `2 * (dBack φ + dFwd φ) ≤ Tn` arrive as EXPLICIT HYPOTHESES.
-   That they lie below `Tcof` and `Tnof` is plausible and is compiled nowhere; nothing in this
-   module asserts it.
+   differ — `2 * dBack` against `2 * dFwd + 2`. `paramsOkK4`'s clip now CARRIES that asymmetry:
+   its forward conjunct reads `2 * dFwd φ + 2 ≤ B` and `Bof`'s middle arm matches, so `(K4)` and
+   the derived relation ask for the same forward gap. The clip read `2 * dFwd φ + 1` until the
+   measurement in `specs/evidence/seam-gluing-ray-product/ladder-step-fragment-gap-depth.lean`
+   (`BofPre_sigC` against `Bof_sigC`) showed it one short; `paramsOkK4Pre` and `ParamsOkPre`
+   (`CounterQuotient.lean`) are the frozen record of the shorter conjunct, carried for the
+   refutation records whose written clip the repaired `(K4)` rejects.
+3. **DISCHARGED.** The thresholds `2 * (dBack φ + dFwd φ) ≤ Tc` and `≤ Tn` are supplied from
+   `ParamsOk` by `paramsOk_two_depth_sum_le_Tc` and `paramsOk_two_depth_sum_le_Tn` in this module,
+   at GENERIC parameters and not only at `Tcof`/`Tnof`. The route is `(K3)` alone: the pure-syntax
+   bound `dBack_add_dFwd_le_closure_card` (`CounterQuotient.lean`) puts the depth sum under the
+   closure's cardinality, `k ≤ 2 ^ k` and `1 ≤ card Q` carry it to the type-pigeonhole budget,
+   `card_prodState` reads that as `tShort Q φ`, and `(K3)`'s own two conjuncts finish. Both
+   hypotheses still APPEAR as explicit binders on `Zrel_of_kappa_eq` and
+   `cellAt_const_of_kappa_eq_stepFrag`, which is what keeps those two free of the parameter layer;
+   what has changed is that a `ParamsOk` consumer can now discharge them.
+
+## Where the reserved depth-`0` schema stands
+
+`LadderAgree.lean`'s `CellLEZeroConstOfKappaEq` is DISCHARGED ON THIS FRAGMENT, by
+`cellLE_zero_const_of_kappa_eq_stepFrag` below: `StepFrag φ` as the single added hypothesis, from
+`ParamsOk` itself, at generic parameters, `sorryAx`-free. The reserved name
+`cellLE_zero_const_of_kappa_eq` remains carried by NO declaration, and that discharge does not
+license it.
+
+The refutation direction has no depth-`0` candidate: every separating family compiled anywhere in
+the tree (`thetaC`, `sigC b`, `mixC a k`, `dblC j`) is `diaF`- or `.stab`-rooted and so fails the
+schema's own stab-free hypothesis. The OPEN RESIDUE is therefore exactly the stab-free formulas
+carrying an UNBOUNDED `U`/`S` jump — a guard other than `⊥` under an `untl` or a `snce`, which is
+precisely what this fragment excludes — and that residue is where the depth-`0` question now
+sits. The forward-slack question (whether `ForwardSlackWitnessed` is satisfiable at a positive
+amount) is ONE of four independent hypothesis deficits and is not this gate: its per-path form is
+refuted outright and its existential-over-paths form is satisfiable, and neither outcome moves the
+schema.
 
 ## The row link, and the two jump clauses it leaves owed
 

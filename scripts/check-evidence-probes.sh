@@ -2996,6 +2996,30 @@ EVIDENCE="specs/evidence"
 #                                                           | Classical.choice, Quot.sound]` on every
 #                                                           | headline.  No `sorryAx`, no custom
 #                                                           | axiom, no `native_decide`.
+# forward-slack-pin-cascade/ordinary-window-regime          | THE DEPTH-0 OBLIGATION'S TWO COUNTER
+#                                                           | REGIMES ARE SEGREGATED AND THE
+#                                                           | ORDINARY ONE IS POPULATED. No
+#                                                           | `kappa`-collision crosses the boundary
+#                                                           | between the pending-forever regime
+#                                                           | `n + 2 <= c` and the ordinary window
+#                                                           | `c <= n + 1`, and the ordinary half
+#                                                           | carries a populated collision with a
+#                                                           | ladder path through each state -- on
+#                                                           | which every landed depth-0
+#                                                           | cell-equality inclusion is VACUOUS,
+#                                                           | since each carries the
+#                                                           | pending-forever gap. Also holds that
+#                                                           | `diaF` and `.stab` both fail the
+#                                                           | depth-0 schema's stab-free
+#                                                           | hypothesis, which is why no compiled
+#                                                           | separating family refutes it at depth
+#                                                           | 0; and records `(K4)`'s forward
+#                                                           | deficit against the FROZEN
+#                                                           | `paramsOkK4Pre` beside the theorem
+#                                                           | that the repaired `paramsOkK4` now
+#                                                           | delivers `Zrel`'s forward gap arm
+#                                                           | unconditionally. No `sorryAx`, no
+#                                                           | custom axiom, no `native_decide`.
 # lcu-lcn-separation/lcu-lcn-separating-model                | `lcU` is NOT derivable from TM⁺ +
 #                                                           | `LC_n` + mirror `LC_n` at `.Base`
 #                                                           | with `RuleSet.none` -- witnessed by
@@ -3136,6 +3160,7 @@ WIRED=(
   "forward-slack-pin-cascade/route-space-closure"
   "forward-slack-pin-cascade/idle-run-one-ceiling"
   "forward-slack-pin-cascade/consumer-shape-witness"
+  "forward-slack-pin-cascade/ordinary-window-regime"
   "lcu-lcn-separation/lcu-lcn-separating-model"
   "stability-modal-substrate/full-labels-collapse-stab"
 )

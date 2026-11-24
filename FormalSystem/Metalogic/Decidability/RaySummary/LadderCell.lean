@@ -1032,14 +1032,20 @@ path can read off the next region's countdown and decide the condition, whereas
 `HasForwardSlack`'s register clause at `z + cntAt g z + I` reads a derived quantity.
 
 **What this does NOT buy, and must not be read as.** This is NOT a discharge. The condition is
-still a hypothesis a consumer supplies, and the following three restrictions survive untouched:
+still a hypothesis a consumer supplies, and the following three restrictions survive this
+restatement — the second of them partly addressed elsewhere, as stated below, and neither of the
+other two addressed anywhere:
 
 * the reserved schema `cellLE_zero_const_of_kappa_eq` quantifies over EVERY `kappa`-collision,
   while every landed depth-`0` cell-equality inclusion carries the pending-forever gap
   `n + 2 ≤ c`, which by `pend_past_of_nxtAt_lt` restricts to paths pending at every earlier
   position. The reserved name stays claimed by nothing;
-* the ORDINARY WINDOW REGIME `c ≤ n + 1` is addressed by no landed inclusion, in either
-  direction;
+* the ORDINARY WINDOW REGIME `c ≤ n + 1` is addressed in ONE direction only. The UPWARD
+  countdown direction is landed: `cellAt_subset_of_window_raise` (`LadderWindow.lean`) sits in
+  this regime (`c + m * (P + 1) ≤ n`) and raises the countdown by a multiple of the modulus. What
+  is genuinely unaddressed is the DOWNWARD direction — no `window_raise_rev` exists anywhere in
+  the tree, and that module's own docstring records why its mirror is not available — together
+  with the collisions in this regime that are not register-held;
 * the ROOM BOUNDS the landed schemas carry — the monotone one's bound on the upper pair plus that
   pair's own gap, the common-shift one's DOUBLED displacement with a correspondingly doubled
   bound — remain, and are implied by neither the pending-forever gap nor this restatement. -/

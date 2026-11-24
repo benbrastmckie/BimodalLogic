@@ -9,6 +9,26 @@ import FormalSystem.Metalogic.Decidability.RaySummary.LadderCell
 
 /-!
 # The depth-`0` obligation's two counter regimes are SEGREGATED, and the ordinary one is POPULATED
+
+## What this probe holds in place
+
+1. **REGIME SEGREGATION.** No `kappa`-collision crosses the boundary between the pending-forever
+   regime `n + 2 ≤ c` and the ordinary window regime `c ≤ n + 1` (`kappa_ne_of_regime_cross`), at
+   `2 ≤ B` — which `(K4)` requires. So the two halves of the depth-`0` obligation are genuinely
+   separate problems and a discharge in one buys nothing in the other.
+2. **THE ORDINARY HALF IS POPULATED.** At the periodicity fixpoint's own parameters there is a
+   `kappa`-collision with `c ≠ c'`, both pairs above both thresholds, both pairs in the ordinary
+   window regime, the pending-forever gap FAILING at both, and a ladder path through each state
+   (`ordinary_window_collision_nonvacuous`). Every landed depth-`0` cell-equality inclusion
+   carries the pending-forever gap, so every one of them is VACUOUS on this collision. No landed
+   declaration carries either fact; that is why this probe is wired rather than dropped.
+3. **THE `⊡`-DUAL IS WHAT THE SEPARATING FAMILIES READ THE GAP WITH.** `diaF ψ` and `.stab ψ`
+   both fail the depth-`0` schema's stab-free hypothesis (`diaF_not_stabFree`,
+   `stab_not_stabFree`), which is why no compiled separating family refutes
+   `CellLEZeroConstOfKappaEq` at depth `0`.
+4. **`(K4)`'s FORWARD DEFICIT, AND ITS CLOSURE.** The deficit against `Zrel`'s forward gap arm is
+   recorded against the frozen `paramsOkK4Pre`, beside the theorem that the repaired `paramsOkK4`
+   now delivers that arm unconditionally.
 -/
 
 namespace FormalSystem.Metalogic.Decidability.RaySummary
@@ -105,7 +125,14 @@ theorem stab_not_stabFree (psi : PlusFormula) :
   intro h
   exact h psi (by simp [plusSubformulaClosure, PlusFormula.subformulas])
 
-/-! ## (K4)'s forward conjunct is ONE SHORT of the back-and-forth's forward gap arm -/
+/-! ## (K4)'s forward conjunct WAS one short of the back-and-forth's forward gap arm, and is not
+
+The deficit this section recorded is CLOSED: `paramsOkK4`'s forward conjunct now reads
+`2 * dFwd φ + 2 ≤ B` and `Bof`'s middle arm matches, which is exactly `Zrel`'s own forward
+demand. The deficit is kept here as a record, stated against the FROZEN `paramsOkK4Pre`
+(`CounterQuotient.lean`), beside the companion theorem that the live predicate now delivers the
+arm unconditionally. Nothing here is weakened to pass: the measurement is the same measurement,
+read against the conjunct it was a measurement of. -/
 
 /-- The witness formula `X p`: `dBack = 0`, `dFwd = 1`. -/
 def xp : PlusFormula := .untl .bot (.atom ⟨"p", none⟩)
@@ -114,18 +141,35 @@ theorem dBack_xp : dBack xp = 0 := rfl
 
 theorem dFwd_xp : dFwd xp = 1 := rfl
 
-/-- **(K4) DOES NOT DELIVER `Zrel`'s FORWARD GAP ARM.** `Zrel_of_kappa_eq`
-(`specs/evidence/seam-gluing-ray-product/ladder-step-fragment-gap-depth.lean:731`) consumes
-`2 * dFwd phi + 2 <= B`; `paramsOkK4` asks only `2 * dFwd phi + 1 <= B`, and the deficit bites
-at `Bof`, the value the periodicity fixpoint itself outputs. -/
-theorem paramsOkK4_one_short_of_Zrel_forward_arm :
-    paramsOkK4 xp 3 ∧ Bof stepOr pendT labB xp = 3 ∧ ¬ (2 * dFwd xp + 2 ≤ 3) := by
+/-- `Bof`'s body before the forward repair, frozen beside the library's own `paramsOkK4Pre`. -/
+def BofPre (φ : PlusFormula) : ℕ :=
+  max (2 * dBack φ + 1) (max (2 * dFwd φ + 1) 2)
+
+/-- **THE PRE-REPAIR (K4) DID NOT DELIVER `Zrel`'s FORWARD GAP ARM.** `Zrel_of_kappa_eq`
+consumes `2 * dFwd phi + 2 <= B`; `paramsOkK4Pre` asks only `2 * dFwd phi + 1 <= B`, and the
+deficit bit at the pre-repair `Bof` output itself. -/
+theorem paramsOkK4Pre_one_short_of_Zrel_forward_arm :
+    paramsOkK4Pre xp 3 ∧ BofPre xp = 3 ∧ ¬ (2 * dFwd xp + 2 ≤ 3) := by
   refine ⟨⟨?_, ?_, ?_⟩, ?_, ?_⟩
   · rw [dBack_xp]; omega
   · rw [dFwd_xp]
   · omega
-  · simp [Bof, dBack_xp, dFwd_xp]
+  · simp [BofPre, dBack_xp, dFwd_xp]
   · rw [dFwd_xp]; omega
+
+/-- **THE DEFICIT IS CLOSED.** The repaired `(K4)` delivers `Zrel`'s forward gap arm for every
+formula and every clip it admits, so `cellAt_const_of_kappa_eq_stepFrag`'s `hBb` is discharged
+from `ParamsOk` rather than carried. The repaired output at the witness formula is `4`, one above
+the clip the frozen conjunct admitted. -/
+theorem paramsOkK4_delivers_Zrel_forward_arm :
+    (∀ (φ : PlusFormula) (B : ℕ), paramsOkK4 φ B → 2 * dFwd φ + 2 ≤ B) ∧
+      Bof stepOr pendT labB xp = 4 ∧ ¬ paramsOkK4 xp 3 := by
+  refine ⟨fun _ _ h => h.2.1, ?_, ?_⟩
+  · simp [Bof, dBack_xp, dFwd_xp]
+  · intro h
+    have h2 := h.2.1
+    rw [dFwd_xp] at h2
+    omega
 
 end ProbeOrdinaryWindow
 end FormalSystem.Metalogic.Decidability.RaySummary
@@ -137,5 +181,6 @@ open FormalSystem.Metalogic.Decidability.RaySummary.ProbeOrdinaryWindow
 #print axioms ordinary_window_collision_nonvacuous
 #print axioms diaF_not_stabFree
 #print axioms stab_not_stabFree
-#print axioms paramsOkK4_one_short_of_Zrel_forward_arm
+#print axioms paramsOkK4Pre_one_short_of_Zrel_forward_arm
+#print axioms paramsOkK4_delivers_Zrel_forward_arm
 end

@@ -3342,7 +3342,34 @@ theorem: the schema is false at the periodicity fixpoint's own outputs for a sta
 when the gap clip is bounded by the backward depth alone (the section docstring above states the
 mechanism), and the `def` is kept so that the refutation is a theorem about a named object. Under
 `ParamsOk` itself, whose `(K4)` reads both exactness depths, the schema is neither proved nor
-refuted. The reserved name is claimed by nothing. -/
+refuted. The reserved name is claimed by nothing.
+
+**WHERE THE SCHEMA NOW STANDS, AND WHERE THE GATE SITS.**
+
+* **DISCHARGED on the step fragment.** `cellLE_zero_const_of_kappa_eq_stepFrag`
+  (`LadderStepFrag.lean`) proves this schema for every formula of `StepFrag` — `⊡` and `□`
+  unrestricted, `untl`/`snce` admitted only at the guard `⊥` — with `StepFrag φ` as the single
+  added hypothesis, from `ParamsOk` itself and at generic parameters. Its route is
+  `cellAt_eq_of_Zrel` composed with `Zrel_of_kappa_eq`, whose four numeric hypotheses come from
+  `paramsOk_two_depth_sum_le_Tc`/`_le_Tn` (through `(K3)` alone, via the pure-syntax bound
+  `dBack_add_dFwd_le_closure_card`) and `(K4)`'s two clip conjuncts. The schema's own stab-free
+  hypothesis is NOT consumed there: `StepFrag` leaves `⊡` unrestricted.
+* **THE REFUTATION DIRECTION HAS NO DEPTH-`0` CANDIDATE.** Every separating family compiled
+  anywhere in the tree — `thetaC` and `mixC a k` (`ladder-cell-agreement-refutation.lean`),
+  `sigC b` and `dblC j` (`ladder-step-fragment-gap-depth.lean`,
+  `ladder-cell-agreement-refutation.lean`) — is `diaF`- or `.stab`-rooted and therefore FAILS this
+  schema's stab-free hypothesis. No family that would refute this schema at depth `0` exists, so
+  the remaining question is not symmetric between the two directions.
+* **THE OPEN RESIDUE** is therefore exactly the stab-free formulas carrying an UNBOUNDED `U`/`S`
+  jump: a guard other than `⊥` under an `untl` or a `snce`. Nothing in the tree settles this
+  schema there in either direction.
+* **THE FORWARD-SLACK QUESTION IS NOT THIS GATE.** Whether a `ForwardSlackWitnessed` hypothesis
+  at a positive amount is satisfiable at the states the depth-`0` induction reaches is ONE of
+  four independent hypothesis deficits, not the crux: its per-path form is refuted outright
+  (`ClimbWitness.hasForwardSlack_refuted_unconditional`), its existential-over-paths form is
+  satisfiable at the consumer-shape instantiation
+  (`specs/evidence/forward-slack-pin-cascade/consumer-shape-witness.lean`), and neither outcome
+  moves this schema. -/
 def CellLEZeroConstOfKappaEq (step : Q → Q → Bool) (pend : Q → Bool)
     (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
     (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
