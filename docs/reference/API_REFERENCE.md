@@ -393,6 +393,48 @@ inductive DerivationTree : Context → Formula → Prop where
 
 ---
 
+### Substitution (`FormalSystem.ProofSystem.Substitution`)
+
+**Module**: `FormalSystem/ProofSystem/Substitution.lean`
+
+Uniform substitution inside L, as **data**: `substF (σ : Atom → Formula) : Formula → Formula` is
+structural on the six primitive constructors, and `DerivationTree.subst` carries a derivation
+along it, arm for arm over the seven rules.
+
+| Declaration | States |
+|------|-------------|
+| `substF` | Replace each atom `p` of a formula by `σ p` |
+| `substCtxF` | The context-level form, definitionally `List.map (substF σ)` |
+| `substF_atom` | `substF Formula.atom` is the identity |
+| `substF_reflectTime` | `substF σ φ.reflectTime = (substF (reflectTime ∘ σ) φ).reflectTime` |
+| `Axiom.ofSubst` | Every TM axiom instance is one under `substF σ`, in all 20 arms |
+| `Axiom.minFrameClass_ofSubst` | Substitution preserves an axiom's minimum frame class |
+| `DerivationTree.subst` | The transfer: `Γ ⊢[fc] φ` becomes `substCtxF σ Γ ⊢[fc] substF σ φ` |
+| `DerivationTree.substNil` | The transfer at the empty context |
+
+**The transfer is syntactic, and sound over `Formula` for a reason that does not extend.** Nothing
+here says a *valid* schema stays valid under substitution; what is proved is the purely
+proof-theoretic statement that **derivability** is closed under substitution, which follows from
+the axioms being schemata. TM is closed under uniform substitution in that sense. TM⁺ is **not**:
+`atom_stab` holds for atoms and state-local formulas only, so substituting an arbitrary extended
+formula for an atom can fail. A consumer that generalizes an extracted derivation from concrete
+atoms to schema variables may therefore do so over `Formula`, and only over `Formula`.
+
+**Why the substitution varies along the recursion.** `time_reflection` concludes `⊢ φ.reflectTime`
+from `⊢ φ`. Under `substF σ` the target is `substF σ φ.reflectTime`, which is *not*
+`(substF σ φ).reflectTime` — the two differ exactly at the atoms, and so diverge whenever `σ`
+sends an atom to a formula carrying a temporal operator. `substF_reflectTime` is the identity that
+repairs it, by running the recursive call at the shifted substitution `fun p => (σ p).reflectTime`.
+A source-level rename of a derivation's atoms is therefore not an alternative to this module: at a
+`time_reflection` node a rename has nothing to transport along.
+
+`DerivationTree.subst` is a `def` returning a tree, not a `theorem` returning `Derivable`, because
+its consumer needs data: `TheoremEntry.proof` (`BimodalLib/Registry.lean`) is `Type`-valued and the registry compiles
+the row, so a propositional existence claim would not serve. The L⁺ route
+(`plusDerivable_substPlus_nil`) lands in `Nonempty (PlusDerivationTree …)`, a `Prop`, and cannot.
+
+---
+
 ## Automation
 
 ### Tactics (`FormalSystem.Automation.Tactics`)
