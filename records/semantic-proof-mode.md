@@ -113,9 +113,8 @@ bind names. Two were tried.
 - **Labelled entries** name the operator and branch each item belongs to. Order is free, and a
   repeated operator is numbered.
 
-The [witness interface probe](../specs/evidence/semantic-witness-interface/README.md) holds a working prototype
-of each, over one clause recursion. It was compiled against the library and prints the figures
-below. The prototypes are measurement apparatus: they close a goal or fail, return no goals, cover
+The probe under `specs/evidence/semantic-witness-interface/` implements both forms over one
+clause recursion. It compiles against the library and prints the token counts and term sizes. The prototypes are measurement apparatus: they close a goal or fail, return no goals, cover
 only the clauses these clients use, and are not the evaluator. The lemmas-only control is
 stronger than the first one written for this comparison.
 
@@ -159,8 +158,8 @@ formula. A label says it, but free order lets a use precede its binder, and numb
 shift when an operator is inserted. No client repeats an operator on a branch, so numbering is not
 exercised.
 
-**Where errors are reported**, with the same fault put into each script. The probe pins the missing,
-extra and exchanged items in both forms, and the wrong witness in the pattern:
+**Where errors are reported.** The probe checks missing, extra and exchanged items in both
+forms. It checks the wrong witness with the pattern.
 
 | Fault | Pattern | Labelled |
 |---|---|---|
@@ -170,7 +169,7 @@ extra and exchanged items in both forms, and the wrong witness in the pattern:
 | Branch ends early | at that branch's list | at the tactic head |
 | Extra item | at the item | at the entry |
 | Two binder items of equal length exchanged | not at the items: at the first later use | accepted |
-| Wrong witness time | at the dependent evidence, not the witness | at the dependent evidence, not the witness |
+| Wrong witness time | at the dependent evidence | unmeasured |
 
 **Finding.** Use the clause-ordered pattern for C3. It meets the provisional threshold on all
 three recursive clients and keeps dependent evidence beside its binder. Labelled entries locate
