@@ -1,35 +1,30 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/972_theorem_library_tableau_pipeline/reports/01_tableau-pipeline-into-library.md",
-      "summary": "Stage-by-stage audit of the tableau pipeline into BimodalLib: identifies the one hard missing prerequisite (an L-level uniform substitution as data on DerivationTree, compile-verified constructible and accepted by register_theorem), corrects the quoted yield (only 2 of 17 valid formulas at complexity 4 carry a derivation), establishes that extraction is Base-only, measures per-fragment and per-bound yields plus interestingness tiers, flags two verified gate collisions, and recommends the bound for open decision 3."
+      "type": "plan",
+      "path": "specs/972_theorem_library_tableau_pipeline/plans/01_tableau-pipeline-into-library.md",
+      "summary": "Eight-phase plan assembling the five-stage tableau pipeline into BimodalLib: the missing L-level uniform substitution as data, a subsumption matcher, a Lean-source emitter, the five reserved-stage diagnostics emitters, the driver executable, the end-to-end run at the user-ruled bound, and the docs/record revision."
     }
   ],
-  "user_decision": {
-    "question": "Open decision 3 of records/theorem-library.md: what complexity bound does the pipeline run to per fragment and frame class, and does admission filter by an interestingness measure or keep every non-subsumed theorem?",
-    "options": [
-      "Boolean and ModalBoolean at complexity 5, TemporalBoolean and ModalTemporalBoolean at complexity 4; Base only for the theorem half, all four frame classes for the countermodel half; keep every non-subsumed theorem, no interestingness filter",
-      "Complexity 4 uniformly across all four fragments; Base only for the theorem half, all four frame classes for the countermodel half; keep every non-subsumed theorem, no interestingness filter",
-      "Complexity 5 uniformly across all four fragments; Base only for the theorem half, all four frame classes for the countermodel half; keep every non-subsumed theorem, no interestingness filter",
-      "Any of the above, but with admission additionally filtered by an InterestingnessMetrics tier floor"
-    ],
-    "recommended": "Boolean and ModalBoolean at complexity 5, TemporalBoolean and ModalTemporalBoolean at complexity 4; Base only for the theorem half, all four frame classes for the countermodel half; keep every non-subsumed theorem, no interestingness filter",
-    "blocking": false
-  },
   "metadata": {
     "session_id": "sess_1795489185_6c2ae6_972",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"],
-    "task_dir": "specs/972_theorem_library_tableau_pipeline",
-    "verification": {
-      "compiled_gates_run": [
-        "register_theorem on a substitution-generalized row: PASS (lake env lean, exit 0, axioms [propext, Quot.sound], profile {box}, arity 1, fragment ModalBoolean)",
-        "scripts/proof-mode-cost-baseline.sh staleness surface: exit 3 STALE BASELINE on a mismatched --pin, confirming BimodalLib/Diagnostics is gated"
-      ]
-    }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 8,
+    "estimated_hours": 14.5,
+    "dependency_waves": 5
   },
-  "dispatch_seq": 4
+  "memory_candidates": [
+    {
+      "content": "In BimodalLogic, readme-lint.sh Check 4's grandfathering is ASYMMETRIC and this asymmetry decides per-phase plan work: scripts/readme-date-baseline.txt pins BimodalTools/README.md, FormalSystem/README.md and FormalSystem/ProofSystem/README.md as `stale` at exact stamps, and refreshing any of those stamps permanently UN-grandfathers it and turns the gate red -- so a phase touching those trees must leave the stamp alone (extending the file listing is still fine). BimodalLib/README.md and BimodalLib/Theorems/README.md carry NO baseline row, so a commit under BimodalLib/** makes them stale and they MUST be refreshed in that same phase. Separately, typst/generated/status.typ counts FormalSystem/, Tests/ and BimodalTools/ .lean lines but NOT BimodalLib/ (scripts/typst-status-counts.sh:202-207), while .githooks/pre-commit fires on any staged .lean path: a BimodalLib-only phase needs no status.typ regeneration, every phase touching the other three does, commit-blocking.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/972_theorem_library_tableau_pipeline/plans/01_tableau-pipeline-into-library.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["readme-lint", "readme-date-baseline", "typst-sync-check", "status.typ", "gate-collision", "plan-authoring"]
+    }
+  ],
+  "next_steps": "Run /orchestrate 972 to execute the plan",
+  "dispatch_seq": 5
 }

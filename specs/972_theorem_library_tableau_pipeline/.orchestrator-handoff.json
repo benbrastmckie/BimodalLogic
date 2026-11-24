@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "dispatch_seq": 5,
+  "phases_completed": 0,
+  "phases_total": 8,
+  "summary": "Authored an eight-phase implementation plan for the theorem-library tableau pipeline at specs/972_theorem_library_tableau_pipeline/plans/01_tableau-pipeline-into-library.md. The plan lands the three genuinely new components the research report identified -- the L-level uniform substitution as data (the registry row type's hard prerequisite, probe-verified end to end), a substitution-instance matcher, and a Lean-source emitter -- then the five reserved-stage diagnostics emitters, the driver executable, the end-to-end run at the user-ruled bound, and the docs/record revision. Ten design decisions are recorded explicitly, including the BimodalTools -> BimodalLib import direction, the source-emission admission route over elaboration-time extraction, and siting the stage emitters outside BimodalLib/Diagnostics to clear both verified gate collisions. Carried-figure discipline was run: the description's 17/669/120-of-806 figure is confirmed live, but its structural_prefilter=15 arm shows the admissible theorem yield is 2, not 17.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/972_theorem_library_tableau_pipeline/plans/01_tableau-pipeline-into-library.md",
+      "summary": "Eight-phase plan: baseline pin and the two unmeasured gate figures; the L-level uniform substitution; the subsumption matcher and its tests; the Lean-source emitter; the five reserved-stage emitters; the driver and its lean_exe target; the end-to-end run and admission; docs revision and the final gate."
+    }
+  ]
+}
