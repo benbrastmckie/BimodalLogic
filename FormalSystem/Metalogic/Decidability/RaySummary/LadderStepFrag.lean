@@ -91,7 +91,7 @@ The threshold-carrying relation is landed beside it, with NO verdict on it eithe
    bound `dBack_add_dFwd_le_closure_card` (`CounterQuotient.lean`) puts the depth sum under the
    closure's cardinality, `k ≤ 2 ^ k` and `1 ≤ card Q` carry it to the type-pigeonhole budget,
    `card_prodState` reads that as `tShort Q φ`, and `(K3)`'s own two conjuncts finish. Both
-   hypotheses still APPEAR as explicit binders on `Zrel_of_kappa_eq` and
+   hypotheses still APPEAR as explicit binders on `Zrel.of_kappa_eq` and
    `cellAt_const_of_kappa_eq_stepFrag`, which is what keeps those two free of the parameter layer;
    what has changed is that a `ParamsOk` consumer can now discharge them.
 
@@ -1051,7 +1051,7 @@ Promoted verbatim from the wired probe
 `specs/evidence/seam-gluing-ray-product/ladder-step-fragment-gap-depth.lean`, whose round
 established it; the four numeric hypotheses are discharged from `ParamsOk` by
 `paramsOk_two_depth_sum_le_Tc`/`_le_Tn` and `(K4)`'s two clip conjuncts. -/
-theorem Zrel_of_kappa_eq (a b Tc Tn P B : ℕ) (hTc : 2 * (a + b) ≤ Tc) (hTn : 2 * (a + b) ≤ Tn)
+theorem Zrel.of_kappa_eq (a b Tc Tn P B : ℕ) (hTc : 2 * (a + b) ≤ Tc) (hTn : 2 * (a + b) ≤ Tn)
     (hBa : 2 * a ≤ B) (hBb : 2 * b + 2 ≤ B) (q : Q) (c n c' n' : ℕ)
     (h : c ∈ Adm pend q) (h' : c' ∈ Adm pend q)
     (hk : kappa Tc Tn P B (c, n) = kappa Tc Tn P B (c', n')) :
@@ -1081,7 +1081,7 @@ evaluation time `z`, which is exactly the shape `CellLEZeroConstOfKappaEq` carri
 time-component transport is needed to reach that schema: `cellLE_zero_const_of_kappa_eq_stepFrag`
 is this theorem with the four hypotheses discharged from `ParamsOk`.
 
-Promoted verbatim from the same wired probe as `Zrel_of_kappa_eq` above. -/
+Promoted verbatim from the same wired probe as `Zrel.of_kappa_eq` above. -/
 theorem cellAt_const_of_kappa_eq_stepFrag
     (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
     (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x) (lab : Q → Atom → Bool)
@@ -1095,7 +1095,7 @@ theorem cellAt_const_of_kappa_eq_stepFrag
       cellAt (ladderModel step pend fwd bwd lab) φ
         ((z, ⟨(q, c', n'), h'⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z :=
   cellAt_eq_of_Zrel fwd bwd lab φ hφ _ _
-    (Zrel_of_kappa_eq _ _ Tc Tn P B hTc hTn hBa hBb q c n c' n' h h' hk) z
+    (Zrel.of_kappa_eq _ _ Tc Tn P B hTc hTn hBa hBb q c n c' n' h h' hk) z
 
 end Truth
 
@@ -1676,7 +1676,7 @@ refutations and discharges can be theorems about a named object.  It is discharg
 `StepFrag φ`, from `ParamsOk` itself and at generic parameters.
 
 Three pieces meet here and none of them is new work at this point: the back-and-forth agreement
-`cellAt_eq_of_Zrel`, the counter-class-to-`Zrel` bridge `Zrel_of_kappa_eq`, and the two threshold
+`cellAt_eq_of_Zrel`, the counter-class-to-`Zrel` bridge `Zrel.of_kappa_eq`, and the two threshold
 discharges `paramsOk_two_depth_sum_le_Tc`/`_le_Tn`.  `(K4)` supplies the two clip hypotheses
 directly — its forward conjunct reads `2 * dFwd φ + 2 ≤ B`, which is exactly `Zrel`'s own forward
 demand. -/
@@ -1698,13 +1698,13 @@ closure carrying `⊡` letters as well.
 the reserved name remains carried by no declaration in the tree, and this theorem does not
 license it.  `StepFrag` admits `untl`/`snce` only at the guard `⊥`, so the residue the reserved
 schema still owes is the STAB-FREE formulas carrying an UNBOUNDED `U`/`S` jump — a guard other
-than `⊥` under an `untl` or a `snce`.  Nothing here settles the reserved schema on that residue,
-in either direction; see this module's docstring for where that question now sits.
+than `⊥` under an `untl` or a `snce`.
 
 **What the refutation direction does not offer.**  Every separating family compiled anywhere in
 the tree (`thetaC`, `sigC b`, `mixC a k`, `dblC j`) is `diaF`- or `.stab`-rooted and so fails the
 schema's own stab-free hypothesis, so there is no depth-`0` refutation candidate to set against
-this discharge. -/
+this discharge.
+Paper: — (ladder construction for the step fragment). -/
 theorem cellLE_zero_const_of_kappa_eq_stepFrag {Q : Type} [Fintype Q] [Nonempty Q]
     (step : Q → Q → Bool) (pend : Q → Bool)
     (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
