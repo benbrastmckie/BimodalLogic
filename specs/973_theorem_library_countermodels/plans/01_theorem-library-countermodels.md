@@ -632,7 +632,7 @@ reproducing the research probe's six `#eval` cases as the Phase 8 test: `pâ‚€ â†
 
 ---
 
-### Phase 7: The index, the per-grade census, and the near-miss invariant [NOT STARTED]
+### Phase 7: The index, the per-grade census, and the near-miss invariant [COMPLETED]
 
 **Goal**: `library_index` renders a Countermodels section with a per-grade census, every `some
 nearMiss` is checked to resolve as a build invariant, and `BimodalLib/INDEX.md` is regenerated.

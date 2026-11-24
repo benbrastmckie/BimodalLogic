@@ -703,6 +703,86 @@ What stands in the way of each open edge.
 - Statement: `∀ (φ : Formula), profileF φ ≤ { temporal := true } → Nonempty (⊢ φ) → DerivableIn { temporal := true } FrameClass.Base (Edges.discreteUniformity.imp φ)`
 - Note: The cell is extended by a hypothesis and not by an axiom: the statement asks for a derivation, within the temporal cell, of the implication from the formula discreteUniformity of BimodalLib/Conservativity/Table.lean to the formula derived. The hypothesis is always((X⊤ → always X⊤) ∧ (Y⊤ → always Y⊤)). The past conjunct is stated because a hypothesis is not closed under time reflection, and the rationals times the naturals in the lexicographic order satisfy the future conjunct alone. Whether TM derives further temporal formulas through □ that this hypothesis does not yield is not known.
 
+## Countermodels
+
+13 registered countermodels. A row records a refuted inference, the strongest frame class at which its model lives, and a refutation the kernel checks. A row is filed at its MAXIMAL frame class only: the frame-class order is a tree, so an inference may carry two maximal rows, and the weaker readings are derived by `CountermodelEntry.transferLe` rather than registered. An ungated `invalid` verdict from a decision procedure is never a row; it is a conjecture at `heuristically refuted`.
+
+### Census by grade
+
+| Grade | What stands behind it | Rows |
+|---|---|---|
+| `semantic` | a Lean theorem, by an explicit model | 11 |
+| `certificate` | a finite certificate accepted by a proved checker | 1 |
+| `gated tableau` | an open saturated branch passing the gates, with the gate theorem applied | 1 |
+
+### Census by fragment and frame class
+
+| Fragment | Base | Dense | ZTime | RTime | Total |
+|---|---|---|---|---|---|
+| `Boolean` | 1 | 0 | 0 | 0 | 1 |
+| `ModalBoolean` | 1 | 0 | 0 | 0 | 1 |
+| `TemporalBoolean` | 0 | 2 | 3 | 2 | 7 |
+| `ModalTemporalBoolean` | 4 | 0 | 0 | 0 | 4 |
+
+### Boolean, maximal at Base (1)
+
+| Row | Language | Inference | Grade | Model | Bounds |
+|---|---|---|---|---|---|
+| `BimodalLib.Countermodels.Boolean.GatedTableau.cmGatedImpBot` | L | `⊭ (Formula.atom Countermodels.Boolean.GatedTableau.atomP).imp Formula.bot` | gated tableau | `FormalSystem.Metalogic.Decidability.Verified.Bridge.not_valid_of_hasOpen_int` |  |
+
+### ModalBoolean, maximal at Base (1)
+
+| Row | Language | Inference | Grade | Model | Bounds |
+|---|---|---|---|---|---|
+| `BimodalLib.Countermodels.ModalBoolean.Base.cmStabBox` | L⁺ | `⊭ (Countermodels.ModalBoolean.Base.plusVar 0).stab.imp (Countermodels.ModalBoolean.Base.plusVar 0).stab.box` | semantic | `FormalSystem.PlusLanguage.natModel` | `FormalSystem.PlusLanguage.PlusAxiom.box_stab` |
+
+### TemporalBoolean, maximal at Dense (2)
+
+| Row | Language | Inference | Grade | Model | Bounds |
+|---|---|---|---|---|---|
+| `BimodalLib.Countermodels.TemporalBoolean.Dense.cmPriorUGap` | L | `⊭ (((schemaVar 0).untl Formula.top).and (schemaVar 0).neg.someFuture).imp ((schemaVar 0).untl ((schemaVar 0).neg.or (schemaVar 0).neg.kPlus))` | semantic | `FormalSystem.Metalogic.Independence.not_validIn_dense_prior_U_gap` |  |
+| `BimodalLib.Countermodels.TemporalBoolean.Dense.cmSep` | L | `⊭ ((schemaVar 0).kPlus.and ((schemaVar 0).and ((schemaVar 0).neg.untl (schemaVar 0))).kPlus.neg).imp ((schemaVar 0).kPlus.and (schemaVar 0).kMinus).kPlus` | semantic | `FormalSystem.Metalogic.Independence.not_validIn_dense_sep` |  |
+
+### TemporalBoolean, maximal at ZTime (3)
+
+| Row | Language | Inference | Grade | Model | Bounds |
+|---|---|---|---|---|---|
+| `BimodalLib.Countermodels.TemporalBoolean.ZTime.cmBotUntl` | L | `⊭ Formula.bot.untl Formula.bot` | certificate | `FormalSystem.Metalogic.Decidability.WitnessFamily.Refutes` |  |
+| `BimodalLib.Countermodels.TemporalBoolean.ZTime.cmDenseIndicator` | L | `⊭ (Formula.bot.untl (Formula.bot.imp Formula.bot)).imp Formula.bot` | semantic | `FormalSystem.Metalogic.Independence.not_validIn_ztime_dense_indicator` |  |
+| `BimodalLib.Countermodels.TemporalBoolean.ZTime.cmDensity` | L | `⊭ (schemaVar 0).allFuture.allFuture.imp (schemaVar 0).allFuture` | semantic | `FormalSystem.Metalogic.Independence.not_validIn_ztime_density` |  |
+
+### TemporalBoolean, maximal at RTime (2)
+
+| Row | Language | Inference | Grade | Model | Bounds |
+|---|---|---|---|---|---|
+| `BimodalLib.Countermodels.TemporalBoolean.RTime.cmPriorUZ` | L | `⊭ (schemaVar 0).someFuture.imp ((schemaVar 0).neg.untl (schemaVar 0))` | semantic | `FormalSystem.Metalogic.Independence.not_validIn_rtime_prior_UZ` |  |
+| `BimodalLib.Countermodels.TemporalBoolean.RTime.cmZ1` | L | `⊭ ((schemaVar 0).allFuture.imp (schemaVar 0)).allFuture.imp ((schemaVar 0).allFuture.someFuture.imp (schemaVar 0).allFuture)` | semantic | `FormalSystem.Metalogic.Independence.not_validIn_rtime_z1` |  |
+
+### ModalTemporalBoolean, maximal at Base (4)
+
+| Row | Language | Inference | Grade | Model | Bounds |
+|---|---|---|---|---|---|
+| `BimodalLib.Countermodels.ModalTemporalBoolean.Base.cmAllFutureStab` | L⁺ | `⊭ (Countermodels.ModalBoolean.Base.plusVar 0).stab.allFuture.imp (Countermodels.ModalBoolean.Base.plusVar 0).allFuture.stab` | semantic | `FormalSystem.PlusLanguage.natModel` | `FormalSystem.PlusLanguage.stab_allFuture_valid` |
+| `BimodalLib.Countermodels.ModalTemporalBoolean.Base.cmDetermined` | L⁺ | `⊭ (Countermodels.ModalBoolean.Base.plusVar 0).someFuture.imp (Countermodels.ModalBoolean.Base.plusVar 0).someFuture.stab` | semantic | `FormalSystem.PlusLanguage.natModel` | `FormalSystem.PlusLanguage.determined_of_deterministic` |
+| `BimodalLib.Countermodels.ModalTemporalBoolean.Base.cmSomePastStab` | L⁺ | `⊭ (Countermodels.ModalBoolean.Base.plusVar 0).stab.somePast.imp (Countermodels.ModalBoolean.Base.plusVar 0).somePast.stab` | semantic | `FormalSystem.PlusLanguage.natModel` |  |
+| `BimodalLib.Countermodels.ModalTemporalBoolean.Base.cmStabAllFuturePast` | L⁺ | `⊭ (Countermodels.ModalBoolean.Base.plusVar 0).somePast.allFuture.stab.imp (Countermodels.ModalBoolean.Base.plusVar 0).somePast.stab.allFuture` | semantic | `FormalSystem.PlusLanguage.natModel` | `FormalSystem.PlusLanguage.stab_allFuture_valid` |
+
+### What each row shows
+
+- `BimodalLib.Countermodels.Boolean.GatedTableau.cmGatedImpBot`: The gated-tableau grade's existence witness. Bulk admission of the pipeline's 1047 distinct gated statements waits on the pipeline emitting the open branch and its TimeOrdering; the data file carries neither. An ungated invalid verdict is never admitted at any grade.
+- `BimodalLib.Countermodels.ModalBoolean.Base.cmStabBox`: The converse of the MS axiom □φ → ⊡φ. Together the two bound the ⊡ axiom set. The bounded object is an axiom constructor, not a registry row, so the pairing is one-directional by TheoremEntry's type.
+- `BimodalLib.Countermodels.ModalTemporalBoolean.Base.cmAllFutureStab`: The converse of GS. Refuted at an atom, so no uniform-substitution argument is needed to extend it.
+- `BimodalLib.Countermodels.ModalTemporalBoolean.Base.cmDetermined`: The Determined schema with its determinism hypothesis dropped. The schema itself is not registered as a theorem row, but the positive half of the result is a theorem, and that is what this row names.
+- `BimodalLib.Countermodels.ModalTemporalBoolean.Base.cmSomePastStab`: Bounds the ⊡-analogue of Kamp's AK12 / Reynolds' HN, which has no counterpart in this tree. No nearMiss: the bounded object is not a declaration here.
+- `BimodalLib.Countermodels.ModalTemporalBoolean.Base.cmStabAllFuturePast`: GS with its pure-future side condition dropped: the instance is Pp, which is not pure-future. Bounds the same declaration as cmAllFutureStab, from the other direction.
+- `BimodalLib.Countermodels.TemporalBoolean.Dense.cmPriorUGap`: Maximal at Dense: the axiom is an RTime principle, refuted at every class strictly below RTime. The Base reading follows by transferLe; nothing here bears on ZTime.
+- `BimodalLib.Countermodels.TemporalBoolean.Dense.cmSep`: Maximal at Dense: refuted at every class strictly below RTime. The operators K⁺ and K⁻ are defined from Until and Since, so the row is filed as temporal and not modal.
+- `BimodalLib.Countermodels.TemporalBoolean.RTime.cmPriorUZ`: Maximal at RTime: valid exactly at ZTime, so refuted along the whole Base-Dense-RTime chain. The Base and Dense readings follow by transferLe.
+- `BimodalLib.Countermodels.TemporalBoolean.RTime.cmZ1`: Maximal at RTime: valid exactly at ZTime. The Base and Dense readings follow by transferLe.
+- `BimodalLib.Countermodels.TemporalBoolean.ZTime.cmBotUntl`: The certificate grade's population route is the ZTime witness-family checkers; the tableau pipeline structurally cannot feed this grade. not_consequence_ztime is the only refutation theorem in this library that takes a premise list natively, but the landed family has an empty premise list, so this row's premises is [] as every other row's is.
+- `BimodalLib.Countermodels.TemporalBoolean.ZTime.cmDenseIndicator`: Maximal at ZTime; the Base reading follows by transferLe. This row is what separates Dense from ZTime in the frame-class tree.
+- `BimodalLib.Countermodels.TemporalBoolean.ZTime.cmDensity`: Maximal at ZTime; the Base reading follows by transferLe. ZTime is incomparable with Dense and RTime, so this row says nothing about either.
+
 ## Laws with no declared dual
 
 Each operator is entered in both polarities. For each pair, the rows below state a law for the universal operator and declare no dual with `register_theorem X (dual := Y)`. The operators of a statement are recognized by pattern over the primitives; whether one law is the dual of another is declared, not computed.

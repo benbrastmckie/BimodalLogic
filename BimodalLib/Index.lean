@@ -6,6 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import BimodalLib.Conjecture
 import BimodalLib.Conservativity.Table
+import BimodalLib.Countermodel
 import BimodalLib.Pairing
 import BimodalLib.ProofFragment
 import BimodalLib.Registry.Complete
@@ -13,11 +14,12 @@ import BimodalLib.Registry.Complete
 /-!
 # The library index
 
-`library_index` renders, in Markdown, every theorem row, pairing row, conservativity edge and
-conjecture in the environment: theorems by fragment and frame class, second proofs by statement,
-conservativity edges with their verdict, the theorems whose reference proof leaves the cell of
-their statement, conjectures with their status and note, and, for each pair of dual operators,
-the rows that state a law for the universal operator and declare no dual.
+`library_index` renders, in Markdown, every theorem row, pairing row, conservativity edge,
+conjecture and countermodel in the environment: theorems by fragment and frame class, second
+proofs by statement, conservativity edges with their verdict, the theorems whose reference proof
+leaves the cell of their statement, conjectures with their status and note, countermodels by
+grade and by fragment and frame class, and, for each pair of dual operators, the rows that state
+a law for the universal operator and declare no dual.
 
 The index is a report. It reads the kernel-checked rows and adds nothing to them: the fragment
 and frame class it prints are those of the rows, and the statement it prints is the type of
@@ -387,6 +389,166 @@ def renderConjectures : MetaM String := do
     out := out ++ "\n" ++ s
   return out
 
+/-! ## The countermodel section
+
+The entry type is generic over `PointTruth`, and `evalExpr` is monomorphic, so the walk below
+takes an explicit branch over `CountermodelEntry Formula` and `CountermodelEntry PlusFormula`.
+That per-language branching is the accepted price of one entry type rather than two, and it is
+confined to this meta-code: no statement in the library is affected by it. The style follows
+`renderConjectures` — environment walk, `mkAppM` projections, `ppOneLine` — rather than
+`rowStatement?`'s `unsafe evalExpr`.
+-/
+
+/-- A `Name` from an expression built from the constructors of `Name`, which is the shape
+`` `Foo `` elaborates to. `nameOfExpr?` of `BimodalLib/Registry.lean` reads the `mkStr`/`mkNum`
+aliases instead, so both forms are covered between them. -/
+partial def nameFromExpr? (e : Expr) : Option Name :=
+  match e.getAppFn.constName?, e.getAppArgs with
+  | some ``Name.anonymous, #[] => some .anonymous
+  | some ``Name.str, #[p, .lit (.strVal s)] => (nameFromExpr? p).map (.str · s)
+  | some ``Name.num, #[p, .lit (.natVal k)] => (nameFromExpr? p).map (.num · k)
+  | _, _ => nameOfExpr? e
+
+/-- Reads a grade constant. -/
+def gradeOfExpr? (e : Expr) : Option Grade :=
+  match e.constName? with
+  | some ``Grade.semantic => some .semantic
+  | some ``Grade.certificate => some .certificate
+  | some ``Grade.gatedTableau => some .gatedTableau
+  | _ => none
+
+/-- Reads an `Option String` in constructor normal form. -/
+def optStringOfExpr? (e : Expr) : Option (Option String) :=
+  if e.isAppOfArity ``Option.some 2 then
+    match e.appArg! with
+    | .lit (.strVal s) => some (some s)
+    | _ => none
+  else if e.isAppOfArity ``Option.none 1 then some none
+  else none
+
+/-- What the index prints for one countermodel row. -/
+structure CountermodelRow where
+  /-- The constant that holds the row. -/
+  decl : Name
+  /-- The language the row is stated in, as printed. -/
+  language : String
+  /-- The refuted inference, as the row states it. -/
+  statement : String
+  /-- The fragment the row is filed in. -/
+  fragment : Fragment
+  /-- The frame class the row's model lives at. -/
+  frameClass : String
+  /-- The operator profile of the row. -/
+  profile : Profile
+  /-- What stands behind the refutation. -/
+  grade : Grade
+  /-- The declaration of the model the refutation uses, where the proof names one. -/
+  model : Option String
+  /-- The declaration this refutation bounds, where it bounds one. -/
+  nearMiss : Option Name
+  /-- What the row shows and what it does not. -/
+  note : String
+
+/-- The countermodel row held by the constant `n`, whose type is `CountermodelEntry L` for the
+language `lang`. -/
+def countermodelRow (n : Name) (lang : String) : MetaM CountermodelRow := do
+  let c := mkConst n
+  let bad {α} (what : String) : MetaM α :=
+    throwError "the countermodel row {n} has no computable {what}"
+  let some profile := profileOfExpr? (← reduce (← mkAppM ``CountermodelEntry.profile #[c]))
+    | bad "profile"
+  let some grade := gradeOfExpr? (← whnf (← mkAppM ``CountermodelEntry.grade #[c]))
+    | bad "grade"
+  let some fc := (← whnf (← mkAppM ``CountermodelEntry.frameClass #[c])).constName?
+    | bad "frame class"
+  let some model := optStringOfExpr? (← whnf (← mkAppM ``CountermodelEntry.model #[c]))
+    | bad "model field"
+  let .lit (.strVal note) ← whnf (← mkAppM ``CountermodelEntry.note #[c]) | bad "note"
+  let nmE ← reduce (← mkAppM ``CountermodelEntry.nearMiss #[c])
+  let nearMiss ← if nmE.isAppOfArity ``Option.some 2 then
+      match nameFromExpr? nmE.appArg! with
+      | some nm => pure (some nm)
+      | none => bad "near-miss name"
+    else pure none
+  -- `whnf`, not `reduce`: the head `def` unfolds so the inference is visible, while the
+  -- defined tense operators inside it survive. `reduce` would print `G` and `F` as their
+  -- Until/Since/negation expansions, which the theorem half does not do either.
+  let premises ← whnf (← mkAppM ``CountermodelEntry.premises #[c])
+  let conclusion ← whnf (← mkAppM ``CountermodelEntry.conclusion #[c])
+  let conclusionStr ← ppOneLine conclusion
+  let statement ← if premises.isAppOfArity ``List.nil 1 then pure s!"⊭ {conclusionStr}"
+    else pure s!"{← ppOneLine premises} ⊭ {conclusionStr}"
+  return {
+    decl := n, language := lang, statement := statement, fragment := profile.fragment,
+    frameClass := fc.getString!, profile := profile, grade := grade, model := model,
+    nearMiss := nearMiss, note := note }
+
+/-- The countermodel rows in the environment: every constant whose type is `CountermodelEntry L`
+for one of the two languages, with the language's printed name. -/
+def countermodelRows : MetaM (Array CountermodelRow) := do
+  let env ← getEnv
+  let mut out := #[]
+  for (n, ci) in env.constants.map₁.toList ++ env.constants.map₂.toList do
+    unless ci.type.isAppOfArity ``CountermodelEntry 3 do continue
+    -- The per-language branch. `evalExpr` is monomorphic, so the language is read off the
+    -- type's first argument and the two cases are named here rather than abstracted over.
+    let lang ← match ci.type.getAppArgs[0]!.constName? with
+      | some ``Formula => pure "L"
+      | some ``FormalSystem.PlusLanguage.PlusFormula => pure "L⁺"
+      | _ => continue
+    out := out.push (← countermodelRow n lang)
+  return out.qsort (·.decl.toString < ·.decl.toString)
+
+/-- The grades, in the order the index lists them. -/
+def gradeOrder : List Grade := [.semantic, .certificate, .gatedTableau]
+
+/-- The countermodel section of the index: the per-grade census, the per-fragment and
+per-frame-class breakdown, and one table of rows per cell. -/
+def renderCountermodels (rows : Array CountermodelRow) : String := Id.run do
+  let mut out := s!"## Countermodels\n\n{rows.size} registered countermodels. A row records a \
+    refuted inference, the strongest frame class at which its model lives, and a refutation the \
+    kernel checks. A row is filed at its MAXIMAL frame class only: the frame-class order is a \
+    tree, so an inference may carry two maximal rows, and the weaker readings are derived by \
+    `CountermodelEntry.transferLe` rather than registered. An ungated `invalid` verdict from a \
+    decision procedure is never a row; it is a conjecture at `heuristically refuted`.\n\n"
+  out := out ++ "### Census by grade\n\n| Grade | What stands behind it | Rows |\n|---|---|---|\n"
+  let behind : Grade → String
+    | .semantic => "a Lean theorem, by an explicit model"
+    | .certificate => "a finite certificate accepted by a proved checker"
+    | .gatedTableau => "an open saturated branch passing the gates, with the gate theorem applied"
+  for g in gradeOrder do
+    let inG := rows.filter (·.grade == g)
+    out := out ++ s!"| {code g.name} | {behind g} | {inG.size} |\n"
+  out := out ++"\n### Census by fragment and frame class\n\n"
+  out := out ++ "| Fragment | " ++ " | ".intercalate frameClassOrder ++ " | Total |\n"
+  out := out ++ "|---|" ++ String.join (frameClassOrder.map fun _ => "---|") ++ "---|\n"
+  for fr in fragmentOrder do
+    let inFr := rows.filter (·.fragment == fr)
+    let cells := frameClassOrder.map fun fc => toString (inFr.filter (·.frameClass == fc)).size
+    out := out ++ s!"| {code fr.name} | " ++ " | ".intercalate cells ++ s!" | {inFr.size} |\n"
+  for fr in fragmentOrder do
+    for fc in frameClassOrder do
+      let cell := rows.filter fun r => r.fragment == fr && r.frameClass == fc
+      if cell.isEmpty then continue
+      out := out ++ s!"\n### {fr.name}, maximal at {fc} ({cell.size})\n\n"
+      out := out ++ "| Row | Language | Inference | Grade | Model | Bounds |\n"
+      out := out ++ "|---|---|---|---|---|---|\n"
+      for r in cell do
+        let model := match r.model with
+          | some m => code m
+          | none => ""
+        let nm := match r.nearMiss with
+          | some d => code (toString d)
+          | none => ""
+        out := out ++ s!"| {code (toString r.decl)} | {r.language} | {code r.statement} | \
+          {r.grade.name} | {model} | {nm} |\n"
+  let withNotes := rows.filter (·.note != "")
+  unless withNotes.isEmpty do
+    out := out ++ "\n### What each row shows\n\n"
+    for r in withNotes do
+      out := out ++ s!"- {code (toString r.decl)}: {r.note}\n"
+  return out
+
 /-- The whole index, as Markdown. -/
 def renderIndex : MetaM String := do
   let rows ← (← registryRows).mapM fun (n, ci) => indexRow n ci
@@ -395,7 +557,8 @@ def renderIndex : MetaM String := do
     second proof, a conservativity edge or a conjecture.\n\n" ++ renderTheorems rows ++ "\n"
     ++ (← renderReproofs)
     ++ "\n" ++ (← renderEdges) ++ "\n" ++ (← renderProofFragments) ++ "\n"
-    ++ (← renderConjectures) ++ "\n" ++ renderDuals rows
+    ++ (← renderConjectures) ++ "\n" ++ renderCountermodels (← countermodelRows) ++ "\n"
+    ++ renderDuals rows
 
 /-- `library_index` prints the index of the library, in Markdown, to standard output.
 `library_index to "path"` writes it to a file instead. The index covers the theorem rows,

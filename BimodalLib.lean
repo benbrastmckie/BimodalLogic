@@ -17,6 +17,7 @@ import BimodalLib.Countermodel.Gates
 import BimodalLib.Countermodel.Lookup
 import BimodalLib.Countermodel.Transfer
 import BimodalLib.Countermodels.Boolean.GatedTableau
+import BimodalLib.Countermodels.Complete
 import BimodalLib.Countermodels.ModalBoolean.Base
 import BimodalLib.Countermodels.ModalTemporalBoolean.Base
 import BimodalLib.Countermodels.TemporalBoolean.Dense
