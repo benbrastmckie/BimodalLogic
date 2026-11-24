@@ -641,42 +641,42 @@ cell, each with a reason, and the library fails to build when a listed entry has
 
 ---
 
-### Phase 9: Theorem index, documentation, records and the closing gate [NOT STARTED]
+### Phase 9: Theorem index, documentation, records and the closing gate [COMPLETED]
 
 **Goal**: Each proved edge is in `docs/theorem-index.md` with a pinned axiom set; `docs/`
 describes what exists; the implemented part is cut from `records/`; the task's touched paths
 pass their gates.
 
 **Tasks**:
-- [ ] `docs/theorem-index.md`: rows for the two Phase 5 edge theorems and the parametric
+- [x] `docs/theorem-index.md`: rows for the two Phase 5 edge theorems and the parametric
   translation theorem (fully qualified names, file path, frame class `—`, `pcq pinned:C14`),
   beside the existing `plusDerivable_ofFormula_iff` row.
-- [ ] `scripts/check-module-invariants.sh`: add the same three declarations to both halves of
+- [x] `scripts/check-module-invariants.sh`: add the same three declarations to both halves of
   the C14 pair (the `C14BASE` expected lines and the `C14LEAN` `#print axioms` lines), in the
   position the existing ordering dictates. The refutation and the `within` forms are in
   `BimodalLib`, outside what C14 can pin; state that in the docs, do not add rows for them.
-- [ ] `FormalSystem/Metalogic/Conservativity/README.md` and the docstring of
+- [x] `FormalSystem/Metalogic/Conservativity/README.md` and the docstring of
   `FormalSystem/Metalogic/Conservativity.lean`: a section on the fragment edges (the calculus,
   the translation theorem, the two edges, the pointer to `BimodalLib` for the refutation and the
   table). Complete `FormalSystem/Metalogic/Conservativity/Fragments/README.md`.
-- [ ] `docs/reference/bimodal-lib.md`, `BimodalLib/README.md`, `BimodalLib/Conjectures/README.md`:
+- [x] `docs/reference/bimodal-lib.md`, `BimodalLib/README.md`, `BimodalLib/Conjectures/README.md`:
   the edge registry and its table, the proof-fragment listing and check, the refutation and what
   it means for filing at `TemporalBoolean` over `Base`, how to record a reason, the changed
-  conjecture set. `Tests/README.md` if it lists the test modules.
-- [ ] `records/theorem-library.md`: cut the conservativity table and the three-step method text
+  conjecture set. `Tests/README.md` if it lists the test modules. *(deviation: altered — also `BimodalLib/Conservativity/README.md`, new, and rows in `Tests/BimodalLibTest/README.md`; both are outside the declared `file_scope` and are left uncommitted by the scoped commit)*
+- [x] `records/theorem-library.md`: cut the conservativity table and the three-step method text
   that is now implemented; keep what is not built (the temporal edges at three classes and the
   repaired `.Base` edge, with the obstruction), point to `BimodalLib/INDEX.md` for the status,
   and correct the claim that filing at the smallest fragment is a theorem at every cell.
-- [ ] `records/proof-mode.md`, M22: reword the done-when clause to the translation method, and
+- [x] `records/proof-mode.md`, M22: reword the done-when clause to the translation method, and
   replace the filed-record sentence about two completeness theorems by the proposed record for
   the temporal edges (the always translation at `.Dense`, `.ZTime`, `.RTime` and the repaired
   `.Base` edge).
-- [ ] State the current design only in every file outside `specs/`: no task numbers, no "no
+- [x] State the current design only in every file outside `specs/`: no task numbers, no "no
   longer", "previously" or version framing.
-- [ ] If any `.lean` docstring changed line counts under `FormalSystem/`: rerun
+- [x] If any `.lean` docstring changed line counts under `FormalSystem/`: rerun
   `bash scripts/typst-sync-check.sh --fix` and `--emit-inventory`, and stage the results.
-- [ ] Run the scoped gates listed under Verification over the task's touched paths.
-- [ ] Record the proposed follow-up record (temporal edges) in the implementation summary.
+- [x] Run the scoped gates listed under Verification over the task's touched paths. *(completed; `check-module-invariants.sh` fails C12 and C20 only, each naming files this task did not touch; `verify-touched.sh` exited 1 on one agent-system suite, `test-deploy-propagation.sh`, recorded red in the summary)*
+- [x] Record the proposed follow-up record (temporal edges) in the implementation summary.
 
 **Timing**: 2 hours
 

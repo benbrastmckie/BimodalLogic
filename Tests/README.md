@@ -8,7 +8,7 @@ This directory contains test suites for the formal logic theories.
 |-----------|-------------|
 | `BimodalTest/` | Tests for Bimodal TM logic |
 | `BimodalToolsTest/` | Tests for the `BimodalTools` library (dataset tooling, the canonical wire codec, the source-sentence codec) |
-| `BimodalLibTest/` | Tests for the `BimodalLib` library (fragments, the theorem registry and its check, pairing, the index); built by `lake build BimodalLibTest` |
+| `BimodalLibTest/` | Tests for the `BimodalLib` library (fragments, the theorem registry and its check, pairing, the index, the conservativity-edge table, the proof-fragment check); built by `lake build BimodalLibTest` |
 | `fixtures/` | Committed data files a test reads with `include_str`, or that a consumer outside this repository compares against. Distinct from the repository-root `data/`, which is gitignored in its entirety and so cannot hold a shared artifact — see `fixtures/README.md` |
 
 ## BimodalTest

@@ -77,6 +77,18 @@ Per-theorem status for all of these — statement, frame class, and machine-pinn
 lives in `docs/theorem-index.md`, which is the repository's single ledger. This module is the
 authority on *why the forward direction must not be attempted*, not on which theorems hold.
 
+## The fragments of L
+
+`Conservativity/Fragments/` answers a different question from the one this page is about: not
+whether TM is conservative over the smaller language L⁻ with its own logic TM⁻, but whether TM
+is conservative over a fragment of its own language, whose logic is the part of TM that stays
+inside the fragment. `Fragments.CellDerivable` is that logic as a calculus over an abstract
+sublanguage, `Fragments.conservative_of_translation` is the argument for an edge stated once,
+and `Fragments.boolean_conservative` and `Fragments.modal_conservative` are the edges out of the
+formulas with no operator and out of the formulas whose only operator is `□`, each at every
+frame class. The edge out of the temporal fragment is refuted at `.Base` and open at the other
+classes; that refutation and the table of all edges are in `BimodalLib/Conservativity/`.
+
 ## Scope
 
 This module proves the **backward** direction only.

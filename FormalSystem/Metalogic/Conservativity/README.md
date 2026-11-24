@@ -1,12 +1,14 @@
 # Metalogic/Conservativity
 
-The three conservativity questions this development answers, and the one it refuses to attempt.
+The conservativity questions this development answers, and the one it refuses to attempt.
 
 | Extension | Direction | Status |
 |-----------|-----------|--------|
 | L⁻ ⊂ L (TM⁻ into TM, via `tr`) | backward | **proved** — `derivable_translate` and the four row corollaries |
 | L⁻ ⊂ L | forward | **refuted** at `.Base` and `.ZTime` — both rows machine-checked (`tmMinusCompleteBase_refuted`, `tmMinusCompleteZTime_refuted`); **proved** at `.Dense` (`forward_dense`, from `chainComplete_dense`); **open** at `.RTime` |
 | L ⊂ L⁺ (TM into TM⁺, via `ofFormula`) | both | **proved** at all four classes — `plusDerivable_ofFormula_iff` |
+| Boolean fragment of L ⊂ L | TM adds nothing | **proved** at all four classes — `Fragments.boolean_conservative` |
+| `□` fragment of L ⊂ L | TM adds nothing | **proved** at all four classes — `Fragments.modal_conservative` |
 
 The **canonical four-row status table** for the forward row above — including how the `.Dense`
 row closed and the named obstruction at the one open row, `.RTime` — lives in
@@ -18,6 +20,22 @@ Per-theorem status — statement, frame class, machine-pinned axiom set — is i
 prohibition on attempting or `sorry`-ing the forward direction of L⁻ ⊂ L, with the CEB/CEF/CED/CEC
 row analysis that grounds it, is in the aggregator
 [`../Conservativity.lean`](../Conservativity.lean) and is not repeated here.
+
+## The fragments of L
+
+[`Fragments/`](Fragments/README.md) treats the fragments of `L` itself: the formulas with no
+operator, and the formulas whose only operator is `□`. A fragment has no proof system of its
+own; its logic is the part of TM whose derivations stay inside it, stated as the calculus
+`Fragments.CellDerivable` over an abstract sublanguage. `Fragments.conservative_of_translation`
+states the argument for an edge once, for an arbitrary translation, and the two edges above are
+its instances at the collapse of the temporal operators. Neither uses a completeness theorem
+for the smaller logic.
+
+The fragment with Until and Since and no `□` is not treated here. Its edge at `.Base` is refuted
+and its edges at the other three classes are open; the refutation, the table of every edge with
+a kernel-checked verdict, and the forms of the two proved edges over derivations within a cell
+are in `BimodalLib/Conservativity/`, which imports this library. The table is rendered in
+`BimodalLib/INDEX.md`.
 
 **Do not state a forward-conservativity theorem for L⁻ ⊂ L.** It is provably false at
 `fc := .Base` and `fc := .ZTime`, so a `sorry` on it would be an unsound placeholder rather
@@ -57,6 +75,9 @@ than deferred debt.
 
 ## Key Results
 
+- `Fragments.boolean_conservative`, `Fragments.modal_conservative` — TM derives nothing new about
+  the formulas with no operator, nor about the formulas whose only operator is `□`, at every
+  frame class; both from `Fragments.conservative_of_translation`
 - `translate` / `derivable_translate` — the backward bridge, by structural recursion over TM⁻
   derivations, parameterized by `FrameClass` so the paper's four rows are four instantiations
 - `ceb_backward`, `cef_backward`, `ced_backward`, `cec_backward` — the four row corollaries
@@ -114,4 +135,4 @@ than deferred debt.
 
 ---
 
-*Last verified: 2026-09-22*
+*Last verified: 2026-11-23*

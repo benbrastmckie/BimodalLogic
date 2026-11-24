@@ -2383,6 +2383,9 @@ read -r -d '' C14_BASELINE <<'C14BASE'
 'FormalSystem.Metalogic.Conservativity.minusCompactDense' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Conservativity.plus_soundness_validIn' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Conservativity.plusDerivable_ofFormula_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Conservativity.Fragments.conservative_of_translation' depends on axioms: [propext]
+'FormalSystem.Metalogic.Conservativity.Fragments.boolean_conservative' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Conservativity.Fragments.modal_conservative' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.PlusLanguage.plusValidIn_ofFormula_iff' depends on axioms: [propext]
 'FormalSystem.Metalogic.Decidability.decide' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Semantics.galoisClosed_mod' depends on axioms: [propext]
@@ -2757,6 +2760,9 @@ import FormalSystem
 #print axioms FormalSystem.Metalogic.Conservativity.minusCompactDense
 #print axioms FormalSystem.Metalogic.Conservativity.plus_soundness_validIn
 #print axioms FormalSystem.Metalogic.Conservativity.plusDerivable_ofFormula_iff
+#print axioms FormalSystem.Metalogic.Conservativity.Fragments.conservative_of_translation
+#print axioms FormalSystem.Metalogic.Conservativity.Fragments.boolean_conservative
+#print axioms FormalSystem.Metalogic.Conservativity.Fragments.modal_conservative
 #print axioms FormalSystem.PlusLanguage.plusValidIn_ofFormula_iff
 #print axioms FormalSystem.Metalogic.Decidability.decide
 #print axioms FormalSystem.Semantics.galoisClosed_mod

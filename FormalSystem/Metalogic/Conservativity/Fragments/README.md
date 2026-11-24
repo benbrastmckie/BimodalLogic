@@ -51,3 +51,5 @@ theorem for the smaller logic.
   three hypotheses
 - `boolean_conservative` — the Boolean sublanguage is conserved by TM at every frame class
 - `modal_conservative` — the sublanguage with `□` is conserved by TM at every frame class
+
+*Last verified: 2026-11-23*

@@ -92,7 +92,7 @@ Every subdirectory has exactly one **sibling** aggregator: `X.lean` sits *beside
 | `Algebraic.lean` | 40 | `Algebraic/` |
 | `BXCanonical.lean` | 43 | `BXCanonical/` |
 | `Bundle.lean` | 47 | `Bundle/` |
-| `Conservativity.lean` | 470 | `Conservativity/` |
+| `Conservativity.lean` | 482 | `Conservativity/` |
 | `ConvexConsequence.lean` | 44 | Aggregator for the metatheory of the convex-index consequence relations C3 and C4; holds no declarations |
 | `Core.lean` | 40 | `Core/` |
 | `Decidability.lean` | 202 | `Decidability/` |
@@ -110,7 +110,7 @@ sibling directory. The list is generated, so a file that moves out (four of them
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic rows=loose filter=non-aggregators -->
 | Loose non-aggregator | Lines | Role |
 |----------------------|------:|------|
-| `Conservativity.lean` | 470 | Conservativity of the extension |
+| `Conservativity.lean` | 482 | Conservativity of the extension |
 | `AuxiliaryAtoms.lean` | 903 | Soundness of Reynolds' Auxiliary-Atoms rule over L⁺, transposed to `⊡`/`G≤` — `aa_sound_int` over every regular frame over `intOrder`, `aa_sound_ztime` at `FrameClass.ZTime` by carrier normalization, and `aa_reflectTime_sound_ztime` as the mirror by reflection. The rule runs on the forward-cone unravelling (`Semantics/ConeUnravelling.lean`) under a valuation that reads the auxiliary atoms off a finite-state machine run along the recorded path, forgets them by a finite-family freshness congruence, and projects along the two-way bounded morphism. Soundness only: no completeness, decidability or axiomatizability claim follows |
 | `Compactness.lean` | 237 | Compactness and strong completeness for Base and Dense, by ultraproduct model existence |
 | `DedekindNonCompactness.lean` | 539 | Non-compactness of the Dedekind frame class — the `{G(⊤ S ¬q), F(G ¬q)} ∪ {Xqⁿ⊤}` witness, finitely satisfiable over `ℝ` and unsatisfiable over every Dedekind-complete carrier, refuting `CompactDedekind` and `StrongCompletenessDedekind` |

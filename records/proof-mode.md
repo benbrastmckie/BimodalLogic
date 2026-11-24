@@ -588,22 +588,25 @@ it, so it does not meet the done-when.
 
 ### M22: Conservativity along every edge
 
-- **Aim**: Prove that each fragment's logic is conserved by every larger one, so that filing by
-  smallest fragment is a theorem and not a convention.
-- **Done when**: each edge in the conservativity table of
-  [theorem-library.md](theorem-library.md) is proved, by soundness of the larger logic, a
-  semantic bridge and completeness of the smaller, with the argument stated once in parametric
-  form and instantiated per edge; or is refuted, with the countermodel entered; the table is
+- **Aim**: Settle, for each fragment, whether its logic is conserved by every larger one, so
+  that filing by smallest fragment is a theorem where it holds and a recorded convention where
+  it does not.
+- **Done when**: each conservativity edge is proved, by a translation that is the identity on
+  the smaller cell and carries every derivation of the larger logic into the cell, with the
+  argument stated once in parametric form and instantiated per edge; or is refuted, with the
+  countermodel entered; or is a registered conjecture with a named obstruction; the table is
   generated from the theorems; and no theorem entry has a proof fragment larger than its
-  statement fragment without a recorded reason.
+  statement fragment without a recorded reason. The table is in `BimodalLib/INDEX.md`.
 - **Hard dependencies**: none for the theorems. M18 for the generated table and the check on
   entries.
 - **Sequencing-only dependencies**: none. It works under `FormalSystem/Metalogic/` and edits no
   proof-mode file.
 - **Lane**: Metatheory.
-- **Filed record**: `theorem_library_fragment_conservativity`. Two edges
-  need a completeness theorem the tree does not state, for S5 over the `□`-fragment and for the
-  temporal schemata alone at each frame class, and each may be its own record.
+- **Filed record**: `theorem_library_fragment_conservativity`. The edges out of
+  `TemporalBoolean` at `Dense`, `ZTime` and `RTime`, and the repaired edge at `Base`, are open
+  and are proposed as a record of their own: the translation that reads `□` as `always`, with
+  the S5 laws of `always` derived inside the temporal cell. See
+  [theorem-library.md](theorem-library.md).
 
 ### M23: The place of the stability operator
 

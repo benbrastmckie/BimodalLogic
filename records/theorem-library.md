@@ -118,9 +118,11 @@ out the comparison and what a separate family would require.
   in its statement, with defined operators counted through their definitions. It is computed by
   a function on formulas and decides the directory. The operator set is computed the same way.
   The functions are `profileF` and `profileP` in `BimodalLib/Fragment.lean`.
-- The **proof fragment** is the smallest interface the reference proof is stated over. Where it
-  is larger than the statement fragment, the conservativity table below says whether the proof
-  can be lowered, and the entry is listed until it has been.
+- The **proof fragment** is the set of operators of every formula the reference proof derives.
+  Where it is larger than the statement fragment, the entry is listed in `BimodalLib/INDEX.md`
+  with a reason: a proved conservativity edge, by which the proof can be lowered, or a reason
+  recorded beside the registration. The listing and the check that enforces it are described in
+  [docs/reference/bimodal-lib.md](../docs/reference/bimodal-lib.md).
 - An entry states its **substitution class**: schematic in all its variables, or restricted to
   atoms or to state-local formulas in named variables. Only entries with `⊡` in their operator
   set are restricted.
@@ -153,35 +155,26 @@ with seriality, once it has a calculus over the frame notion of the lattice.
 ## Conservativity
 
 Filing a statement at its smallest fragment claims that the larger logics prove nothing new
-about it. That claim is a theorem for each edge of the lattice, and the library depends on every
-one: it is what makes the proof fragment lowerable, what lets a countermodel in a small language
-refute in a large one, and what makes a fragment's section complete in itself.
+about it. That claim is one statement per edge of the lattice, and it is not a theorem at every
+edge. The edges out of `Boolean` and out of the cell with `□` are proved at every frame class,
+the edge from L into L⁺ is proved at all four, and the edge out of `TemporalBoolean` at the base
+class is refuted: TM derives `X⊤ → G X⊤` through `□`, and the temporal cell does not. So filing
+at the smallest fragment is a theorem at `Boolean` and at `ModalBoolean`, and at
+`TemporalBoolean` it is a convention: a temporal statement over `Base` may have no proof inside
+its cell. The table of edges, each with a kernel-checked verdict, is generated in
+`BimodalLib/INDEX.md`; the theorems, the method and the registry are described in
+[docs/reference/bimodal-lib.md](../docs/reference/bimodal-lib.md).
 
-Each edge is established the way cslib establishes its own (`conservative_over_cpl`,
-`modal_conservative_extension_param`, `temporal_conservative_over_cpl`), in three steps:
+What is not built:
 
-1. **Soundness of the larger logic** over its models.
-2. **A semantic bridge**: for a formula of the smaller language, truth in a model of the larger
-   logic agrees with truth in a model of the smaller, proved by induction on the formula. The
-   model is chosen to make the added operators trivial where that suffices.
-3. **Completeness of the smaller logic.**
-
-Derivable in the larger gives valid in the larger by 1, valid in the smaller by 2, derivable in
-the smaller by 3. The converse direction is the embedding of derivations.
-
-| Edge | Status | Where |
+| Edge | Status | What stands in the way |
 |---|---|---|
-| L into L⁺: at `ModalTemporalBoolean`, the cell with `□` into the cell with both | proved at all four frame classes | `plusDerivable_ofFormula_iff`, `FormalSystem/Metalogic/Conservativity/Plus/Forward.lean` |
-| `Boolean` into `ModalBoolean` | to prove | completeness of the smaller is the propositional procedure under `FormalSystem/Metalogic/Decidability/Propositional/` |
-| `Boolean` into `TemporalBoolean` | to prove | the same |
-| `ModalBoolean` with `□` into TM | to prove | needs completeness of S5 for the `□`-fragment, which the tree does not state |
-| `TemporalBoolean` into TM, per frame class | to prove | needs completeness of the temporal schemata alone at each class, which the tree does not state |
-| The same edge at `ModalBoolean`: the cell with `□` into the cell with both | to prove | follows from L into L⁺ once the two edges into TM are proved, or directly by the collapse |
+| `TemporalBoolean` into TM at `Dense`, `ZTime` and `RTime` | open, three registered conjectures | The translation that would prove the edge reads `□` as `always`. It needs the S5 laws of `always`, the law `always φ → always Gφ` and replacement of provable equivalents, each derived inside the temporal cell at the class. No completeness theorem is needed. |
+| `TemporalBoolean` with uniform discreteness as a hypothesis, into TM at `Base` | open, one registered conjecture | The same, and whether the hypothesis `X⊤ → always X⊤`, with its past mirror, is all that TM derives about the temporal cell through `□`. |
 
-The theorems live with the rest of the metalogic under `FormalSystem/Metalogic/Conservativity/`.
-Each edge marked "to prove" is registered as a conjecture in
-`BimodalLib/Conjectures/Conservativity.lean`, stated over derivability within a cell, and listed
-in `BimodalLib/INDEX.md`. An entry whose filing depends on an unproved edge says so.
+These four are one piece of work, the always translation, and are proposed as a record of their
+own. Until they are settled, an entry at `TemporalBoolean` whose reference proof uses `□` stays
+listed with a recorded reason.
 
 The edge from L⁻ into L is a different question, answered and partly refuted in
 `FormalSystem/Metalogic/Conservativity/README.md`. L⁻ is not a fragment in this lattice: it has
@@ -278,7 +271,7 @@ against the leaf. It never closes a goal.
 ## Conjectures
 
 A statement that is neither derived nor refuted has a place of its own. The type of a
-conjecture, how one is registered, and the first entries (the unproved conservativity edges and
+conjecture, how one is registered, and the first entries (the conservativity edges and
 the derivation in TM⁺ of the collapse `φ ↔ ⊡φ` for state-local `φ`) are implemented and
 described in [docs/reference/bimodal-lib.md](../docs/reference/bimodal-lib.md).
 
@@ -353,8 +346,11 @@ Taken:
   cslib has one class per connective, one per axiom, bundles such as `ModalS5Hilbert` and
   `BimodalTMHilbert` that extend smaller ones, and generic theorem modules stated over a bundle.
   The fragment lattice here is that hierarchy.
-- **Conservativity by soundness, a semantic bridge and completeness of the base**, proved once
-  in parametric form and instantiated per edge.
+- **Conservativity proved once in parametric form and instantiated per edge.** cslib's
+  argument is soundness, a semantic bridge and completeness of the base. Here the bridge is read
+  on formulas, as a translation, and the argument is an induction on derivations, because a
+  fragment's logic is a set of TM derivations and no completeness theorem in the tree returns a
+  derivation inside a fragment.
 - **Derivations are data.** Proof systems are `Type`-valued, so derivations can be measured.
 - **Transport along a morphism of proof systems** (`ProofSigHom`, `Deriv.map`) as the general
   form of the lifts between languages.

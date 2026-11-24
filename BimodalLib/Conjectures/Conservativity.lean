@@ -141,8 +141,9 @@ def temporalBooleanUniformIntoTMBase : Conjecture where
   frameClass := some .Base
   status := .unsettled
   note := "The cell is extended by a hypothesis and not by an axiom: the statement asks for a \
-    derivation, within the temporal cell, of the implication from \
-    BimodalLib.Edges.discreteUniformity to the formula. The hypothesis is always((X⊤ → always \
+    derivation, within the temporal cell, of the implication from the formula \
+    discreteUniformity of BimodalLib/Conservativity/Table.lean to the formula \
+    derived. The hypothesis is always((X⊤ → always \
     X⊤) ∧ (Y⊤ → always Y⊤)). The past conjunct is stated because a hypothesis is not closed \
     under time reflection, and the rationals times the naturals in the lexicographic order \
     satisfy the future conjunct alone. Whether TM derives further temporal formulas through □ \

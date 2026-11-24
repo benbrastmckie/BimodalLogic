@@ -39,7 +39,11 @@ be many: `lake build` means "the published library".
 | `BimodalLib/Theorems/Complete.lean` | Runs the registration check over the published library |
 | `BimodalLib/Pairing.lean` | The row type `ReproofEntry` and the command `reprove X as Y := t` |
 | `BimodalLib/Conjecture.lean` | The type `Conjecture` |
-| `BimodalLib/Conservativity.lean` | Derivability within a cell, in which the conservativity conjectures are stated |
+| `BimodalLib/Conservativity.lean` | Derivability within a cell, in which the conservativity edges are stated, and the proof profile of a derivation |
+| `BimodalLib/Conservativity/Proved.lean` | The proved edges: out of `Boolean` and out of the cell with `□` |
+| `BimodalLib/Conservativity/TemporalBase.lean` | The refuted edge: out of `TemporalBoolean` at the base class |
+| `BimodalLib/Conservativity/Table.lean` | The registry of edges, each with a kernel-checked verdict |
+| `BimodalLib/ProofFragment.lean` | The commands `record_proof_fragment` and `assert_proof_fragments_recorded` |
 | `BimodalLib/Conjectures/` | The registered conjectures |
 | `BimodalLib/Index.lean` | The polarity census and the command `library_index` |
 | `BimodalLib/INDEX.md` | The generated index |
@@ -143,23 +147,99 @@ fragment and operator set are declared by its author, where those of a theorem r
 To register one, declare a `Conjecture` in a module under `BimodalLib/Conjectures/` and
 regenerate the index.
 
-The conservativity edges are stated over derivability within a cell. `within c d` holds when
-every formula derived in the derivation `d` has a profile included in `c`; `DerivableIn c fc φ`
-says `φ` has such a closed derivation; `ConservativeEdge c fc` says that a formula of the cell
+The registered conjectures are the conservativity edges and the derivability in the extended
+system of the collapse `φ ↔ ⊡φ` for state-local `φ`, which is proved as a validity
+(`plusStateLocal_stab_iff`). A conjecture whose edge has been proved or refuted is kept, with
+status `derived` or `refuted` and a note naming the theorem, as the link from the question to
+its answer. `BimodalLib/INDEX.md` lists each with its statement and note.
+
+## Conservativity edges
+
+Filing a statement at its smallest fragment claims that the larger logics prove nothing new
+about it. The claim is stated over derivability within a cell. `within c d` holds when every
+formula derived in the derivation `d` has a profile included in `c`; `DerivableIn c fc φ` says
+`φ` has such a closed derivation; `ConservativeEdge c fc` says that a formula of the cell
 derivable at `fc` is derivable within the cell. `withinP` and `DerivableInP` are the same for
 the extended system. The axiom instances and rule applications that stay inside a cell are that
-cell's logic, so no proof system per fragment is defined.
+cell's logic, so no proof system per fragment is defined. `proofProfile d` is the join of the
+profiles of every formula `d` derives, `within c d` holds exactly when `proofProfile d ≤ c`
+(`within_iff_proofProfile_le`), and so `within` is decidable.
 
-The registered conjectures are the conservativity edges that are not yet proved and the
-derivability in the extended system of the collapse `φ ↔ ⊡φ` for state-local `φ`, which is
-proved as a validity (`plusStateLocal_stab_iff`). `BimodalLib/INDEX.md` lists each with its
-statement and note.
+What is known of each edge:
+
+| Edge | Verdict | Theorem |
+|---|---|---|
+| L into L⁺ | proved at all four classes | `FormalSystem.Metalogic.Conservativity.plusDerivable_ofFormula_iff` |
+| `Boolean` into TM, and so into `ModalBoolean` and into `TemporalBoolean` | proved at every class | `BimodalLib.conservativeEdge_boolean`, `derivableIn_boolean_of_box`, `derivableIn_boolean_of_temporal` |
+| `ModalBoolean` with `□` into TM | proved at every class | `BimodalLib.conservativeEdge_box` |
+| `ModalBoolean` with `□` into `ModalBoolean` with `□` and `⊡` | proved at every class | `BimodalLib.derivableIn_box_of_derivableInP` |
+| `TemporalBoolean` into TM at `Base` | refuted | `BimodalLib.not_conservativeEdge_temporal_base` |
+| `TemporalBoolean` into TM at `Dense`, `ZTime`, `RTime` | open | three conjectures |
+| `TemporalBoolean` with uniform discreteness as a hypothesis, into TM at `Base` | open | one conjecture |
+
+This table is a summary. The generated one is the section "Conservativity edges" of
+`BimodalLib/INDEX.md`, rendered from `BimodalLib/Conservativity/Table.lean`. A row there is a
+`ConservativityEdge`: the statement of the edge and an `EdgeVerdict` on it. The verdict is a
+dependent value: `proved` carries a proof of the statement, `refuted` a proof of its negation,
+`open` the obstruction as text. The index prints the constructor, so a row reads proved or
+refuted only when the kernel has checked the proof. To register an edge, declare a
+`ConservativityEdge` in that module and regenerate the index.
+
+**How the proved edges are proved.** The theorems are in
+`FormalSystem/Metalogic/Conservativity/Fragments/`, over a calculus `CellDerivable L fc` of
+derivations inside an abstract sublanguage `L`; `derivableIn_iff_cellDerivable` identifies it
+with derivability within a cell. `conservative_of_translation` states the argument once: a map
+on formulas that commutes with implication, sends each admissible axiom instance to a formula
+derivable inside `L`, preserves that derivability under the three rules for theorems, and is the
+identity on `L`, gives the edge by induction on the derivation. The two instances collapse the
+temporal operators, reading a formula in a model with one moment, and keep `□` or read it as the
+identity. The translated axioms are propositional tautologies, derivable inside any sublanguage
+by `tautology_derivable`, or instances of T, 5 and K. No completeness theorem for the smaller
+logic is used. `FormalSystem.Metalogic.Conservativity.Fragments.boolean_conservative`,
+`modal_conservative` and `conservative_of_translation` are in `docs/theorem-index.md` with
+pinned axiom sets. The theorems of `BimodalLib` are outside what that ledger can pin, because
+its check reads the declarations reachable from `import FormalSystem`; each depends on
+`propext`, `Classical.choice` and `Quot.sound` only.
+
+**What the refutation means for filing.** At `TemporalBoolean` over `Base`, filing a statement
+at its smallest fragment is not a theorem. TM derives `X⊤ → G X⊤` at the base class from
+`X⊤ → □X⊤`, and the temporal cell is sound for every linear order without endpoints, among them
+the integers followed by the rationals, where that formula fails. A temporal statement filed
+there may have no proof that avoids `□`. The open edges at the other three classes, and the
+repaired edge at `Base`, need a translation that reads `□` as `always` and the S5 laws of
+`always` derived inside the temporal cell.
+
+## Proofs outside the statement cell
+
+A theorem row is filed by the operators of its statement. Its reference proof may use more. The
+section "Proofs outside the statement cell" of the index lists every registered theorem whose
+registered derivation derives a formula outside the cell of its statement, with the proof
+profile and a reason. The proof profile of a row is computed by evaluating `proofProfile` on the
+registered derivation, at the row's own frame class and at the canonical schema variables. It is
+a report; no theorem depends on it.
+
+A listed row needs a reason, and there are two kinds. Where the edge out of the statement's cell
+into TM is proved at the row's frame class, the proof can be lowered into the cell, and the
+index names the edge theorem. Otherwise the reason is recorded beside the registration:
+
+```lean
+register_theorem FormalSystem.Theorems.ConnectDerived.discreteSymmFwd
+record_proof_fragment FormalSystem.Theorems.ConnectDerived.discreteSymmFwd
+  "The derivation routes through NF, which the full system derives through □. ..."
+```
+
+`assert_proof_fragments_recorded`, run from `BimodalLib/Theorems/Complete.lean`, fails the build
+when a listed row has neither, and names the row. It also fails when a reason is recorded for a
+row whose proof stays inside its cell, so that a reason does not outlive the proof it was
+written for. Three rows are listed: NP, its time reflection and NA, each at `TemporalBoolean`
+over `Base` and each derived through `□`.
 
 ## The index
 
 `bash scripts/library-index.sh` builds the library, runs the command `library_index`, and
 writes `BimodalLib/INDEX.md`: the theorems by fragment and frame class, the second proofs by
-statement, the conjectures, and for each pair of dual operators the laws with no declared dual.
+statement, the conservativity edges, the proofs outside the statement cell, the conjectures, and
+for each pair of dual operators the laws with no declared dual.
 `--check` fails when the committed index differs from a fresh one; CI runs it.
 
 The dual pairs are `□`/`◇`, `G`/`F`, `H`/`P` and always/sometimes, with `⊡`/`⟐` listed as
@@ -173,8 +253,8 @@ listing is long because few duals are declared.
 
 | Check | Catches |
 |---|---|
-| `lake build BimodalLib --wfail` (CI) | An unregistered closed derivation; a declared dual with no row; any warning |
-| `lake build BimodalLibTest --wfail` (CI) | A command that stops failing where it should: the check on a fixture, a drifted second proof, a declaration that is not a closed derivation |
+| `lake build BimodalLib --wfail` (CI) | An unregistered closed derivation; a declared dual with no row; a proof outside its statement cell with no reason; an edge marked proved or refuted without a proof; any warning |
+| `lake build BimodalLibTest --wfail` (CI) | A command that stops failing where it should: the registration check and the proof-fragment check on their fixtures, a drifted second proof, a declaration that is not a closed derivation, an edge table that omits a registered edge |
 | `scripts/library-index.sh --check` (CI) | A stale `BimodalLib/INDEX.md` |
 | `B3` of `scripts/check-module-invariants.sh` | `FormalSystem` importing `BimodalLib` |
 | `lake exe runLinter BimodalLib` | A declaration, generated rows included, with no docstring |
