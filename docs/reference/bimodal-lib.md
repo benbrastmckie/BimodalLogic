@@ -36,7 +36,9 @@ be many: `lake build` means "the published library".
 | `BimodalLib/Registry.lean` | The row type `TheoremEntry` and the command `register_theorem` |
 | `BimodalLib/Registry/Complete.lean` | The command `assert_registry_complete` |
 | `BimodalLib/Theorems/<Fragment>/<FrameClass>.lean` | The registration lines, one per registered theorem |
-| `BimodalLib/Theorems/Complete.lean` | Runs the registration check over the published library |
+| `BimodalLib/Theorems/Complete.lean` | Runs the registration check, the proof-fragment check, and the non-redundancy check over the generated entries |
+| `BimodalLib/Theorems/Enumerated/Base.lean` | The machine-generated entries the tableau pipeline admits; one file, because proof extraction is `Base`-only |
+| `BimodalLib/Subsumption.lean` | `matchSubst?`, `isSubstInstance`, and the command `assert_no_subsumed_entries` |
 | `BimodalLib/Pairing.lean` | The row type `ReproofEntry` and the command `reprove X as Y := t` |
 | `BimodalLib/Conjecture.lean` | The type `Conjecture` |
 | `BimodalLib/Conservativity.lean` | Derivability within a cell, in which the conservativity edges are stated, and the proof profile of a derivation |
@@ -45,6 +47,7 @@ be many: `lake build` means "the published library".
 | `BimodalLib/Conservativity/Table.lean` | The registry of edges, each with a kernel-checked verdict |
 | `BimodalLib/ProofFragment.lean` | The commands `record_proof_fragment` and `assert_proof_fragments_recorded` |
 | `BimodalLib/Conjectures/` | The registered conjectures |
+| `BimodalLib/Conjectures/Enumerated.lean` | The pipeline's non-admitted outcomes, one aggregate constant per (fragment, frame class, verdict) cell |
 | `BimodalLib/Index.lean` | The polarity census and the command `library_index` |
 | `BimodalLib/INDEX.md` | The generated index |
 | `Tests/BimodalLibTest/` | Tests of each command, in both directions |
@@ -119,6 +122,82 @@ imported modules, which is why the module that runs it imports the library root.
 **Adding a theorem.** Add its `register_theorem` line to the file for its fragment and frame
 class, importing the module that declares it, and regenerate the index. A line filed in the
 wrong file still builds; the index files every row by what the row computes.
+
+## Enumerated entries
+
+Most rows are registered by reference: a line names a closed derivation declared under
+`FormalSystem/Theorems/`. The entries under `BimodalLib/Theorems/Enumerated/` are not. They are
+generated: a tableau decides an enumerated formula, proof extraction yields a `DerivationTree`
+for it, and the pipeline prints Lean source that reconstructs that tree, generalizes it from the
+formula's own atoms to schema variables, and registers it. Regenerate with
+
+```bash
+bash scripts/theorem-library-pipeline.sh --all-fragments --atoms 2 \
+  --frame-class Base --frame-class Dense --frame-class ZTime --frame-class RTime
+```
+
+An edit made inside that directory is lost on the next run; the emitter
+(`BimodalTools/LeanSourceEmit.lean`) and the driver (`BimodalTools/TheoremPipeline.lean`) are
+where a change belongs.
+
+They are filed together rather than by frame class because proof extraction is `Base`-only by
+construction: `extractProof` ignores its frame-class argument and `ProofExtractionResult.success`
+is hard-coded to `Base`. The frame-class axis moves the countermodel half alone.
+
+### What admission requires
+
+A formula is admitted only when it is valid **and** carries an extracted derivation, and is not a
+substitution instance of an entry already present. Everything else is registered as a conjecture
+with its verdict and is never a result. The distinction that catches a reader out is
+`extractionFailed`: the tableau closed, so the formula *is* valid, but no witness was
+reconstructed, and the row type's `proof` field needs one — so such a formula is valid and
+inadmissible at once. A yield figure quoted as the raw `valid` count therefore overstates the
+admissible set by exactly the `extractionFailed` share.
+
+The derivation-bearing yield at the ruled bound over a two-atom pool is **six** non-subsumed
+schemata — `A → (B → A)`, `□⊥ → A`, `□A → A`, `□(□⊥ → A)`, `□(□A → A)` and
+`A → □(□(A → ⊥) → ⊥)` — from 3,955 decided formulas of which 13 were valid and 48 further were
+`extractionFailed` (`data/theorem-library-pipeline.jsonl`). The bound is stated in
+`Formula.complexity`'s measure, which counts *pattern-aware operator layers* and not primitive
+nodes; and a yield figure is not reportable without its atom pool, because the yield is
+superexponential in pool size.
+
+### Non-redundancy is a build invariant, over the generated entries
+
+`assert_no_subsumed_entries BimodalLib.Theorems.Enumerated` in
+`BimodalLib/Theorems/Complete.lean` fails the build when a generated entry's statement is a
+substitution instance of another row's. This is a design property of the library, not an
+implementation detail of the pipeline:
+
+* **The candidate side is scoped; the comparison side is not.** Only rows under the
+  `Enumerated` prefix are tested as candidates, but each is compared against every row in scope,
+  so a generated entry that duplicates a hand-curated law is caught. That is what the admission
+  rule asks for.
+* **The hand-curated named laws are outside the invariant on purpose.** The library deliberately
+  names laws that are instances of more general schemata: `Combinators.topThm : ⊤` is
+  `Combinators.identity` at `⊥`, and its own proof term is literally `identity Formula.bot`;
+  `Propositional.em : A ∨ ¬A` unfolds to `(A → ⊥) → (A → ⊥)`, an instance of `A → A`. Twenty-six
+  of the registry's rows are of that kind. They are out of scope rather than exempted: there is
+  no baseline file and no exemption ledger for them anywhere, because naming a useful instance of
+  a schema is not a defect to be waived.
+* **Subsumption is strict.** A row subsumes another only when the second is an instance of the
+  first and not conversely. Two statements each an instance of the other are renamings, which
+  `register_theorem` already refuses by name.
+
+The matcher behind it, `BimodalLib.isSubstInstance`, is computable and tested rather than
+kernel-verified. That is sound here for a specific reason: a wrong answer can drop an entry or
+keep a redundant one, but it can never admit an *unproved* entry — the kernel still checks every
+registered row's `proof` field.
+
+### The conjecture side
+
+The non-admitted outcomes are registered as one aggregate `Conjecture` per (fragment, frame
+class, verdict) cell, 48 in all, in `BimodalLib/Conjectures/Enumerated.lean`. The count is the
+product and so is bounded independently of how large the conjecture half is — which matters,
+because that half is three orders of magnitude larger than the admitted one (2,895 formulas at
+the ruled bound). One constant per formula would mean 2,895 documented declarations and as many
+index rows; the per-formula fact lives in the ADMIT record's own `disposition` and
+`conjecture_verdict` fields instead.
 
 ## Pairing a second proof
 
@@ -253,7 +332,7 @@ listing is long because few duals are declared.
 
 | Check | Catches |
 |---|---|
-| `lake build BimodalLib --wfail` (CI) | An unregistered closed derivation; a declared dual with no row; a proof outside its statement cell with no reason; an edge marked proved or refuted without a proof; any warning |
+| `lake build BimodalLib --wfail` (CI) | An unregistered closed derivation; a declared dual with no row; a proof outside its statement cell with no reason; an edge marked proved or refuted without a proof; a generated entry that is a substitution instance of another row; any warning |
 | `lake build BimodalLibTest --wfail` (CI) | A command that stops failing where it should: the registration check and the proof-fragment check on their fixtures, a drifted second proof, a declaration that is not a closed derivation, an edge table that omits a registered edge |
 | `scripts/library-index.sh --check` (CI) | A stale `BimodalLib/INDEX.md` |
 | `B3` of `scripts/check-module-invariants.sh` | `FormalSystem` importing `BimodalLib` |

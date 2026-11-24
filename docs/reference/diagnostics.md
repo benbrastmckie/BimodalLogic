@@ -122,14 +122,43 @@ that is what the [cost baseline](../development/proof-mode-cost-baseline.md) sta
 
 ## Reserved stages
 
-These five stages have a fixed head and an agreed payload, and no emitter. They are written by the
-tableau-pipeline work, which extends this schema rather than renegotiating it. The field lists
-below are the ones the library-pipeline record's own Diagnostics table names, and they are
-mirrored in `Stage.reservedKeys` so the reservation is machine-readable.
+These five stages have a fixed head and an agreed payload. Their field lists are the ones the
+library-pipeline record's own Diagnostics table names, mirrored in `Stage.reservedKeys` so the
+reservation is machine-readable.
+
+**All five are now emitted**, by `BimodalTools/PipelineDiagnostics.lean`, which extends this
+schema rather than renegotiating it: each record structure carries exactly the fields
+`Stage.reservedKeys` lists for its stage, in that order, and
+`Tests/BimodalToolsTest/PipelineDiagnosticsTest.lean` asserts
+`record.keys = Head.keys ++ Stage.reservedKeys <stage>` for all five, so the schema and the
+emitters cannot drift apart. The records land in `data/theorem-library-pipeline.jsonl`, written by
+`scripts/theorem-library-pipeline.sh`.
+
+### Why the emitters are not in this directory
+
+They sit in `BimodalTools/` rather than under `BimodalLib/Diagnostics/`, for two reasons that
+point the same way. `scripts/proof-mode-cost-baseline.sh` pins the *directory*
+`BimodalLib/Diagnostics` in its measured-surface array, so a commit writing anywhere under it
+reports `STALE BASELINE` (exit 3) until the pin moves. And that directory is the Evaluation
+lane's territory, while the pipeline is the Library lane's. Siting the emitters outside it
+resolves both at once and needs no schema edit — which is the point of reserving the keys in the
+first place: a second library can supply the emitter.
+
+### Key order is a property of the source list, not the rendered object
+
+`Json.mkObj` stores fields in a search tree, so a rendered record is in alphabetical key order
+and not in the order its `toJson` builds. Every statement in this page about field order — and
+`ReproveRecord.toJson`'s own docstring — is about the ordered association list before rendering.
+That is why each pipeline record exposes `toJsonFields` and `keys` beside `toJson`: the key-order
+assertion has to read the list.
 
 ### Enumerate
 
-Carries formula-valued fields. Written by the tableau pipeline.
+Carries formula-valued fields. Emitted by `EnumerateRecord` in `BimodalTools/PipelineDiagnostics.lean`,
+once per fragment per run. `by_complexity` is keyed by `Formula.complexity`'s measure, which
+counts *pattern-aware operator layers* and not primitive nodes; a count split by complexity means
+nothing without that, and a yield figure means nothing without its atom pool, which the head's
+`command` carries.
 
 #### enumerate
 
@@ -192,6 +221,38 @@ Written by the tableau pipeline.
 | `disposition` | string | Admitted, subsumed, or registered as a conjecture |
 | `subsumed_by` | string or null | The entry that subsumes this one |
 | `conjecture_verdict` | string or null | The verdict a registered conjecture carries |
+
+### Two measured facts a reader of these records needs
+
+**The `decide` verdict vocabulary is `DecisionResult`'s four constructor names**, `valid`,
+`invalid`, `fuel_exhausted` and `extraction_failed` — not `FormulaLabel`'s three. The fourth name
+is load-bearing rather than pedantic. `extraction_failed` means the tableau **closed**, so the
+formula *is* valid, but no `⊢ φ` witness was reconstructed; such a formula is valid and
+inadmissible at once, because the registry's row type needs a witness. It is a principal outcome
+and not an edge case: 48 of 3,955 decided formulas at the ruled bound, and 26 of 133 at
+`ModalBoolean` complexity 5 over a two-atom pool — as large as `fuel_exhausted` and larger than
+`valid` at that bound (`data/theorem-library-pipeline.jsonl`, and `probes/baseline.md` §4 of the
+pipeline task's evidence for the second figure). Reading `valid + extraction_failed` as the
+admissible yield is the over-count the three-name vocabulary would force.
+
+**The `certify` grade at `ZTime` is `certificate` or absent, never `gated_tableau`**, and that is
+structural rather than a sampling artefact. `regionLabel` and `temporalWitness` evaluate `false`
+on every formula at `ZTime`, so `BranchGates.gated` is 0 of 11 there while `Base`, `Dense` and
+`RTime` each gate 11 of 11 (`probes/baseline.md` §5, exhaustive over the `Boolean` complexity-5
+invalid verdicts). The frame-class dispatch therefore selects the certificate route at `ZTime`
+and evaluates no gates at all, so a `ZTime` record carries `"gates": null` by construction. At
+the ruled bound `ZTime` contributed 0 of 2,981 refutations
+(`data/theorem-library-countermodels.jsonl`), which is a reportable finding about
+`decidableCertifies`' acceptance rate — certificates are supplied rather than derived from a
+branch — and not a pipeline defect.
+
+### The identifier of an unregistered statement
+
+The head's `statement` is the registered declaration's fully-qualified name for an admitted
+entry. An *enumerated* formula has no declaration name at all, so `unregisteredStatementId` —
+which produces `"unregistered:" ++ declName` — cannot name one. Those records use the `data/`-style
+dataset identifier instead, `bmlogic-NNNNN`, the convention the datasets under `data/` already
+use. `BimodalTools.PipelineDiagnostics.datasetStatementId` produces it.
 
 ### The formula-codec obligation
 

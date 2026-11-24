@@ -37,7 +37,7 @@ so a generated entry duplicating a hand-curated law is caught too.
 Each entry is three declarations. A `private def` holding the derivation the tableau extracted,
 over the formula's own concrete atoms. A second `private def` holding the substitution that sends
 those atoms to the entry's schema variables. Then the entry itself, obtained from the two by
-`FormalSystem.ProofSystem.DerivationTree.substNil` and closed by
+`DerivationTree.substNil` (`FormalSystem/ProofSystem/Substitution.lean`) and closed by
 `simp only [substF, …, reduceIte] at h` — `simp only` with a closed lemma list rather than
 `simpa`, because `simpa`'s full set closes an arity-2 entry through `Classical.choice`, which a
 registry row must not depend on.

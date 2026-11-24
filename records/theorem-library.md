@@ -195,8 +195,18 @@ by theme:
 BimodalLib/
   ProofMode/<Fragment>/       registered statements proved in the mode
   Countermodels/<Fragment>/   refuted inferences with their models
-  Diagnostics/                the record schema and the commands that emit it
 ```
+
+`BimodalLib/Diagnostics/` holds the record **schema** and the `reprove`/`compare` emitters, and
+is already in place. The five reserved stages' emitters are **not** there and should not be put
+there: they live in `BimodalTools/PipelineDiagnostics.lean`. `scripts/proof-mode-cost-baseline.sh`
+pins the directory `BimodalLib/Diagnostics` in its measured-surface array, so a commit writing
+anywhere under it reports `STALE BASELINE` until the pin moves; and that directory is the
+Evaluation lane's territory while the pipeline is the Library lane's. Reserving the keys in the
+schema is what lets a second library supply the emitter.
+
+`BimodalLib/Theorems/Enumerated/` and `BimodalLib/Conjectures/Enumerated.lean` are in place too:
+the pipeline's admitted entries and its non-admitted outcomes.
 
 A proof-mode re-proof under `ProofMode/` is entered with the pairing command, so that it is
 elaborated against the type of the registered statement.
@@ -213,34 +223,45 @@ Entries come from four sources.
 | Transfer | entries with `⊡` | a TM theorem carried along `ofTM`; an S5 law instantiated at `⊡` and `⟐` |
 
 The tableau pipeline is the bulk source. It runs on the cells whose operator set is within `□`.
-The decision procedure is over `Formula`, and stage 5 generalizes a certified formula from atoms
-to schema variables, which is sound only where uniform substitution holds. Its stages:
+The decision procedure is over `Formula`, and the admit stage generalizes a certified formula from
+atoms to schema variables, which is sound only where uniform substitution holds.
 
-1. **Enumerate.** Formulas of a fragment up to a complexity bound, one representative per
-   renaming of atoms. `BimodalTools/FormulaEnumerator.lean` and
-   `BimodalTools/AtomCanonicalization.lean` do this for L; the fragment is a filter on the
-   enumeration.
-2. **Decide.** `decide` at a stated frame class, giving one of `valid`, `invalid`,
-   `fuelExhausted`, `extractionFailed`.
-3. **Extract.** A `DerivationTree` from a closed tableau, or a countermodel from an open
-   saturated branch.
-4. **Certify.** A derivation is checked by the kernel on admission. An `invalid` verdict is
-   certified only if the branch passes the eight gates of `not_valid_of_hasOpen_int`
-   (`FormalSystem/Metalogic/Decidability/Verified/Bridge/IntTruth.lean`), or, at ZTime, if a
-   witness-family certificate is accepted by `decidableCertifies`.
-5. **Admit.** A certified valid formula is generalized from atoms to schema variables and
-   dropped if it is a substitution instance of an entry already present. A certified invalid one
-   is admitted as a countermodel. Everything else is registered as a conjecture with its
-   verdict.
+**Stages 1 to 5 — enumerate, decide, extract, certify, admit — are implemented.** One command runs
+them end to end:
+
+```bash
+bash scripts/theorem-library-pipeline.sh --all-fragments --atoms 2 \
+  --frame-class Base --frame-class Dense --frame-class ZTime --frame-class RTime
+```
+
+`docs/reference/bimodal-lib.md` describes what admission requires and how the generated entries
+are filed; `docs/reference/diagnostics.md` describes the five stage records. What remains:
+
 6. **Re-prove.** Each admitted theorem is attempted in the proof mode.
 7. **Compare and feed back.** Measurements are taken, failures are classified, and the
    missing-rule list is updated.
 
-The pipeline exists for dataset generation and is reused, not rebuilt. Its measured yield at
-complexity 4 over the Base class is 17 valid, 669 invalid and 120 undetermined of 806
-(`data/bmlogic-c4_metadata.json`), so the theorem half grows slowly by enumeration and the
-countermodel half quickly. Hand proofs and the manuscript's principles are where the deep
-entries come from; enumeration supplies the complete low layers and the countermodels.
+The pipeline exists for dataset generation and is reused, not rebuilt.
+
+**The measured yield, and the figure not to quote.** At the ruled bound over a two-atom pool —
+`Boolean` and `ModalBoolean` at complexity 5, `TemporalBoolean` and `ModalTemporalBoolean` at
+complexity 4, where "complexity N" counts *pattern-aware operator layers* in
+`Formula.complexity`'s measure and not primitive nodes — 3,955 formulas were decided: 13 valid,
+3,523 invalid, 371 `fuelExhausted` and 48 `extractionFailed`. The **derivation-bearing** yield,
+which is what admission needs, is **six** non-subsumed schemata after the subsumption test
+(`data/theorem-library-pipeline.jsonl`); the countermodel half is 2,981 gated refutations
+(`data/theorem-library-countermodels.jsonl`) and the conjecture half 2,895.
+
+The raw `valid` column of a dataset is **not** the admissible theorem yield, and quoting it
+overstates the result. A formula whose tableau closed without yielding a proof term is valid and
+inadmissible at once, because the registry's row type needs a witness. At complexity 4 over the
+Base class a dataset tabulation reports 17 valid of 806 (`data/bmlogic-c4_metadata.json`), of
+which 15 came from the structural prefilter and carry no derivation — so two of those 17 are
+admissible. The same gap at the ruled bound is the 48 `extractionFailed` verdicts.
+
+So the theorem half grows slowly by enumeration and the countermodel half quickly. Hand proofs
+and the manuscript's principles are where the deep entries come from; enumeration supplies the
+complete low layers and the countermodels.
 
 ## Countermodels
 
