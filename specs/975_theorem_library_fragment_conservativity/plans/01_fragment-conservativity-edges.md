@@ -465,32 +465,32 @@ sublanguage are conserved by TM. These are the declarations `docs/theorem-index.
 
 ---
 
-### Phase 6: The `within` forms in BimodalLib [NOT STARTED]
+### Phase 6: The `within` forms in BimodalLib [COMPLETED]
 
 **Goal**: The five positive Challenge statements, derived from the Phase 5 theorems through the
 equivalence of `DerivableIn` with the cell calculus; and a computed proof profile that decides
 `within`.
 
 **Tasks**:
-- [ ] In `BimodalLib/Fragment.lean`: simp lemmas for `Profile` (`join_le`, the profile of each
+- [x] In `BimodalLib/Fragment.lean`: simp lemmas for `Profile` (`join_le`, the profile of each
   formula constructor, reflexivity and transitivity of `≤`), and the invariance of `profileF`
   under `reflectTime` if not present.
-- [ ] In `BimodalLib/Conservativity.lean`: `proofProfile`, the join of the profiles of every
+- [x] In `BimodalLib/Conservativity.lean`: `proofProfile`, the join of the profiles of every
   formula derived in a derivation; `within c d ↔ proofProfile d ≤ c`; a `Decidable (within c d)`
   instance from it. Revise the module docstring sentence "Nothing here is proved about these
   predicates" to state what the module now holds.
-- [ ] Create `BimodalLib/Conservativity/Proved.lean`: the sublanguage `fun ψ => profileF ψ ≤ c`
+- [x] Create `BimodalLib/Conservativity/Proved.lean`: the sublanguage `fun ψ => profileF ψ ≤ c`
   satisfies the Phase 2 closure conditions; `DerivableIn c fc φ` iff `φ` is cell derivable from
   the empty context at that sublanguage (both directions, by induction on the derivation and on
   the cell derivation).
-- [ ] Prove `conservativeEdge_boolean` and `conservativeEdge_box` from the Phase 5 theorems.
-- [ ] Prove `derivableIn_boolean_of_box` and `derivableIn_boolean_of_temporal` by forgetting
+- [x] Prove `conservativeEdge_boolean` and `conservativeEdge_box` from the Phase 5 theorems.
+- [x] Prove `derivableIn_boolean_of_box` and `derivableIn_boolean_of_temporal` by forgetting
   `within` and applying `conservativeEdge_boolean`.
-- [ ] Prove `derivableIn_box_of_derivableInP` by forgetting `withinP`, applying
+- [x] Prove `derivableIn_box_of_derivableInP` by forgetting `withinP`, applying
   `plusDerivable_ofFormula_iff`, then `conservativeEdge_box`.
-- [ ] Signatures must match the Lean Challenge Statements exactly.
-- [ ] Add the import to `BimodalLib.lean`. `lake build BimodalLib BimodalLibTest --wfail`.
-- [ ] `bash scripts/library-index.sh --check` (no row or conjecture changes in this phase, so the
+- [x] Signatures must match the Lean Challenge Statements exactly.
+- [x] Add the import to `BimodalLib.lean`. `lake build BimodalLib BimodalLibTest --wfail`.
+- [x] `bash scripts/library-index.sh --check` (no row or conjecture changes in this phase, so the
   index is expected unchanged; if it differs, regenerate and stage `BimodalLib/INDEX.md`).
 
 **Timing**: 2 hours

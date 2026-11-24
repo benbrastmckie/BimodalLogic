@@ -130,6 +130,79 @@ def profileP : PlusFormula → Profile
   | .snce φ ψ => { (profileP φ).join (profileP ψ) with temporal := true }
   | .stab φ => { profileP φ with stab := true }
 
+/-- Inclusion of profiles, field by field. -/
+theorem Profile.le_iff (a b : Profile) :
+    a ≤ b ↔ (a.box = true → b.box = true) ∧ (a.stab = true → b.stab = true) ∧
+      (a.temporal = true → b.temporal = true) := by
+  obtain ⟨_ | _, _ | _, _ | _⟩ := a <;> obtain ⟨_ | _, _ | _, _ | _⟩ := b <;>
+    simp [LE.le, Profile.le]
+
+/-- Inclusion of profiles is reflexive. -/
+@[simp] theorem Profile.le_refl (a : Profile) : a ≤ a := by
+  simp [Profile.le_iff]
+
+/-- Inclusion of profiles is transitive. -/
+theorem Profile.le_trans {a b c : Profile} (h1 : a ≤ b) (h2 : b ≤ c) : a ≤ c := by
+  rw [Profile.le_iff] at *
+  exact ⟨fun h => h2.1 (h1.1 h), fun h => h2.2.1 (h1.2.1 h), fun h => h2.2.2 (h1.2.2 h)⟩
+
+/-- A join is included in a profile exactly when both parts are. -/
+@[simp] theorem Profile.join_le_iff {a b c : Profile} : a.join b ≤ c ↔ a ≤ c ∧ b ≤ c := by
+  simp only [Profile.le_iff, Profile.join, Bool.or_eq_true]
+  exact ⟨fun h => ⟨⟨fun x => h.1 (Or.inl x), fun x => h.2.1 (Or.inl x), fun x => h.2.2 (Or.inl x)⟩,
+    ⟨fun x => h.1 (Or.inr x), fun x => h.2.1 (Or.inr x), fun x => h.2.2 (Or.inr x)⟩⟩,
+    fun h => ⟨fun x => x.elim h.1.1 h.2.1, fun x => x.elim h.1.2.1 h.2.2.1,
+      fun x => x.elim h.1.2.2 h.2.2.2⟩⟩
+
+/-- The profile of an atom is empty. -/
+@[simp] theorem profileF_atom (a : Atom) : profileF (.atom a) = {} := rfl
+
+/-- The profile of falsum is empty. -/
+@[simp] theorem profileF_bot : profileF .bot = {} := rfl
+
+/-- The empty profile is included in every profile. -/
+@[simp] theorem Profile.empty_le (c : Profile) : ({} : Profile) ≤ c := by
+  simp [Profile.le_iff]
+
+/-- The profile of an implication is the join of the profiles of its parts. -/
+@[simp] theorem profileF_imp (φ ψ : Formula) :
+    profileF (φ.imp ψ) = (profileF φ).join (profileF ψ) := rfl
+
+/-- The profile of an implication is included in a cell exactly when those of its parts are. -/
+theorem profileF_imp_le_iff (φ ψ : Formula) (c : Profile) :
+    profileF (φ.imp ψ) ≤ c ↔ profileF φ ≤ c ∧ profileF ψ ≤ c := by
+  simp
+
+/-- The profile of `□φ` is included in a cell exactly when the cell has `□` and includes the
+profile of `φ`. -/
+theorem profileF_box_le_iff (φ : Formula) (c : Profile) :
+    profileF φ.box ≤ c ↔ c.box = true ∧ profileF φ ≤ c := by
+  simp only [profileF, Profile.le_iff]
+  exact ⟨fun h => ⟨h.1 trivial, fun _ => h.1 trivial, h.2.1, h.2.2⟩,
+    fun h => ⟨fun _ => h.1, h.2.2.1, h.2.2.2⟩⟩
+
+/-- The profile of an Until formula is included in a cell exactly when the cell has the temporal
+operators and includes the profiles of both arguments. -/
+theorem profileF_untl_le_iff (φ ψ : Formula) (c : Profile) :
+    profileF (φ.untl ψ) ≤ c ↔ c.temporal = true ∧ profileF φ ≤ c ∧ profileF ψ ≤ c := by
+  rw [← Profile.join_le_iff]
+  simp only [profileF, Profile.le_iff]
+  exact ⟨fun h => ⟨h.2.2 trivial, h.1, h.2.1, fun _ => h.2.2 trivial⟩,
+    fun h => ⟨h.2.1, h.2.2.1, fun _ => h.1⟩⟩
+
+/-- The profile of a Since formula is included in a cell exactly when the cell has the temporal
+operators and includes the profiles of both arguments. -/
+theorem profileF_snce_le_iff (φ ψ : Formula) (c : Profile) :
+    profileF (φ.snce ψ) ≤ c ↔ c.temporal = true ∧ profileF φ ≤ c ∧ profileF ψ ≤ c := by
+  rw [← Profile.join_le_iff]
+  simp only [profileF, Profile.le_iff]
+  exact ⟨fun h => ⟨h.2.2 trivial, h.1, h.2.1, fun _ => h.2.2 trivial⟩,
+    fun h => ⟨h.2.1, h.2.2.1, fun _ => h.1⟩⟩
+
+/-- Time reflection exchanges Until and Since, so it preserves the profile. -/
+@[simp] theorem profileF_reflectTime (φ : Formula) : profileF φ.reflectTime = profileF φ := by
+  induction φ <;> simp_all [profileF, Formula.reflectTime]
+
 /-- The fragment of a formula of the base language. -/
 def fragmentF (φ : Formula) : Fragment := (profileF φ).fragment
 

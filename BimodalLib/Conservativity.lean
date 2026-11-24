@@ -26,8 +26,17 @@ inside a cell are that cell's logic.
 * `BimodalLib.ConservativeEdge`: the full base system proves nothing new about the formulas of
   a cell.
 
-Nothing here is proved about these predicates. They are the vocabulary in which the
-conservativity conjectures under `BimodalLib/Conjectures/` are stated.
+* `BimodalLib.proofProfile`: the join of the profiles of every formula a derivation derives.
+
+## Main statements
+
+* `BimodalLib.within_iff_proofProfile_le`: a derivation is within a cell exactly when its proof
+  profile is included in the cell, so `within` is decidable.
+
+These predicates are the vocabulary of the conservativity edges. The edges that are proved are in
+`BimodalLib/Conservativity/Proved.lean`, the refuted one is in
+`BimodalLib/Conservativity/TemporalBase.lean`, and the open ones are the conjectures under
+`BimodalLib/Conjectures/`.
 -/
 
 namespace BimodalLib
@@ -48,6 +57,37 @@ def within (c : Profile) {fc : FrameClass} :
   | _, _, e@(.temporal_necessitation _ d) => profileF (conclOf e) ≤ c ∧ within c d
   | _, _, e@(.time_reflection _ d) => profileF (conclOf e) ≤ c ∧ within c d
   | _, φ, .weakening _ _ _ d _ => profileF φ ≤ c ∧ within c d
+
+/-- The proof profile of a derivation: the join of the profiles of every formula it derives. It
+is the smallest cell the derivation is within. -/
+def proofProfile {fc : FrameClass} :
+    {Γ : Context} → {φ : Formula} → DerivationTree fc Γ φ → Profile
+  | _, φ, .axiom _ _ _ _ => profileF φ
+  | _, φ, .assumption _ _ _ => profileF φ
+  | _, φ, .modus_ponens _ _ _ d1 d2 =>
+    (profileF φ).join ((proofProfile d1).join (proofProfile d2))
+  | _, _, e@(.necessitation _ d) => (profileF (conclOf e)).join (proofProfile d)
+  | _, _, e@(.temporal_necessitation _ d) => (profileF (conclOf e)).join (proofProfile d)
+  | _, _, e@(.time_reflection _ d) => (profileF (conclOf e)).join (proofProfile d)
+  | _, φ, .weakening _ _ _ d _ => (profileF φ).join (proofProfile d)
+
+/-- A derivation is within a cell exactly when its proof profile is included in the cell. -/
+theorem within_iff_proofProfile_le (c : Profile) {fc : FrameClass} {Γ : Context} {φ : Formula}
+    (d : DerivationTree fc Γ φ) : within c d ↔ proofProfile d ≤ c := by
+  induction d with
+  | «axiom» _ _ _ _ => simp only [within, proofProfile]
+  | assumption _ _ _ => simp only [within, proofProfile]
+  | modus_ponens _ _ _ _ _ ih1 ih2 =>
+    simp only [within, proofProfile, Profile.join_le_iff, ih1, ih2]
+  | necessitation _ _ ih => simp only [within, proofProfile, Profile.join_le_iff, ih]
+  | temporal_necessitation _ _ ih => simp only [within, proofProfile, Profile.join_le_iff, ih]
+  | time_reflection _ _ ih => simp only [within, proofProfile, Profile.join_le_iff, ih]
+  | weakening _ _ _ _ _ ih => simp only [within, proofProfile, Profile.join_le_iff, ih]
+
+/-- Whether a derivation is within a cell is decidable: compute its proof profile. -/
+instance (c : Profile) {fc : FrameClass} {Γ : Context} {φ : Formula}
+    (d : DerivationTree fc Γ φ) : Decidable (within c d) :=
+  decidable_of_iff _ (within_iff_proofProfile_le c d).symm
 
 /-- The formula has a closed derivation of the base system, at `fc`, within the cell `c`. -/
 def DerivableIn (c : Profile) (fc : FrameClass) (φ : Formula) : Prop :=
