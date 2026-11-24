@@ -12,6 +12,7 @@ import BimodalLib.Conservativity
 import BimodalLib.Conservativity.Proved
 import BimodalLib.Conservativity.Table
 import BimodalLib.Conservativity.TemporalBase
+import BimodalLib.Countermodel
 import BimodalLib.Diagnostics.Record
 import BimodalLib.Diagnostics.Size
 import BimodalLib.Fragment

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #973
 
 - **Task**: 973 - Theorem library: countermodels
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 14 hours
 - **Dependencies**: `theorem_library_layout_and_registry` (landed); `theorem_library_tableau_pipeline` (landed, sequencing-only)
 - **Research Inputs**: specs/973_theorem_library_countermodels/reports/01_theorem-library-countermodels.md
@@ -227,7 +227,7 @@ roadmap-regeneration phase. The task's own milestone anchor is M20 of
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: The entry type and its vocabulary [NOT STARTED]
+### Phase 1: The entry type and its vocabulary [COMPLETED]
 
 **Goal**: `BimodalLib/Countermodel.lean` lands with the premise-bearing generic consequence
 relation, the profile class, the grade enumeration, and the `CountermodelEntry` structure, and
