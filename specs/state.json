@@ -367,13 +367,13 @@
     {
       "project_number": 972,
       "project_name": "theorem_library_tableau_pipeline",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "description": "MILESTONE M19 (records/proof-mode.md), LANE: library. Theorem library: tableau pipeline. Fill the fragments the tableau covers from its verdicts, reusing the dataset tooling and rebuilding none of it. One command enumerates the formulas of Boolean, ModalBoolean (with `□` only), TemporalBoolean and ModalTemporalBoolean (L) up to a stated complexity bound, one representative per renaming of atoms (BimodalTools/FormulaEnumerator.lean, BimodalTools/AtomCanonicalization.lean, with the fragment as a filter), at each frame class the tableau accepts, and runs the stages of records/theorem-library.md: enumerate, decide, extract, certify, admit. ADMISSION: a valid formula with an extracted `DerivationTree` is generalized from atoms to schema variables and admitted as a theorem entry unless it is a substitution instance of an entry already present; an `invalid` verdict is passed to the countermodel half only if its open branch passes the eight gates of `not_valid_of_hasOpen_int` (FormalSystem/Metalogic/Decidability/Verified/Bridge/IntTruth.lean) or, at ZTime, a witness-family certificate is accepted by `decidableCertifies`; every other outcome (`fuelExhausted`, `extractionFailed`, an ungated `invalid`) is registered as a conjecture with its verdict and is never admitted as a result. DIAGNOSTICS: each stage emits its records in the schema fixed by `proof_mode_axiom_audit_and_cost_baseline`. USER RULING NEEDED (open decision 3 of records/theorem-library.md): the complexity bound per fragment and frame class, and whether admission filters by an interestingness measure (BimodalTools/InterestingnessMetrics.lean) or keeps every non-subsumed theorem; research measures the yield at each bound (at complexity 4 over Base it is 17 valid, 669 invalid, 120 undetermined of 806, data/bmlogic-c4_metadata.json) and recommends. Until `theorem_library_countermodels` has landed, certified refutations are written in the form it will read and not yet admitted. DONE WHEN: the command runs end to end at the ruled bound, admitted entries build, the subsumption check is tested, and the stage records exist with the command that reproduces them. Hard dependencies: `theorem_library_layout_and_registry` (the registry) and `proof_mode_axiom_audit_and_cost_baseline` (the record schema). It adds no rule and edits no proof-mode file. The design is records/theorem-library.md; milestones, lanes and gates are in records/proof-mode.md. BimodalLib imports FormalSystem and FormalSystem never imports BimodalLib. Nothing in BimodalLib contains `sorry`, a new `axiom` or `native_decide`. When this record implements part of the design, revise docs/ to describe what now exists and cut that part from the record under records/.",
       "topic": "proof-mode",
       "priority": "medium",
       "created": "2026-11-20T18:44:46Z",
-      "last_updated": "2026-11-20T18:44:46Z",
+      "last_updated": "2026-11-24T05:19:08Z",
       "file_scope": [
         "BimodalTools/LibraryPipeline.lean",
         "BimodalTools/LibraryPipelineMain.lean",
@@ -404,7 +404,16 @@
           "semantic": true
         },
         "degradations_count": 450
-      }
+      },
+      "session_id": "sess_1795489185_6c2ae6",
+      "artifacts": [
+        {
+          "path": "specs/972_theorem_library_tableau_pipeline/reports/01_tableau-pipeline-into-library.md",
+          "type": "report",
+          "summary": "Stage-by-stage audit of the tableau pipeline into BimodalLib: identifies the one hard missing prerequisite (an L-level uniform substitution as data on DerivationTree, compile-verified constructible and accepted by register_theorem), corrects the quoted yield (only 2 of 17 valid formulas at complexity 4 carry a derivation), establishes that extraction is Base-only, measures per-fragment and per-bound yields plus interestingness tiers, flags two verified gate collisions, and recommends the bound for open decision 3."
+        }
+      ],
+      "next_artifact_number": 2
     },
     {
       "project_number": 973,

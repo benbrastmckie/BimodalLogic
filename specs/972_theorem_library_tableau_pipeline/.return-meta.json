@@ -1,0 +1,35 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/972_theorem_library_tableau_pipeline/reports/01_tableau-pipeline-into-library.md",
+      "summary": "Stage-by-stage audit of the tableau pipeline into BimodalLib: identifies the one hard missing prerequisite (an L-level uniform substitution as data on DerivationTree, compile-verified constructible and accepted by register_theorem), corrects the quoted yield (only 2 of 17 valid formulas at complexity 4 carry a derivation), establishes that extraction is Base-only, measures per-fragment and per-bound yields plus interestingness tiers, flags two verified gate collisions, and recommends the bound for open decision 3."
+    }
+  ],
+  "user_decision": {
+    "question": "Open decision 3 of records/theorem-library.md: what complexity bound does the pipeline run to per fragment and frame class, and does admission filter by an interestingness measure or keep every non-subsumed theorem?",
+    "options": [
+      "Boolean and ModalBoolean at complexity 5, TemporalBoolean and ModalTemporalBoolean at complexity 4; Base only for the theorem half, all four frame classes for the countermodel half; keep every non-subsumed theorem, no interestingness filter",
+      "Complexity 4 uniformly across all four fragments; Base only for the theorem half, all four frame classes for the countermodel half; keep every non-subsumed theorem, no interestingness filter",
+      "Complexity 5 uniformly across all four fragments; Base only for the theorem half, all four frame classes for the countermodel half; keep every non-subsumed theorem, no interestingness filter",
+      "Any of the above, but with admission additionally filtered by an InterestingnessMetrics tier floor"
+    ],
+    "recommended": "Boolean and ModalBoolean at complexity 5, TemporalBoolean and ModalTemporalBoolean at complexity 4; Base only for the theorem half, all four frame classes for the countermodel half; keep every non-subsumed theorem, no interestingness filter",
+    "blocking": false
+  },
+  "metadata": {
+    "session_id": "sess_1795489185_6c2ae6_972",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"],
+    "task_dir": "specs/972_theorem_library_tableau_pipeline",
+    "verification": {
+      "compiled_gates_run": [
+        "register_theorem on a substitution-generalized row: PASS (lake env lean, exit 0, axioms [propext, Quot.sound], profile {box}, arity 1, fragment ModalBoolean)",
+        "scripts/proof-mode-cost-baseline.sh staleness surface: exit 3 STALE BASELINE on a mismatched --pin, confirming BimodalLib/Diagnostics is gated"
+      ]
+    }
+  },
+  "dispatch_seq": 4
+}

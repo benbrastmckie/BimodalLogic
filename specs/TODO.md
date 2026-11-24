@@ -138,7 +138,7 @@ next_project_number: 991
     └─ 946 [HOLD] — NO ModalTemporal MODULE OR CLASS... (see above)
 962 [NOT STARTED] — MILESTONE M9b (records/proof-mode.md), STREAM: metatheory....
   └─ 953 [NOT STARTED] — With the interface as one class per operator family and... (see above)
-972 [NOT STARTED] — MILESTONE M19 (records/proof-mode.md), LANE: library. Theorem...
+972 [RESEARCHED] — MILESTONE M19 (records/proof-mode.md), LANE: library. Theorem...
   └─ 973 [NOT STARTED] — MILESTONE M20 (records/proof-mode.md), LANE: library. Theorem...
     └─ 947 [NOT STARTED] — REVISED: GATE ONE IS A SWEEP OVER A SELECTION OF LIBRARY... (see above)
 986 [NOT STARTED] — Report the real cause when a view fails to apply. applyView...
@@ -233,10 +233,11 @@ next_project_number: 991
 ---
 
 ### 972. Theorem library tableau pipeline
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: proof-mode
 - **Dependencies**: Task 961, Task 971
+- **Research**: [972_theorem_library_tableau_pipeline/reports/01_tableau-pipeline-into-library.md]
 
 **Description**: MILESTONE M19 (records/proof-mode.md), LANE: library. Theorem library: tableau pipeline. Fill the fragments the tableau covers from its verdicts, reusing the dataset tooling and rebuilding none of it. One command enumerates the formulas of Boolean, ModalBoolean (with `□` only), TemporalBoolean and ModalTemporalBoolean (L) up to a stated complexity bound, one representative per renaming of atoms (BimodalTools/FormulaEnumerator.lean, BimodalTools/AtomCanonicalization.lean, with the fragment as a filter), at each frame class the tableau accepts, and runs the stages of records/theorem-library.md: enumerate, decide, extract, certify, admit. ADMISSION: a valid formula with an extracted `DerivationTree` is generalized from atoms to schema variables and admitted as a theorem entry unless it is a substitution instance of an entry already present; an `invalid` verdict is passed to the countermodel half only if its open branch passes the eight gates of `not_valid_of_hasOpen_int` (FormalSystem/Metalogic/Decidability/Verified/Bridge/IntTruth.lean) or, at ZTime, a witness-family certificate is accepted by `decidableCertifies`; every other outcome (`fuelExhausted`, `extractionFailed`, an ungated `invalid`) is registered as a conjecture with its verdict and is never admitted as a result. DIAGNOSTICS: each stage emits its records in the schema fixed by `proof_mode_axiom_audit_and_cost_baseline`. USER RULING NEEDED (open decision 3 of records/theorem-library.md): the complexity bound per fragment and frame class, and whether admission filters by an interestingness measure (BimodalTools/InterestingnessMetrics.lean) or keeps every non-subsumed theorem; research measures the yield at each bound (at complexity 4 over Base it is 17 valid, 669 invalid, 120 undetermined of 806, data/bmlogic-c4_metadata.json) and recommends. Until `theorem_library_countermodels` has landed, certified refutations are written in the form it will read and not yet admitted. DONE WHEN: the command runs end to end at the ruled bound, admitted entries build, the subsumption check is tested, and the stage records exist with the command that reproduces them. Hard dependencies: `theorem_library_layout_and_registry` (the registry) and `proof_mode_axiom_audit_and_cost_baseline` (the record schema). It adds no rule and edits no proof-mode file. The design is records/theorem-library.md; milestones, lanes and gates are in records/proof-mode.md. BimodalLib imports FormalSystem and FormalSystem never imports BimodalLib. Nothing in BimodalLib contains `sorry`, a new `axiom` or `native_decide`. When this record implements part of the design, revise docs/ to describe what now exists and cut that part from the record under records/.
 
