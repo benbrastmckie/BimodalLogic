@@ -1,7 +1,7 @@
 # Implementation Plan: Task #971
 
 - **Task**: 971 - Theorem library: layout and registry
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 13 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/971_theorem_library_layout_and_registry/reports/01_library-layout-registry.md

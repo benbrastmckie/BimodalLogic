@@ -1,15 +1,16 @@
 {
-  "status": "planned",
-  "summary": "Wrote an eight-phase, 13-hour sequential plan for the BimodalLib library: fragment computation, a registry of kernel-checked rows for the closed derivations with a completeness check, a pairing command, conjecture seeds, a generated index, CI and gate wiring, and docs. The description's request for a user ruling on defaultTargets is stale: the design record already decides it, so no user_decision is raised. Counts carried from research (190 closed derivations) are marked as hypotheses for implementation-time confirmation.",
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 3,
+  "summary": "All eight plan phases are complete and committed: BimodalLib exists outside defaultTargets with fragment computation, a 190-row kernel-checked registry and its completeness check, the pairing command, nine conjecture seeds, a generated index, CI and gate wiring, and docs. lake build, lake build BimodalLib --wfail and lake build BimodalLibTest --wfail pass; zero sorries and no new axioms. Three files outside the declared file_scope (BimodalLib/Registry/README.md, scripts/README.md, scripts/check-copyright-headers.sh) were dropped from the phase 7 commit and remain uncommitted on disk for review. The complete gate set was deferred to the batch stage.",
   "blockers": [],
-  "phases_completed": 0,
+  "phases_completed": 8,
   "phases_total": 8,
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/971_theorem_library_layout_and_registry/plans/01_library-layout-registry.md",
-      "summary": "Eight-phase implementation plan for the BimodalLib layout and registry."
+      "type": "summary",
+      "path": "specs/971_theorem_library_layout_and_registry/summaries/01_library-layout-registry-summary.md",
+      "summary": "Implementation summary for the BimodalLib layout and registry, including the three uncommitted out-of-scope files."
     }
-  ],
-  "dispatch_seq": 2
+  ]
 }
