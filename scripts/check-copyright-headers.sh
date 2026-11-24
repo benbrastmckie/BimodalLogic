@@ -83,8 +83,16 @@ conforming=0; nonconforming=0; missing=0; duplicate=0
 while IFS= read -r f; do
   # A stale/second copyright block anywhere in the file is a duplicate. Checked FIRST,
   # because validating only the leading block would silently pass a double-headered file.
+  #
+  # Both counts are anchored to a WHOLE LINE, and the license count must stay that way: a
+  # module that EMITS a copyright header as data carries the header's lines inside string
+  # literals, indented and quoted. `^Copyright (c) ` already excluded those, but an unanchored
+  # `grep -cF` on the license line matched them as substrings, so every such emitter was
+  # reported as double-headered. BimodalTools/TheoremPipeline.lean's `modulePreamble` is one,
+  # and that false positive failed CI. `-x` costs nothing for a real second block, whose
+  # license line stands alone on its own line and still matches.
   n_cop=$(grep -ci '^Copyright (c) ' "$f")
-  n_lic=$(grep -cF "$LICENSE_LINE" "$f")
+  n_lic=$(grep -cxF "$LICENSE_LINE" "$f")
   if [ "$n_cop" -gt 1 ] || [ "$n_lic" -gt 1 ]; then
     duplicate=$((duplicate+1)); echo "$f" >>"$OUTDIR/duplicate.txt"; continue
   fi
