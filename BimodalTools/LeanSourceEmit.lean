@@ -373,6 +373,28 @@ private def substBody (atoms : List Atom) : String :=
     "Formula.atom q"
 
 /--
+The tactic that reduces `substNil`'s conclusion to the generalized statement.
+
+**Not `simpa [substF, …] using h`**, which is the shape the research probe verified, and not
+because that shape fails: it closes the goal, but at arity 2 or more it closes it through
+`Classical.choice`. Measured, on the ten entries of a ruled-bound run: the nine entries of arity
+0 and 1 report `[propext, Quot.sound]` under `simpa`, while the one arity-2 entry reports
+`[propext, Classical.choice, Quot.sound]`. The nested `ite` chain of a two-atom substitution is
+what drags it in, and a registry row is required to be free of it.
+
+`simp only` with a closed lemma list cannot reach a classical lemma at all, and `reduceIte`
+discharges the atom tests computably; `exact h` then finishes. Measured at
+`[propext, Quot.sound]` for every arity.
+
+The list is arity-aware because `linter.unusedSimpArgs` is on and CI builds `--wfail`: at arity 0
+the substitution is the identity and no `ite` is generated, so naming either the substitution or
+`reduceIte` there is an unused simp argument, hence a warning, hence a failure.
+-/
+def closer (substName : String) (arity : Nat) : String :=
+  if arity == 0 then "simp only [substF] at h"
+  else "simp only [substF, " ++ substName ++ ", reduceIte] at h"
+
+/--
 The whole generated declaration for one admitted theorem: a docstring, the extracted derivation
 as a `private def` over its concrete atoms, the generalizing substitution as a second
 `private def`, the schematic `def` obtained from the two by `DerivationTree.substNil`, and the
@@ -413,7 +435,8 @@ def entrySource (ns declName : String) (atoms : List Atom) {φ : Formula}
     , wrapSource 4 (schemaFormulaSource atoms φ ++ " := by")
     , wrapSource 2 ("have h := DerivationTree.substNil (" ++ substName ++ binderArgs arity
         ++ ") " ++ concreteName)
-    , "  simpa [substF, " ++ substName ++ "] using h"
+    , "  " ++ closer substName arity
+    , "  exact h"
     , ""
     , "register_theorem " ++ ns ++ "." ++ declName
     ]

@@ -397,7 +397,7 @@ implementation obligation and stays where it is.
 | `ForwardProofGenerator.lean` | 354 | <!-- TODO: add description --> |
 | `InterestingnessMetrics.lean` | 576 | <!-- TODO: add description --> |
 | `JsonParse.lean` | 268 | The tag-format JSON parser: `PState`, the scalar and skip primitives, and `pFormula`; now serving the tableau bridge ONLY — the certificate envelope moved to the verified codec in `CanonicalWire/` |
-| `LeanSourceEmit.lean` | 421 | <!-- TODO: add description --> |
+| `LeanSourceEmit.lean` | 444 | <!-- TODO: add description --> |
 | `MachineAppendixMain.lean` | 458 | <!-- TODO: add description --> |
 | `PipelineDiagnostics.lean` | 556 | <!-- TODO: add description --> |
 | `PrefilterSoundness.lean` | 172 | <!-- TODO: add description --> |
@@ -410,8 +410,8 @@ implementation obligation and stays where it is.
 | `TableauBridge.lean` | 627 | The tableau bridge library: the JSONL protocol, the request parsers, `BranchGates` and the theorem-hypothesis evaluator, the command handlers, and `replLoop` |
 | `TableauBridgeMain.lean` | 23 | Executable root of `lake exe tableau_bridge`: `main` only; calls `TableauBridge.replLoop` |
 | `TableauProofStepsMain.lean` | 688 | <!-- TODO: add description --> |
-| `TheoremLibraryPipelineMain.lean` | 263 | <!-- TODO: add description --> |
-| `TheoremPipeline.lean` | 725 | <!-- TODO: add description --> |
+| `TheoremLibraryPipelineMain.lean` | 320 | <!-- TODO: add description --> |
+| `TheoremPipeline.lean` | 897 | <!-- TODO: add description --> |
 | `TraceExport.lean` | 229 | <!-- TODO: add description --> |
 | `TraceExporterMain.lean` | 265 | <!-- TODO: add description --> |
 | `TranslateSentenceMain.lean` | 51 | Executable root of `lake exe translate_sentence`: `main` only; reads one source-sentence JSON object on stdin, prints the translated formula as one JSON line |

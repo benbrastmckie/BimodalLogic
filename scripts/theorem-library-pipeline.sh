@@ -56,6 +56,8 @@ RECORDS_SIDECAR="data/theorem-library-pipeline_metadata.json"
 COUNTERMODELS="data/theorem-library-countermodels.jsonl"
 COUNTERMODELS_SIDECAR="data/theorem-library-countermodels_metadata.json"
 REF="docs/reference/diagnostics.md"
+REGISTRY="data/registry-statements.jsonl"
+REGISTRY_PROBE="specs/evidence/theorem-library-pipeline/registry-statements.lean"
 LOCK=".lake/build-guard.lock"
 
 # The measured surface: a change to any of these invalidates a recorded run's figures.
@@ -161,6 +163,30 @@ bash .claude/scripts/lake-build-guard.sh build --timeout 1800 \
   || die "the executable did not build; nothing was measured"
 
 # ---------------------------------------------------------------------------
+# Stage 2b -- refresh the registry snapshot ADMIT compares candidates against.
+#
+# The ADMISSION rule is that a candidate is admitted unless it is a substitution instance of an
+# entry ALREADY PRESENT, and the entries already present are the whole registry, hand-curated
+# rows included. The driver is a compiled executable and cannot walk the environment, so the
+# comparison set reaches it as data. Without this, the pipeline emits entries that duplicate
+# hand-curated laws and `assert_no_subsumed_entries` fails the build on them -- measured, two of
+# ten entries at the ruled bound.
+#
+# The probe imports the hand-curated registration modules only, never the enumerated ones, so it
+# stays buildable while the invariant it feeds is red and a run never depends on its own previous
+# output.
+# ---------------------------------------------------------------------------
+
+if [ -f "$REGISTRY_PROBE" ]; then
+  note "refreshing the registry snapshot from $REGISTRY_PROBE"
+  lake env lean "$REGISTRY_PROBE" >&2 \
+    || die "the registry snapshot probe failed; nothing was measured"
+  [ -s "$REGISTRY" ] || die "the probe wrote no $REGISTRY"
+else
+  die "registry snapshot probe not found at $REGISTRY_PROBE"
+fi
+
+# ---------------------------------------------------------------------------
 # Stage 3 -- run under the shared lock, taken once and held to exit.
 # ---------------------------------------------------------------------------
 
@@ -187,6 +213,7 @@ note "running the pipeline"
 lake exe theorem_library_pipeline \
   --out-records "$RECORDS" \
   --out-countermodels "$COUNTERMODELS" \
+  --registry-statements "$REGISTRY" \
   --commit "$STAMP_COMMIT" \
   "${PASS_THROUGH[@]}" > "$SUMMARY_FILE"
 RUN_STATUS=$?

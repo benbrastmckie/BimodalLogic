@@ -146,7 +146,8 @@ hand. -/
 def modalT (A : Formula) : DerivationTree FrameClass.Base []
     (Formula.imp (Formula.box A) A) := by
   have h := DerivationTree.substNil (modalTSubst A) modalTConcrete
-  simpa [substF, modalTSubst] using h
+  simp only [substF, modalTSubst, reduceIte] at h
+  exact h
 
 end Gen
 
@@ -170,7 +171,14 @@ def modalTLines : List String :=
 #guard modalTLines.contains "def modalT (A : Formula) : DerivationTree FrameClass.Base []"
 #guard modalTLines.contains "    (Formula.imp (Formula.box A) A) := by"
 #guard modalTLines.contains "  have h := DerivationTree.substNil (modalTSubst A) modalTConcrete"
-#guard modalTLines.contains "  simpa [substF, modalTSubst] using h"
+#guard modalTLines.contains "  simp only [substF, modalTSubst, reduceIte] at h"
+#guard modalTLines.contains "  exact h"
+-- At arity 0 the substitution is the identity and no `ite` is generated, so naming either the
+-- substitution or `reduceIte` would be an unused simp argument — a warning, and `--wfail` makes a
+-- warning a failure. The closer is therefore arity-aware.
+#guard closer "fooSubst" 0 == "simp only [substF] at h"
+#guard closer "fooSubst" 1 == "simp only [substF, fooSubst, reduceIte] at h"
+#guard ((entrySource "Gen" "efq" [] concreteT).splitOn "\n").contains "  simp only [substF] at h"
 #guard modalTLines.getLast? ==
   some "register_theorem BimodalToolsTest.LeanSourceEmitTest.Gen.modalT"
 

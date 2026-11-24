@@ -6,6 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import BimodalLib.Conjecture
 import BimodalLib.Conjectures.Conservativity
+import BimodalLib.Conjectures.Enumerated
 import BimodalLib.Conjectures.ModalBoolean.Collapse
 import BimodalLib.Conservativity
 import BimodalLib.Conservativity.Proved
@@ -21,3 +22,4 @@ import BimodalLib.Registry
 import BimodalLib.Registry.Complete
 import BimodalLib.Subsumption
 import BimodalLib.Theorems.Complete
+import BimodalLib.Theorems.Enumerated.Base

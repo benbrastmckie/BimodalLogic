@@ -22,13 +22,13 @@ in `scripts/check-module-invariants.sh` asserts it.
 | `Registry.lean` | `TheoremEntry`, the kernel-checked row of a registered theorem, and `register_theorem` |
 | `Registry/` | `assert_registry_complete`, the registration check |
 | `Subsumption.lean` | `matchSubst?` and `isSubstInstance`: whether one statement is a substitution instance of another, and `assert_no_subsumed_entries`, the non-redundancy check (optionally scoped to a prefix) |
-| `Theorems/` | The registration lines, by `<Fragment>/<FrameClass>.lean`, and the module that runs the check |
+| `Theorems/` | The registration lines, by `<Fragment>/<FrameClass>.lean`, and the module that runs the check; plus `Enumerated/`, the machine-generated entries the tableau pipeline admits |
 | `Pairing.lean` | `ReproofEntry` and `reprove X as Y := t` |
 | `Conjecture.lean` | `Conjecture`, a statement with a status and a note and no proof |
 | `Conservativity.lean` | Derivability within a cell: `within`, `DerivableIn`, `ConservativeEdge`, and the proof profile of a derivation |
 | `Conservativity/` | The conservativity edges: `Proved.lean` (out of `Boolean` and out of the cell with `□`), `TemporalBase.lean` (the refuted temporal edge at the base class), `Table.lean` (the registry of edges with their verdicts) |
 | `ProofFragment.lean` | `record_proof_fragment` and `assert_proof_fragments_recorded`: the theorems whose reference proof leaves the cell of their statement, each with a reason |
-| `Conjectures/` | The registered conjectures |
+| `Conjectures/` | The registered conjectures, including `Enumerated.lean`: the pipeline's non-admitted outcomes, one aggregate constant per (fragment, frame class, verdict) cell |
 | `Index.lean` | The polarity census and `library_index` |
 | `Diagnostics/` | The one record schema for every stage of the library pipeline, the `#reprove_record` and `#compare_record` emitters, and the computable node count of a derivation |
 | [INDEX.md](INDEX.md) | The generated index; do not edit |
@@ -102,4 +102,4 @@ bash scripts/library-index.sh --check
 - [docs/development/stability-operator-family.md](../docs/development/stability-operator-family.md):
   why `⊡` is filed in the Modal family
 
-*Last verified: 2026-11-23*
+*Last verified: 2026-11-24*

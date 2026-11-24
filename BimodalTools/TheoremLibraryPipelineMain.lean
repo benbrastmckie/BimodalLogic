@@ -62,9 +62,17 @@ def usage : String := String.intercalate "\n"
   , "  lake exe theorem_library_pipeline --fragment F --max-complexity N --atoms K [options]"
   , ""
   , "Required:"
+  , "  --atoms K            the atom pool size; required, and recorded in every record"
+  , "  and EITHER --all-fragments, OR both of:"
   , "  --fragment F         Boolean | ModalBoolean | TemporalBoolean | ModalTemporalBoolean"
   , "  --max-complexity N   the bound, in pattern-aware operator layers, not primitive nodes"
-  , "  --atoms K            the atom pool size; required, and recorded in every record"
+  , ""
+  , "  --all-fragments      run all four fragments in ONE command, each at its own ruled bound"
+  , "                       (Boolean and ModalBoolean at 5, TemporalBoolean and"
+  , "                       ModalTemporalBoolean at 4). ADMIT runs once over every fragment's"
+  , "                       candidates together, so subsumption is global; statement serials"
+  , "                       continue across fragments; and --deadline-s is divided evenly, so a"
+  , "                       budget that runs out still covers every fragment."
   , ""
   , "Options:"
   , "  --frame-class C      repeatable; Base | Dense | ZTime | RTime (default: Base alone)"
@@ -72,6 +80,12 @@ def usage : String := String.intercalate "\n"
   , "  --out-countermodels PATH  write the certified refutations here (JSONL)"
   , "  --out-records PATH   write the five stages' records here (JSONL)"
   , "  --certificates PATH  witness-family certificates (JSONL), for the ZTime route"
+  , "  --registry-statements PATH  the registry snapshot ADMIT compares candidates against,"
+  , "                       one `<decl>TAB<tag-encoded formula>` per line, as"
+  , "                       specs/evidence/theorem-library-pipeline/registry-statements.lean"
+  , "                       emits it. WITHOUT it, ADMIT compares candidates only against each"
+  , "                       other and will emit entries that duplicate hand-curated registry"
+  , "                       laws, which assert_no_subsumed_entries then fails the build on."
   , "  --checkpoint PATH    rewrite the index reached after each formula, so a run resumes"
   , "  --deadline-s N       whole-run wall-clock budget in seconds (0 = none)"
   , "  --timeout-ms N       per-formula wall-clock budget (default 30000)"
@@ -91,6 +105,8 @@ def usage : String := String.intercalate "\n"
 structure Args where
   /-- `--fragment`. -/
   fragment : Option String := none
+  /-- `--all-fragments`: run all four at their own ruled bounds, in one command. -/
+  allFragments : Bool := false
   /-- `--max-complexity`. -/
   maxComplexity : Option Nat := none
   /-- `--atoms`. -/
@@ -105,6 +121,8 @@ structure Args where
   outRecords : Option String := none
   /-- `--certificates`. -/
   certificates : Option String := none
+  /-- `--registry-statements`. -/
+  registryStatements : Option String := none
   /-- `--checkpoint`. -/
   checkpoint : Option String := none
   /-- `--deadline-s`. -/
@@ -125,6 +143,7 @@ def parseArgs : List String → Except String Args
   | [] => .ok {}
   | "--help" :: _ => .ok { help := true }
   | "--json" :: rest => (parseArgs rest).map fun a => { a with json := true }
+  | "--all-fragments" :: rest => (parseArgs rest).map fun a => { a with allFragments := true }
   | "--fragment" :: v :: rest => (parseArgs rest).map fun a => { a with fragment := some v }
   | "--max-complexity" :: v :: rest => do
       let n ← v.toNat?.elim (.error s!"--max-complexity expects a number, got {v}") .ok
@@ -140,6 +159,8 @@ def parseArgs : List String → Except String Args
   | "--out-records" :: v :: rest => (parseArgs rest).map fun a => { a with outRecords := some v }
   | "--certificates" :: v :: rest =>
       (parseArgs rest).map fun a => { a with certificates := some v }
+  | "--registry-statements" :: v :: rest =>
+      (parseArgs rest).map fun a => { a with registryStatements := some v }
   | "--checkpoint" :: v :: rest => (parseArgs rest).map fun a => { a with checkpoint := some v }
   | "--deadline-s" :: v :: rest => do
       let n ← v.toNat?.elim (.error s!"--deadline-s expects a number, got {v}") .ok
@@ -165,16 +186,27 @@ Turn parsed arguments into a `Config`, or report the first usage error.
 Every required flag is checked here rather than defaulted, which is the point: `--atoms` has no
 default because a yield figure without its pool is not reportable.
 -/
-def configOf (args : Args) (command : String) (certs : List RawCertificate) :
-    Except String Config := do
-  let fragName ← args.fragment.elim (.error "--fragment is required") .ok
-  let frag ← (fragmentOfName? fragName).elim
-    (.error s!"--fragment expects a fragment name, got {fragName}") .ok
-  let maxC ← args.maxComplexity.elim (.error "--max-complexity is required") .ok
+def configOf (args : Args) (command : String) (certs : List RawCertificate)
+    (registry : List (String × Formula)) : Except String Config := do
+  -- Under `--all-fragments` the fragment and the bound come from `ruledBound`, so the two flags
+  -- are not required; the placeholders here are replaced per fragment by `runAll`.
+  let frag : BimodalLib.Fragment ← match args.allFragments, args.fragment with
+    | true, _ => pure BimodalLib.Fragment.Boolean
+    | false, some name =>
+        match fragmentOfName? name with
+        | some f => pure f
+        | none => Except.error s!"--fragment expects a fragment name, got {name}"
+    | false, none => Except.error "--fragment is required (or pass --all-fragments)"
+  let maxC : Nat ← match args.allFragments, args.maxComplexity with
+    | true, _ => pure (BimodalTools.TheoremPipeline.ruledBound frag)
+    | false, some n => pure n
+    | false, none => Except.error "--max-complexity is required (or pass --all-fragments)"
   let k ← args.atoms.elim
     (.error "--atoms is required: a yield figure without its atom pool is not reportable") .ok
   let atoms ← atomPool k
-  let fcs ← args.frameClasses.reverse.foldlM
+  -- `parseArgs` prepends while recursing into the TAIL, so `frameClasses` is already in
+  -- command-line order; reversing it here would misreport the order in every record.
+  let fcs ← args.frameClasses.foldlM
     (fun acc name => match fcOfName? name with
       | none => .error s!"--frame-class expects a frame class name, got {name}"
       | some fc => .ok (acc ++ [fc])) ([] : List FrameClass)
@@ -186,6 +218,7 @@ def configOf (args : Args) (command : String) (certs : List RawCertificate) :
            deadlineS := args.deadlineS
            checkpoint := args.checkpoint.map System.FilePath.mk
            certificates := certs
+           registryStatements := registry
            command := command
            commit := args.commit
            zeroTimings := args.json
@@ -203,10 +236,30 @@ def loadCertificates (path : String) : IO (List RawCertificate) := do
     | .error e => throw (IO.userError s!"{path}: {e}")
   return out
 
+/--
+Read the registry snapshot: one `<declaration name>` TAB `<tag-encoded formula>` per non-blank
+line, as `specs/evidence/theorem-library-pipeline/registry-statements.lean` emits it. The formula
+is parsed by the same `pFormula` the tableau bridge uses, so the encoding has one reader.
+-/
+def loadRegistryStatements (path : String) : IO (List (String × Formula)) := do
+  let text ← IO.FS.readFile path
+  let mut out : List (String × Formula) := []
+  for line in text.splitOn "\n" do
+    let t := line.trimAscii.toString
+    if t.isEmpty then continue
+    match t.splitOn "\t" with
+    | [name, json] =>
+        match BimodalTools.JsonParse.pFormula (BimodalTools.JsonParse.mkPState json) with
+        | .ok (f, _) => out := out ++ [(name, f)]
+        | .error e => throw (IO.userError s!"{path}: {name}: {e}")
+    | _ => throw (IO.userError s!"{path}: expected '<decl>TAB<json>', got: {t}")
+  return out
+
 /-- The run summary, printed to stdout and mirrored into the sidecar by the entry-point script. -/
-def summaryJson (cfg : Config) (o : Outcome) : Json :=
+def summaryJson (cfg : Config) (o : Outcome) (allFragmentsRun : Bool) : Json :=
   Json.mkObj
     [ ("fragment", Json.str cfg.fragment.name)
+    , ("all_fragments", Json.bool allFragmentsRun)
     , ("max_complexity", Json.num (cfg.maxComplexity : Int))
     , ("atom_pool", Json.num (cfg.atoms.length : Int))
     , ("frame_classes", Json.arr ((cfg.frameClasses.map (fun fc => Json.str (fcName fc)))).toArray)
@@ -242,13 +295,17 @@ def main (argv : List String) : IO UInt32 := do
     let certs ← match args.certificates with
       | none => pure []
       | some path => loadCertificates path
-    match configOf args command certs with
+    let registry ← match args.registryStatements with
+      | none => pure []
+      | some path => loadRegistryStatements path
+    match configOf args command certs registry with
     | .error e =>
         IO.eprintln s!"theorem_library_pipeline: {e}"
         IO.eprintln usage
         return 2
     | .ok cfg =>
-      let o ← BimodalTools.TheoremPipeline.run cfg
+      let o ← if args.allFragments then BimodalTools.TheoremPipeline.runAll cfg
+              else BimodalTools.TheoremPipeline.run cfg
       match args.outRecords with
       | none => pure ()
       | some path => writeJsonObjects path o.records
@@ -259,5 +316,5 @@ def main (argv : List String) : IO UInt32 := do
       match args.outModule with
       | none => pure ()
       | some path => IO.FS.writeFile path (moduleSource cfg o.admitted)
-      IO.println (summaryJson cfg o).compress
+      IO.println (summaryJson cfg o args.allFragments).compress
       return 0

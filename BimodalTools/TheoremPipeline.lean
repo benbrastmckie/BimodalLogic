@@ -141,6 +141,11 @@ structure Config where
   checkpoint : Option System.FilePath := none
   /-- Witness-family certificates for the `ZTime` route. -/
   certificates : List RawCertificate := []
+  /-- The statements already present in the registry, as (declaration name, statement) pairs.
+  ADMIT refuses a candidate strictly subsumed by any of them, which is what the task's ADMISSION
+  rule means by "an entry already present". Produced by
+  `specs/evidence/theorem-library-pipeline/registry-statements.lean`. -/
+  registryStatements : List (String × Formula) := []
   /-- The exact command line, recorded in every head and in the sidecar. -/
   command : String
   /-- The commit the run is measured at. -/
@@ -473,31 +478,75 @@ a pinned finding ceiling.
 def admittedName (index : Nat) : String := "enumerated" ++ toString index
 
 /--
-ADMIT: generalize each candidate and emit its declaration, skipping any candidate that is a
-substitution instance of one already admitted.
+Strict subsumption, mirroring `assert_no_subsumed_entries`' own test exactly: `stmt` is an
+instance of `schema` and not conversely.
 
-The subsumption test is `BimodalLib.isSubstInstance` on the *generalized* statements, which is the
-shape the registry files: a candidate whose schema is an instance of an admitted schema adds no
-law. The comparison is against the admitted set only; a generated entry duplicating a
-hand-curated registry law is caught by the build-time
-`assert_no_subsumed_entries BimodalLib.Theorems.Enumerated`, whose comparison side ranges over the
-whole registry.
+The asymmetry is the point. Two statements each an instance of the other are renamings, which
+`register_theorem` already refuses by name; only the strictly-more-general direction is a
+redundancy. Testing the symmetric form here would make ADMIT drop entries the build invariant
+does not object to.
+-/
+def strictlySubsumedBy (schema stmt : Formula) : Bool :=
+  BimodalLib.isSubstInstance schema stmt && !BimodalLib.isSubstInstance stmt schema
+
+/-- A candidate with its generalized statement, carried through ADMIT's two passes. -/
+private structure Scored where
+  /-- The candidate. -/
+  candidate : Candidate
+  /-- Its generalized statement, which is what both subsumption passes compare. -/
+  schema : Formula
+  /-- The row that subsumes it, once one is found. -/
+  subsumer : Option String
+
+/--
+ADMIT: generalize each candidate and emit its declaration, dropping any candidate that is a
+substitution instance of an entry already present.
+
+**"Already present" means two things, and both passes are needed.** The task's ADMISSION rule is
+that a candidate is admitted "unless it is a substitution instance of an entry already present",
+and the entries already present are the whole registry, hand-curated rows included — not merely
+the candidates this run has admitted so far.
+
+Pass 1 compares each candidate against `cfg.registryStatements`, the snapshot of the live
+registry. Without it the pipeline emits entries that duplicate hand-curated laws: measured, two
+of ten admitted entries at the ruled bound were substitution instances of
+`FormalSystem.Theorems.ConnectDerived.lceImpThm`, and the build invariant caught both.
+
+Pass 2 compares the survivors against **each other**, and is deliberately a separate pass rather
+than a fold. A single accumulating fold is order-dependent and misses a real redundancy: if a
+less general candidate is seen first it is admitted, and the more general one that arrives later
+is not an instance of it, so both are kept. Measured: two further pairs of the same ten entries
+were caught by the invariant for exactly this reason. Comparing every survivor against every
+other has no such blind spot, and keeps the more general of each pair because the test is strict.
 -/
 def admitStage (cfg : Config) (candidates : List Candidate) :
     List Admitted × List (Candidate × String) :=
-  let step := fun (acc : List Admitted × List (Candidate × String) × Nat) (c : Candidate) =>
-    let (admitted, subsumed, next) := acc
-    let schema := schemaFormula c.atoms c.formula
-    match admitted.find? (fun a => BimodalLib.isSubstInstance a.schema schema) with
-    | some a => (admitted, (c, a.declName) :: subsumed, next)
-    | none =>
-        let name := admittedName next
-        let src := entrySource cfg.moduleNamespace name c.atoms c.proof
-        (admitted ++ [{ declName := name, source := src, formula := c.formula,
-                        schema := schema }],
-         subsumed, next + 1)
-  let (admitted, subsumed, _) := candidates.foldl step ([], [], 0)
-  (admitted, subsumed.reverse)
+  let scored : List Scored := candidates.map fun c =>
+    { candidate := c, schema := schemaFormula c.atoms c.formula, subsumer := none }
+  -- Pass 1: against the registry snapshot.
+  let afterRegistry : List Scored := scored.map fun s =>
+    match cfg.registryStatements.find? (fun r => strictlySubsumedBy r.2 s.schema) with
+    | some r => { s with subsumer := some r.1 }
+    | none => s
+  -- Pass 2: survivors against each other, every pair, not a fold.
+  let survivors := afterRegistry.filter (fun s => s.subsumer.isNone)
+  let afterSelf : List Scored := afterRegistry.map fun s =>
+    if s.subsumer.isSome then s
+    else
+      match survivors.find? (fun o =>
+          !(o.schema == s.schema) && strictlySubsumedBy o.schema s.schema) with
+      | some o => { s with subsumer := some ("the generated entry for " ++ o.schema.prettyPrint) }
+      | none => s
+  let keep := afterSelf.filter (fun s => s.subsumer.isNone)
+  let dropped := afterSelf.filterMap fun s =>
+    s.subsumer.map (fun n => (s.candidate, n))
+  let admitted := (keep.zip (List.range keep.length)).map fun p =>
+    let name := admittedName p.2
+    { declName := name
+      source := entrySource cfg.moduleNamespace name p.1.candidate.atoms p.1.candidate.proof
+      formula := p.1.candidate.formula
+      schema := p.1.schema }
+  (admitted, dropped)
 
 /-- The `admit` record for an admitted entry. -/
 def admitRecordAdmitted (cfg : Config) (statement : String) : AdmitRecord :=
@@ -506,11 +555,17 @@ def admitRecordAdmitted (cfg : Config) (statement : String) : AdmitRecord :=
     subsumedBy := none
     conjectureVerdict := none }
 
-/-- The `admit` record for a candidate subsumed by an entry already present. -/
+/--
+The `admit` record for a candidate subsumed by an entry already present.
+
+`subsumer` is recorded VERBATIM and is not prefixed with the generated module's namespace: a
+subsuming row is as often a hand-curated registry declaration (`FormalSystem.Theorems....`) as a
+sibling generated entry, and prefixing would produce a name that resolves to nothing.
+-/
 def admitRecordSubsumed (cfg : Config) (statement subsumer : String) : AdmitRecord :=
   { head := headOf cfg .admit statement .Base
     disposition := .subsumed
-    subsumedBy := some (cfg.moduleNamespace ++ "." ++ subsumer)
+    subsumedBy := some subsumer
     conjectureVerdict := none }
 
 /--
@@ -559,6 +614,47 @@ def Refutation.toJson (r : Refutation) : Json :=
     , ("true_atoms", Json.arr ((r.trueAtoms.map Json.str)).toArray)
     , ("false_atoms", Json.arr ((r.falseAtoms.map Json.str)).toArray) ]
 
+/--
+Everything the first four stages produced, with ADMIT not yet run.
+
+ADMIT is deliberately not part of this: subsumption has to be decided over **all** candidates at
+once, so a run covering several fragments admits once at the end rather than once per fragment.
+Admitting per fragment would let a `ModalBoolean` entry be registered that is a substitution
+instance of a `Boolean` one already admitted, which is exactly what the subsumption test exists to
+prevent.
+-/
+structure Staged where
+  /-- Stage records, in emission order, for the stages before ADMIT. -/
+  records : List Json
+  /-- The certified refutations. -/
+  refutations : List Refutation
+  /-- Candidates carrying a live derivation. -/
+  candidates : List Candidate
+  /-- How many formulas reached DECIDE. -/
+  decidedCount : Nat
+  /-- The four-way verdict split, in `Verdict.all` order. -/
+  verdictSplit : List (String × Nat)
+  /-- How many conjecture records were written before ADMIT. -/
+  conjectureCount : Nat
+  /-- The next free statement serial, so a later fragment's identifiers do not collide. -/
+  nextSerial : Nat
+
+/-- An empty stage result, at the given starting serial. -/
+def Staged.empty (serial : Nat) : Staged :=
+  { records := [], refutations := [], candidates := [], decidedCount := 0
+    verdictSplit := Verdict.all.map (fun v => (v.key, 0)), conjectureCount := 0
+    nextSerial := serial }
+
+/-- Concatenate two stage results, summing the splits. -/
+def Staged.append (a b : Staged) : Staged :=
+  { records := a.records ++ b.records
+    refutations := a.refutations ++ b.refutations
+    candidates := a.candidates ++ b.candidates
+    decidedCount := a.decidedCount + b.decidedCount
+    verdictSplit := a.verdictSplit.zip b.verdictSplit |>.map (fun p => (p.1.1, p.1.2 + p.2.2))
+    conjectureCount := a.conjectureCount + b.conjectureCount
+    nextSerial := b.nextSerial }
+
 /-- Everything one run produced. -/
 structure Outcome where
   /-- Every stage record, in emission order. -/
@@ -577,14 +673,14 @@ structure Outcome where
   conjectureCount : Nat
 
 /--
-Run the five stages.
+Run the four stages before ADMIT, over one fragment.
 
 The loop is bounded twice: `perFormulaTimeoutMs` per formula, and `deadlineS` for the whole run.
 A run that hits the whole-run deadline stops where it is and reports what it has, which is a
 legitimate partial outcome — the records and refutations written so far stand. `checkpoint`, when
-given, is rewritten after each formula with the index reached, so an interrupted run resumes.
+given, is rewritten after each formula with the serial reached, so an interrupted run resumes.
 -/
-def run (cfg : Config) : IO Outcome := do
+def runStages (cfg : Config) (startSerial : Nat := 0) : IO Staged := do
   let (kept, duplicatesRemoved) := enumerateStage cfg
   let mut records : List Json := [(enumerateRecord cfg kept duplicatesRemoved).toJson]
   let mut refutations : List Refutation := []
@@ -593,14 +689,14 @@ def run (cfg : Config) : IO Outcome := do
   let mut conjectureCount := 0
   let mut decidedCount := 0
   let runStart ← IO.monoMsNow
-  let mut index := 0
+  let mut serial := startSerial
   for φ in kept do
     if cfg.deadlineS > 0 then
       let now ← IO.monoMsNow
       if now - runStart >= cfg.deadlineS * 1000 then
         break
-    let statement := datasetStatementId "bmlogic" index
-    index := index + 1
+    let statement := datasetStatementId "bmlogic" serial
+    serial := serial + 1
     let d ← decideOne cfg φ
     decidedCount := decidedCount + 1
     split := split.map (fun p => if p.1 == d.verdict.key then (p.1, p.2 + 1) else p)
@@ -642,21 +738,69 @@ def run (cfg : Config) : IO Outcome := do
         records := records ++ [(admitRecordConjecture cfg statement v .Base).toJson]
     match cfg.checkpoint with
     | none => pure ()
-    | some path => IO.FS.writeFile path (toString index ++ "\n")
-  let (admitted, subsumed) := admitStage cfg candidates
-  for a in admitted do
-    records := records ++
-      [(admitRecordAdmitted cfg (cfg.moduleNamespace ++ "." ++ a.declName)).toJson]
-  for p in subsumed do
-    records := records ++
-      [(admitRecordSubsumed cfg p.1.formula.prettyPrint p.2).toJson]
+    | some path => IO.FS.writeFile path (toString serial ++ "\n")
   return { records := records
            refutations := refutations
-           admitted := admitted
-           subsumed := subsumed
+           candidates := candidates
            decidedCount := decidedCount
            verdictSplit := split
-           conjectureCount := conjectureCount }
+           conjectureCount := conjectureCount
+           nextSerial := serial }
+
+/-- Finish a stage result with ADMIT, which runs once over every candidate. -/
+def finish (cfg : Config) (st : Staged) : Outcome :=
+  let (admitted, subsumed) := admitStage cfg st.candidates
+  let admittedRecords := admitted.map fun a =>
+    (admitRecordAdmitted cfg (cfg.moduleNamespace ++ "." ++ a.declName)).toJson
+  let subsumedRecords := subsumed.map fun p =>
+    (admitRecordSubsumed cfg p.1.formula.prettyPrint p.2).toJson
+  { records := st.records ++ admittedRecords ++ subsumedRecords
+    refutations := st.refutations
+    admitted := admitted
+    subsumed := subsumed
+    decidedCount := st.decidedCount
+    verdictSplit := st.verdictSplit
+    conjectureCount := st.conjectureCount }
+
+/-- Run the five stages over one fragment. -/
+def run (cfg : Config) : IO Outcome := do
+  return finish cfg (← runStages cfg)
+
+/--
+The ruled bound per fragment, as the user fixed it: `Boolean` and `ModalBoolean` at complexity 5,
+`TemporalBoolean` and `ModalTemporalBoolean` at complexity 4. "Complexity N" is N pattern-aware
+operator layers in `Formula.complexity`'s measure, not N primitive nodes.
+-/
+def ruledBound : BimodalLib.Fragment → Nat
+  | .Boolean => 5
+  | .ModalBoolean => 5
+  | .TemporalBoolean => 4
+  | .ModalTemporalBoolean => 4
+
+/-- The four fragments, in the order every table reports them. -/
+def allFragments : List BimodalLib.Fragment :=
+  [.Boolean, .ModalBoolean, .TemporalBoolean, .ModalTemporalBoolean]
+
+/--
+Run the five stages over all four fragments, each at its own ruled bound, as one command.
+
+ADMIT runs **once**, over the candidates of every fragment together, so the subsumption test sees
+the whole admitted set and a later fragment cannot register an instance of an earlier fragment's
+entry. Statement serials continue across fragments, so no two records share an identifier.
+
+A whole-run `deadlineS` is divided evenly across the fragments rather than spent on the first one,
+so a budget that runs out still produces records for every fragment instead of none for three of
+them.
+-/
+def runAll (cfg : Config) : IO Outcome := do
+  let perFragment := if cfg.deadlineS == 0 then 0 else cfg.deadlineS / allFragments.length
+  let mut st := Staged.empty 0
+  for frag in allFragments do
+    let fragCfg := { cfg with fragment := frag, maxComplexity := ruledBound frag,
+                              deadlineS := perFragment }
+    let one ← runStages fragCfg st.nextSerial
+    st := st.append one
+  return finish cfg st
 
 /-! ## The generated module -/
 
@@ -681,8 +825,18 @@ def reproCommand (cfg : Config) : List String :=
   , "  " ++ String.intercalate " " (cfg.frameClasses.map (fun fc => "--frame-class " ++ fcName fc))
   ]
 
-/-- The preamble of the generated theorem module. -/
-def modulePreamble (cfg : Config) : String := String.intercalate "\n"
+/--
+The preamble of the generated theorem module.
+
+`lineBudget` is emitted as a file-level `set_option linter.style.longFile`. That option is the
+ONE file-level linter `set_option` the package sanctions (see `lakefile.toml`'s package-options
+comment and check `C30`), and the generated module needs it: a fully explicit concrete derivation
+is hundreds of lines on its own, so ten admitted entries came to 2,150 lines against the
+package's 1,500-line limit, which `--wfail` turns into a failure. The value is PINNED to the
+file's actual length rather than set to a round ceiling, so a module that grows past it trips the
+linter again instead of being silently exempt.
+-/
+def modulePreamble (cfg : Config) (lineBudget : Nat) : String := String.intercalate "\n"
   ([ "/-"
    , "Copyright (c) 2026 Benjamin Brast-McKie. All rights reserved."
    , "Released under Apache 2.0 license as described in the file LICENSE."
@@ -709,6 +863,13 @@ def modulePreamble (cfg : Config) : String := String.intercalate "\n"
    , "record's `command` field and in the dataset sidecar."
    , "-/"
    , ""
+   , "-- A fully explicit concrete derivation runs to hundreds of lines, so this generated module"
+   , "-- exceeds the package's 1500-line limit. The long-file baseline is the one file-level"
+   , "-- linter option the package sanctions; it is pinned to this file's own length, so growth"
+   , "-- past it trips the linter rather than passing silently. It sits AFTER the module"
+   , "-- docstring, which the style linter requires to be the first command after the imports."
+   , "set_option linter.style.longFile " ++ toString lineBudget
+   , ""
    , "open FormalSystem.Syntax"
    , "open FormalSystem.ProofSystem"
    , ""
@@ -716,10 +877,21 @@ def modulePreamble (cfg : Config) : String := String.intercalate "\n"
    , ""
    ])
 
-/-- The whole generated module: the preamble, every admitted entry, and the namespace close. -/
+/--
+The whole generated module: the preamble, every admitted entry, and the namespace close.
+
+Assembled in two passes, because the preamble carries the file's own line budget: the body is
+built first, its lines counted, and the budget pinned at the next multiple of 100 above the
+total.
+-/
 def moduleSource (cfg : Config) (admitted : List Admitted) : String :=
-  modulePreamble cfg
-    ++ String.intercalate "\n\n" (admitted.map (·.source))
+  let body := String.intercalate "\n\n" (admitted.map (·.source))
     ++ "\n\nend " ++ cfg.moduleNamespace ++ "\n"
+  -- The preamble's own length does not depend on the budget's number of digits enough to matter,
+  -- so one measurement of a budget-free preamble plus the body is sufficient.
+  let probe := modulePreamble cfg 0 ++ body
+  let total := (probe.splitOn "\n").length
+  let budget := ((total / 100) + 1) * 100
+  modulePreamble cfg budget ++ body
 
 end BimodalTools.TheoremPipeline
