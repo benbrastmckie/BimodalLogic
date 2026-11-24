@@ -295,7 +295,7 @@ the module this phase adds.
 
 ---
 
-### Phase 2: The two TRANSFER theorems [NOT STARTED]
+### Phase 2: The two TRANSFER theorems [COMPLETED]
 
 **Goal**: both transfer claims of part (4) are named theorems over `GenericConsequenceIn`, with
 entry-level companions that rebuild an entry at a weaker class and in L⁺.
