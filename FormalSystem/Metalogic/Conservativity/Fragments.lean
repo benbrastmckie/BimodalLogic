@@ -8,6 +8,7 @@ import FormalSystem.Metalogic.Conservativity.Fragments.Calculus
 import FormalSystem.Metalogic.Conservativity.Fragments.PropComplete
 import FormalSystem.Metalogic.Conservativity.Fragments.Translation
 import FormalSystem.Metalogic.Conservativity.Fragments.Collapse
+import FormalSystem.Metalogic.Conservativity.Fragments.Edges
 
 /-!
 # Conservativity of TM over the fragments of its language
@@ -29,4 +30,6 @@ Each entry reads *Module* — *Contents*:
   an edge, stated once for an arbitrary translation, sublanguage and frame class
 * `Conservativity/Fragments/Collapse.lean` — `BooleanFormula`, `ModalFormula`, the translation
   `collapse` and the lemmas that make it an instance of the parametric theorem
+* `Conservativity/Fragments/Edges.lean` — `boolean_conservative` and `modal_conservative`: the
+  two edges, at every frame class
 -/

@@ -418,25 +418,25 @@ conservativity of a sublanguage; and the collapse translation with its structura
 
 ---
 
-### Phase 5: The Boolean and modal edges in FormalSystem [NOT STARTED]
+### Phase 5: The Boolean and modal edges in FormalSystem [COMPLETED]
 
 **Goal**: Two theorems, each at every frame class: the Boolean sublanguage and the `□`
 sublanguage are conserved by TM. These are the declarations `docs/theorem-index.md` will cite.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Conservativity/Fragments/Edges.lean`.
-- [ ] Prove hypothesis (1) of the translation theorem for the collapse translation: for each
+- [x] Create `FormalSystem/Metalogic/Conservativity/Fragments/Edges.lean`.
+- [x] Prove hypothesis (1) of the translation theorem for the collapse translation: for each
   axiom constructor admissible at `fc`, under the reading for `fc` (dense at `.Base`, `.Dense`,
   `.RTime`; discrete at `.ZTime`), the translation is cell derivable. `modal_t`,
   `modal_5_collapse`, `modal_k_dist` translate to instances of themselves when `□` is kept. MF
   and NB get one named lemma each (a tautology, then necessitation and K when `□` is kept; a
   tautology when erased). Every other constructor is a tautology by Phase 3, or by a hand
   derivation if Phase 3 took its decision gate.
-- [ ] Instantiate the translation theorem twice per reading and assemble the two class-generic
-  theorems by cases on `fc`.
-- [ ] Give each of the two theorems, and the parametric theorem of Phase 4, a docstring with a
+- [x] Instantiate the translation theorem twice per reading and assemble the two class-generic
+  theorems by cases on `fc`. *(deviation: altered — one instantiation per edge at the reading `denseReading fc`; the case split on `fc` is inside the axiom lemmas, not in the assembly)*
+- [x] Give each of the two theorems, and the parametric theorem of Phase 4, a docstring with a
   `Paper: —` line stating that the result is the formalization's own (C15).
-- [ ] Add the import to `Fragments.lean`; regenerate as in Phase 2.
+- [x] Add the import to `Fragments.lean`; regenerate as in Phase 2.
 
 **Timing**: 2 hours
 

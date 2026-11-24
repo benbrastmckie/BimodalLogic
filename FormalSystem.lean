@@ -94,6 +94,7 @@ import FormalSystem.Metalogic.Conservativity.FragmentCompactness
 import FormalSystem.Metalogic.Conservativity.Fragments
 import FormalSystem.Metalogic.Conservativity.Fragments.Calculus
 import FormalSystem.Metalogic.Conservativity.Fragments.Collapse
+import FormalSystem.Metalogic.Conservativity.Fragments.Edges
 import FormalSystem.Metalogic.Conservativity.Fragments.PropComplete
 import FormalSystem.Metalogic.Conservativity.Fragments.Translation
 import FormalSystem.Metalogic.Conservativity.MinusCanonicalFrame
