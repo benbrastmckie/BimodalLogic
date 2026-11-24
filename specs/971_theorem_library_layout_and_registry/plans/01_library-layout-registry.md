@@ -575,32 +575,41 @@ whether or not they change.
 
 ---
 
-### Phase 8: Documentation and the design record [NOT STARTED]
+### Phase 8: Documentation and the design record [COMPLETED]
 
 **Goal**: The docs describe the library as it exists, and the design record no longer carries
 what is implemented.
 
 **Tasks**:
-- [ ] `ORGANISATION.md`: add a row under "Everything else" for `BimodalLib/` and
+- [x] `ORGANISATION.md`: add a row under "Everything else" for `BimodalLib/` and
   `Tests/BimodalLibTest/`.
-- [ ] `docs/ARCHITECTURE.md` and `docs/development/MODULE_ORGANIZATION.md`: describe the
+- [x] *(deviation: altered — the full description is a new page,
+  `docs/reference/bimodal-lib.md`, which the task's `file_scope` names; the two pages below
+  point to it. `Tests/BimodalLibTest/README.md` was added.)* `docs/ARCHITECTURE.md` and `docs/development/MODULE_ORGANIZATION.md`: describe the
   library, its place above `FormalSystem`, its layout, and the registry as kernel-checked rows
   read back from the environment.
-- [ ] `docs/development/CI_CD_PROCESS.md`: the new CI steps. `docs/development/MODULE_INVARIANTS.md`:
+- [x] `docs/development/CI_CD_PROCESS.md`: the new CI steps. `docs/development/MODULE_INVARIANTS.md`:
   the import-direction check and the widened coverage of the checks changed in Phase 7.
-- [ ] `BimodalLib/README.md`: how to register a theorem, pair a re-proof, register a conjecture
+- [x] `BimodalLib/README.md`: how to register a theorem, pair a re-proof, register a conjecture
   and regenerate the index; that a frame class above Base is the class a row is stated at; that
   the dual listing rests on declared links.
-- [ ] `Tests/README.md`: the new test library.
-- [ ] `records/theorem-library.md`: cut what now exists (the layout and `defaultTargets`
+- [x] `Tests/README.md`: the new test library.
+- [x] `records/theorem-library.md`: cut what now exists (the layout and `defaultTargets`
   decision, the registry and pairing paragraphs, the definition of a conjecture and its first
   entries) and leave a pointer to the docs for each; keep what is still design (countermodels,
   the pipeline, diagnostics, the proofs of the edges). `records/proof-mode.md`: bring M18 into
   line with whatever convention the record uses for a milestone that is done; read the record
   for that convention before editing.
-- [ ] Deliverables state the current design only: no task numbers, no "previously" or
+- [x] Deliverables state the current design only: no task numbers, no "previously" or
   "no longer", no version labels. Milestone names in `records/` stay as the record uses them.
-- [ ] Run the checks under Verification.
+- [x] Run the checks under Verification. *(verification note: discharged against the scoped tier
+  under the batch gate deferral. Ran `bash .claude/scripts/verify-touched.sh`, the three
+  builds, `scripts/library-index.sh --check`, `scripts/readme-lint.sh` and
+  `scripts/check-module-invariants.sh --no-build`. The complete gate set was deferred to the
+  batch stage and was not run here. `verify-touched.sh` reported ten failing suites, all under
+  `.claude/scripts/tests/` and none naming a file of this task: the eight standing
+  missing-`agent-system/` fixture suites, plus `test-lint-dead-command-recommendations.sh` and
+  `test-deploy-baseline-lib.sh`.)*
 
 **Timing**: 1.5 hours
 

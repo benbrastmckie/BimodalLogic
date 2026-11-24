@@ -126,6 +126,17 @@ all: it is `lean_lib BimodalTools`, outside `defaultTargets`, and the tooling re
 and never the reverse (check B3). `Automation/` today holds tactics and proof search, not a
 dataset pipeline.
 
+### Above the layers: `BimodalLib`
+
+`lean_lib BimodalLib`, the library of TM results, is outside the layer diagram in the same way
+`BimodalTools` is: it imports `FormalSystem` and nothing under `FormalSystem/` imports it
+(check B3 covers both libraries), and it is outside `defaultTargets`. It sits above every
+layer, so it may use the tableau and the proof mode alike. It holds no derivations of its own
+to file: each theorem proved under `FormalSystem/Theorems/` is registered there by reference,
+as a kernel-checked row built from the type of the declaration, and its build fails when a
+closed derivation is added unregistered. The library is described in
+[reference/bimodal-lib.md](reference/bimodal-lib.md).
+
 ## Layer 0 in full
 
 Layer 0 is six entries, and four of them are easy to miss:

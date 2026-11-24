@@ -117,6 +117,7 @@ out the comparison and what a separate family would require.
 - The **statement fragment** of an entry is the set of families whose primitive operators occur
   in its statement, with defined operators counted through their definitions. It is computed by
   a function on formulas and decides the directory. The operator set is computed the same way.
+  The functions are `profileF` and `profileP` in `BimodalLib/Fragment.lean`.
 - The **proof fragment** is the smallest interface the reference proof is stated over. Where it
   is larger than the statement fragment, the conservativity table below says whether the proof
   can be lowered, and the entry is listed until it has been.
@@ -178,8 +179,9 @@ the smaller by 3. The converse direction is the embedding of derivations.
 | The same edge at `ModalBoolean`: the cell with `□` into the cell with both | to prove | follows from L into L⁺ once the two edges into TM are proved, or directly by the collapse |
 
 The theorems live with the rest of the metalogic under `FormalSystem/Metalogic/Conservativity/`.
-The library keeps this table as a generated index over them. An edge that is not yet proved is a
-conjecture in the sense of the section below, and an entry whose filing depends on it says so.
+Each edge marked "to prove" is registered as a conjecture in
+`BimodalLib/Conjectures/Conservativity.lean`, stated over derivability within a cell, and listed
+in `BimodalLib/INDEX.md`. An entry whose filing depends on an unproved edge says so.
 
 The edge from L⁻ into L is a different question, answered and partly refuted in
 `FormalSystem/Metalogic/Conservativity/README.md`. L⁻ is not a fragment in this lattice: it has
@@ -187,38 +189,24 @@ other primitives, not fewer families.
 
 ## Layout
 
-The library is a Lake library of its own, beside `BimodalTools`. It imports
-`FormalSystem`, and `FormalSystem` never imports it. It therefore sits above the tableau and
-above the proof mode, and may use both; the layer order that keeps proof-mode proofs out of
-`FormalSystem/Theorems/` does not constrain it.
+The library is the Lake library `BimodalLib`, beside `BimodalTools`, outside `defaultTargets`,
+importing `FormalSystem` and never imported by it. Its layout, the fragment computation, the
+registry of the theorems under `FormalSystem/Theorems/`, the pairing of a second proof with its
+registered statement, and the index are implemented and described in
+[docs/reference/bimodal-lib.md](../docs/reference/bimodal-lib.md).
 
-It is outside `defaultTargets`. It is built by explicit target and by its own `--wfail` step in
-CI, as `BimodalTools` is, and a check of import direction fails if `FormalSystem` imports it. A
-plain `lake build` compiles the published library and nothing else, and this library holds
-sweeps and enumerated entries, of which there are many. The alternative is a default target: a
-contributor's plain build would then catch a re-proof that has drifted from its registered
-statement, and hand-registered entries are cheap to build. It is rejected because CI catches the
-same drift and the default build would change its meaning.
+The directories still to come, each by fragment and, within a fragment, by frame class and then
+by theme:
 
 ```
 BimodalLib/
-  Fragment.lean               the family set, the fragment of a formula, the registry
-  Theorems/<Fragment>/        registered statements with their reference proofs
-  ProofMode/<Fragment>/       the same statements proved in the mode
+  ProofMode/<Fragment>/       registered statements proved in the mode
   Countermodels/<Fragment>/   refuted inferences with their models
-  Conjectures/<Fragment>/     statements not yet established either way
   Diagnostics/                the record schema and the commands that emit it
 ```
 
-Within a fragment directory, files are by frame class and then by theme.
-
-The derived theorems under `FormalSystem/Theorems/` stay where they are: the metalogic imports
-them. The library registers each by reference and files it by its computed fragment. It does not
-copy them.
-
-The registry pairs proofs mechanically. A proof-mode re-proof is elaborated against the type of
-the registered statement, so that it cannot drift from it, and the pairing is a fact the kernel
-has checked and not a naming convention.
+A proof-mode re-proof under `ProofMode/` is entered with the pairing command, so that it is
+elaborated against the type of the registered statement.
 
 ## Sources and the tableau pipeline
 
@@ -289,21 +277,19 @@ against the leaf. It never closes a goal.
 
 ## Conjectures
 
-A statement that is neither derived nor refuted has a place of its own. A conjecture is a
-registered statement with a fragment, a frame class, a status and a note on what is known: who
-conjectured it or where it is stated, what was tried, and what it would settle. It is a
-definition of the statement and carries no proof term, so it cannot be cited where a theorem is
-required and the library stays free of `sorry`.
+A statement that is neither derived nor refuted has a place of its own. The type of a
+conjecture, how one is registered, and the first entries (the unproved conservativity edges and
+the derivation in TM⁺ of the collapse `φ ↔ ⊡φ` for state-local `φ`) are implemented and
+described in [docs/reference/bimodal-lib.md](../docs/reference/bimodal-lib.md).
 
 Conjectures come from four places: results stated in the manuscript and not yet formalized;
 conservativity edges not yet proved; formulas the tableau left undetermined, whether by
 exhausted fuel, failed extraction or an ungated refutation; and missing rules a sweep names
-before anyone has derived them.
+before anyone has derived them. The last three sources are not yet feeding the library.
 
 A conjecture leaves the directory in one of two ways. Derived, it becomes a theorem entry;
 refuted, a countermodel entry. Either way its registration is kept as the link from the
-question to its answer. The first entries are the conservativity edges above and the derivation
-in TM⁺ of the collapse `φ ↔ ⊡φ` for state-local `φ`, which is proved as a validity only.
+question to its answer.
 
 ## Evaluating the proof mode
 

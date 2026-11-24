@@ -105,10 +105,12 @@ the gap.
    sweep produces is what the mode works on next. Covered by `proof_mode_reprove_perpetuity` and
    `proof_mode_reprove_temporal_slice` for the first two sweeps, by
    `proof_mode_adoption_after_perpetuity_verdict` for which new work must use the mode, and by
-   `investigate_stability_as_modal_family` for the place of `⊡`. The library itself is covered
-   by `theorem_library_layout_and_registry`, `theorem_library_tableau_pipeline`,
-   `theorem_library_countermodels`, `theorem_library_stability_entries` and
-   `theorem_library_fragment_conservativity`. Gap: none identified.
+   `investigate_stability_as_modal_family` for the place of `⊡`. The library's layout,
+   registry, pairing, conjectures and index are implemented
+   ([docs/reference/bimodal-lib.md](../docs/reference/bimodal-lib.md)); the rest of the library
+   is covered by `theorem_library_tableau_pipeline`, `theorem_library_countermodels`,
+   `theorem_library_stability_entries` and `theorem_library_fragment_conservativity`. Gap: none
+   identified.
 6. **Architecture and language reach.** Done: each rule is proved once over an interface, and
    every object language with a derivation calculus has an instance or a stated reason for
    lacking one. Covered by `proof_mode_abstract_frontend_interface` and
@@ -147,7 +149,7 @@ fields. A **hard dependency** is one without which the milestone's result cannot
 proved. A **sequencing-only dependency** is an order kept for another reason: the two pieces of
 work edit the same files, or running later saves rework.
 
-Every milestone but M17 has a filed record, and the filed dependency edges are exactly the hard
+Every milestone but M17 and M18 has a filed record, and the filed dependency edges are exactly the hard
 dependencies plus the sequencing-only dependencies listed in each block, with one exception: M22
 carries an edge on M18 for its generated table, and its theorems do not wait on it. A sequencing edge is
 filed for one of three reasons: two records edit the same family files, the later record is
@@ -533,13 +535,9 @@ it, so it does not meet the done-when.
 - **Hard dependencies**: none.
 - **Sequencing-only dependencies**: none. It edits no file under either ProofMode directory.
 - **Lane**: Library.
-- **Filed record**: `theorem_library_layout_and_registry`. `BimodalLib` is a Lake library
-  outside `defaultTargets`, built by explicit target and by its own `--wfail` step in CI, as
-  `BimodalTools` is, with an import-direction check that `FormalSystem` never imports it. A
-  plain `lake build` compiles the published library and nothing else, and this library holds
-  sweeps and enumerated entries. The alternative is a default target, under which a
-  contributor's plain build would catch a re-proof that has drifted; it is rejected because CI
-  catches the same drift and the default build would change its meaning.
+- **Filed record**: none; implemented. `BimodalLib` is a Lake library outside
+  `defaultTargets`, with an import-direction check that `FormalSystem` never imports it;
+  [docs/reference/bimodal-lib.md](../docs/reference/bimodal-lib.md) describes it.
 
 ### M19: Tableau pipeline into the library
 
@@ -805,7 +803,7 @@ Four positions are taken by the filed edges and can each be reversed by changing
 | M15 | `proof_mode_reference_manual_chapter` |
 | M16 | `proof_mode_views_tier` |
 | M17 | none; merged |
-| M18 | `theorem_library_layout_and_registry` |
+| M18 | none; implemented |
 | M19 | `theorem_library_tableau_pipeline` |
 | M20 | `theorem_library_countermodels` |
 | M21 | `theorem_library_stability_entries` |

@@ -10,6 +10,7 @@ The ProofChecker project uses GitHub Actions to automatically build, test, and l
 
 ```
 Push/PR → GitHub Actions → Build → Test → Lint → lean_exe roots →
+  BimodalTools → BimodalLib → library-index.sh --check →
   check-module-invariants.sh --no-build → check-copyright-headers.sh --strict →
   readme-lint.sh → … → mk_all --lib FormalSystem --check → lint-style → Results
 ```
@@ -145,6 +146,27 @@ noticing, since nothing else observed it. The local counterpart is `check-module
 C25, which reads the same root list; CI runs the check script's structural (`--no-build`) pass
 instead of its full mode, so C25 is skipped there as redundant with this step (see the "Known
 Not-in-CI Gaps" subsection below).
+
+### Compile BimodalLib Steps
+
+**Step names**: `Compile BimodalLib (outside defaultTargets)`, `Compile BimodalLibTest`,
+`Check the library index (scripts/library-index.sh --no-build --check)`
+
+**Commands**: `lake build BimodalLib --wfail`; `lake build BimodalLibTest --wfail`;
+`bash scripts/library-index.sh --no-build --check`.
+
+`lean_lib BimodalLib`, the library of TM results, is outside `defaultTargets`, so the
+lean-action build step compiles none of it. The first step builds it with warnings as errors.
+That build is also the registration check: `BimodalLib/Theorems/Complete.lean` fails to
+elaborate when a closed derivation under `FormalSystem/Theorems/` has no `register_theorem`
+line. The second step builds the tests, which pin the failing direction of each command against
+a fixture. Both are hard stops, as the other compile steps are.
+
+The third is a check step in the sense of "Wiring a New Check Script": it carries
+`id: library-index` and `continue-on-error: true` and is reported by `Report results`. It fails
+when the committed `BimodalLib/INDEX.md` differs from a fresh rendering. It calls `lean`, so it
+has no `if: !cancelled()` guard and is skipped when the build is broken. The library and the
+commands are described in [bimodal-lib.md](../reference/bimodal-lib.md).
 
 ### Check Module Invariants Step
 
@@ -386,8 +408,9 @@ use-github-cache: false
 `lake build` invocation placed *after* that step in the same job writes into `.lake/build` after
 the snapshot was already taken, so that later output is not persisted and is re-elaborated on
 every subsequent run. In `ci.yml`'s `build` job this currently affects the `Compile lean_exe
-roots` loop and the `lake build BimodalTools --wfail` / `lake build BimodalToolsTest --wfail`
-steps that follow the main `lean-action` step. This is a known characteristic of the current
+roots` loop, the `lake build BimodalTools --wfail` / `lake build BimodalToolsTest --wfail`
+steps and the `lake build BimodalLib --wfail` / `lake build BimodalLibTest --wfail` steps that
+follow the main `lean-action` step. This is a known characteristic of the current
 design, not a defect being tracked for a fix here; closing it would mean setting
 `use-github-cache: false` and hand-rolling a job-wide `actions/cache/restore` (right after
 checkout) plus `actions/cache/save` (as the job's last step) instead, a change that should carry
@@ -498,6 +521,12 @@ lake exe mk_all --lib FormalSystem --check
 
 # Check Typst/Lean sync (name resolution, count freshness, machine appendix)
 bash scripts/typst-sync-check.sh
+
+# Build the results library and its tests (outside defaultTargets, so `lake build` skips them),
+# and check that BimodalLib/INDEX.md is current; drop --check to regenerate it
+lake build BimodalLib --wfail
+lake build BimodalLibTest --wfail
+bash scripts/library-index.sh --check
 
 # If Check 2 (count freshness) is red after adding/removing a .lean file, repair it
 # (needs a built library):
