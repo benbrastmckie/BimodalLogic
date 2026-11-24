@@ -683,8 +683,9 @@ variable [Fintype sig.preds] [DecidableEq sig.preds]
 omit [Fintype sig.preds] [DecidableEq sig.preds] in
 /-- **`TemporalTruth` is invariant along a structure isomorphism.**
 
-`eval_iso` (`Dual.lean:361`) with `table_correctness` (`Table.lean:254`) on both sides. This is
-the lemma `Dual.lean` stopped one step short of; it is stated for an arbitrary `StructIso`, so it
+`eval_iso` (`Dual.lean:361`) with `table_correctness`
+(`Expressiveness/Table.lean:254`) on both sides. This is the lemma `Dual.lean`
+stopped one step short of; it is stated for an arbitrary `StructIso`, so it
 is reusable for any later carrier transport. -/
 theorem temporalTruth_iso {M N : OrderedMonadicStructure sig} (e : StructIso M N)
     (atomMap : Formula → sig.preds) (x : M.carrier) (A : Formula) :

@@ -26,11 +26,11 @@ import Mathlib.Data.List.Permutation
 -- `orderedPointsExist_combine_kminus`, `orderedPointsExist_widen_right`) and the SUP-side exclusion
 -- route (`HasAttainedSUP.toHasDefinableSUP`, `hasDefinableSUP_excludes_kminus`,
 -- `prior_makes_kminus_disjunct_unreachable`). NO hypothesis absent from p.8 is introduced: Since is
--- interpreted natively by `Formula.snce` (`Table.lean:198`), so `K⁻` is TL-definable exactly as
--- `K⁺` is. Like the INF direction, the past mirror is NOT observable by any current consumer —
--- `prior_makes_kminus_disjunct_unreachable` proves the `K⁻` boundary disjunct is dead on every
--- Prior structure. The edge exists for the same reason as the `Lemma53Faithful` edge: parking it in
--- `Kamp/Boneyard/` would put it under no glob and in no CI build, so both the mirror and its
+-- interpreted natively by `Formula.snce` (`Expressiveness/Table.lean:198`), so `K⁻` is TL-definable
+-- exactly as `K⁺` is. Like the INF direction, the past mirror is NOT observable by any current
+-- consumer — `prior_makes_kminus_disjunct_unreachable` proves the `K⁻` boundary disjunct is dead on
+-- every Prior structure. The edge exists for the same reason as the `Lemma53Faithful` edge: parking
+-- it in `Kamp/Boneyard/` would put it under no glob and in no CI build, so both the mirror and its
 -- exclusion theorem would rot invisibly. The module contains **no sorries** and every declaration
 -- is axiom-clean. Cycle-free: Lemma53FaithfulPast imports only `...Kamp.DedekindINF`, already in
 -- this file's transitive closure.

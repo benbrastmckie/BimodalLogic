@@ -366,7 +366,7 @@ the filed records. Module order would be Modal, Stability, Temporal, Boolean.
 | Record | Change |
 |---|---|
 | `proof_mode_split_shared_test_and_guide_files` | Stability and its interactions named among the split files; `file_scope` is two directories and stands. |
-| `proof_mode_s5_aware_box_scopes` | `file_scope` gains `FormalSystem/Theorems/ProofMode/Stability.lean`, `FormalSystem/Automation/ProofMode/Stability.lean`, a stability test file and `docs/user-guide/proof-mode/stability.md`. |
+| `proof_mode_s5_aware_box_scopes` | `file_scope` gains a `Stability.lean` under each of `FormalSystem/Theorems/ProofMode/` and `FormalSystem/Automation/ProofMode/`, a stability test file and `docs/user-guide/proof-mode/stability.md`. |
 | `proof_mode_abstract_frontend_interface` | Interface classes `Stability`, `StabilityBoolean`, `ModalStabilityBoolean` and `StabilityTemporalBoolean`. |
 | `proof_mode_cross_modal_scopes_mf_tf`, `proof_mode_always_sometimes_scopes` | Unaffected unless they carry pasting scope rules, which would move to `StabilityTemporalBoolean`. |
 | `theorem_library_layout_and_registry` | A family set of three, eight fragments, no operator set. |

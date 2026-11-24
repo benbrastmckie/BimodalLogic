@@ -36,7 +36,7 @@ explicit "THIS IS NOT `prior_UZ`/`prior_SZ`" caveat. `SemanticPriorU` / `Semanti
 the semantic side of exactly those two axioms, read at an `OrderedMonadicStructure` in the same
 idiom `PriorDefs.lean` uses for the integer pair.
 
-Unfolding the temporal operators with this tree's `TemporalTruth` (`Table.lean:188`):
+Unfolding the temporal operators with this tree's `TemporalTruth` (`Expressiveness/Table.lean:188`):
 
 * `U(A,B)(t)` is `∃ s > t, A(s) ∧ ∀ r ∈ (t,s), B(r)` (the prefix `U(·,·)` rendering is
   event-first: first argument the event, second the guard — the reverse of the `Formula.untl`

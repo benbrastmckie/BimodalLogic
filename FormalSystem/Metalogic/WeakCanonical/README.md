@@ -30,7 +30,7 @@ anything from this one, which is what makes the split a partition rather than a 
 | `ReflexiveCanonical.lean` | 1 | 764 | Main reflexive canonical model construction |
 | `Transfer.lean` | 1 | 1,059 | Transfer lemma (`truth_transfer`) and the signature/atom-map layer |
 | `TruthLemma.lean` | 1 | 196 | MCS-membership characterizations for the weak canonical model |
-| `DenseModelSurgery/` | 9 | 7,935 | Dense model surgery — part of the Dedekind/real route |
+| `DenseModelSurgery/` | 9 | 7,936 | Dense model surgery — part of the Dedekind/real route |
 | `GroupModel/` | 6 | 3,150 | Non-Archimedean `ℚ ×ₗ ℤ` companion chain and `countermodel_discrete` |
 | `IntegerModel/` | 6 | 5,625 | Integer model construction |
 | `KTypeSummary/` | 6 | 958 | `k`-type summaries over the `ℤ` time axis: the finite summary alphabet, with the segment carrier, Ramsey cover and saturation steps appended as they land |

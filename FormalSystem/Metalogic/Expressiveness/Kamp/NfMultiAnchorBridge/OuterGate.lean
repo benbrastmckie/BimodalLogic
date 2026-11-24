@@ -106,7 +106,7 @@ bridges `hcb`/`hck` are built from `nf_depth0_char_formula_correct` (KampTransla
 
 /-- **⇐ completeness bridge for the char-base layer**: the standard-instantiation
     depth-0 characteristic formula is truth-equivalent to the arity-1 evaluation. Extracted from the
-    landed `nf_char2_atom_layer` proof (`Base.lean:60`), specialized to the plain arity-1 iff. -/
+    landed `nf_char2_atom_layer` proof, specialized to the plain arity-1 iff. -/
 theorem bracketEndChar_kvE2_hcb {sig : MonadicSignature} [Fintype sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)

@@ -80,8 +80,8 @@ Reynolds' proof needs three things this tree did not have.
    (`uSExpressivelyCompleteOverDensePrior`, monadic → temporal) but not the easy converse. It is
    landed here as `temporalAt` / `temporalToMonadic`, with the checked soundness theorem
    `eval_temporalAt`. The recursion is available only because `TemporalTruth`
-   (`Table.lean:188`) reads `.box φ` off `M.interp (atomMap (.box φ))` — a monadic atom — so every
-   clause of `TemporalTruth` is monadically expressible after all.
+   (`Expressiveness/Table.lean:188`) reads `.box φ` off `M.interp (atomMap (.box φ))` — a
+   monadic atom — so every clause of `TemporalTruth` is monadically expressible after all.
 
 2. **Two reusable auxiliary-formula families**, in Phase 18's style (named monadic definition,
    named semantic reading, checked `..._eval`): `classBeginsWithFormula` (*"we are now in a class
@@ -138,9 +138,9 @@ variable {C : OrderedMonadicStructure sig → Prop} [IsDualClosed C]
 Reynolds uses expressive completeness in both directions in §6 without comment. The tree lands
 only the hard direction. This section lands the easy one.
 
-`temporalAt atomMap i A` is the monadic formula, at any arity, saying *"`A` holds at the point
-named by De Bruijn index `i`"*. The `U` and `S` clauses are Reynolds' own truth conditions,
-transcribed from `TemporalTruth` (`Table.lean:188`) one binder at a time; `.box φ` and `.atom a`
+`temporalAt atomMap i A` is the monadic formula, at any arity, saying *"`A` holds at the point named
+by De Bruijn index `i`"*. The `U` and `S` clauses are Reynolds' own truth conditions, transcribed
+from `TemporalTruth` (`Expressiveness/Table.lean:188`) one binder at a time; `.box φ` and `.atom a`
 are monadic atoms, because `TemporalTruth` already reads both off `M.interp`. -/
 
 /-- **`A` at De Bruijn index `i`**, as a monadic formula.

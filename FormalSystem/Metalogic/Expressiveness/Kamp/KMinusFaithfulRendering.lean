@@ -34,8 +34,8 @@ The mirror replaces `inf` by `sup{z ∈ (z₀,z₁) | Pₙ(z)}`, the boundary su
 This is the Until/Since symmetry the paper itself relies on: p.8 proves the `Until` instance and
 Corollary 5.4 immediately takes both directions. **No hypothesis absent from p.8 is introduced.**
 In particular `K⁻` needs nothing new: `Formula.snce` interprets Since natively
-(`Table.lean:198`), so `kminusFormula` below is the literal transcription of `¬P ∧ ¬(⊤ S ¬P)`,
-exactly as `kplusFormula` (`PriorINF.lean:121`) is `¬P ∧ ¬(⊤ U ¬P)`.
+(`Expressiveness/Table.lean:198`), so `kminusFormula` below is the literal transcription
+of `¬P ∧ ¬(⊤ S ¬P)`, exactly as `kplusFormula` (`PriorINF.lean:121`) is `¬P ∧ ¬(⊤ U ¬P)`.
 
 ## What this module lands
 
@@ -129,7 +129,7 @@ open FormalSystem.Metalogic.Expressiveness
 /-! ## `K⁻(P)` as an object-language formula
 
 `kminus` (`PriorINF.lean`) was declared semantically and never given a spelling. `Formula.snce`
-interprets Since natively (`Table.lean:198`): `snce φ ψ` at `t` is
+interprets Since natively (`Expressiveness/Table.lean:198`): `snce φ ψ` at `t` is
 `∃s < t, φ(s) ∧ ∀r ∈ (s,t), ψ(r)`. So `⊤ S ¬P` at `t` reads *"there is a gap below `t` on which
 `P` never holds"*, and its negation is *"`P` occurs in every interval `(s,t)`"* — which, conjoined
 with `¬P(t)`, is exactly `K⁻(P)(t)`. -/

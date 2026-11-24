@@ -19,33 +19,33 @@ each concluding in the `kampPrior_case1_trichotomy_assemble` skeleton shape
 
 **R1 verdict (Route V confirmed; Route P refuted for interior-positive populations).** The
 literal P4/P5 `h_quant` binder pair `(quantEnd : TemporalPred) × (seg : BracketFormula 0)`
-(`nf_char2_past_formula_correct`, Base.lean:1424; `nf_char2_future_formula_correct`,
-Base.lean:1655) cannot host interior-POSITIVE population clauses: a `BracketFormula 0` has NO
-point slots (`IntervalPattern.holds` at `n = 0` is purely the universal segment form,
-ExistsForallNF:106-112), so it can carry only universal-over-interval exclusions, and a closed
-`quantEnd` evaluated at the bound witness `x` cannot lay a SECOND witness strictly between `x`
-and the origin `t` (the interior-zone existential `∃ v, x < v ∧ v < t ∧ …` needs a bracket
-POINT slot — §5 bracket notation, Rabinovich 2014 PDF p.7). Any population `sub_nf` with a
-positive interior fiber therefore escapes the pair shape. The primary assembly (Route V) builds
-the arm at the `VVecEA2` level — interior-positive fibers occupy bracket WITNESS slots over
-arrangements, exactly the `bracketEndCharK1v` device (`CarrierK1V.lean:435`) one arity down —
-and enters the skeleton via `VVecEA2.translateRight_correct` (NfToVecEA.lean:459) /
+(`nf_char2_past_formula_correct`, NfMultiAnchorBridge/Base.lean:1424;
+`nf_char2_future_formula_correct`, NfMultiAnchorBridge/Base.lean:1655) cannot host interior-POSITIVE
+population clauses: a `BracketFormula 0` has NO point slots (`IntervalPattern.holds` at `n
+= 0` is purely the universal segment form, ExistsForallNF:106-112), so it can carry only
+universal-over-interval exclusions, and a closed `quantEnd` evaluated at the bound witness `x`
+cannot lay a SECOND witness strictly between `x` and the origin `t` (the interior-zone existential
+`∃ v, x < v ∧ v < t ∧ …` needs a bracket POINT slot — §5 bracket notation, Rabinovich 2014 PDF p.7).
+Any population `sub_nf` with a positive interior fiber therefore escapes the pair shape. The primary
+assembly (Route V) builds the arm at the `VVecEA2` level — interior-positive fibers occupy bracket
+WITNESS slots over arrangements, exactly the `bracketEndCharK1v` device (`CarrierK1V.lean:435`) one
+arity down — and enters the skeleton via `VVecEA2.translateRight_correct` (NfToVecEA.lean:459) /
 `VVecEA2.translateLeft_correct` (VecEATranslation.lean:561). The DoD binds only the
 skeleton-shaped conclusions, which Route V produces directly.
 
 **R2 verdict (A_diag_correct per-point hooks undischargeable; additive diag variant landed).**
-`A_diag_correct`'s hooks (Base.lean:766-773) demand, for a FIXED syntactic
+`A_diag_correct`'s hooks (NfMultiAnchorBridge/Base.lean:766-773) demand, for a FIXED syntactic
 `pastEnd : NormalForm sig k 3 → TemporalPred`, the per-point biconditional
 `∀ w < t, (pastEnd qnf).EvalAt M atomMap w ↔ NfEvalNf M k 3 (Fin.cons w (fun _ => t)) qnf`.
 This is the free-anchor obstruction machine-established by `endChar0_correct`'s counterexample
-record (Base.lean:1069-1079) and by the sorry-free refutation pair
+record (NfMultiAnchorBridge/Base.lean:1069-1079) and by the sorry-free refutation pair
 `endCharN0_correct_world_local_obstruction` / `endCharN0_correct_infeasible`
-(Base.lean:1983/2027): `(pastEnd qnf).EvalAt M atomMap w` depends only on the single world `w`,
-while the RHS constrains the predicate layer at the anchor position `t` (indices 1, 2 of the
-env `[w, t, t]`) — no choice of closed `pastEnd` can bridge this. The diag arms below therefore
-do NOT instantiate `A_diag_correct`; they land additive variants with the same skeleton-shaped
-conclusion (`TemporalTruth M atomMap t … ↔ NfEvalNf M (k+1) 2 (Fin.cons t (fun _ => t))
-sub_nf`), which is the shape downstream assembly consumes. The hooks are thereby discharged in
+(NfMultiAnchorBridge/Base.lean:1983/2027): `(pastEnd qnf).EvalAt M atomMap w` depends only on
+the single world `w`, while the RHS constrains the predicate layer at the anchor position `t`
+(indices 1, 2 of the env `[w, t, t]`) — no choice of closed `pastEnd` can bridge this. The diag
+arms below therefore do NOT instantiate `A_diag_correct`; they land additive variants with the same
+skeleton-shaped conclusion (`TemporalTruth M atomMap t … ↔ NfEvalNf M (k+1) 2 (Fin.cons t (fun _ =>
+t)) sub_nf`), which is the shape downstream assembly consumes. The hooks are thereby discharged in
 the sense that binds (conclusion, not binder).
 
 **Aggregation verdict (plan deviation, recorded per R7).** The plan's Phase-2 aggregation

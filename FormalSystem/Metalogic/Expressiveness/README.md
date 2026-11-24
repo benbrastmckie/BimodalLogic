@@ -31,7 +31,7 @@ a genuine partition; `scripts/measure-refactor-partitions.py --check` asserts th
 | `Table.lean` | 1 | 296 | Tabular representation for N-equivalence classes |
 | `EFGames/` | 11 | 11,886 | Ehrenfeucht-Fraisse bisimulation game engine |
 | `GameTransfer/` | 5 | 9,518 | Transfer of game equivalences across structures |
-| `Kamp/` | 115 | 77,732 | Kamp/Rabinovich separation machinery -- by far the largest subtree in the repository |
+| `Kamp/` | 115 | 77,734 | Kamp/Rabinovich separation machinery -- by far the largest subtree in the repository |
 | `Separation/` | 3 | 930 | Separation theorem and supporting lemmas |
 | `SeparationZ/` | 13 | 6,902 | Gabbay separation over the integer flow, on an auxiliary until/since syntax with abstract leaves: GHR Lemmas 10.2.1-10.2.8 and Theorem 10.2.9 in full, the CNF packaging of the separated form, the discharge `separationOver_ztime : SeparationOver TaskFrame.IsZTime` with the computable `sepZ`, and the computable translation `trZ` |
 <!-- END GENERATED -->

@@ -27,7 +27,7 @@ symmetry; `Dual.lean` is that appeal, made mechanical.
 | `Lemma5.lean` | 918 | Lemma 5 — formula and elementary transfer across classes, both statements (printed p.179). |
 | `NoGaps.lean` | 1,194 | Lemma 9 and Theorem 4 — the classes do not end at gaps. Closes section 6 (printed pp.182-183). |
 | `Singletons.lean` | 636 | Section 7 Theorem 5 — a dense set of singleton classes, from axiom `Sep` (printed p.184). This is **D2**. |
-| `TruthTransfer.lean` | 890 | Lemma 8 — truth preservation under bad-interval surgery (printed pp.181-182). |
+| `TruthTransfer.lean` | 891 | Lemma 8 — truth preservation under bad-interval surgery (printed pp.181-182). |
 <!-- END GENERATED -->
 
 ## Key Results

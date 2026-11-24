@@ -44,7 +44,7 @@ The two source definitions, read verbatim from the corpus at this revision:
 **Neither source's `K⁺` carries a `¬A` conjunct at the point of evaluation.** Rabinovich's
 `Until` takes its eventuality as the *second* argument, so his `(¬F) Until True` is Reynolds'
 `U(⊤,¬F)` — the two abbreviations are the same operator written under mirrored argument
-conventions, and `Formula.untl φ ψ` (`Table.lean:188`) follows Reynolds'.
+conventions, and `Formula.untl φ ψ` (`Expressiveness/Table.lean:188`) follows Reynolds'.
 
 ## The bridge, and why its absence mattered
 
@@ -145,8 +145,8 @@ truth condition**. These two lemmas are that bridge. -/
     `TemporalTruth M atomMap t (Formula.kPlus P) ↔ kplusOpen M atomMap P t`.
 
     `Formula.kPlus P` is `(untl P.neg ⊤).neg` (`Syntax/Formula.lean:197`), which is Reynolds'
-    `¬U(⊤,¬P)` (abbreviation table §1, printed p.168) letter for letter under
-    `Formula.untl`'s truth clause (`Table.lean:188`). Unwinding: `U(⊤,¬P)(t)` says some `(t,s)` is
+    `¬U(⊤,¬P)` (abbreviation table §1, printed p.168) letter for letter under `Formula.untl`'s
+    truth clause (`Expressiveness/Table.lean:188`). Unwinding: `U(⊤,¬P)(t)` says some `(t,s)` is
     entirely `P`-free, so its negation says every `(t,s)` contains a point at which `P` holds —
     which is `kplusOpen`, and which is Rabinovich's Definition (3) (PDF p.3).
 

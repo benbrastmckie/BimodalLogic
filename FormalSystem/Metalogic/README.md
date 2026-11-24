@@ -163,10 +163,10 @@ self-named inner root it once delegated to has been absorbed into it.
 | [`Core/`](Core/README.md) | 3 | 1,345 | MCS machinery shared by all three routes |
 | [`Decidability/`](Decidability/README.md) | 186 | 127,509 | Tableau decision procedure and countermodel extraction |
 | [`Deterministic/`](Deterministic/README.md) | 9 | 2,072 | The deterministic metatheory of TM⁺: validity narrowed to `TaskFrame.Deterministic`, the narrowed completeness engines, the `⊡`-erasure, the extended system TM⁺ + *Determined*, and its soundness and completeness |
-| [`Expressiveness/`](Expressiveness/README.md) | 157 | 111,856 | Kamp/Stavi expressive completeness: monadic FO, EF games, normal forms, separation |
+| [`Expressiveness/`](Expressiveness/README.md) | 157 | 111,858 | Kamp/Stavi expressive completeness: monadic FO, EF games, normal forms, separation |
 | [`Independence/`](Independence/README.md) | 30 | 9,269 | Axiom-independence models |
 | [`SoundnessLemmas/`](SoundnessLemmas/README.md) | 6 | 2,955 | Per-axiom validity lemmas feeding `Soundness.lean` |
-| [`WeakCanonical/`](WeakCanonical/README.md) | 45 | 29,303 | Kamp/Reynolds route, including all of `Kamp/` |
+| [`WeakCanonical/`](WeakCanonical/README.md) | 45 | 29,304 | Kamp/Reynolds route, including all of `Kamp/` |
 <!-- END GENERATED -->
 
 C7's `Metalogic` rollup is larger than the sum of the table above, because it also counts the
@@ -209,7 +209,7 @@ dominates everything else in the repository:
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/WeakCanonical rows=subdirs cols=files-lines desc=no sort=lines-desc -->
 | Subdirectory | Files | Lines |
 |--------------|------:|------:|
-| `DenseModelSurgery/` | 9 | 7,935 |
+| `DenseModelSurgery/` | 9 | 7,936 |
 | `RealModel/` | 7 | 6,790 |
 | `IntegerModel/` | 6 | 5,625 |
 | `GroupModel/` | 6 | 3,150 |
@@ -227,7 +227,7 @@ sub-subtrees below. It no longer carries a local `Boneyard/`; its archived work 
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/Expressiveness/Kamp rows=subdirs cols=files-lines desc=no sort=lines-desc -->
 | Under `Kamp/` | Files | Lines |
 |---------------|------:|------:|
-| `NfMultiAnchorBridge/` | 47 | 41,403 |
+| `NfMultiAnchorBridge/` | 47 | 41,405 |
 | `EANegationFix/` | 7 | 3,231 |
 | `EANegationFixFaithful/` | 5 | 2,664 |
 <!-- END GENERATED -->
