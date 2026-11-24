@@ -402,44 +402,44 @@ restatement; no intermediate per-file state of this phase is committable on its 
 
 ---
 
-### Phase 4: Promote the bridge and land the `StepFrag`-restricted schema [NOT STARTED]
+### Phase 4: Promote the bridge and land the `StepFrag`-restricted schema [COMPLETED]
 
 **Goal**: Land `Zrel_of_kappa_eq` in the library and, from it, `cellLE_zero_const_of_kappa_eq_stepFrag`
 -- `CellLEZeroConstOfKappaEq` restricted to `StepFrag φ`, `sorryAx`-free, under its own name.
 
 **Tasks**:
 
-- [ ] Promote `Zrel_of_kappa_eq` from
+- [x] *(deviation: altered -- promoted verbatim EXCEPT that the body's three goal-restating `show` lines became `change`: under the package's linter set `linter.style.show` flags all three as definitional-equality uses, and CI builds with `--wfail`, so the plan's Risk-row assertion that the promoted `show` lines are a sanctioned use is falsified. No other token of statement or body changed.)* Promote `Zrel_of_kappa_eq` from
       `specs/evidence/seam-gluing-ray-product/ladder-step-fragment-gap-depth.lean:731` into
       `FormalSystem/Metalogic/Decidability/RaySummary/LadderStepFrag.lean`, VERBATIM in statement
       and body -- its `kappa_eq_components` call resolves against `LadderAgree.lean:902`, which is in
       this module's import closure. Keep the `omit` of the unused instances if the target section
       carries them.
-- [ ] Add `cellAt_const_of_kappa_eq_stepFrag` to the same module, promoted verbatim from the probe
+- [x] Add `cellAt_const_of_kappa_eq_stepFrag` to the same module, promoted verbatim from the probe
       at `:754`, as the composition of `cellAt_eq_of_Zrel` (already landed at `LadderStepFrag.lean:1005`)
       with `Zrel_of_kappa_eq`.
-- [ ] Land `cellLE_zero_const_of_kappa_eq_stepFrag` in the same module: `intro` the schema's
+- [x] Land `cellLE_zero_const_of_kappa_eq_stepFrag` in the same module: `intro` the schema's
       `ParamsOk` and stab-free hypotheses (the stab-free one is UNUSED -- `StepFrag` leaves `⊡`
       unrestricted -- so bind it as `_`), then `intro` the counter data and apply
       `cellAt_const_of_kappa_eq_stepFrag` with `hTc`/`hTn` from Phase 2's two discharges, `hBa` from
       `paramsOkK4`'s backward conjunct and `hBb` from Phase 3's repaired forward conjunct.
-- [ ] The declaration MUST be the full schema, not a restatement of its body: its conclusion is
+- [x] The declaration MUST be the full schema, not a restatement of its body: its conclusion is
       `CellLEZeroConstOfKappaEq step pend fwd bwd lab φ Tc Tn P B`, with `StepFrag φ` as the single
       added hypothesis. Do not add a regime, threshold, displacement-shape, room or forward-slack
       hypothesis; do not specialise `Tc`/`Tn`/`P`/`B` to the fixpoint's outputs. Any of those is the
       statement-fidelity defect `plan-compliance.md` forbids -- escalate as `[BLOCKED]` instead.
-- [ ] Give it a docstring in the module's voice that states exactly what it is and is NOT: it
+- [x] Give it a docstring in the module's voice that states exactly what it is and is NOT: it
       discharges the reserved schema on the step fragment (`⊡` and `□` unrestricted, `untl`/`snce`
       admitted only at guard `⊥`), it leaves the reserved name `cellLE_zero_const_of_kappa_eq`
       claimed by nothing, and the residue is stab-free formulas carrying an unbounded `U`/`S` jump.
       Include its `Paper:` line (C15).
-- [ ] Re-tighten `set_option linter.style.longFile` in `LadderStepFrag.lean` to this phase's own
+- [x] *(done: 1857 lines post-edit, baseline 1800 -> 1900; `LadderRealize.lean` additionally needed 4800 -> 4900 and three docstring rewraps under the 100-character line limit, both consequences of Phase 3's rename landing in this phase's build)* Re-tighten `set_option linter.style.longFile` in `LadderStepFrag.lean` to this phase's own
       `candidate = max(1500, (lines / 100) * 100 + 200)` computed from the POST-edit line count,
       accepting only `candidate` or `candidate - 100` (gate-collision Condition 7). An early bump to
       a larger eventual value is itself a new warning, and under `--wfail` a failure.
-- [ ] Add the `docs/theorem-index.md` row for the deliverable, stating in the row's own "What it is
+- [x] Add the `docs/theorem-index.md` row for the deliverable, stating in the row's own "What it is
       not" idiom that the filed `cellLE_zero_const_of_kappa_eq` remains carried by no declaration.
-- [ ] Run `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ`.
+- [x] Run `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ`.
 
 **Timing**: 2 hours
 

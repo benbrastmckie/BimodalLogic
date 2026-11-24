@@ -50,8 +50,8 @@ a datum of the CELL at the member's own world state, so the condition asks exact
 agreement and for nothing weaker (`stab_bit_agree_of_certStabK` below is the statement of that
 collapse). It is not claimed here, and neither is `real_certAdmK_of_paramsOk` or
 `real_subset_dmax`. They do NOT wait on the agreement: the agreement is REFUTED at `(K4)`'s gap
-clip (`exists_kappa_collision_cellAt_ne_at_K4_clip_pre` at the end of this module), and condition (5)
-is refuted ON `Real` itself at that clip, together with `certAdmK` of `Real`
+clip (`exists_kappa_collision_cellAt_ne_at_K4_clip_pre` at the end of this module), and
+condition (5) is refuted ON `Real` itself at that clip, together with `certAdmK` of `Real`
 (`exists_paramsOkPre_real_not_certAdmK`, likewise at the end of this module). So no theorem of the
 shape `ParamsOk … → certAdmK … (Real …)` exists, and the route to `Real ⊆ Dmax` through
 `dmax_maximal` is closed. Whether `Real ⊆ Dmax` holds by some other route is open and is not
@@ -193,7 +193,7 @@ open FormalSystem.Metalogic.Decidability
 
 -- The module's recorded length ceiling: the offset-invariance section takes the file past the
 -- default limit.
-set_option linter.style.longFile 4800
+set_option linter.style.longFile 4900
 
 namespace FormalSystem.Metalogic.Decidability.RaySummary
 
@@ -1352,8 +1352,8 @@ carries none of the room, threshold or clip conditions the deletions ask for. **
 family stops short of the filed `cellAt_const_of_kappa_eq` on those collisions SPECIFICALLY** — the
 upward-saturated register family, moved countdowns, closures carrying a `⊡` letter, and paths
 outside the regime. **The filed statement itself is REFUTED**, on a `⊡`-carrying closure at the
-gap coordinate and at (K4)'s own clip, by `exists_kappa_collision_cellAt_ne_at_K4_clip_pre` at the end
-of this module; the wired probe
+gap coordinate and at (K4)'s own clip, by `exists_kappa_collision_cellAt_ne_at_K4_clip_pre` at
+the end of this module; the wired probe
 `specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean` compiles the same
 object independently (`cellAt_const_of_kappa_eq_schema_refuted`; `LadderCell.lean`, section "The
 refutation of the agreement over counter classes"). It is landed here under no name, and adding a
@@ -1420,8 +1420,8 @@ the two per-path regimes, one through each state because the two inclusions are 
 different tools through different source states. **It is NOT the filed statement**, which
 quantifies over every `kappa`-collision at every time component and at every closure, lies
 outside this theorem on exactly the coordinates listed above, and is REFUTED on a `⊡`-carrying
-closure (`exists_kappa_collision_cellAt_ne_at_K4_clip_pre`); this theorem is landed under its own name
-precisely so that the difference is visible. `hk` is load-bearing: it supplies the residue
+closure (`exists_kappa_collision_cellAt_ne_at_K4_clip_pre`); this theorem is landed under its
+own name precisely so that the difference is visible. `hk` is load-bearing: it supplies the residue
 conjunct through `kappa_eq_components`, and nothing below re-assumes it.
 
 Paper: — (the counter quotient, the ladder carrier and the cell of a ladder state are the

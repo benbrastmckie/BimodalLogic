@@ -185,7 +185,7 @@ stated in this module; every quantity named is a count, and no complexity bound 
 -- split: the row link, its induction scaffold and the path forth over it are one argument, and
 -- the scaffold's three closure clauses are read against `LnkRow`'s own unfolding in this file.
 -- The baseline is raised in place, one chunk at a time, and the linter checks it stays tight.
-set_option linter.style.longFile 1800
+set_option linter.style.longFile 1900
 
 open FormalSystem.Syntax FormalSystem.Semantics FormalSystem.PlusLanguage
 open FormalSystem.Metalogic.Decidability
@@ -1014,6 +1014,61 @@ theorem cellAt_eq_of_Zrel
   Set.Subset.antisymm (cellAt_subset_of_Zrel fwd bwd lab φ hφ x y hZ z)
     (cellAt_subset_of_Zrel fwd bwd lab φ hφ y x (Zrel.symm hZ) z)
 
+omit [Finite Q] [Nonempty Q] in
+/-- **A COUNTER CLASS REFINES THE DERIVED RELATION** once its two thresholds dominate
+`2 (a + b)` and its gap clip dominates `2 a` and `2 b + 2`.  The two residue coordinates are not
+read.
+
+Promoted verbatim from the wired probe
+`specs/evidence/seam-gluing-ray-product/ladder-step-fragment-gap-depth.lean`, whose round
+established it; the four numeric hypotheses are discharged from `ParamsOk` by
+`paramsOk_two_depth_sum_le_Tc`/`_le_Tn` and `(K4)`'s two clip conjuncts. -/
+theorem Zrel_of_kappa_eq (a b Tc Tn P B : ℕ) (hTc : 2 * (a + b) ≤ Tc) (hTn : 2 * (a + b) ≤ Tn)
+    (hBa : 2 * a ≤ B) (hBb : 2 * b + 2 ≤ B) (q : Q) (c n c' n' : ℕ)
+    (h : c ∈ Adm pend q) (h' : c' ∈ Adm pend q)
+    (hk : kappa Tc Tn P B (c, n) = kappa Tc Tn P B (c', n')) :
+    Zrel a b (⟨(q, c, n), h⟩ : LadderState Q pend) ⟨(q, c', n'), h'⟩ := by
+  obtain ⟨h1, -, h3, -, h5⟩ := kappa_eq_components Tc Tn P B c n c' n' hk
+  refine ⟨rfl, ?_, ?_, ?_⟩
+  -- The three remaining clauses are `Zrel`'s own, with the two states' projections reduced;
+  -- `change` records each in the reduced form the arithmetic is then read in.
+  · change c = c' ∨ (2 * (a + b) ≤ c ∧ 2 * (a + b) ≤ c')
+    omega
+  · change n = n' ∨ (2 * (a + b) ≤ n ∧ 2 * (a + b) ≤ n')
+    omega
+  · change (n : ℤ) - c = (n' : ℤ) - c' ∨
+      (2 * (a : ℤ) ≤ (n : ℤ) - c ∧ 2 * (a : ℤ) ≤ (n' : ℤ) - c') ∨
+      ((n : ℤ) - c ≤ -(2 * (b : ℤ) + 2) ∧ (n' : ℤ) - c' ≤ -(2 * (b : ℤ) + 2))
+    unfold clipIdx at h5
+    split_ifs at h5 <;> omega
+
+/-- **THE AGREEMENT OVER COUNTER CLASSES, ON THE STEP FRAGMENT, AT THE DERIVED CLIP.**  The shape
+of the filed agreement — a `kappa`-collision as hypothesis, equality of the two cells as
+conclusion — with the gap clip at `max (2 dBack) (2 dFwd + 2)` and both thresholds at
+`2 (dBack + dFwd)`, for every finite object and every step-fragment formula.
+
+**What it is and is not.** The fragment excludes the unbounded jump, and the parameter hypotheses
+are the four displayed rather than `ParamsOk`.  Its world state IS the diagonal `(z, ·)` at
+evaluation time `z`, which is exactly the shape `CellLEZeroConstOfKappaEq` carries, so no
+time-component transport is needed to reach that schema: `cellLE_zero_const_of_kappa_eq_stepFrag`
+is this theorem with the four hypotheses discharged from `ParamsOk`.
+
+Promoted verbatim from the same wired probe as `Zrel_of_kappa_eq` above. -/
+theorem cellAt_const_of_kappa_eq_stepFrag
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x) (lab : Q → Atom → Bool)
+    (φ : PlusFormula) (hφ : StepFrag φ) (Tc Tn P B : ℕ)
+    (hTc : 2 * (dBack φ + dFwd φ) ≤ Tc) (hTn : 2 * (dBack φ + dFwd φ) ≤ Tn)
+    (hBa : 2 * dBack φ ≤ B) (hBb : 2 * dFwd φ + 2 ≤ B)
+    (q : Q) (c n c' n' : ℕ) (h : c ∈ Adm pend q) (h' : c' ∈ Adm pend q)
+    (hk : kappa Tc Tn P B (c, n) = kappa Tc Tn P B (c', n')) (z : ℤ) :
+    cellAt (ladderModel step pend fwd bwd lab) φ
+        ((z, ⟨(q, c, n), h⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z =
+      cellAt (ladderModel step pend fwd bwd lab) φ
+        ((z, ⟨(q, c', n'), h'⟩) : (ladderFrameAdm step pend fwd bwd).WorldState) z :=
+  cellAt_eq_of_Zrel fwd bwd lab φ hφ _ _
+    (Zrel_of_kappa_eq _ _ Tc Tn P B hTc hTn hBa hBb q c n c' n' h h' hk) z
+
 end Truth
 
 /-! ### The row link is reflexive, and what a row link forces at a region's end -/
@@ -1584,6 +1639,57 @@ theorem paramsOk_two_depth_sum_le_Tn {Q : Type} [Fintype Q] [Nonempty Q]
   omega
 
 end DepthThreshold
+
+/-! ### The reserved depth-`0` schema, DISCHARGED ON THE STEP FRAGMENT
+
+`LadderAgree.lean`'s `CellLEZeroConstOfKappaEq` is the statement the reserved name
+`cellLE_zero_const_of_kappa_eq` would carry, landed there as a `def` precisely so that its
+refutations and discharges can be theorems about a named object.  It is discharged below on
+`StepFrag φ`, from `ParamsOk` itself and at generic parameters.
+
+Three pieces meet here and none of them is new work at this point: the back-and-forth agreement
+`cellAt_eq_of_Zrel`, the counter-class-to-`Zrel` bridge `Zrel_of_kappa_eq`, and the two threshold
+discharges `paramsOk_two_depth_sum_le_Tc`/`_le_Tn`.  `(K4)` supplies the two clip hypotheses
+directly — its forward conjunct reads `2 * dFwd φ + 2 ≤ B`, which is exactly `Zrel`'s own forward
+demand. -/
+
+section StepFragSchema
+
+/-- **THE DEPTH-`0` SCHEMA, ON THE STEP FRAGMENT.**  `CellLEZeroConstOfKappaEq` holds for every
+finite object, every labelling, every parameter tuple satisfying `ParamsOk`, and every formula of
+the STEP FRAGMENT — `StepFrag φ` as the single added hypothesis and nothing else added.
+
+**What it is.**  The full schema, not a restatement of its body: `ParamsOk` and the stab-free
+condition are the schema's own hypotheses, every counter binder is the schema's own, and no
+regime, threshold, displacement-shape, room or forward-slack hypothesis is added.  The parameters
+are NOT specialised to the periodicity fixpoint's outputs.  The schema's stab-free hypothesis is
+UNUSED here: `StepFrag` leaves `⊡` and `□` unrestricted, so the fragment's own agreement covers a
+closure carrying `⊡` letters as well.
+
+**What it is NOT.**  It is not `cellLE_zero_const_of_kappa_eq`, and it does not claim that name:
+the reserved name remains carried by no declaration in the tree, and this theorem does not
+license it.  `StepFrag` admits `untl`/`snce` only at the guard `⊥`, so the residue the reserved
+schema still owes is the STAB-FREE formulas carrying an UNBOUNDED `U`/`S` jump — a guard other
+than `⊥` under an `untl` or a `snce`.  Nothing here settles the reserved schema on that residue,
+in either direction; see this module's docstring for where that question now sits.
+
+**What the refutation direction does not offer.**  Every separating family compiled anywhere in
+the tree (`thetaC`, `sigC b`, `mixC a k`, `dblC j`) is `diaF`- or `.stab`-rooted and so fails the
+schema's own stab-free hypothesis, so there is no depth-`0` refutation candidate to set against
+this discharge. -/
+theorem cellLE_zero_const_of_kappa_eq_stepFrag {Q : Type} [Fintype Q] [Nonempty Q]
+    (step : Q → Q → Bool) (pend : Q → Bool)
+    (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
+    (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (hφ : StepFrag φ) (Tc Tn P B : ℕ) :
+    CellLEZeroConstOfKappaEq step pend fwd bwd lab φ Tc Tn P B := by
+  intro hp _ q c n c' n' h h' z hk
+  exact cellAt_const_of_kappa_eq_stepFrag fwd bwd lab φ hφ Tc Tn P B
+    (paramsOk_two_depth_sum_le_Tc step pend lab φ Tc Tn P B hp)
+    (paramsOk_two_depth_sum_le_Tn step pend lab φ Tc Tn P B hp)
+    (by have := hp.2.2.2.1; omega) hp.2.2.2.2.1 q c n c' n' h h' hk z
+
+end StepFragSchema
 /-! ### Count move 1: lengthen a region, with the register offset STATED
 
 The first of the three count moves.  The existing splice layer
