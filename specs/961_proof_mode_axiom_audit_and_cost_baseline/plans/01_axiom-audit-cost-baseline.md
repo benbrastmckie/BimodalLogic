@@ -454,7 +454,7 @@ tests follow the code.
 
 ---
 
-### Phase 5: The Cost-Baseline Probe [NOT STARTED]
+### Phase 5: The Cost-Baseline Probe [COMPLETED]
 
 **Goal**: A single `lake env lean` probe that reproduces every figure the baseline document will
 quote: each acceptance example, the `lintro` ladder, the nested logical rewrite, the simplifier
@@ -470,7 +470,7 @@ rows and the two views-tier rows.
       destroy the measurement; and that `set_option profiler true` is what makes per-declaration
       sites separable inside one file, since Lean reports `tactic execution of ... took` and
       `type checking took` per declaration in source order.
-- [ ] Mirror all 52 acceptance `example`s as named `def`s, each one's script body copied
+- [x] Mirror all 52 acceptance `example`s as named `def`s, *(deviation: altered — **48**, not 52. The 52 is `grep -c '^example'`, which counts the four `#guard_msgs`-guarded NEGATIVE fixtures in `ProofModeBooleanTest.lean`, whose `example` also begins at column 0. Measured positive/guarded per module: 31/0, 2/4, 4/0, 5/0, 6/0. The four negatives are not mirrored: a script asserted to fail has no cost worth recording, and mirroring one would put a deliberately-failing declaration into a probe required to elaborate clean. Recorded in the probe header and its README.)* each one's script body copied
       verbatim from its fixture so the measured figure is the acceptance example's own cost, with
       a comment naming the source module and the fixture's position in it. Do not edit the
       fixtures.
@@ -500,7 +500,7 @@ no build target reaches, so the covering check is the probe's own compile —
 `lake env lean specs/evidence/proof-mode-cost-baseline/cost-probe.lean` — plus the `prose` row's
 diff read-through over the README.
 
-**Scope Hypothesis**: 52 acceptance-example mirrors. Re-derived at plan-authoring time via
+**Scope Hypothesis** *(resolved: 48 positive scripts, 4 guarded negatives, 52 `^example` lines)*: 52 acceptance-example mirrors. Re-derived at plan-authoring time via
 `grep -c '^example'` over the five `Tests/BimodalTest/Automation/ProofMode*Test.lean` modules
 (31 + 6 + 4 + 6 + 5 = 52); re-run that count at implementation time, since PRs #8, #9 and #10 are
 open against exactly this area and a merge between plan and implementation moves it. If the count
