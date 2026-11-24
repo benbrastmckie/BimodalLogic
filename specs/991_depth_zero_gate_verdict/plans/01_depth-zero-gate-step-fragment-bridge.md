@@ -1,7 +1,7 @@
 # Implementation Plan: Task #991
 
 - **Task**: 991 - Depth-0 gate verdict: enter the step-fragment bridge and land `CellLEZeroConstOfKappaEq` restricted to `StepFrag`
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 9.5 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/991_depth_zero_gate_verdict/reports/01_depth-zero-gate-verdict.md`
@@ -156,7 +156,7 @@ and Phases 2, 3 and 4 additionally share file territory (`CounterQuotient.lean`,
 
 ---
 
-### Phase 1: Threshold feasibility -- the go/no-go, before any library edit [NOT STARTED]
+### Phase 1: Threshold feasibility -- the go/no-go, before any library edit [COMPLETED]
 
 **Goal**: Establish by compilation, in a task-local probe that no library target imports, that
 `2 * (dBack φ + dFwd φ) <= Tc` and `2 * (dBack φ + dFwd φ) <= Tn` follow from `ParamsOk` at
