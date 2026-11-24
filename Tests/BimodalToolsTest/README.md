@@ -38,6 +38,7 @@ is listed in `scripts/module-invariants-manifest.txt`. A new test that needs the
 | `FormulaMutatorTest.lean` | 194 | <!-- TODO: add description --> |
 | `InterestingnessTest.lean` | 354 | <!-- TODO: add description --> |
 | `LeanSourceEmitTest.lean` | 242 | <!-- TODO: add description --> |
+| `PipelineDiagnosticsTest.lean` | 306 | <!-- TODO: add description --> |
 | `ProofFirstTests.lean` | 250 | <!-- TODO: add description --> |
 | `SentenceCodecTest.lean` | 200 | Acceptance rows for `translate_sentence` and `Tests/fixtures/sentence-translation-fixtures.jsonl`: the fixture file is read with `include_str`, every row's translation checked against it, both codecs round-tripped, and the file's canonical form pinned byte for byte |
 | `TableauBridgeTest.lean` | 165 | <!-- TODO: add description --> |

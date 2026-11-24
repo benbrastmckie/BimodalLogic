@@ -15,6 +15,7 @@ import BimodalToolsTest.TraceExportTest
 import BimodalToolsTest.TraceExporterE2ETest
 import BimodalToolsTest.EnumeratorCountsTest
 import BimodalToolsTest.FormulaMutatorTest
+import BimodalToolsTest.PipelineDiagnosticsTest
 import BimodalToolsTest.ProofFirstTests
 import BimodalToolsTest.SentenceCodecTest
 import BimodalToolsTest.TableauBridgeTest
