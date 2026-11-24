@@ -1,27 +1,29 @@
-import FormalSystem.Metalogic.Soundness
-import FormalSystem.Metalogic.Conservativity.Plus.PlusSoundness
-import FormalSystem.Metalogic.Conservativity.Star.StarSoundness
+import BimodalLib.Conservativity
+
+namespace BimodalLib
 
 open FormalSystem.Syntax FormalSystem.ProofSystem FormalSystem.PlusLanguage
-open FormalSystem.StarLanguage FormalSystem.Semantics FormalSystem.Metalogic
 
-universe u
-
-class PointedSound (L : Type) [TruthEnv L] (D : FrameClass → List L → L → Sort u) : Prop where
-  sound : ∀ {fc : FrameClass} {Γ : List L} {φ : L}, D fc Γ φ →
-    ∀ (F : TaskFrame), fc.Sat F → ∀ (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
-      (e : TruthEnv.Env L F), (∀ ψ ∈ Γ, TruthEnv.T M τ t e ψ) → TruthEnv.T M τ t e φ
-
-theorem star_soundness_in {fc : FrameClass} (Γ : StarContext) (φ : StarFormula)
-    (d : StarDerivationTree fc Γ φ)
-    (F : TaskFrame) (hF : fc.Sat F) (M : TaskModel F)
-    (τ : WorldHistory F) (t : F.Duration) (v : ℕ → F.Duration)
-    (h_ctx : ∀ ψ ∈ Γ, StarTruthAt M τ t v ψ) :
-    StarTruthAt M τ t v φ := sorry
+theorem conservativeEdge_boolean (fc : FrameClass) : ConservativeEdge {} fc := sorry
 
 
-theorem truth_of_derivation {L : Type} [TruthEnv L] {D : FrameClass → List L → L → Sort u}
-    [PointedSound L D] {fc : FrameClass} {Γ : List L} {φ : L} (d : D fc Γ φ)
-    {F : TaskFrame} (hF : fc.Sat F) {M : TaskModel F} {τ : WorldHistory F} {t : F.Duration}
-    (e : TruthEnv.Env L F) (h : ∀ ψ ∈ Γ, TruthEnv.T M τ t e ψ) : TruthEnv.T M τ t e φ := sorry
+theorem derivableIn_boolean_of_box (fc : FrameClass) (φ : Formula) (hφ : profileF φ ≤ {})
+    (h : DerivableIn { box := true } fc φ) : DerivableIn {} fc φ := sorry
+
+
+theorem derivableIn_boolean_of_temporal (fc : FrameClass) (φ : Formula) (hφ : profileF φ ≤ {})
+    (h : DerivableIn { temporal := true } fc φ) : DerivableIn {} fc φ := sorry
+
+
+theorem conservativeEdge_box (fc : FrameClass) : ConservativeEdge { box := true } fc := sorry
+
+
+theorem derivableIn_box_of_derivableInP (fc : FrameClass) (φ : Formula)
+    (hφ : profileF φ ≤ { box := true })
+    (h : DerivableInP { box := true, stab := true } fc (ofFormula φ)) :
+    DerivableIn { box := true } fc φ := sorry
+
+
+theorem not_conservativeEdge_temporal_base :
+    ¬ ConservativeEdge { temporal := true } FrameClass.Base := sorry
 
