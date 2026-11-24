@@ -694,7 +694,7 @@ by reading the regenerated `BimodalLib/INDEX.md`'s own census table, not by coun
 
 ---
 
-### Phase 8: Tests, the gate-bundle agreement pin, and the count surface [NOT STARTED]
+### Phase 8: Tests, the gate-bundle agreement pin, and the count surface [COMPLETED]
 
 **Goal**: lookup is tested, the three grades and the near-miss invariant are pinned in both
 directions, the two gate bundles are pinned to agree, and `typst/generated/status.typ` is
