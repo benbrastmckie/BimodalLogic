@@ -18,6 +18,7 @@ Tests for proof automation tactics.
 | ProofModeModalBooleanTest.lean | Modal simplification and named formula views |
 | ProofModeTemporalBooleanTest.lean | Temporal rewriting and frame premises |
 | ProofModeModalTemporalBooleanTest.lean | Rewriting across modal and temporal scopes |
+| ProofModeAxioms.lean | Pinned `#print axioms` rows, one per tactic family, in TM and TM⁺ |
 | DatasetGeneratorTest.lean | Structural pre-filter pins and hybrid labelling smoke tests |
 
 ## Coverage
@@ -37,4 +38,4 @@ Tests for proof automation tactics.
 
 ---
 
-*Last Updated: 2026-11-19*
+*Last Updated: 2026-11-23*

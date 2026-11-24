@@ -218,7 +218,7 @@ each gate's actual output rather than a restatement of it.
 
 ---
 
-### Phase 2: Axiom Audit Test Module [NOT STARTED]
+### Phase 2: Axiom Audit Test Module [COMPLETED]
 
 **Goal**: Satisfy the DONE WHEN clause that `lake test` covers — a test module on the pattern of
 `Tests/BimodalTest/WalkthroughAxioms.lean` that asserts the axiom set of at least one derivation
@@ -226,7 +226,7 @@ per tactic family in TM and in TM⁺, and that pins the `[propext]`/classical bo
 only its classical side.
 
 **Tasks**:
-- [ ] Create `Tests/BimodalTest/Automation/ProofModeAxioms.lean` with the repository copyright
+- [x] Create `Tests/BimodalTest/Automation/ProofModeAxioms.lean` with the repository copyright
       header and a module docstring copying `WalkthroughAxioms.lean` verbatim in form: the
       permitted set is `propext`, `Classical.choice`, `Quot.sound` or any subset;
       `Lean.ofReduceBool` (which a stray `native_decide` would introduce) is a hard stop. Add two
