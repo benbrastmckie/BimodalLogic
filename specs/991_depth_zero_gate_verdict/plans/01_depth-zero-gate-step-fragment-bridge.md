@@ -594,144 +594,7 @@ over this list.
   as recorded above.
 
 
-
-
-**Verification notes (as run)**:
-
-- `lake-build-guard.sh build --timeout 1800 -- build` exit `0`, zero `error:` and zero warning
-  lines; `bash scripts/typst-sync-check.sh --fix` PASS with nothing further to stage.
-- `bash scripts/check-evidence-probes.sh`: the newly wired `ordinary-window-regime` entry compiles
-  and is `sorryAx`-free (`#print axioms` on all eight headline declarations).
-- `bash scripts/check-module-invariants.sh --emit-inventory` re-run after this phase's docstring
-  edits moved the declaration counts again; `--emit-inventory --check` then clean.
-- **BATCH GATE DEFERRAL**: as in Phase 5, the complete gate set is NOT run here. It is deferred to
-  the single batch-stage sweep at the end of this `/orchestrate` invocation and attributed back by
-  `modified_files`. The scoped discharge is the UNMAPPABLE-CRITERION route: this phase's declared
-  criteria name `check-module-invariants.sh` and `check-evidence-probes.sh`, which no
-  `verify-deploy.sh --only-gate N` expresses, and `verify-touched.sh` would select a large battery
-  of agent-system shell suites off the concurrent sibling dispatch's own untracked files. Each
-  named check was run directly instead.
-
----
-
-## Lean Challenge Statements` block token for token for
-  all five pinned identifiers.
-- An EXACT-name sweep over `FormalSystem/` and `Tests/` for `cellLE_zero_const_of_kappa_eq` as a
-  declaration name returns nothing: the reserved name stays unclaimed. The sweep uses the exact
-  name, not a prefix anchor, which would capture the new `_stepFrag` sibling (Condition 3).
-- `bash scripts/typst-sync-check.sh --counts-only` reports no drift.
-
----
-
-### Phase 5: Reconcile the wired probes and the generated surfaces [COMPLETED]
-
-**Goal**: Bring every CI-gated surface the preceding phases moved back to green -- the wired
-evidence probes above all -- repairing citations only, never an obstruction's content.
-
-**Tasks**:
-
-- [x] Run `bash scripts/check-evidence-probes.sh` and read its label on each failing line: only
-      `FAIL (does not compile)` is rot attributable to this task's edits.
-- [x] *(deviation: altered -- FOUR probes rotted, not the two the first run reported: `ladder-cell-agreement-refutation`, `ladder-cell-obligation-refutation`, `ladder-step-fragment-gap-depth` and `ladder-chain-object-clip-refutation`. Two were pure numeric citation repairs (`Bof_chiD` 9 -> 10; `Bof_chainC` 7 -> 8 with the clip floor `max (E chainC) 7` -> `8`); two needed the frozen-copy re-pointing the plan pre-authorised, via a probe-local `BofPre` plus the library's `ParamsOkPre`/`paramsOkPre_params`. No obstruction was deleted, restated weaker, or retired.)* Repair each rotted citation under the script's no-weakening rule: adjust the probe's reading
-      of `paramsOkK4`/`Bof` to the repaired definition, and never delete, restate or weaken an
-      obstruction to make a probe pass. Where a probe's claim genuinely depends on the pre-repair
-      conjunct, re-point it at `ParamsOkPre`/`paramsOkK4Pre` -- the frozen copies Phase 3 landed
-      exist for exactly this.
-- [x] Confirm the direction of the three probe claims most exposed to the repair, and record each
-      verdict: `ladder-cell-obligation-refutation.lean`'s `not_paramsOkK4_two` (still true -- the
-      repair only strengthens the predicate it negates); `ladder-cell-agreement-refutation.lean`'s
-      `repaired_clip_refuted` (unaffected in direction -- stated at the strictly stronger
-      `BRep = 2 * (dBack + dFwd) + 2`); `ladder-chain-object-clip-refutation.lean`'s `unfold
-      paramsOkK4` site (a syntactic unfold, so re-check the arithmetic that follows it).
-- [x] Run `bash scripts/check-module-invariants.sh` and reconcile its findings for the touched
-      files: the module-inventory blocks in `README.md` and `FormalSystem/Metalogic/README.md` via
-      `--emit-inventory` (gate-collision Condition 1, surface (a), which may legitimately land
-      here), plus any C2/C14 axiom-baseline movement caused by the new declarations.
-- [x] Run `bash scripts/typst-sync-check.sh` in full (not `--counts-only`) and reconcile Check 2.
-- [x] Record each finding that is pre-existing and names only files outside this task's scope as an
-      enumerated baseline finding with the evidence that every touched file passes individually. Do
-      NOT edit an out-of-scope file to force a repo-wide count to zero (gate-collision Condition 4).
-- [x] *(not triggered: `C16 env_linter batch ... has no un-nolisted finding` PASSed, so `scripts/nolints.json` is untouched)* If an `unusedArguments` finding appears from the batch env-linter, hand-insert the single
-      four-line exemption row into `scripts/nolints.json` next to an existing row of the same shape.
-      Do not run `lake exe runLinter --update` (gate-collision Condition 10).
-
-**Timing**: 1.5 hours
-
-**Depends on**: 4
-
-**Verification Tier**: full
-
-**Tier Justification**: the surfaces this phase reconciles are repository-wide and CI-gated -- the
-wired evidence probes under `specs/evidence/`, which no Lake target root reaches and no
-module-scoped build compiles, plus the generated inventory blocks and `typst/generated/status.typ`
--- so no cheaper tier reaches any of them.
-
-**Scope Hypothesis**: the probe files most likely to rot are
-`ladder-cell-obligation-refutation.lean`, `ladder-cell-agreement-refutation.lean`,
-`ladder-chain-object-clip-refutation.lean` and `ladder-step-fragment-gap-depth.lean` -- the four
-wired probes whose `Bof`/`paramsOkK4` reference counts are highest (8, 27, 9 and 5). This is a
-hypothesis from a reference-count sweep, not a compile result: the implementer confirms it by
-running `check-evidence-probes.sh` and treats the script's own per-line labels as authoritative
-over this list.
-
-**Files to modify**:
-
-- `specs/evidence/seam-gluing-ray-product/*.lean` - repair rotted citations only, in whichever
-  wired probes the script reports; no obstruction's content changes.
-- `README.md`, `FormalSystem/Metalogic/README.md` - regenerated module-inventory blocks, if
-  `--emit-inventory --check` reports them stale.
-- `typst/generated/status.typ` - final reconciliation of every tracked count.
-- `scripts/nolints.json` - conditional: one hand-inserted exemption row, only if an
-  `unusedArguments` finding actually fires.
-
-**Verification**:
-
-- `bash scripts/check-evidence-probes.sh` at exit `0`, or every remaining failing line carries a
-  label other than `FAIL (does not compile)` and is recorded with its label.
-- `bash scripts/check-module-invariants.sh --emit-inventory --check` reports no stale block.
-- `bash scripts/typst-sync-check.sh` passes Check 2.
-- `lake-build-guard.sh build --timeout 1800 -- build` at exit `0`, and the `Tests` target builds.
-
----
-
-**Verification notes (as run)**:
-
-- `bash scripts/check-evidence-probes.sh`: `PASS  all 67 wired probe(s) compile` (one pre-existing
-  `SKIP (deferred: frame-class uniformity work)` on
-  `bi-lasso-decision-layer/spike-untl-unfolding-and-fwd-obstruction`, untouched by this task).
-- `bash scripts/check-module-invariants.sh --emit-inventory` rewrote the three stale inventory
-  blocks (`README.md`, `FormalSystem/Metalogic/README.md`,
-  `FormalSystem/Metalogic/Decidability/RaySummary/README.md`); `--emit-inventory --check` then
-  reports no stale block.
-- `bash scripts/typst-sync-check.sh --fix`: PASS on status.typ, the module map and the machine
-  appendix, with no further drift to stage.
-- `lake-build-guard.sh build --timeout 1800 -- build` exit `0` and `-- build BimodalTest` exit `0`,
-  both with ZERO `error:` and ZERO warning lines (CI builds `--wfail`).
-- **Direction verdicts for the three claims most exposed to the repair**: `not_paramsOkK4_two`
-  STILL TRUE (the repair only strengthens the predicate it negates); `repaired_clip_refuted`
-  UNAFFECTED IN DIRECTION (stated at the strictly stronger `BRep = 2 * (dBack + dFwd) + 2`, which
-  reads no `Bof`); `ladder-chain-object-clip-refutation`'s `unfold paramsOkK4` site re-checked --
-  the arithmetic floor moved from `7` to `8` and the obstruction stays at the LIVE `ParamsOk` and
-  at full strength, since `no_formula_only_clip` quantifies over every formula-only clip function.
-- **Pre-existing out-of-scope baseline finding, recorded not repaired** (gate-collision
-  Condition 4): `check-module-invariants.sh`'s `FAIL C16` over the other lakefile roots reports 5
-  NEW entries, all in `BimodalLibTest.DiagnosticsTest` and four `BimodalTools` modules that this
-  task never touches. Every file this task touched passes individually.
-- **BATCH GATE DEFERRAL**: this dispatch is one `implement`-phase dispatch inside a multi-task
-  `/orchestrate` batch, so the COMPLETE gate set was NOT independently run here; it is deferred to
-  the single batch-stage sweep at the end of the invocation, attributed back by `modified_files`.
-  The scoped discharge used instead is the UNMAPPABLE-CRITERION route: this phase's own declared
-  criteria name repository-specific checks (`check-evidence-probes.sh`,
-  `check-module-invariants.sh --emit-inventory --check`, `typst-sync-check.sh`) that neither
-  `verify-deploy.sh --only-gate N` (no matching gate number: gates 8-23 cover the agent system's
-  own deployed shell tree, not this Lean library) nor `verify-touched.sh` can express -- and
-  `verify-touched.sh` additionally derives touched paths from the whole working tree, which under
-  the concurrent sibling dispatch active in this invocation selects a large battery of
-  agent-system shell suites unrelated to this task. Each named check was therefore run DIRECTLY,
-  as recorded above.
-
-
-### Phase 6: Re-site the gate's crux in-source and record the residue [IN PROGRESS]
+### Phase 6: Re-site the gate's crux in-source and record the residue [COMPLETED]
 
 **Goal**: Replace the forward-slack crux wording where this repository states it, record the
 measured residue as the gate's remaining core, correct the one stale in-source clause the research
@@ -739,32 +602,32 @@ identified, and close the task.
 
 **Tasks**:
 
-- [ ] Repair the stale clause in `forwardSlackWitnessed_iff_next_region_cnt_le`'s docstring
+- [x] Repair the stale clause in `forwardSlackWitnessed_iff_next_region_cnt_le`'s docstring
       (`LadderCell.lean`, the "What this does NOT buy, and must not be read as" block above the
       theorem at `:1046`): the ordinary window regime `c <= n + 1` IS addressed in the UPWARD
       countdown direction by `cellAt_subset_of_window_raise` (`LadderWindow.lean:1690`); what is
       genuinely unaddressed is the DOWNWARD direction there (no `window_raise_rev` exists anywhere
       in the tree) and the non-register-held collisions.
-- [ ] Record the re-sited crux in `LadderAgree.lean`'s `CellLEZeroConstOfKappaEq` docstring and in
+- [x] Record the re-sited crux in `LadderAgree.lean`'s `CellLEZeroConstOfKappaEq` docstring and in
       `LadderStepFrag.lean`'s module docstring: the reserved schema is now discharged on
       `StepFrag φ` (`cellLE_zero_const_of_kappa_eq_stepFrag`), the refutation direction has no
       depth-`0` candidate because every compiled separating family is `diaF`- or `.stab`-rooted and
       so fails the stab-free hypothesis, and the open residue is stab-free formulas carrying an
       UNBOUNDED `U`/`S` jump. State the forward-slack question's standing: one of four
       hypothesis-deficit families, and not the gate.
-- [ ] Record the two owed follow-ups in the task's summary rather than acting on either: (a) the
+- [x] Record the two owed follow-ups in the task's summary rather than acting on either: (a) the
       `specs/ROADMAP.md` Stage 0 crux wording, which `/roadmap` owns through the
       `roadmap_milestones`/`roadmap_context` entries the file is generated from -- this plan writes
       no roadmap entry; (b) the two context-extension recommendations the research made (`diaF` is
       the `⊡`-dual, and the schema-hypothesis-deficit table as a first artifact), which belong to a
       `/meta` task against the agent system's source store, not to this repository's library.
-- [ ] Promote `specs/991_depth_zero_gate_verdict/probe-draft/threshold-depth-sum.lean` and
+- [x] *(verdict as predicted: `threshold-depth-sum.lean` is FULLY subsumed -- each of its declarations has a landed library counterpart in `CounterQuotient.lean` or `LadderStepFrag.lean` -- so it is DROPPED, not wired, and stays as the Phase 1 go/no-go artifact. `ordinary-window-regime.lean` IS promoted to `specs/evidence/forward-slack-pin-cascade/` and wired; the superseded draft copy is deleted so no ungated duplicate can rot. One repair was needed on promotion that the plan did not anticipate: the draft's `paramsOkK4_one_short_of_Zrel_forward_arm` is FALSIFIED by this task's own `(K4)` repair, so it is restated as `paramsOkK4Pre_one_short_of_Zrel_forward_arm` against the frozen conjunct, beside a new `paramsOkK4_delivers_Zrel_forward_arm` recording that the deficit is CLOSED.)* Promote `specs/991_depth_zero_gate_verdict/probe-draft/threshold-depth-sum.lean` and
       `probe-draft/ordinary-window-regime.lean` to `specs/evidence/` and add them to
       `check-evidence-probes.sh`'s `WIRED` array ONLY if their content is not already subsumed by
       the landed library lemmas. The threshold probe IS subsumed by Phase 2 and should be dropped
       rather than wired; the ordinary-window probe records an obstruction (the `kappa`-segregated
       halves) that no landed declaration carries and should be wired. State the verdict either way.
-- [ ] Run `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ` if any
+- [x] Run `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ` if any
       `.lean` path is staged by this phase.
 
 **Timing**: 1 hour
@@ -809,6 +672,26 @@ a landed library counterpart, and records the opposite verdict if one does not.
   runs the complete gate set directly.
 
 ---
+
+**Verification notes (as run)**:
+
+- `lake-build-guard.sh build --timeout 1800 -- build` exit `0`, zero `error:` and zero warning
+  lines; `bash scripts/typst-sync-check.sh --fix` PASS with nothing further to stage.
+- `bash scripts/check-evidence-probes.sh`: `PASS  all 68 wired probe(s) compile` -- the newly wired
+  `forward-slack-pin-cascade/ordinary-window-regime` entry compiles and is `sorryAx`-free
+  (`#print axioms` on all eight headline declarations).
+- `bash scripts/check-module-invariants.sh --emit-inventory` re-run after this phase's docstring
+  edits moved the declaration counts again; `--emit-inventory --check` then reports no stale block.
+- **BATCH GATE DEFERRAL**: as in Phase 5, the complete gate set is NOT run here. It is deferred to
+  the single batch-stage sweep at the end of this `/orchestrate` invocation and attributed back by
+  `modified_files`. The scoped discharge is the UNMAPPABLE-CRITERION route: this phase's declared
+  criteria name `check-module-invariants.sh` and `check-evidence-probes.sh`, which no
+  `verify-deploy.sh --only-gate N` expresses, and `verify-touched.sh` would select a large battery
+  of agent-system shell suites off the concurrent sibling dispatch's own untracked files. Each
+  named check was run directly instead.
+
+---
+
 
 ## Lean Challenge Statements
 
@@ -858,19 +741,19 @@ token for token: `paramsOkPre_params`, `exists_kappa_collision_cellAt_ne_at_K4_c
 
 ## Testing & Validation
 
-- [ ] `lake-build-guard.sh build --timeout 1800 -- build` at exit `0` on the full project, after
+- [x] `lake-build-guard.sh build --timeout 1800 -- build` at exit `0` on the full project, after
       Phase 5.
-- [ ] The `Tests` target builds, and every `#guard_msgs` block in
+- [x] The `Tests` target builds, and every `#guard_msgs` block in
       `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` matches its recorded output.
-- [ ] `lean_verify` on all five pinned identifiers reports axiom profiles free of `sorryAx`,
+- [x] `lean_verify` on all five pinned identifiers reports axiom profiles free of `sorryAx`,
       `Lean.ofReduceBool` and `Lean.trustCompiler`.
-- [ ] `bash scripts/check-evidence-probes.sh` reports no `FAIL (does not compile)` line.
-- [ ] `bash scripts/check-module-invariants.sh` findings are either absent or recorded as
+- [x] `bash scripts/check-evidence-probes.sh` reports no `FAIL (does not compile)` line.
+- [x] `bash scripts/check-module-invariants.sh` findings are either absent or recorded as
       pre-existing with the evidence that every touched file passes individually.
-- [ ] `bash scripts/typst-sync-check.sh` passes Check 2 and the inventory-block check.
-- [ ] An exact-name sweep over `FormalSystem/` and `Tests/` finds no declaration named
+- [x] `bash scripts/typst-sync-check.sh` passes Check 2 and the inventory-block check.
+- [x] An exact-name sweep over `FormalSystem/` and `Tests/` finds no declaration named
       `cellLE_zero_const_of_kappa_eq`.
-- [ ] The landed signature of each of the five pinned identifiers matches the Challenge block token
+- [x] The landed signature of each of the five pinned identifiers matches the Challenge block token
       for token (`lean-challenge-snapshot.sh --check`, whose verdict is ADVISORY: a drift finding is
       a signal to investigate, never on its own grounds to fail the task).
 
