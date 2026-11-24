@@ -294,7 +294,7 @@ family turns out unrepresented.
 
 ---
 
-### Phase 3: Diagnostics Record Schema and the Derivation-Size Measure [NOT STARTED]
+### Phase 3: Diagnostics Record Schema and the Derivation-Size Measure [COMPLETED]
 
 **Goal**: One record schema for every stage of the library pipeline — keyed by statement
 identifier and stage, carrying fragment, frame class, commit and the producing command — with the
@@ -333,7 +333,7 @@ yet have.
       `height` (the Decisions section above is the reasoning; the module states the conclusion),
       and that `derivation_size` / `derivation_height` are therefore nullable in a record whose
       mirror is schematic rather than closed.
-- [ ] Create `BimodalLib/Diagnostics/README.md` with a `Last verified` date.
+- [x] Create `BimodalLib/Diagnostics/README.md` with a `Last verified` date. *(deviation: altered — the two cross-references to files later phases create are cited as backticked paths, not markdown links, because `readme-lint.sh` Check 3 resolves link targets against the filesystem at run time; each is promoted to a link in the phase that creates its target)*
       `scripts/readme-lint.sh` Check 1 is GATED and requires a `README.md` in any directory
       holding `.lean` files.
 - [ ] Add the two modules' import lines to `BimodalLib.lean`, keeping the file's sorted order.

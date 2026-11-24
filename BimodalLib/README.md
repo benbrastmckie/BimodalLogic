@@ -29,6 +29,7 @@ in `scripts/check-module-invariants.sh` asserts it.
 | `ProofFragment.lean` | `record_proof_fragment` and `assert_proof_fragments_recorded`: the theorems whose reference proof leaves the cell of their statement, each with a reason |
 | `Conjectures/` | The registered conjectures |
 | `Index.lean` | The polarity census and `library_index` |
+| `Diagnostics/` | The one record schema for every stage of the library pipeline, the `#reprove_record` and `#compare_record` emitters, and the computable node count of a derivation |
 | [INDEX.md](INDEX.md) | The generated index; do not edit |
 
 ## How to
