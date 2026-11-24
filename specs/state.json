@@ -1399,22 +1399,45 @@
     },
     {
       "project_name": "proof_mode_axiom_audit_and_cost_baseline",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "description": "REVISED: THIS RECORD ALSO FIXES THE DIAGNOSTICS STANDARD (records/theorem-library.md, 'Diagnostics'; records/proof-mode.md, M13), and the adequacy gate now depends on it HARD. In addition to the audit and baseline below: (a) define ONE record schema for every stage of the library pipeline (enumerate, decide, extract, certify, admit, re-prove, compare), a record keyed by statement identifier and stage and carrying fragment, frame class, commit and the command that produced it, with the per-stage fields the record lists; (b) implement the commands that emit the RE-PROVE and COMPARE records for a proof-mode script (outcome, failure class, tactic count and distinct tactics, size of any term-mode escape, elaboration time, size of the derivation built, script length against the hand proof), which the cost script below is the first use of; (c) document the schema and every field at docs/reference/diagnostics.md, since a stage is not complete until its fields are documented. The other stages' emitters are written by `theorem_library_tableau_pipeline` against this schema. Design the schema against the existing dataset records under data/ and BimodalTools/ so that one is not invented beside the other. CONSUMERS: `proof_mode_reprove_perpetuity` (hard), `theorem_library_tableau_pipeline` (hard). COORDINATION WITH OPEN CONTRIBUTIONS. Three stacked pull requests from a collaborator are open against this area: #7 (logical rewriting `lrewrite` / `lsimp`, the congruence kit), #8 (Until/Since introduction, folding and ZTime unfolding, `linduction`, whole-judgment time reflection, `keeping`, strict leads-to rules) and #9 (a semantic mode, asked to be re-proposed separately). If #7 has merged, add one nested logical rewrite to the cost baseline: composed congruence certificates are the terms most likely to be large, and the contribution promised a baseline and recorded none. Report the axiom audit and the cost per tier (views, derivation). MILESTONE M13 (records/proof-mode.md), STREAM: evaluation. Does not wait on the Perpetuity adequacy verdict: it changes no rule and no tactic. It is ordered BEFORE the adequacy gate (`proof_mode_reprove_perpetuity` depends on it) so that the gate report can quote a cost figure. Proof mode: axiom audit and cost baseline. No test states which axioms a proof-mode derivation depends on, and nothing measures the derivation terms the tactics build. (1) Add a test module, on the pattern of Tests/BimodalTest/WalkthroughAxioms.lean, that asserts the axiom set of at least one derivation per tactic family (basic, modal, temporal, discrete) in TM and in TM⁺. (2) Record a baseline: derivation-term size and elaboration time for each acceptance example and for one long script with at least five nested `lintro` steps, since `lintro` discharges through the deduction theorem, which transforms a whole derivation, so cost on long scripts is an open question. Write the figures and the command that reproduces them to docs/development/proof-mode-cost-baseline.md, with the measuring script checked in. DONE WHEN: the audit test passes in `lake test` and the baseline file exists with its reproduction command. Hard dependencies: none; the dependency on the file split is for the test directory layout only. The derivation proof mode lives in FormalSystem/Automation/ProofMode/ (elaborators) and FormalSystem/Theorems/ProofMode/ (tactic-independent derivation-producing rules); FormalSystem/Theorems/ must not import FormalSystem/Automation/. Every tactic must assemble native DerivationTree / PlusDerivationTree constructors and proved rules only; nothing semantic may stand in for a derivation. Every new `throwError` path gets a negative test asserting its message (`#guard_msgs`). The existing acceptance tests must keep passing unchanged. Milestones, lanes and gates are in records/proof-mode.md.",
       "topic": "proof-mode",
       "priority": "medium",
       "dependencies": [],
       "file_scope": [
+        "BimodalLib.lean",
+        "BimodalLib/Diagnostics/Emit.lean",
+        "BimodalLib/Diagnostics/README.md",
+        "BimodalLib/Diagnostics/Record.lean",
+        "BimodalLib/Diagnostics/Size.lean",
+        "BimodalLib/README.md",
+        "Tests/BimodalLibTest.lean",
+        "Tests/BimodalLibTest/DiagnosticsTest.lean",
+        "Tests/BimodalLibTest/README.md",
+        "Tests/BimodalTest.lean",
         "Tests/BimodalTest/Automation/ProofMode/AxiomAuditTest.lean",
+        "Tests/BimodalTest/Automation/ProofModeAxioms.lean",
         "Tests/BimodalTest/Automation/ProofModeTest.lean",
+        "Tests/BimodalTest/Automation/README.md",
+        "data/README.md",
+        "data/proof-mode-diagnostics.jsonl",
+        "data/proof-mode-diagnostics_metadata.json",
+        "docs/README.md",
+        "docs/development/README.md",
         "docs/development/proof-mode-cost-baseline.md",
+        "docs/reference/README.md",
         "docs/reference/diagnostics.md",
+        "scripts/diagnostics-schema.json",
         "scripts/measure-proof-mode-cost.sh",
-        "scripts/diagnostics-schema.json"
+        "scripts/proof-mode-cost-baseline.sh",
+        "specs/961_proof_mode_axiom_audit_and_cost_baseline/gate-baseline.md",
+        "specs/evidence/proof-mode-cost-baseline/README.md",
+        "specs/evidence/proof-mode-cost-baseline/cost-probe.lean",
+        "typst/generated/status.typ"
       ],
       "created": "2026-11-20T07:25:04Z",
-      "last_updated": "2026-11-24T03:10:37Z",
+      "last_updated": "2026-11-24T03:26:31Z",
       "project_number": 961,
       "audit_verdict": {
         "proposal": {
@@ -1513,6 +1536,11 @@
           "path": "specs/961_proof_mode_axiom_audit_and_cost_baseline/reports/01_axiom-audit-cost-baseline.md",
           "type": "report",
           "summary": "Axiom audit and cost baseline for the derivation proof mode, measured in-research at commit 521385a9: 13 compiled #print axioms rows across the four tactic families plus TM-plus, views and the merged congruence kit; lintro nesting cost closed-form 5n^2+17n+41 (exact, n=2..16) with linear heartbeats; nested logical rewrite 785+346d (PR #7 merged, conditional active); per-tier views/derivation cost table; one-schema diagnostics design against the existing data/ and BimodalLib record shapes; and the structural finding that #print axioms cannot name an example, so the audit module needs named mirrors."
+        },
+        {
+          "path": "specs/961_proof_mode_axiom_audit_and_cost_baseline/plans/01_axiom-audit-cost-baseline.md",
+          "type": "plan",
+          "summary": "8-phase plan (13h): gate baseline, axiom audit test module, diagnostics record schema plus derivation-size measure, the two emitter commands with #guard_msgs negative tests, the cost probe, docs/reference/diagnostics.md, the measuring script and emitted records, and the baseline document with the final gate."
         }
       ],
       "next_artifact_number": 2
