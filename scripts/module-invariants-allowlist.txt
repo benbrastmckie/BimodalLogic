@@ -212,3 +212,22 @@ FormalSystem.Metalogic.LCExtension.ExtComplete
 FormalSystem.Metalogic.LCExtension.LCComplete
 FormalSystem.Metalogic.LCExtension.LCRulesComplete
 FormalSystem.Metalogic.LCExtension.LCURulesComplete
+
+# `inductive PlusAxiom` in namespace FormalSystem.PlusLanguage -- PlusLanguage/Axioms.lean:107,
+# with the cited `| box_stab` constructor at :300. The exact analogue of
+# FormalSystem.StarLanguage.StarAxiom above. C5 matches only the capitalized run, so the
+# constructor's lowercase name is not part of the flagged path and the entry names the type.
+# The citing site (BimodalLib/Countermodels/ModalBoolean/Base.lean:68) quotes the constructor
+# with Lean's `` name syntax, so the compiler already proves it resolves.
+FormalSystem.PlusLanguage.PlusAxiom
+
+# `def Refutes` in namespace FormalSystem.Metalogic.Decidability.WitnessFamily
+# -- Metalogic/Decidability/WitnessFamily/Agreement.lean:269. The directory holds no
+# Refutes.lean and is not meant to: Agreement.lean's own docstring records that `Refutes`
+# is the joint existence statement "named once" so the checker has a name to cite.
+FormalSystem.Metalogic.Decidability.WitnessFamily.Refutes
+
+# `inductive Grade` in namespace BimodalLib -- BimodalLib/Countermodel.lean:131, with
+# `Grade.name` at :142. records/theorem-library.md cites the type while recording that one
+# of its constructors is deliberately absent until the evaluator lands.
+BimodalLib.Grade
