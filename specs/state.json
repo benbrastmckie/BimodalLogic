@@ -506,19 +506,39 @@
     {
       "project_number": 973,
       "project_name": "theorem_library_countermodels",
-      "status": "planning",
+      "status": "planned",
       "task_type": "lean4",
       "description": "MILESTONE M20 (records/proof-mode.md), LANE: library. Theorem library: countermodels. Keep every refuted inference with a checked refutation. A countermodel entry records an inference `Γ ⊭ φ`, a frame class, a model, and a proof of non-validity at one of three grades: SEMANTIC (a Lean theorem by an explicit model), CERTIFICATE (a finite certificate accepted by a proved checker, the witness-family checkers at ZTime), GATED TABLEAU (an open saturated branch passing the gates, with the gate theorem applied). A fourth grade, EVALUATOR-CHECKED (a refutation checked by the evaluator of records/semantic-proof-mode.md against witnesses the caller supplies), is anticipated but not admitted by this record yet: its client is the evaluator milestone, C3 of records/milestones.md, and it waits on that evaluator and on records/semantic-proof-mode.md landing, neither of which exists on `main` today — do not assume this grade is as ready as the three above. (1) Define the entry type and its registration, filed by the fragment of the refuted inference and the strongest frame class at which the model lives. (2) Register the hand-built refutations already in the tree: FormalSystem/PlusLanguage/PlusNonValidities.lean, FormalSystem/StarLanguage/StarNonValidities.lean where the inference is statable in L or L⁺, and the independence results under FormalSystem/Metalogic/Independence/. (3) Admit the gated tableau refutations and accepted certificates produced by `theorem_library_tableau_pipeline`. An ungated `invalid` verdict stays a conjecture and is never admitted. (4) TRANSFER, each resting on a named theorem: a model at a stronger frame class refutes at every weaker class it belongs to; a countermodel in L refutes in L⁺ through `plusValidIn_ofFormula_iff`. (5) NEAR MISSES: where a refuted inference is the converse of a theorem entry or a schema with its side condition dropped, the two entries name each other; the five refutations bounding the `⊡` axiom set are the model. (6) LOOKUP: an inference can be looked up, up to renaming of atoms, for use by `proof_mode_countermodels_for_unclosed_leaves`. DONE WHEN: the three grades exist with at least one entry each, the existing refutations are registered, lookup is tested, and the reference page documents the grades. Hard dependency: `theorem_library_layout_and_registry`. Sequencing: after `theorem_library_tableau_pipeline`, which supplies the tableau-fed entries; parts (1), (2), (4) and (5) do not need it. The design is records/theorem-library.md; milestones, lanes and gates are in records/proof-mode.md. BimodalLib imports FormalSystem and FormalSystem never imports BimodalLib. Nothing in BimodalLib contains `sorry`, a new `axiom` or `native_decide`. When this record implements part of the design, revise docs/ to describe what now exists and cut that part from the record under records/.",
       "topic": "proof-mode",
       "priority": "medium",
       "created": "2026-11-20T18:44:46Z",
-      "last_updated": "2026-11-24T11:48:53Z",
+      "last_updated": "2026-11-24T12:07:29Z",
       "file_scope": [
-        "BimodalLib/Countermodels/",
-        "BimodalLib/Countermodel.lean",
         "BimodalLib.lean",
+        "BimodalLib/Countermodel.lean",
+        "BimodalLib/Countermodel/Gates.lean",
+        "BimodalLib/Countermodel/Lookup.lean",
+        "BimodalLib/Countermodel/Transfer.lean",
+        "BimodalLib/Countermodels/",
+        "BimodalLib/Countermodels/Boolean/GatedTableau.lean",
+        "BimodalLib/Countermodels/Complete.lean",
+        "BimodalLib/Countermodels/ModalBoolean/Base.lean",
+        "BimodalLib/Countermodels/ModalTemporalBoolean/Base.lean",
+        "BimodalLib/Countermodels/TemporalBoolean/Dense.lean",
+        "BimodalLib/Countermodels/TemporalBoolean/RTime.lean",
+        "BimodalLib/Countermodels/TemporalBoolean/ZTime.lean",
+        "BimodalLib/INDEX.md",
+        "BimodalLib/Index.lean",
         "BimodalLib/README.md",
-        "docs/reference/bimodal-lib.md"
+        "BimodalLib/Subsumption.lean",
+        "Tests/BimodalLibTest.lean",
+        "Tests/BimodalLibTest/CountermodelTest.lean",
+        "Tests/BimodalLibTest/Fixtures/UnresolvedNearMiss.lean",
+        "Tests/BimodalLibTest/GateAgreementTest.lean",
+        "docs/reference/bimodal-lib.md",
+        "records/theorem-library.md",
+        "scripts/module-invariants-allowlist.txt",
+        "typst/generated/status.typ"
       ],
       "dependencies": [
         971,
@@ -541,12 +561,17 @@
         },
         "degradations_count": 450
       },
-      "session_id": "sess_1795519747_5f7f6c_973",
+      "session_id": "sess_1795519747_5f7f6c",
       "artifacts": [
         {
           "path": "specs/973_theorem_library_countermodels/reports/01_theorem-library-countermodels.md",
           "type": "report",
           "summary": "Compile-verified design for the countermodel half of BimodalLib: a PointTruth-generic CountermodelEntry type, both TRANSFER theorems, first entries for all three grades (semantic in L and L+, certificate at ZTime, gated tableau via the gate theorem on explicit branch data), lookup up to atom renaming from the existing matcher, and two measured blockers -- the pipeline data file carries no branch, and part (5)'s near-miss reciprocity has no registry row to point at."
+        },
+        {
+          "path": "specs/973_theorem_library_countermodels/plans/01_theorem-library-countermodels.md",
+          "type": "plan",
+          "summary": "Nine-phase plan, ~14 hours, six dependency waves; four pinned Lean theorem goals plus two pinned definitions."
         }
       ],
       "next_artifact_number": 2,

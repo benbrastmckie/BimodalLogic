@@ -1,17 +1,30 @@
 {
-  "status": "researched",
-  "dispatch_seq": 1,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/973_theorem_library_countermodels/reports/01_theorem-library-countermodels.md",
-      "summary": "Compile-verified design for the countermodel half of BimodalLib: a PointTruth-generic CountermodelEntry type, both TRANSFER theorems, first entries for all three grades (semantic in L and L+, certificate at ZTime, gated tableau via the gate theorem on explicit branch data), lookup up to atom renaming from the existing matcher, and two measured blockers -- the pipeline data file carries no branch, and part (5)'s near-miss reciprocity has no registry row to point at."
+      "type": "plan",
+      "path": "specs/973_theorem_library_countermodels/plans/01_theorem-library-countermodels.md",
+      "summary": "Nine-phase plan for the countermodel half of BimodalLib: a PointTruth-generic CountermodelEntry type, both TRANSFER theorems, one kernel-checked entry per admitted grade, registration of the hand-built refutations, lookup up to atom renaming, index census, tests, and the docs/record reconciliation."
     }
   ],
   "metadata": {
     "session_id": "sess_1795519747_5f7f6c_973",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 9,
+    "estimated_hours": 14,
+    "dependency_waves": [[1], [2, 6], [3, 4, 5], [7], [8], [9]]
+  },
+  "memory_candidates": [
+    {
+      "content": "In a Lean deploy-consumer repo, a plan phase's narrowing-selector output is NEVER the no-suite sentinel alone, even when every path the phase names maps to no shell suite. scripts/plan-file-scope-harvest.sh appends the repo's declared coupled generated surface (typst/generated/status.typ in BimodalLogic) to EVERY phase carrying a .lean edit, and that path maps to real suites (test-plan-file-scope-harvest.sh, test-validate-artifact.sh). validate-artifact.sh re-derives the selector over the HARVESTED set, not the authored list, so a sentinel-only Tier Justification is flagged as a false claim on every Lean phase. Author the justification against the harvested set: name the two real suites and omit the sentinel token entirely (the validator greps the whole justification block for it).",
+      "category": "INSIGHT",
+      "source_artifact": "specs/973_theorem_library_countermodels/plans/01_theorem-library-countermodels.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["tier-justification", "suite-selection", "plan-file-scope-harvest", "coupled-generated-surface", "lean-plan-authoring", "validate-artifact"]
+    }
+  ],
+  "next_steps": "Run /orchestrate 973 to execute the plan",
+  "dispatch_seq": 2
 }

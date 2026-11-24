@@ -1,5 +1,5 @@
 ---
-next_project_number: 992
+next_project_number: 993
 ---
 
 # TODO
@@ -13,9 +13,9 @@ next_project_number: 992
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,890,935,960,962,973,977,986,987,988,989,991 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
-| 2 | 231,282,296,429,497,763,869,944,954,955,969,984 | 298,428,502,604,761,960,962,977,986,989 | algebraic-representation, dataset-enhancement, decidability, ... |
-| 3 | 410,498,499,500,873,932,945 | 429,497,869,944 | algebraic-representation, decidability, semantics, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,734,831,890,935,960,962,973,977,986,987,988,989,991 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
+| 2 | 231,282,296,429,497,761,869,944,954,955,969,984 | 298,428,502,604,960,962,977,986,989,991 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 3 | 410,498,499,500,763,873,932,945 | 429,497,761,869,944 | algebraic-representation, decidability, semantics, ... |
 | 4 | 125,411,543,874,875,876,946 | 410,498,499,500,873,945,969 | algebraic-representation, decidability, metalogic, ... |
 | 5 | 430,501,947 | 125,411,946,955,973 | algebraic-representation, decidability, proof-mode |
 | 6 | 412,949,951,963,965 | 178,430,947,954 | decidability, proof-mode |
@@ -65,10 +65,10 @@ next_project_number: 992
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
 713 [NOT STARTED] — SCHEDULABLE AND LOAD-BEARING AS A CHECK. User ruling...
 734 [HOLD] — Run experiment E4: decide StabSaturated on the Bool fixture's...
-761 [PARTIAL] — AMENDED 2026-11-16 (statement replaced — the READ-OFF /...
-  └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
 831 [NOT STARTED] — RESEARCH TASK, verdict-first. State and attempt the...
 991 [NOT STARTED] — RESEARCH TASK, verdict-first; the deliverable is a verdict...
+  └─ 761 [PARTIAL] — AMENDED 2026-11-16 (statement replaced — the READ-OFF /...
+    └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
 
 ### Formula Refactor
 
@@ -137,7 +137,7 @@ next_project_number: 992
     └─ 946 [HOLD] — NO ModalTemporal MODULE OR CLASS... (see above)
 962 [NOT STARTED] — MILESTONE M9b (records/proof-mode.md), STREAM: metatheory....
   └─ 953 [NOT STARTED] — With the interface as one class per operator family and... (see above)
-973 [PLANNING] — MILESTONE M20 (records/proof-mode.md), LANE: library. Theorem...
+973 [PLANNED] — MILESTONE M20 (records/proof-mode.md), LANE: library. Theorem...
   └─ 947 [NOT STARTED] — REVISED: GATE ONE IS A SWEEP OVER A SELECTION OF LIBRARY... (see above)
 986 [NOT STARTED] — Report the real cause when a view fails to apply. applyView...
   └─ 969 [HOLD] — LOCATION (binding over any module path named below): the view... (see above)
@@ -231,11 +231,12 @@ next_project_number: 992
 ---
 
 ### 973. Theorem library countermodels
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: proof-mode
 - **Dependencies**: Task 971, Task 972
 - **Research**: [973_theorem_library_countermodels/reports/01_theorem-library-countermodels.md]
+- **Plan**: [973_theorem_library_countermodels/plans/01_theorem-library-countermodels.md]
 
 **Description**: MILESTONE M20 (records/proof-mode.md), LANE: library. Theorem library: countermodels. Keep every refuted inference with a checked refutation. A countermodel entry records an inference `Γ ⊭ φ`, a frame class, a model, and a proof of non-validity at one of three grades: SEMANTIC (a Lean theorem by an explicit model), CERTIFICATE (a finite certificate accepted by a proved checker, the witness-family checkers at ZTime), GATED TABLEAU (an open saturated branch passing the gates, with the gate theorem applied). A fourth grade, EVALUATOR-CHECKED (a refutation checked by the evaluator of records/semantic-proof-mode.md against witnesses the caller supplies), is anticipated but not admitted by this record yet: its client is the evaluator milestone, C3 of records/milestones.md, and it waits on that evaluator and on records/semantic-proof-mode.md landing, neither of which exists on `main` today — do not assume this grade is as ready as the three above. (1) Define the entry type and its registration, filed by the fragment of the refuted inference and the strongest frame class at which the model lives. (2) Register the hand-built refutations already in the tree: FormalSystem/PlusLanguage/PlusNonValidities.lean, FormalSystem/StarLanguage/StarNonValidities.lean where the inference is statable in L or L⁺, and the independence results under FormalSystem/Metalogic/Independence/. (3) Admit the gated tableau refutations and accepted certificates produced by `theorem_library_tableau_pipeline`. An ungated `invalid` verdict stays a conjecture and is never admitted. (4) TRANSFER, each resting on a named theorem: a model at a stronger frame class refutes at every weaker class it belongs to; a countermodel in L refutes in L⁺ through `plusValidIn_ofFormula_iff`. (5) NEAR MISSES: where a refuted inference is the converse of a theorem entry or a schema with its side condition dropped, the two entries name each other; the five refutations bounding the `⊡` axiom set are the model. (6) LOOKUP: an inference can be looked up, up to renaming of atoms, for use by `proof_mode_countermodels_for_unclosed_leaves`. DONE WHEN: the three grades exist with at least one entry each, the existing refutations are registered, lookup is tested, and the reference page documents the grades. Hard dependency: `theorem_library_layout_and_registry`. Sequencing: after `theorem_library_tableau_pipeline`, which supplies the tableau-fed entries; parts (1), (2), (4) and (5) do not need it. The design is records/theorem-library.md; milestones, lanes and gates are in records/proof-mode.md. BimodalLib imports FormalSystem and FormalSystem never imports BimodalLib. Nothing in BimodalLib contains `sorry`, a new `axiom` or `native_decide`. When this record implements part of the design, revise docs/ to describe what now exists and cut that part from the record under records/.
 
@@ -769,7 +770,7 @@ NOT COSTABLE, and why: statement fixed by T4/T5. Design of record: `specs/757_lp
 - **Status**: [PARTIAL]
 - **Task Type**: lean4
 - **Topic**: decidability
-- **Dependencies**: Task 760, Task 775, Task 805, Task 806, Task 819, Task 820, Task 934
+- **Dependencies**: Task 760, Task 775, Task 805, Task 806, Task 819, Task 820, Task 934, Task 991
 - **Research**:
   - [761_ladder_realization_theorem/reports/18_clipped-register-block-nonvacuity.md]
   - [761_ladder_realization_theorem/reports/01_ladder-realization-theorem.md]
