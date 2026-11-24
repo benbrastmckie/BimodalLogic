@@ -10,7 +10,7 @@
 | Milestone | Status | Tasks done | Review |
 |---|---|---|---|
 | [M0: The PR review round: a posted decision on each of the five contributions](#milestone-m0) | closed 2026-11-23 | - | none |
-| [M2: BimodalLib: the evidence base the mode is measured against](#milestone-m2) | planned | 1/5 | none |
+| [M2: BimodalLib: the evidence base the mode is measured against](#milestone-m2) | planned | 3/5 | none |
 | [M3: Proof-mode rule set up to gate one](#milestone-m3) | planned | 0/11 | none |
 | [M1: Repository hygiene](#milestone-m1) | active | 0/7 | none |
 | [M7: L-plus at integer time: decidability and route R3](#milestone-m7) | active | 0/6 | none |
@@ -36,20 +36,20 @@ Closed 2026-11-23 -- review: none -- Reported on all five contributions, reconci
 
 Give the theorem library its layout by fragment and frame class, fill the fragments the tableau reaches, keep every refutation checked, and make filing by smallest fragment a theorem.
 
-- **Progress**: planned -- 1/2 batches, 1/5 tasks done -- 970 and 971 are the highest-leverage ready lines and collide with nothing in any open PR; gate one carries an edge on 971
+- **Progress**: planned -- 1/2 batches, 3/5 tasks done -- 970 and 971 are the highest-leverage ready lines and collide with nothing in any open PR; gate one carries an edge on 971
 - **Review**: none
 - **Gate**: BimodalLib builds; every closed derivation outside Theorems/ProofMode/ is registered with its fragment, frame class and substitution class and a check fails when one is added unregistered; tableau verdicts and countermodels are admitted only at a stated grade; and the conservativity table is generated from the theorems.
 
 **Batch 1** (done) -- Whether stability is rightly a Modal family: no file scope, the cheapest de-risking while 977 waits
 
-**Batch 2** -- The registry every later library record reads: no open-PR collision, the deepest unblock ready
+**Batch 2** -- The registry every later library record reads: no open-PR collision, the deepest unblock ready (2/4 done)
 
 ```
-/orchestrate 971, 975, 972, 973
-972 blocked:961,971 theorem_library_tableau_pipeline
-973 blocked:971,972 theorem_library_countermodels
-975 blocked:971     theorem_library_fragment_conservativity   <- the 971 edge is the generated table only; its theorems need not wait
-971 ready           theorem_library_layout_and_registry   <- the registry 947, 972, 973, 974 and 975 all read; no overlap with any open PR
+/orchestrate 972, 973
+972 blocked:961     theorem_library_tableau_pipeline
+973 blocked:972     theorem_library_countermodels
+971 done            theorem_library_layout_and_registry
+975 done            theorem_library_fragment_conservativity
 ```
 
 <a id="milestone-m3"></a>
@@ -89,7 +89,7 @@ Put the mode in the operator-family layout, extend the bimodal scope rules, clos
 944 blocked:960     proof_mode_s5_aware_box_scopes
 945 blocked:944     proof_mode_cross_modal_scopes_mf_tf
 946 blocked:945,969 proof_mode_always_sometimes_scopes
-947 blocked:946,955,961,971  proof_mode_reprove_perpetuity   <- GO / RE-PLAN gate; RE-PLAN stops the proof-mode sequence
+947 blocked:946,955,961  proof_mode_reprove_perpetuity   <- GO / RE-PLAN gate; RE-PLAN stops the proof-mode sequence
 954 blocked:960     proof_mode_error_message_coverage
 955 blocked:960     proof_mode_close_leaves_with_automation
 961 blocked:960     proof_mode_axiom_audit_and_cost_baseline
@@ -290,7 +290,7 @@ Prove each rule once over an interface instead of once for TM and once for TM-pl
 
 ```
 /orchestrate 974
-974 blocked:944,947,952,971,973  theorem_library_stability_entries
+974 blocked:944,947,952,973  theorem_library_stability_entries
 ```
 
 <a id="milestone-m6"></a>
