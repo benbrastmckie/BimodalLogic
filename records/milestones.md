@@ -109,7 +109,7 @@ evaluator for it and the checked refutations that follow, in a directory of its 
 with the derivation mode, and meeting it in one soundness adapter under
 `FormalSystem/Metalogic/`. The evaluator sits under that directory beside the semantic lemmas,
 with the semantic mode, C4, a thin tactic layer over it, rather than the two as one module. The
-record that owns it is proposed on `docs/semantic-proof-mode-record`; C2 is its acceptance.
+record that owns it is [semantic-proof-mode.md](semantic-proof-mode.md); C2 is its acceptance.
 
 | Id | Milestone | Done when | Channel | Waits on |
 |---|---|---|---|---|
