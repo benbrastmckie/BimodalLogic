@@ -507,15 +507,16 @@ theorem gap_clip_refuted_at_every_clip (B Tc Tn P : ℕ) :
   · rw [show Tn + (B + 1) = Tn + B + 1 by omega]
     exact chainC_cell_ne B Tn _ (by omega)
 
-/-- The filed (K4) at `chainC` is `7 ≤ B`. -/
-theorem Bof_chainC (m : ℕ) : Bof (stepM m) (pendM m) (labM m) chainC = 7 := by
+/-- The filed (K4) at `chainC` is `8 ≤ B`: `dBack chainC = 0` and `dFwd chainC = 3`, and `(K4)`'s
+forward conjunct reads `2 * dFwd φ + 2 ≤ B`. -/
+theorem Bof_chainC (m : ℕ) : Bof (stepM m) (pendM m) (labM m) chainC = 8 := by
   unfold Bof
   rw [dBack_chainC, dFwd_chainC]
   rfl
 
 /-- **AT THE FILED `ParamsOk`, WITH THE CLIP RAISED TO ANY FORMULA-ONLY VALUE.** Let `E` be ANY
 function of the formula alone (for instance `fun φ => 2 ^ (dBack φ + 1)`, or a tower). Put
-`B := max (E chainC) 7`. Then at the chain object with `B + 1` chain states: `ParamsOk` holds at
+`B := max (E chainC) 8`. Then at the chain object with `B + 1` chain states: `ParamsOk` holds at
 the periodicity fixpoint's own `Tcof`, `Tnof`, `Pof` with the clip `B`; `B` dominates `E chainC`
 and the filed `Bof`; and two counter pairs of one `kappa`-class have different cells. -/
 theorem no_formula_only_clip (E : PlusFormula → ℕ) :
@@ -536,19 +537,19 @@ theorem no_formula_only_clip (E : PlusFormula → ℕ) :
           ≠ cellAt (MM B) chainC
             ((0, stM B c n') :
               (ladderFrameAdm (stepM B) (pendM B) (fwdM B) (bwdM B)).WorldState) 0 := by
-  refine ⟨max (E chainC) 7, le_max_left _ _, ?_, ?_, ?_⟩
+  refine ⟨max (E chainC) 8, le_max_left _ _, ?_, ?_, ?_⟩
   · rw [Bof_chainC]; exact le_max_right _ _
-  · obtain ⟨h1, h2, h3, -⟩ := paramsOk_params (stepM (max (E chainC) 7))
-      (pendM (max (E chainC) 7)) (labM (max (E chainC) 7)) chainC
+  · obtain ⟨h1, h2, h3, -⟩ := paramsOk_params (stepM (max (E chainC) 8))
+      (pendM (max (E chainC) 8)) (labM (max (E chainC) 8)) chainC
     refine ⟨h1, h2, h3, ?_⟩
-    have h7 : 7 ≤ max (E chainC) 7 := le_max_right _ _
+    have h7 : 8 ≤ max (E chainC) 8 := le_max_right _ _
     unfold paramsOkK4
     rw [dBack_chainC, dFwd_chainC]
     omega
-  · obtain ⟨c, n, n', -, hk, hne⟩ := gap_clip_refuted_at_every_clip (max (E chainC) 7)
-      (Tcof (stepM (max (E chainC) 7)) (pendM (max (E chainC) 7)) (labM (max (E chainC) 7)) chainC)
-      (Tnof (stepM (max (E chainC) 7)) (pendM (max (E chainC) 7)) (labM (max (E chainC) 7)) chainC)
-      (Pof (stepM (max (E chainC) 7)) (pendM (max (E chainC) 7)) (labM (max (E chainC) 7)) chainC)
+  · obtain ⟨c, n, n', -, hk, hne⟩ := gap_clip_refuted_at_every_clip (max (E chainC) 8)
+      (Tcof (stepM (max (E chainC) 8)) (pendM (max (E chainC) 8)) (labM (max (E chainC) 8)) chainC)
+      (Tnof (stepM (max (E chainC) 8)) (pendM (max (E chainC) 8)) (labM (max (E chainC) 8)) chainC)
+      (Pof (stepM (max (E chainC) 8)) (pendM (max (E chainC) 8)) (labM (max (E chainC) 8)) chainC)
     exact ⟨c, n, n', hk, hne⟩
 
 /-- **THE INSTANCE THE QUESTION NAMES**: the clip `max (2 ^ (dBack φ + 1)) (Bof φ)`-or-larger. -/

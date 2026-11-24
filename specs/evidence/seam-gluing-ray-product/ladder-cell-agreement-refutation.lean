@@ -765,10 +765,14 @@ theorem stabSepC_no_collision (k n c' n' Tc Tn P B : ℕ)
 /-- **THE TARGET OF THE REFUTATION ATTEMPT**, stated and NOT decided: a formula, parameters
 satisfying `ParamsOk` at it, and a `kappa`-collision between two countdown/register pairs at the
 pending state of this object whose cells differ.  A proof of this proposition would refute the
-filed agreement; nothing in this file proves it or refutes it. -/
+filed agreement at the FROZEN pre-repair `(K4)`; nothing in this file proves it or refutes it.
+The conditions are `ParamsOkPre` and not `ParamsOk` because the repaired `(K4)` rejects the clip
+at which this object's collisions are read (`Bof_thetaC`, `Bof_mixC` below; library-side
+`not_paramsOkK4_thetaC_clip`), so a target stated at the live conditions would be a different
+proposition from the one this round attacked. -/
 def RefutationTargetC : Prop :=
   ∃ (φ : PlusFormula) (Tc Tn P B c n c' n' : ℕ),
-    ParamsOk stepC pendC labC φ Tc Tn P B ∧
+    ParamsOkPre stepC pendC labC φ Tc Tn P B ∧
     kappa Tc Tn P B (c, n) = kappa Tc Tn P B (c', n') ∧
     cellAt MC φ ((0, stC c n) : (ladderFrameAdm stepC pendC fwdC bwdC).WorldState) 0
       ≠ cellAt MC φ ((0, stC c' n') : (ladderFrameAdm stepC pendC fwdC bwdC).WorldState) 0
@@ -1016,7 +1020,7 @@ every formula and every parameter tuple satisfying `ParamsOk` for it.  Nothing i
 it or refutes it; it is the diagonal form of the filed agreement at this object
 (`typePreservingCountMove_iff_cellAt_const`). -/
 def CountMoveTargetC : Prop :=
-  ∀ (φ : PlusFormula) (Tc Tn P B : ℕ), ParamsOk stepC pendC labC φ Tc Tn P B →
+  ∀ (φ : PlusFormula) (Tc Tn P B : ℕ), ParamsOkPre stepC pendC labC φ Tc Tn P B →
     TypePreservingCountMove fwdC bwdC labC φ Tc Tn P B
 
 /-! ### A transfer principle that is not positionwise -/
@@ -1875,8 +1879,10 @@ one.
 
 ## What is compiled
 
-**The refutation, at the tie.**  `thetaC := ⊡ X ⊡ ¬ P ¬p` has `dBack = dFwd = 1`, so
-`Bof … thetaC = 3` (`Bof_thetaC`).
+**The refutation, at the tie.**  `thetaC := ⊡ X ⊡ ¬ P ¬p` has `dBack = dFwd = 1`, so the
+PRE-REPAIR `(K4)`'s clip is `3` (`BofPre_thetaC`) while the repaired `Bof` reads `4`
+(`Bof_thetaC`).  The collision identifies the gaps `-3` and `-(P + 4)` only at a clip of `3`, so
+this file's obstructions are read against the frozen `ParamsOkPre`.
 
 * `thetaC_not_mem`: at the pending state `(n + 3, n)` — gap `-3` — NO realized type contains
   `thetaC`.
@@ -1904,8 +1910,9 @@ positions (gap down by two each) and then asks the forward reader `readC k` ("th
 released, the next position starts a region, and that region is over within `k` positions"),
 which fails at every pending position whose gap exceeds `k` (`readC_false_of_gap`).
 
-* `dBack_mixC`, `dFwd_mixC`: `dBack = a`, `dFwd = k + 2`; `Bof_mixC`: at `a = k + 2` the clip is
-  `2 k + 5`.
+* `dBack_mixC`, `dFwd_mixC`: `dBack = a`, `dFwd = k + 2`; `BofPre_mixC`: at `a = k + 2` the frozen
+  clip is `2 k + 5`, while the repaired `Bof_mixC` reads `2 k + 6` -- which buys back only the two
+  smallest members of the family and leaves the unbounded excess intact.
 * `mixC_mem`: at gap exactly `2 a + k` every realized type contains `mixC a k` (`k ≥ 1`).
 * `mixC_not_mem`: at every gap above `2 a + k` none does.
 * `mixC_refutes`: for every `k ≥ 1`, at `mixC (k + 2) k` and the fixpoint's own parameters, the
@@ -2050,8 +2057,33 @@ theorem dBack_thetaC : dBack thetaC = 1 := rfl
 
 theorem dFwd_thetaC : dFwd thetaC = 1 := rfl
 
-/-- (K4)'s least admissible gap clip at the separating formula is `3`. -/
-theorem Bof_thetaC : Bof stepC pendC labC thetaC = 3 := by
+/-- **`Bof`'s BODY BEFORE `(K4)`'s FORWARD REPAIR.**  `(K4)`'s forward conjunct was
+`2 * dFwd φ + 1 ≤ B` and now reads `2 * dFwd φ + 2 ≤ B`; `Bof`'s middle arm moved with it.  The
+obstructions in this file are read at the clip the SHORTER conjunct admitted, so that clip is
+frozen here under its own name.  `FormalSystem`'s own frozen copies of the conditions are
+`paramsOkK4Pre`, `ParamsOkPre` and `paramsOkPre_params` (`CounterQuotient.lean`), and this
+definition is `Bof`'s matching fourth output. -/
+def BofPre (φ : PlusFormula) : ℕ :=
+  max (2 * dBack φ + 1) (max (2 * dFwd φ + 1) 2)
+
+/-- The frozen conditions hold at the fixpoint's three outputs and the frozen clip. -/
+theorem paramsOkPre_BofPre (φ : PlusFormula) :
+    ParamsOkPre stepC pendC labC φ (Tcof stepC pendC labC φ) (Tnof stepC pendC labC φ)
+      (Pof stepC pendC labC φ) (BofPre φ) := by
+  unfold BofPre
+  exact paramsOkPre_params stepC pendC labC φ
+
+/-- The PRE-REPAIR (K4)'s least admissible gap clip at the separating formula is `3`. -/
+theorem BofPre_thetaC : BofPre thetaC = 3 := by
+  unfold BofPre
+  rw [dBack_thetaC, dFwd_thetaC]
+  rfl
+
+/-- **THE REPAIRED (K4) DISSOLVES THIS COLLISION AT ITS OWN OUTPUT.**  `Bof` now reads `4` at the
+separating formula, and the collision below identifies the gaps `-3` and `-(P + 4)` only at a clip
+of `3`.  The obstruction is therefore read at the frozen clip and not at the live one -- which is
+exactly what `FormalSystem`'s `not_paramsOkK4_thetaC_clip` records on the library side. -/
+theorem Bof_thetaC : Bof stepC pendC labC thetaC = 4 := by
   unfold Bof
   rw [dBack_thetaC, dFwd_thetaC]
   rfl
@@ -2171,11 +2203,11 @@ four parameter outputs for it — which satisfy `ParamsOk` by `paramsOk_params` 
 object, and their cells differ. -/
 theorem refutationTargetC_holds : RefutationTargetC := by
   refine ⟨thetaC, Tcof stepC pendC labC thetaC, Tnof stepC pendC labC thetaC,
-    Pof stepC pendC labC thetaC, Bof stepC pendC labC thetaC,
+    Pof stepC pendC labC thetaC, BofPre thetaC,
     Tcof stepC pendC labC thetaC + 3, Tcof stepC pendC labC thetaC,
     Tcof stepC pendC labC thetaC + 3 + (Pof stepC pendC labC thetaC + 1),
-    Tcof stepC pendC labC thetaC, paramsOk_params stepC pendC labC thetaC, ?_, ?_⟩
-  · rw [Bof_thetaC]
+    Tcof stepC pendC labC thetaC, paramsOkPre_BofPre thetaC, ?_, ?_⟩
+  · rw [BofPre_thetaC]
     exact kappa_collision_theta _ _ _
   · exact thetaC_cell_ne _ _ (by omega)
 
@@ -2187,17 +2219,19 @@ theorem not_countMoveTargetC : ¬ CountMoveTargetC := by
     (hmove φ Tc Tn P B hp) 0 c n c' n' (admZeroC c n) (admZeroC c' n') hk)
 
 /-- **THE FILED AGREEMENT'S SCHEMA IS FALSE.** The statement filed as `cellAt_const_of_kappa_eq`
-— for every finite object, labelling, formula and parameter tuple satisfying `ParamsOk`, the cells
-of a `kappa`-collision are equal at every world time and evaluation time — fails at the two-state
-object, the separating formula, the periodicity fixpoint's own parameters, world time `0` and
-evaluation time `0`.  The quantifier that fails is the one over the counter pairs of a collision
+— for every finite object, labelling, formula and parameter tuple satisfying the parameter
+conditions, the cells of a `kappa`-collision are equal at every world time and evaluation time —
+fails at the two-state object, the separating formula, the periodicity fixpoint's own parameters,
+world time `0` and evaluation time `0`.  Read at the FROZEN `ParamsOkPre`: the repaired `(K4)`
+rejects the clip this object's collision needs (`Bof_thetaC`), so the live conditions give a
+different proposition, and the one refuted here is the one that was filed.  The quantifier that fails is the one over the counter pairs of a collision
 whose gaps both lie below the clip. -/
 theorem cellAt_const_of_kappa_eq_schema_refuted :
     ¬ (∀ (Q : Type) [Fintype Q] [Nonempty Q]
         (step : Q → Q → Bool) (pend : Q → Bool) (lab : Q → Atom → Bool)
         (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
         (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
-        (phi : PlusFormula) (Tc Tn P B : ℕ), ParamsOk step pend lab phi Tc Tn P B →
+        (phi : PlusFormula) (Tc Tn P B : ℕ), ParamsOkPre step pend lab phi Tc Tn P B →
         ∀ (q : Q) (c n c' n' : ℕ) (h : c ∈ Adm pend q) (h' : c' ∈ Adm pend q),
           kappa Tc Tn P B (c, n) = kappa Tc Tn P B (c', n') → ∀ t z : ℤ,
           cellAt (ladderModel step pend fwd bwd lab) phi
@@ -2216,20 +2250,20 @@ periodicity fixpoint's own parameters.  The statement filed as `ladderRealized` 
 with a set read off `(q, kappa (c, n))` alone, so it is an instance of what is refuted here. -/
 theorem no_fibre_equation_over_kappa :
     ¬ ∃ F : CK (Tcof stepC pendC labC thetaC) (Tnof stepC pendC labC thetaC)
-        (Pof stepC pendC labC thetaC) (Bof stepC pendC labC thetaC) → Set (Finset PlusFormula),
+        (Pof stepC pendC labC thetaC) (BofPre thetaC) → Set (Finset PlusFormula),
       ∀ c n : ℕ,
         cellAt MC thetaC ((0, stC c n) : (ladderFrameAdm stepC pendC fwdC bwdC).WorldState) 0
           = F (kappa (Tcof stepC pendC labC thetaC) (Tnof stepC pendC labC thetaC)
-            (Pof stepC pendC labC thetaC) (Bof stepC pendC labC thetaC) (c, n)) := by
+            (Pof stepC pendC labC thetaC) (BofPre thetaC) (c, n)) := by
   rintro ⟨F, hF⟩
   have hk : kappa (Tcof stepC pendC labC thetaC) (Tnof stepC pendC labC thetaC)
-      (Pof stepC pendC labC thetaC) (Bof stepC pendC labC thetaC)
+      (Pof stepC pendC labC thetaC) (BofPre thetaC)
         (Tcof stepC pendC labC thetaC + 3, Tcof stepC pendC labC thetaC)
       = kappa (Tcof stepC pendC labC thetaC) (Tnof stepC pendC labC thetaC)
-        (Pof stepC pendC labC thetaC) (Bof stepC pendC labC thetaC)
+        (Pof stepC pendC labC thetaC) (BofPre thetaC)
         (Tcof stepC pendC labC thetaC + 3 + (Pof stepC pendC labC thetaC + 1),
           Tcof stepC pendC labC thetaC) := by
-    rw [Bof_thetaC]
+    rw [BofPre_thetaC]
     exact kappa_collision_theta _ _ _
   refine thetaC_cell_ne (Tcof stepC pendC labC thetaC)
     (Tcof stepC pendC labC thetaC + 3 + (Pof stepC pendC labC thetaC + 1)) (by omega) ?_
@@ -2245,9 +2279,9 @@ theorem no_transferSys_links_collisions
     (hR : TransferSys MC True True R) :
     ¬ (∀ (q : Qc) (c n c' n' : ℕ) (h : c ∈ Adm pendC q) (h' : c' ∈ Adm pendC q),
       kappa (Tcof stepC pendC labC thetaC) (Tnof stepC pendC labC thetaC)
-          (Pof stepC pendC labC thetaC) (Bof stepC pendC labC thetaC) (c, n)
+          (Pof stepC pendC labC thetaC) (BofPre thetaC) (c, n)
         = kappa (Tcof stepC pendC labC thetaC) (Tnof stepC pendC labC thetaC)
-          (Pof stepC pendC labC thetaC) (Bof stepC pendC labC thetaC) (c', n') →
+          (Pof stepC pendC labC thetaC) (BofPre thetaC) (c', n') →
       ∀ (g : ℤ → LadderState Qc pendC)
         (τ : WorldHistory (ladderFrameAdm stepC pendC fwdC bwdC).toTaskFrame),
         IsLadderPath stepC pendC g → g 0 = (⟨(q, c, n), h⟩ : LadderState Qc pendC) →
@@ -2260,14 +2294,14 @@ theorem no_transferSys_links_collisions
   intro hlink
   have hmove := typePreservingCountMove_of_transferSys fwdC bwdC labC thetaC
     (Tcof stepC pendC labC thetaC) (Tnof stepC pendC labC thetaC)
-    (Pof stepC pendC labC thetaC) (Bof stepC pendC labC thetaC) R hR hlink
+    (Pof stepC pendC labC thetaC) (BofPre thetaC) R hR hlink
   have hcell := (typePreservingCountMove_iff_cellAt_const fwdC bwdC labC thetaC
     (Tcof stepC pendC labC thetaC) (Tnof stepC pendC labC thetaC)
-    (Pof stepC pendC labC thetaC) (Bof stepC pendC labC thetaC)).mp hmove
+    (Pof stepC pendC labC thetaC) (BofPre thetaC)).mp hmove
   apply no_fibre_equation_over_kappa
   refine ⟨fun κ => {T | ∃ c n : ℕ, kappa (Tcof stepC pendC labC thetaC)
     (Tnof stepC pendC labC thetaC) (Pof stepC pendC labC thetaC)
-    (Bof stepC pendC labC thetaC) (c, n) = κ ∧
+    (BofPre thetaC) (c, n) = κ ∧
     T ∈ cellAt MC thetaC
       ((0, stC c n) : (ladderFrameAdm stepC pendC fwdC bwdC).WorldState) 0}, fun c n => ?_⟩
   ext T
@@ -2563,8 +2597,19 @@ theorem dFwd_mixC (a k : ℕ) : dFwd (mixC a k) = k + 2 := by
   simp only [mixC, diaF, PlusFormula.neg, dFwd] at h1 ⊢
   omega
 
-/-- (K4)'s least admissible gap clip at `mixC (k + 2) k` is `2 k + 5`. -/
-theorem Bof_mixC (k : ℕ) : Bof stepC pendC labC (mixC (k + 2) k) = 2 * k + 5 := by
+/-- The PRE-REPAIR (K4)'s least admissible gap clip at `mixC (k + 2) k` is `2 k + 5`. -/
+theorem BofPre_mixC (k : ℕ) : BofPre (mixC (k + 2) k) = 2 * k + 5 := by
+  unfold BofPre
+  rw [dBack_mixC, dFwd_mixC]
+  omega
+
+/-- **THE REPAIRED (K4)'s OWN OUTPUT AT `mixC (k + 2) k` IS `2 k + 6`**, one above the frozen clip.
+The family's separated gap is `3 k + 4`, so the excess over the LIVE clip is `k - 2` where over
+the frozen clip it is `k - 1`: the repair buys back the two smallest members of the family
+(`k = 1`, `k = 2`) and nothing beyond them.  The obstruction `mixC_refutes` is read at the frozen
+clip, where its full range `1 ≤ k` stands; `repaired_clip_refuted` is the statement that does not
+depend on either reading, being stated at the strictly larger `BRep = 2 * (dBack + dFwd) + 2`. -/
+theorem Bof_mixC (k : ℕ) : Bof stepC pendC labC (mixC (k + 2) k) = 2 * k + 6 := by
   unfold Bof
   rw [dBack_mixC, dFwd_mixC]
   omega
@@ -2784,25 +2829,25 @@ pending state separates the gap `3 k + 4` from the gap one modulus above it — 
 one `kappa`-class.  The separated gap exceeds the clip by `k - 1`: no constant added to the larger
 of the two exactness depths repairs (K4). -/
 theorem mixC_refutes (k : ℕ) (hk : 1 ≤ k) :
-    Bof stepC pendC labC (mixC (k + 2) k) = 2 * k + 5 ∧
+    BofPre (mixC (k + 2) k) = 2 * k + 5 ∧
     ∃ c n n' : ℕ, n = c + (3 * k + 4) ∧
-      ParamsOk stepC pendC labC (mixC (k + 2) k)
+      ParamsOkPre stepC pendC labC (mixC (k + 2) k)
         (Tcof stepC pendC labC (mixC (k + 2) k)) (Tnof stepC pendC labC (mixC (k + 2) k))
-        (Pof stepC pendC labC (mixC (k + 2) k)) (Bof stepC pendC labC (mixC (k + 2) k)) ∧
+        (Pof stepC pendC labC (mixC (k + 2) k)) (BofPre (mixC (k + 2) k)) ∧
       kappa (Tcof stepC pendC labC (mixC (k + 2) k)) (Tnof stepC pendC labC (mixC (k + 2) k))
-          (Pof stepC pendC labC (mixC (k + 2) k)) (Bof stepC pendC labC (mixC (k + 2) k)) (c, n)
+          (Pof stepC pendC labC (mixC (k + 2) k)) (BofPre (mixC (k + 2) k)) (c, n)
         = kappa (Tcof stepC pendC labC (mixC (k + 2) k)) (Tnof stepC pendC labC (mixC (k + 2) k))
-          (Pof stepC pendC labC (mixC (k + 2) k)) (Bof stepC pendC labC (mixC (k + 2) k)) (c, n') ∧
+          (Pof stepC pendC labC (mixC (k + 2) k)) (BofPre (mixC (k + 2) k)) (c, n') ∧
       cellAt MC (mixC (k + 2) k)
           ((0, stC c n) : (ladderFrameAdm stepC pendC fwdC bwdC).WorldState) 0
         ≠ cellAt MC (mixC (k + 2) k)
           ((0, stC c n') : (ladderFrameAdm stepC pendC fwdC bwdC).WorldState) 0 := by
-  refine ⟨Bof_mixC k, Tnof stepC pendC labC (mixC (k + 2) k),
+  refine ⟨BofPre_mixC k, Tnof stepC pendC labC (mixC (k + 2) k),
     Tnof stepC pendC labC (mixC (k + 2) k) + (3 * k + 4),
     Tnof stepC pendC labC (mixC (k + 2) k) + (3 * k + 4)
       + (Pof stepC pendC labC (mixC (k + 2) k) + 1), rfl,
-    paramsOk_params stepC pendC labC (mixC (k + 2) k), ?_, ?_⟩
-  · exact kappa_collision_pos _ _ _ _ _ _ (by omega) (by rw [Bof_mixC]; omega)
+    paramsOkPre_BofPre (mixC (k + 2) k), ?_, ?_⟩
+  · exact kappa_collision_pos _ _ _ _ _ _ (by omega) (by rw [BofPre_mixC]; omega)
   · intro heq
     obtain ⟨T, hT⟩ := cellC_nonempty (mixC (k + 2) k) (Tnof stepC pendC labC (mixC (k + 2) k))
       (Tnof stepC pendC labC (mixC (k + 2) k) + (3 * k + 4))
@@ -3397,16 +3442,19 @@ namespace Probe761F
 
 open Probe761C
 
-/-- The periodicity fixpoint's own four parameter outputs at the separating formula: the tuple
-`paramsOk_params` certifies `ParamsOk` at. -/
+/-- The periodicity fixpoint's own three threshold/modulus outputs at the separating formula,
+together with the FROZEN pre-repair gap clip `BofPre`: the tuple `paramsOkPre_BofPre` certifies
+`ParamsOkPre` at.  The clip is the frozen one because the repaired `(K4)` rejects it
+(`Bof_thetaC` reads `4` where the collision needs `3`), so the obstructions below are read at the
+clip they were filed at. -/
 noncomputable abbrev Tc0 : ℕ := Tcof stepC pendC labC thetaC
 noncomputable abbrev Tn0 : ℕ := Tnof stepC pendC labC thetaC
 noncomputable abbrev P0 : ℕ := Pof stepC pendC labC thetaC
-noncomputable abbrev B0 : ℕ := Bof stepC pendC labC thetaC
+abbrev B0 : ℕ := BofPre thetaC
 
-/-- The parameter tuple is the filed one: `ParamsOk` holds at it. -/
-theorem paramsOk_filed : ParamsOk stepC pendC labC thetaC Tc0 Tn0 P0 B0 :=
-  paramsOk_params stepC pendC labC thetaC
+/-- The parameter tuple is the filed one: the frozen `ParamsOkPre` holds at it. -/
+theorem paramsOk_filed : ParamsOkPre stepC pendC labC thetaC Tc0 Tn0 P0 B0 :=
+  paramsOkPre_BofPre thetaC
 
 /-- **NO KEYED MODEL RECEIVES `ladderModel`.** Let `M'` be ANY model over ANY frame whose cells
 at `thetaC` are a function `G` of a key in `Q × CK` (the truth lemma of a construction keyed by

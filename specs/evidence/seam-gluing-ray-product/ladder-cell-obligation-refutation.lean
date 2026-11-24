@@ -19,7 +19,7 @@ What the repair of (K4) changes, compiled here as two positive facts. The librar
 `paramsOkK4 φ B := 2 * dBack φ + 1 ≤ B ∧ 2 * dFwd φ + 1 ≤ B ∧ 2 ≤ B`, with `dFwd` the forward
 exactness depth (the `U`-nesting), and `Bof` is the matching output. `not_paramsOkK4_two`: the
 repaired (K4) rejects `B = 2` for the separating formula (`dFwd chiD = 4`). `kappa_D_dissolves`:
-at the repaired output `Bof stepC pendC labC chiD = 9`, the specific collision the refutation
+at the repaired output `Bof stepC pendC labC chiD = 10`, the specific collision the refutation
 turns on is no longer a collision — the unclipped gap `2` is distinguished from a gap of at least
 `3`. Neither fact is a proof of the obligation under the repaired predicate; they say only that
 THIS separating object is answered by the repair.
@@ -167,10 +167,10 @@ theorem not_paramsOkK4_two : ¬ paramsOkK4 chiD 2 := by
   rw [dFwd_chiD] at this
   omega
 
-theorem Bof_chiD : Bof stepC pendC labC chiD = 9 := by
+theorem Bof_chiD : Bof stepC pendC labC chiD = 10 := by
   simp [Bof, dBack_chiD, dFwd_chiD]
 
-/-- **The specific collision dissolves at the repaired output.** At `Bof = 9` the unclipped gap
+/-- **The specific collision dissolves at the repaired output.** At `Bof = 10` the unclipped gap
 `2` is distinguished from a gap of at least `3`. -/
 theorem kappa_D_dissolves :
     kappa TcC TnC PC (Bof stepC pendC labC chiD) (c0, c0 + 2)

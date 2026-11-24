@@ -964,7 +964,32 @@ theorem dFwd_sigC (b : ℕ) : dFwd (sigC b) = b := by
   show max (max (0 + b) 0) 0 = b
   omega
 
-theorem Bof_sigC (b : ℕ) (hb : 1 ≤ b) : Bof stepC pendC labC (sigC b) = 2 * b + 1 := by
+/-- **`Bof`'s BODY BEFORE `(K4)`'s FORWARD REPAIR**, frozen so the record below keeps the clip it
+was read at.  `FormalSystem`'s own frozen copies of the conditions are `paramsOkK4Pre`,
+`ParamsOkPre` and `paramsOkPre_params` (`CounterQuotient.lean`), and this is `Bof`'s matching
+fourth output. -/
+def BofPre (φ : PlusFormula) : ℕ :=
+  max (2 * dBack φ + 1) (max (2 * dFwd φ + 1) 2)
+
+/-- The frozen conditions hold at the fixpoint's three outputs and the frozen clip. -/
+theorem paramsOkPre_BofPre (φ : PlusFormula) :
+    ParamsOkPre stepC pendC labC φ (Tcof stepC pendC labC φ) (Tnof stepC pendC labC φ)
+      (Pof stepC pendC labC φ) (BofPre φ) := by
+  unfold BofPre
+  exact paramsOkPre_params stepC pendC labC φ
+
+/-- The PRE-REPAIR (K4)'s output at the reader is `2 b + 1` — the one-short clip this file's
+record is about. -/
+theorem BofPre_sigC (b : ℕ) (hb : 1 ≤ b) : BofPre (sigC b) = 2 * b + 1 := by
+  unfold BofPre
+  rw [dBack_sigC, dFwd_sigC]
+  omega
+
+/-- **THE REPAIRED (K4)'s OUTPUT AT THE READER IS `2 b + 2`** — exactly `2 * dFwd + 2`, which
+`stepFrag_gap_depth_exact` below measures as the clip that admits NO collision once both
+thresholds reach `2 (dBack + dFwd)`.  This record is what forced `(K4)`'s forward conjunct from
+`2 * dFwd φ + 1 ≤ B` to `2 * dFwd φ + 2 ≤ B`. -/
+theorem Bof_sigC (b : ℕ) (hb : 1 ≤ b) : Bof stepC pendC labC (sigC b) = 2 * b + 2 := by
   unfold Bof
   rw [dBack_sigC, dFwd_sigC]
   omega
@@ -1132,24 +1157,29 @@ theorem sigC_cell_ne (b n c' : ℕ) (hgap : n + 2 * b + 2 ≤ c') :
     (mem_cellAt_ladder_iff fwdC bwdC labC (sigC b) _ 0 _).mpr ⟨g, τ, hg, h0, hτ, rfl⟩
   exact sigC_not_mem b c' n hgap _ (heq ▸ hT) (sigC_mem b n _ hT)
 
-/-- **THE FILED CLIP IS ONE SHORT ON THE STEP FRAGMENT, AT EVERY FORWARD DEPTH.** For every
-`b ≥ 1` the step-fragment formula `sigC b` has `dBack = 1`, `dFwd = b`, so (K4)'s output for it is
-`2 b + 1`; at the periodicity fixpoint's own parameters, which satisfy `ParamsOk`, two counter
-pairs of one class have different cells. -/
+/-- **THE FILED CLIP WAS ONE SHORT ON THE STEP FRAGMENT, AT EVERY FORWARD DEPTH.** For every
+`b ≥ 1` the step-fragment formula `sigC b` has `dBack = 1`, `dFwd = b`, so the PRE-REPAIR (K4)'s
+output for it was `2 b + 1` (`BofPre_sigC`); at the periodicity fixpoint's own parameters, which
+satisfy the frozen `ParamsOkPre`, two counter pairs of one class have different cells.
+
+This record is the one that forced the repair: `(K4)`'s forward conjunct now reads
+`2 * dFwd φ + 2 ≤ B`, so `Bof_sigC` outputs `2 b + 2` and this collision no longer sits under the
+LIVE conditions.  It is kept, stated against the frozen conditions, because it is the measurement
+the repair answers — not a claim about the repaired predicate. -/
 theorem sigC_refutes (b : ℕ) (hb : 1 ≤ b) :
-    ∃ (Tc Tn P B c n c' n' : ℕ), ParamsOk stepC pendC labC (sigC b) Tc Tn P B ∧
+    ∃ (Tc Tn P B c n c' n' : ℕ), ParamsOkPre stepC pendC labC (sigC b) Tc Tn P B ∧
       B = 2 * b + 1 ∧
       kappa Tc Tn P B (c, n) = kappa Tc Tn P B (c', n') ∧
       cellAt MC (sigC b) ((0, stC c n) : (ladderFrameAdm stepC pendC fwdC bwdC).WorldState) 0
         ≠ cellAt MC (sigC b)
             ((0, stC c' n') : (ladderFrameAdm stepC pendC fwdC bwdC).WorldState) 0 := by
   refine ⟨Tcof stepC pendC labC (sigC b), Tnof stepC pendC labC (sigC b),
-    Pof stepC pendC labC (sigC b), Bof stepC pendC labC (sigC b),
+    Pof stepC pendC labC (sigC b), BofPre (sigC b),
     Tcof stepC pendC labC (sigC b) + 2 * b + 1, Tcof stepC pendC labC (sigC b),
     Tcof stepC pendC labC (sigC b) + 2 * b + 1 + (Pof stepC pendC labC (sigC b) + 1),
-    Tcof stepC pendC labC (sigC b), paramsOk_params stepC pendC labC (sigC b),
-    Bof_sigC b hb, ?_, ?_⟩
-  · rw [Bof_sigC b hb]
+    Tcof stepC pendC labC (sigC b), paramsOkPre_BofPre (sigC b),
+    BofPre_sigC b hb, ?_, ?_⟩
+  · rw [BofPre_sigC b hb]
     exact kappa_collision_sig b _ _ _
   · exact sigC_cell_ne b _ _ (by omega)
 
