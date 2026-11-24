@@ -11,12 +11,12 @@
 |---|---|---|---|
 | [M7: L-plus at integer time: decidability and route R3](#milestone-m7) | active | 0/6 | none |
 | [M9: Algebraic representation and MF rigidity](#milestone-m9) | planned | 0/8 | none |
-| [M3: Proof-mode rule set up to gate one](#milestone-m3) | planned | 1/11 | none |
+| [M2: BimodalLib: the evidence base the mode is measured against](#milestone-m2) | active | 4/5 | none |
 | [M13: What the merges leave owed: the signature layer and the follow-ups](#milestone-m13) | active | 0/4 | none |
 | [M1: Repository hygiene](#milestone-m1) | active | 0/7 | none |
 | [M10: The written record: errata, open questions, examples and docs](#milestone-m10) | planned | 0/5 | none |
 | [M8: The tableau decidability engine](#milestone-m8) | active | 0/8 | none |
-| [M2: BimodalLib: the evidence base the mode is measured against](#milestone-m2) | active | 4/5 | none |
+| [M3: Proof-mode rule set up to gate one](#milestone-m3) | planned | 1/11 | none |
 | [M4: Linear-time rules, usability and gate two](#milestone-m4) | planned | 0/7 | none |
 | [M5: One interface, and the entries that need it](#milestone-m5) | planned | 0/3 | none |
 | [M6: Specification reasoning, dual verification and the manual](#milestone-m6) | planned | 0/5 | none |
@@ -31,32 +31,44 @@ See also: [Rules, conventions and repo context](#roadmap-context)
 
 Decide validity of the stability-modal language at integer time in Lean, past the ladder realization theorem to Decidable (PlusValidZTime phi), and settle whether a determinization-free route to completeness exists.
 
-- **Progress**: active -- 0/3 batches, 0/6 tasks done -- 935 and 831 declare no file scope, so no open contribution can collide; the ladder band is parked on the depth-0 gate ruling
+- **Progress**: active -- 0/5 batches, 0/6 tasks done -- 991 now owns the depth-0 gate and heads the milestone; 935, 831 and 713 are free, and the ladder band unparks on 991's verdict
 - **Review**: none
 - **Gate**: cellLE_zero_const_of_kappa_eq lands sorry-free or CellLEZeroConstOfKappaEq is refuted under ParamsOk; the ladder realization theorem closes; Decidable (PlusValidZTime phi) is stated and proved; and route R3 has a recorded verdict either way.
 
-**Batch 1** -- Route R3: does a determinization-free progress measure for L-plus ZTime completeness exist
+**Batch 1** -- Who owns the depth-0 gate: a verdict either way unparks M7's whole ladder band
+
+```
+/orchestrate 991 --hard
+991 ready           depth_zero_gate_verdict   <- owns the depth-0 gate: a verdict either way unparks the ladder band and milestone M7
+```
+
+**Batch 2** -- Route R3: does a determinization-free progress measure for L-plus ZTime completeness exist
 
 ```
 /orchestrate 935 --hard --lit
 935 ready           determinization_free_progress_measure_design
 ```
 
-**Batch 2** -- The dense-time dichotomy gating L-R3, the only identified non-ZTime decidability route
+**Batch 3** -- The dense-time dichotomy gating L-R3, the only identified non-ZTime decidability route
 
 ```
 /orchestrate 831 --research --lit
 831 ready           dense_time_certificate_dichotomy_gate
 ```
 
-**Batch 3** -- Ladder realization with all three dependents, parked on the depth-0 gate no open task owns
+**Batch 4** -- Ladder realization and its lift corollary, restated once 991 returns the gate verdict
 
 ```
-/orchestrate 761, 862, 763, 861 --hard --lit
-761 PARTIAL         ladder_realization_theorem   <- no dispatch can advance it: the depth-0 gate is owned by no open task
+/orchestrate 761, 763 --hard --lit
+761 PARTIAL         ladder_realization_theorem   <- parked until 991 returns the depth-0 gate verdict, against which this record is then restated
 763 blocked:761     ladder_lift_decidability_corollary
-861 blocked:761,763 Record the one-sided transport refutation in the RaySummary refutation table
-862 blocked:761     Promote cntAt_eq_of_pend_eq_fwd into LadderAgree as a strict sharpening
+```
+
+**Batch 5** -- The argued 2EXPTIME ceiling any ZTime decision procedure is checked against
+
+```
+/orchestrate 713 --lit
+713 ready           formalize_ctl_star_reduction_2exptime_lower_bound   <- released from hold 2026-11-24: the argued 2EXPTIME ceiling three records cite as their check
 ```
 
 <a id="milestone-m9"></a>
@@ -82,48 +94,25 @@ Ground the representation front in Goldblatt and BRV, bring the Shift-closed Ten
 502 ready           ground_algebraic_representation_in_goldblatt_and_brv
 ```
 
-<a id="milestone-m3"></a>
-## M3: Proof-mode rule set up to gate one
+<a id="milestone-m2"></a>
+## M2: BimodalLib: the evidence base the mode is measured against
 
-Put the mode in the operator-family layout, extend the bimodal scope rules, close leaves by automation and measure the merged tactics, then re-prove the perpetuity selection and take the verdict.
+Give the theorem library its layout by fragment and frame class, fill the fragments the tableau reaches, keep every refutation checked, and make filing by smallest fragment a theorem.
 
-- **Progress**: planned -- 0/4 batches, 1/11 tasks done -- 962 and 986 enter today; every later batch sits behind 960's hold, and so behind #8 merging or being declined
+- **Progress**: active -- 1/2 batches, 4/5 tasks done -- 973 is free today -- its edges on 971 and 972 are both discharged -- and is the only work left open here
 - **Review**: none
-- **Gate**: 947's report at docs/development/proof-mode-adequacy-perpetuity.md opens with GO or RE-PLAN: the scripts shorter than the hand proofs in aggregate and for a clear majority of entries, none needing a term-mode escape longer than its hand proof. Past 962 and 986, entry needs 960 unheld -- update-task-status.sh preflight 960 unhold <session> -- once #8 closes.
+- **Gate**: BimodalLib builds; every closed derivation outside Theorems/ProofMode/ is registered with its fragment, frame class and substitution class and a check fails on an unregistered one; verdicts and countermodels are admitted only at a stated grade; and the conservativity table is generated from the theorems. 973 is the only open member left here and it enters today.
 
-**Batch 1** -- Deduction theorems for Star and Open: no predecessor, off the gate, no open-PR collision
+**Batch 1** (done) -- Whether stability is rightly a Modal family: no file scope, the cheapest de-risking while 977 waits
 
-```
-/orchestrate 962
-962 ready           proof_mode_deduction_theorems_star_open
-```
-
-**Batch 2** -- A view's real failure cause before the views tier freezes it; #8 only adds elsewhere in that file
+**Batch 2** -- The countermodel fill, free today: both its edges are discharged and no open PR touches it (3/4 done)
 
 ```
-/orchestrate 986
-986 ready           proof_mode_views_report_swallowed_view_error   <- #8 only adds viewHead? to FormulaViews.lean, far from the applyView handler this edits
-```
-
-**Batch 3** -- The operator-family layout every later record files into, held until #8 or #9 closes
-
-```
-/orchestrate 960
-960 HOLD            proof_mode_split_shared_test_and_guide_files   <- HELD on 28 real #8/#9 overlaps; lift via update-task-status.sh preflight 960 unhold <session>
-```
-
-**Batch 4** -- Gated: every member sits behind 960, so this line enters only once that hold is lifted (1/8 done)
-
-```
-/orchestrate 969, 944, 945, 946, 955, 954, 947
-944 HOLD            proof_mode_s5_aware_box_scopes
-945 HOLD            proof_mode_cross_modal_scopes_mf_tf
-946 HOLD            proof_mode_always_sometimes_scopes
-969 HOLD            proof_mode_views_tier   <- behind 977 and so behind the #8 merge; 946 and gate one 947 follow it
-947 blocked:946,955,973  proof_mode_reprove_perpetuity   <- GO / RE-PLAN gate; now also behind 973 on BimodalLib.lean, at no wave cost
-954 blocked:960     proof_mode_error_message_coverage
-955 blocked:960     proof_mode_close_leaves_with_automation
-961 done            proof_mode_axiom_audit_and_cost_baseline
+/orchestrate 973
+973 ready           theorem_library_countermodels   <- free today: its edges on 971 and 972 are both discharged and no open PR touches BimodalLib
+971 done            theorem_library_layout_and_registry
+972 done            theorem_library_tableau_pipeline
+975 done            theorem_library_fragment_conservativity
 ```
 
 <a id="milestone-m13"></a>
@@ -234,7 +223,7 @@ Land the paper-side record the two fronts owe: the GHR erratum, the C3 completen
 
 Carry the TM tableau from engine totality at a quantified branch budget through the repaired truth lemma and the admissibility lemmas to refutation-core decidability and proof extraction.
 
-- **Progress**: active -- 0/2 batches, 0/8 tasks done -- No open contribution touches the tableau tree; 481 enters today and 428's scope still needs a user ruling
+- **Progress**: active -- 0/2 batches, 0/8 tasks done -- No open contribution touches the tableau tree; 481 enters today, and the seven-task spine is stalled on an owed ruling on 428
 - **Review**: none
 - **Gate**: valid iff allClosed is assembled, provability is decidable with its completeness corollaries, and the proof-extraction obligation is discharged or refused with a recorded reason.
 
@@ -249,7 +238,7 @@ Carry the TM tableau from engine totality at a quantified branch budget through 
 
 ```
 /orchestrate 428, 429, 410, 411, 430, 412, 482 --hard --lit
-428 BLOCKED         engine_totality_at_a_quantified_branch_budget
+428 BLOCKED         engine_totality_at_a_quantified_branch_budget   <- BLOCKED is mis-set: one edge discharged, its blockers field says paused at 4/5 cycles -- ruling owed
 410 blocked:429     internalize_tableau_branches_and_prove_routine_rule_admissibility
 411 blocked:410     prove_hard_admissibility_lemmas_for_until_since_trichotomy_discrete_and_dedek...
 412 blocked:410,411,428,430  prove_refutation_core_and_decidability_of_provability_with_completen...
@@ -258,25 +247,48 @@ Carry the TM tableau from engine totality at a quantified branch budget through 
 482 blocked:412     discharge_proof_extraction_completeness
 ```
 
-<a id="milestone-m2"></a>
-## M2: BimodalLib: the evidence base the mode is measured against
+<a id="milestone-m3"></a>
+## M3: Proof-mode rule set up to gate one
 
-Give the theorem library its layout by fragment and frame class, fill the fragments the tableau reaches, keep every refutation checked, and make filing by smallest fragment a theorem.
+Put the mode in the operator-family layout, extend the bimodal scope rules, close leaves by automation and measure the merged tactics, then re-prove the perpetuity selection and take the verdict.
 
-- **Progress**: active -- 1/2 batches, 4/5 tasks done -- 972 and 973 collide with no open PR but sit behind 961, and so behind 960's hold, so nothing left here can be entered
+- **Progress**: planned -- 0/4 batches, 1/11 tasks done -- 962 and 986 enter today; past them this milestone and M4 to M6 behind it are frozen on 960's hold, and so on #8
 - **Review**: none
-- **Gate**: BimodalLib builds; every closed derivation outside Theorems/ProofMode/ is registered with its fragment, frame class and substitution class and a check fails on an unregistered one; verdicts and countermodels are admitted only at a stated grade; and the conservativity table is generated from the theorems. Entry needs 960 unheld, and so #8 merged or declined.
+- **Gate**: 947's report at docs/development/proof-mode-adequacy-perpetuity.md opens with GO or RE-PLAN: the scripts shorter than the hand proofs in aggregate and for a clear majority of entries, none needing a term-mode escape longer than its hand proof. Past 962 and 986, entry needs 960 unheld -- update-task-status.sh preflight 960 unhold <session> -- once #8 closes.
 
-**Batch 1** (done) -- Whether stability is rightly a Modal family: no file scope, the cheapest de-risking while 977 waits
-
-**Batch 2** -- Gated: 972 and 973 touch no open PR but sit behind 961, and so behind 960's hold (3/4 done)
+**Batch 1** -- Deduction theorems for Star and Open: no predecessor, off the gate, no open-PR collision
 
 ```
-/orchestrate 973
-973 ready           theorem_library_countermodels
-971 done            theorem_library_layout_and_registry
-972 done            theorem_library_tableau_pipeline
-975 done            theorem_library_fragment_conservativity
+/orchestrate 962
+962 ready           proof_mode_deduction_theorems_star_open
+```
+
+**Batch 2** -- A view's real failure cause before the views tier freezes it; #8 only adds elsewhere in that file
+
+```
+/orchestrate 986
+986 ready           proof_mode_views_report_swallowed_view_error   <- #8 only adds viewHead? to FormulaViews.lean, far from the applyView handler this edits
+```
+
+**Batch 3** -- The operator-family layout every later record files into, held until #8 or #9 closes
+
+```
+/orchestrate 960
+960 HOLD            proof_mode_split_shared_test_and_guide_files   <- HELD on 28 real #8/#9 overlaps; lift via update-task-status.sh preflight 960 unhold <session>
+```
+
+**Batch 4** -- Gated: every member sits behind 960, so this line enters only once that hold is lifted (1/8 done)
+
+```
+/orchestrate 969, 944, 945, 946, 955, 954, 947
+944 HOLD            proof_mode_s5_aware_box_scopes
+945 HOLD            proof_mode_cross_modal_scopes_mf_tf
+946 HOLD            proof_mode_always_sometimes_scopes
+969 HOLD            proof_mode_views_tier   <- behind 977 and so behind the #8 merge; 946 and gate one 947 follow it
+947 blocked:946,955,973  proof_mode_reprove_perpetuity   <- GO / RE-PLAN gate; now also behind 973 on BimodalLib.lean, at no wave cost
+954 blocked:960     proof_mode_error_message_coverage
+955 blocked:960     proof_mode_close_leaves_with_automation
+961 done            proof_mode_axiom_audit_and_cost_baseline
 ```
 
 <a id="milestone-m4"></a>
@@ -421,12 +433,12 @@ Closed 2026-11-23 -- review: none -- Reported on all five contributions, reconci
 - records/semantic-proof-mode.md specifies the semantic mode and is not on main; it arrives with the semantic-record contribution (#10), and the semantic-mode milestone below is a placeholder until it lands.
 - The milestone ids here are this roadmap's own and do NOT correspond to records/proof-mode.md's M0-M23: M2 to M6 below carry that record's milestones, several per milestone.
 - The rulings and the fuller rationale the hand-maintained roadmap carried are retained verbatim at specs/archive/roadmap-retained-prose-20261120.md; this file is rendered from specs/state.json and that prose is not.
-- 713 and 734 sit in no batch by ruling: 713's argued CTL-star 2EXPTIME lower bound is a citable ceiling with no consumer, and 734 waits on the paywalled Handbook of Modal Logic ch. 11 sections 5.10-5.11, absent from the local Zotero library.
+- 734 sits in no batch by ruling: it waits on the paywalled Handbook of Modal Logic ch. 11 sections 5.10-5.11, absent from the local Zotero library. 713 was released from hold on 2026-11-24 and is now M7's last batch.
 
 ### Rules
 
 - L-plus is the front and L-triangle is secondary (2026-11-05). Its tasks are demoted, not abandoned, and are never dispatched ahead of, or batched with, L-plus critical-path work.
-- The enterable front leads the order (2026-11-23). No open contribution is merge-ready, so milestone order follows what dispatches today: M7 and M9 declare no file scope at all, M3's 962 and 986 and M13's 989 and 984 are free, and the library fill is now behind 960's hold.
+- The enterable front leads the order (2026-11-24). With the proof-mode front frozen behind #8, M7, M9, M2 and M13 lead because each has a head batch that enters today, and M3 drops to the head of the frozen band it shares with M4, M5 and M6.
 - Decidability before completeness (2026-11-02). At ZTime deciding validity makes the valid set recursive outright; Craig remains the instrument only for the weaker r.e.-only case at Base, Dense and RTime.
 - No Lean formalization of the Reynolds engine's sections 7-15 (901's Recommendation 8). Filing a record for any part of them is a ruling violation, not a judgement call.
 - Closedness of the canonical bundle is the completeness front's standing open problem, owned by no task and not to be filed: filing it needs a fresh user ruling reversing the sections 7-15 refusal.
@@ -434,32 +446,34 @@ Closed 2026-11-23 -- review: none -- Reported on all five contributions, reconci
 - No agent-system work is filed in this repository: this tree's .claude-extensions.json declares no reachable source_dir, so a record whose edit target resolves only under the source store cannot run from here.
 - 977 is on hold (2026-11-23): its plan's Phase 1 gate needs PlusLanguage/TemporalViews.lean and Tactic/TemporalFormulaViews.lean, both absent from main and carried only by #8, and #10 edits records/proof-mode-architecture.md, which the record reads as binding. Lift when #8 closes.
 - 977 lands AFTER the temporal contribution, settled on evidence (2026-11-23) rather than recommendation: #8 edits neither Syntax/Formula.lean nor PlusLanguage/Formula.lean, so the before order saves no rebase, and the interval operators 977 owes exist only on #8's branch.
-- #8 merges on two conditions (records/milestones.md, what to do next): the carrying table's key widened to (source, target) and made non-private, and the one altered ProofModeTest.lean acceptance example split into the two cases it used to cover.
+- #8 merges on three conditions (2026-11-23 review): carryRules keyed by source AND target in a non-private Automation/ProofMode/Carrying.lean; ProofModeTest.lean:129 split so its True-arrow wrapper stops hiding the certificate; and a rebase, now also conflicting in README.md and status.typ.
+- Twelve held records trace to #8 (2026-11-24): 944, 945, 946, 949, 950, 951, 952, 956, 960, 969, 977 and 987, across M3, M4, M5, M6 and M13. Nothing on the proof-mode front enters while 960's and 977's holds stand.
 - 960 is on hold, not merely warned (2026-11-23). Its overlap is 28 real ProofMode source, test and guide paths carried by #8 and #9, not a regenerated surface. Research and planning stay admissible through an explicit override; lift with update-task-status.sh preflight 960 unhold <session>.
 - The 970 -> 977 relation is advisory, not an edge (2026-11-23): 970's report may move the stability operator to its own signature class, but 977's filed plan presupposes no such report, and 974 already carries edges on both 970 and 971 where that decision is load-bearing.
 - 947 is gate one: its report must open with an explicit GO or RE-PLAN verdict, and on RE-PLAN every record after it is held until its own record is revised. 948 is gate two and carries no verdict as filed.
-- The depth-0 gate behind 761 is owned by no open task, so no dependency edge can express that blocker and none was invented to replace the one that aged out. Its disposition is a user ruling.
+- 991 owns the depth-0 gate (2026-11-24). The blocker 761 was parked on is now a task and 761 carries an edge on it; the gate lifts only on a sorryAx-free cellLE_zero_const_of_kappa_eq or a refutation of CellLEZeroConstOfKappaEq under ParamsOk.
+- 861 and 862 were abandoned into 761 (2026-11-24): the one-sided transport refutation row for the RaySummary README and the cntAt_eq_of_pend_eq_fwd sharpening for LadderAgree.lean are now 761's own deliverables, and both ids left M7's ladder batch.
 - 989 and 984 are no longer externally blocked (2026-11-23). All four of 989's scope files are on main -- Semantics/TemporalRules.lean and PointTransport.lean with both tests -- and no open PR touches any of them, so both roadmap_ext_blocked flags were cleared. 984 is gated only by its edge on 989.
 - PR #10 adds one scope conflict and no new gate (2026-11-23). It touches only records/README.md, records/proof-mode-architecture.md and records/semantic-proof-mode.md; the middle path is in 977's file_scope and 977's own hold_reason already names it. No other open record is scoped on records/.
 - 960 is the structural fix, not merely a predecessor (2026-11-23). The mutual ProofModeTest.lean, Automation/ProofMode.lean and derivation-proof-mode.md collisions among 944-969 are exactly the files it splits, so no serializing edges were written between those members.
 - Three edges were written for measured unordered overlaps (2026-11-23): 869 on 962 (OpenLanguage.lean, direction fixed by the L-triangle demotion), 947 on 973 (BimodalLib.lean, no wave cost), 965 on 178 (Examples/ProofMode/Adoption.lean inside 178's directory).
 - 974 needed no edge on 972 (2026-11-23): their BimodalLib/Theorems/ overlap is already serialized transitively, 974 -> 973 -> 972, so the pre-dispatch advisory is a false positive of the graph rather than a missing edge.
+- 428's BLOCKED marker is mis-set and the ruling is the user's (2026-11-24): its one edge is discharged and its own blockers field records it paused at 4/5 cycles. Revise it to add phases for its four residual hypotheses or spawn them out; the seven-task tableau spine is stalled behind it.
 
 ### Conventions
 
 - Each batch line is one invocation and batches are dependency-inclusive: a batch holding a blocker with its dependent is correct, while a dependent named without its out-of-batch blocker is dead weight.
 - MAX_TASKS is 8 and the work-cycle budget is per task per invocation (5 default, 13 under --hard), so re-run the same line until every member reports terminal.
 - Shared file scope serializes a batch rather than breaking it, and a collision against a live session's lock is not bypassable by --allow-scope-collision: wait for the holder, or batch with it.
-- Measured against the open PR diffs (2026-11-23): the dispatchable, conflict-free front is 962, 986, 988, 989, 604 with its 298 chain, 935, 831, 502, 570, 890, 664, 178 and 481, plus 869 at the back of the order; eight of those declare no file_scope at all.
+- Measured against the open PR diffs (2026-11-24): the dispatchable, conflict-free front is 991, 935, 831, 713, 502's chain, 973, 989, 962, 986, 988, 604 with its 298 chain, 890, 570, 178, 664 and 481, plus 869 at the back of the order.
 - Three ready records overlap an open PR for real (2026-11-23): 960 on 28 ProofMode source, test and guide paths, 986 on Tactic/FormulaViews.lean (where #8 only adds viewHead? far from applyView), and 869 on regenerated inventory surfaces alone.
 - 960 and 952 declare whole ProofMode directories on purpose, so nothing else may run beside either; the library records declare their own BimodalLib directories, and 178, 177, 257, 482, 875 and 876 declare theirs coarsely.
-- Eighteen open records carry no file_scope (125, 231, 411, 412, 497-502, 570, 604, 664, 713, 831, 890, 935, 984), so the creation-time overlap check is blind on them. No task is filed for it.
-- A RESEARCHED status does not always mean a report exists: 861, 862 and 890 carry it with no linked artifact and no task directory, their research folded into the task description.
+- Nineteen open records carry no file_scope (125, 231, 411, 412, 497-502, 570, 604, 664, 713, 831, 890, 935, 984, 991), so the creation-time overlap check is blind on them. No task is filed for it.
+- A RESEARCHED status does not always mean a report exists: 890 carries it with no linked artifact and no task directory, its research folded into the task description.
 - This file is generated from specs/state.json by scripts/roadmap-integration.sh; change milestone order, batch membership or a description through /roadmap, never by editing the file.
 
 ### Open tasks in no batch
 
 ```
-713 HOLD            formalize_ctl_star_reduction_2exptime_lower_bound
 734 HOLD            e4_mosaic_stabsaturated_mixed_germ_probe
 ```
