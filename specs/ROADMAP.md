@@ -11,7 +11,7 @@
 |---|---|---|---|
 | [M7: L-plus at integer time: decidability and route R3](#milestone-m7) | active | 0/6 | none |
 | [M9: Algebraic representation and MF rigidity](#milestone-m9) | planned | 0/8 | none |
-| [M2: BimodalLib: the evidence base the mode is measured against](#milestone-m2) | active | 4/5 | none |
+| [M2: BimodalLib: the evidence base the mode is measured against](#milestone-m2) | active | 5/5 | none |
 | [M13: What the merges leave owed: the signature layer and the follow-ups](#milestone-m13) | active | 0/4 | none |
 | [M1: Repository hygiene](#milestone-m1) | active | 0/7 | none |
 | [M10: The written record: errata, open questions, examples and docs](#milestone-m10) | planned | 0/5 | none |
@@ -99,21 +99,13 @@ Ground the representation front in Goldblatt and BRV, bring the Shift-closed Ten
 
 Give the theorem library its layout by fragment and frame class, fill the fragments the tableau reaches, keep every refutation checked, and make filing by smallest fragment a theorem.
 
-- **Progress**: active -- 1/2 batches, 4/5 tasks done -- 973 is free today -- its edges on 971 and 972 are both discharged -- and is the only work left open here
+- **Progress**: active -- 2/2 batches, 5/5 tasks done -- 973 is free today -- its edges on 971 and 972 are both discharged -- and is the only work left open here
 - **Review**: none
 - **Gate**: BimodalLib builds; every closed derivation outside Theorems/ProofMode/ is registered with its fragment, frame class and substitution class and a check fails on an unregistered one; verdicts and countermodels are admitted only at a stated grade; and the conservativity table is generated from the theorems. 973 is the only open member left here and it enters today.
 
 **Batch 1** (done) -- Whether stability is rightly a Modal family: no file scope, the cheapest de-risking while 977 waits
 
-**Batch 2** -- The countermodel fill, free today: both its edges are discharged and no open PR touches it (3/4 done)
-
-```
-/orchestrate 973
-973 ready           theorem_library_countermodels   <- free today: its edges on 971 and 972 are both discharged and no open PR touches BimodalLib
-971 done            theorem_library_layout_and_registry
-972 done            theorem_library_tableau_pipeline
-975 done            theorem_library_fragment_conservativity
-```
+**Batch 2** (done) -- The countermodel fill, free today: both its edges are discharged and no open PR touches it
 
 <a id="milestone-m13"></a>
 ## M13: What the merges leave owed: the signature layer and the follow-ups
@@ -285,7 +277,7 @@ Put the mode in the operator-family layout, extend the bimodal scope rules, clos
 945 HOLD            proof_mode_cross_modal_scopes_mf_tf
 946 HOLD            proof_mode_always_sometimes_scopes
 969 HOLD            proof_mode_views_tier   <- behind 977 and so behind the #8 merge; 946 and gate one 947 follow it
-947 blocked:946,955,973  proof_mode_reprove_perpetuity   <- GO / RE-PLAN gate; now also behind 973 on BimodalLib.lean, at no wave cost
+947 blocked:946,955 proof_mode_reprove_perpetuity   <- GO / RE-PLAN gate; now also behind 973 on BimodalLib.lean, at no wave cost
 954 blocked:960     proof_mode_error_message_coverage
 955 blocked:960     proof_mode_close_leaves_with_automation
 961 done            proof_mode_axiom_audit_and_cost_baseline
@@ -358,7 +350,7 @@ Prove each rule once over an interface instead of once for TM and once for TM-pl
 
 ```
 /orchestrate 974
-974 blocked:944,947,952,973  theorem_library_stability_entries
+974 blocked:944,947,952  theorem_library_stability_entries
 ```
 
 <a id="milestone-m6"></a>
@@ -377,7 +369,7 @@ Carry the mode from derivations to safety and liveness arguments about systems d
 956 HOLD            proof_mode_leads_to_invariance_library
 957 blocked:956     proof_mode_transition_systems_tm_specifications
 966 blocked:952,955 proof_mode_decision_procedure_leaf_closers
-967 blocked:957,966,973  proof_mode_countermodels_for_unclosed_leaves
+967 blocked:957,966 proof_mode_countermodels_for_unclosed_leaves
 ```
 
 **Batch 2** -- The reference-manual chapter, written against the declaration names 952 leaves standing
