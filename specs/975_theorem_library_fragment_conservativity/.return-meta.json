@@ -1,18 +1,22 @@
 {
-  "status": "researched",
-  "dispatch_seq": 4,
-  "started_at": "2026-11-24T00:11:45Z",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/975_theorem_library_fragment_conservativity/reports/01_fragment-conservativity-edges.md",
-      "summary": "Per-edge verdicts for fragment conservativity: the TemporalBoolean-into-TM edge at Base is refuted (machine-checked in a scratch file), the Boolean and ModalBoolean edges are provable by a syntactic translation needing only propositional completeness inside a cell, and the temporal edges at Dense, ZTime and RTime are proposed as a separate record."
+      "type": "plan",
+      "path": "specs/975_theorem_library_fragment_conservativity/plans/01_fragment-conservativity-edges.md",
+      "summary": "Nine-phase sequential plan (17h): land the machine-checked refutation of the temporal edge at Base, prove the Boolean and box-cell edges by a parametric translation theorem over a Prop-valued cell calculus in FormalSystem with within-forms in BimodalLib, generate the edge status table and proof-fragment listing from kernel-checked rows, and revise docs and records."
     }
   ],
+  "next_steps": "Run /orchestrate 975 to execute the plan",
+  "memory_candidates": [],
   "metadata": {
     "session_id": "sess_1795473212_9c9d94_975",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 9,
+    "estimated_hours": 17,
+    "dependency_waves": [[1],[2],[3],[4],[5],[6],[7],[8],[9]]
+  },
+  "dispatch_seq": 5
 }

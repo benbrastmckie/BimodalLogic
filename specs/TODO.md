@@ -145,7 +145,7 @@ next_project_number: 991
     └─ 946 [NOT STARTED] — NO ModalTemporal MODULE OR CLASS... (see above)
 962 [NOT STARTED] — MILESTONE M9b (records/proof-mode.md), STREAM: metatheory....
   └─ 953 [NOT STARTED] — With the interface as one class per operator family and... (see above)
-975 [RESEARCHED] — MILESTONE M22 (records/proof-mode.md), LANE: metatheory....
+975 [PLANNED] — MILESTONE M22 (records/proof-mode.md), LANE: metatheory....
 986 [NOT STARTED] — Report the real cause when a view fails to apply. applyView...
   └─ 969 [NOT STARTED] — LOCATION (binding over any module path named below): the view... (see above)
 987 [NOT STARTED] — Two follow-ups owed after the temporal rules contribution...
@@ -216,11 +216,12 @@ next_project_number: 991
 ---
 
 ### 975. Theorem library fragment conservativity
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: proof-mode
 - **Dependencies**: Task 971
 - **Research**: [975_theorem_library_fragment_conservativity/reports/01_fragment-conservativity-edges.md]
+- **Plan**: [975_theorem_library_fragment_conservativity/plans/01_fragment-conservativity-edges.md]
 
 **Description**: MILESTONE M22 (records/proof-mode.md), LANE: metatheory. Fragment conservativity: prove that each fragment's logic is conserved by every larger one, so that filing a statement at its smallest fragment is a theorem and not a convention. METHOD, following cslib (`conservative_over_cpl` and `evaluate_iff_of_classicalBridge` in Cslib/Logics/Propositional/Metalogic/ConservativityLift.lean, `modal_conservative_extension_param`, `temporal_conservative_over_cpl`): soundness of the larger logic; a semantic bridge showing by induction on the formula that truth of a smaller-language formula in a model of the larger logic agrees with truth in a model of the smaller, the model chosen to make the added operators trivial where that suffices; completeness of the smaller logic. State the argument ONCE in parametric form and instantiate it per edge. EDGES (records/theorem-library.md, Conservativity): L into L⁺ is proved at all four frame classes (`plusDerivable_ofFormula_iff`) and is only indexed here; Boolean into ModalBoolean and Boolean into TemporalBoolean, with completeness of the smaller from FormalSystem/Metalogic/Decidability/Propositional/; ModalBoolean with `□` into TM, which needs completeness of S5 for the `□`-fragment, not stated in the tree; TemporalBoolean into TM at each frame class, which needs completeness of the temporal schemata alone at that class, not stated in the tree; ModalBoolean with `□` into ModalBoolean with both operators, from the others or directly by the collapse. A fragment logic here is the set of TM axioms and rules whose statements lie in the fragment; research must first state each fragment's proof system precisely, as a predicate on TM derivations or as a calculus of its own, and say which. RESEARCH MUST ALSO determine, per edge, whether the needed completeness theorem is within reach (the S5 and Burgess-Xu completeness proofs in cslib are the model) and propose splitting an edge into its own record where it is a project in itself; an edge that is refuted is entered as a countermodel, and an edge left open stays a registered conjecture with what is known. Do NOT state any unproved edge with `sorry`. The edge from L⁻ into L is a different question, answered in FormalSystem/Metalogic/Conservativity/README.md, and is out of scope. DONE WHEN: every edge is proved, refuted or recorded as a conjecture with a named obstruction; the status table is generated from the theorems; each proved edge is in docs/theorem-index.md with its pinned axiom set; and no theorem entry has a proof fragment larger than its statement fragment without a recorded reason. Hard dependencies: none for the theorems; `theorem_library_layout_and_registry` for the generated table and the check on entries, so research, planning and the theorems may proceed before it. The design is records/theorem-library.md; milestones, lanes and gates are in records/proof-mode.md. BimodalLib imports FormalSystem and FormalSystem never imports BimodalLib. Nothing in BimodalLib contains `sorry`, a new `axiom` or `native_decide`. When this record implements part of the design, revise docs/ to describe what now exists and cut that part from the record under records/.
 

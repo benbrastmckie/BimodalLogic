@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "summary": "Wrote a nine-phase sequential plan (17 hours) for task 975 from the research report. It lands the refutation of the temporal edge at Base, proves the Boolean and box-cell edges by one parametric translation theorem, generates the edge table and proof-fragment listing, and leaves the temporal edges at the other three classes as conjectures proposed for a record of their own. The plan departs from the soundness-bridge-completeness method named in the task description, as research recommended; the reasoning is in its Decisions section.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/975_theorem_library_fragment_conservativity/plans/01_fragment-conservativity-edges.md",
+      "summary": "Nine-phase sequential plan (17h): land the machine-checked refutation of the temporal edge at Base, prove the Boolean and box-cell edges by a parametric translation theorem over a Prop-valued cell calculus in FormalSystem with within-forms in BimodalLib, generate the edge status table and proof-fragment listing from kernel-checked rows, and revise docs and records."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 9,
+  "dispatch_seq": 5
+}
