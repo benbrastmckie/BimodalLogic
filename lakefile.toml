@@ -8,6 +8,13 @@
 # explicit `lake build BimodalTools` / `lake build BimodalToolsTest` or by a `lake exe` target.
 # Check B3 asserts the separation holds in the import direction (`FormalSystem` never imports
 # `BimodalTools`); the converse direction is sanctioned and ungated.
+# Two edges among the non-published libraries are in use and both are sanctioned:
+# `BimodalTools -> FormalSystem`, and `BimodalTools -> BimodalLib`. The second is the
+# theorem-library pipeline's: the tooling library borrows the results library's vocabulary
+# (`profileF` for the fragment filter, `Subsumption` for the subsumption test, and
+# `Diagnostics.Record` for the record schema). The converse — `BimodalLib -> BimodalTools` —
+# is NOT in use and should not be added: it would pull the enumerator and the dataset
+# machinery into `lake build BimodalLib`, which CI runs with `--wfail` as its own step.
 # `BimodalLib` (the library of TM results: fragments, the registry of proved theorems, pairing,
 # conjectures and the index) and `BimodalLibTest` (its tests) are absent from `defaultTargets`
 # on the same ground, and because the library is where sweeps and enumerated entries land, of
@@ -191,6 +198,13 @@ supportInterpreter = true
 [[lean_exe]]
 name = "translate_sentence"
 root = "BimodalTools.TranslateSentenceMain"
+supportInterpreter = true
+
+# The theorem library's tableau pipeline: enumerate, decide, extract, certify, admit.
+# Run through scripts/theorem-library-pipeline.sh, which is the one named entry point.
+[[lean_exe]]
+name = "theorem_library_pipeline"
+root = "BimodalTools.TheoremLibraryPipelineMain"
 supportInterpreter = true
 
 # Reports FormalSystem modules that do not (transitively) import FormalSystem.Init.

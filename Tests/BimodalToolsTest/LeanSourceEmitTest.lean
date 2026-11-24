@@ -183,6 +183,34 @@ def modalTLines : List String :=
 #guard modalTLines.all (·.length ≤ 100)
 #guard ((entrySource "Gen" "mpSample" [pAtom] mpTree).splitOn "\n").all (·.length ≤ 100)
 
+/-! ## Comment-delimiter safety
+
+Lean's block comments nest, so one opening delimiter inside a generated doc comment opens an inner
+comment that the doc comment's own closing delimiter then closes, leaving the outer one
+unterminated and the whole generated file failing to parse with `unterminated comment` reported at
+end of file. Any interpolated text can carry the sequence — this was found when a scratch
+directory whose name began with a slash and a hyphen reached a generated module's doc comment, and
+the diagnostic pointed nowhere near the cause.
+
+The two guards below are written with the delimiters built from `String.singleton` rather than
+spelled out, because a literal would break this file for exactly the reason under test.
+-/
+
+/-- An opening block-comment delimiter, built rather than spelled. -/
+def openDelim : String := String.singleton '/' ++ String.singleton '-'
+
+/-- A closing block-comment delimiter, built rather than spelled. -/
+def closeDelim : String := String.singleton '-' ++ String.singleton '/'
+
+#guard ((commentSafe (openDelim ++ "home/x")).splitOn openDelim).length == 1
+#guard ((commentSafe ("x" ++ closeDelim)).splitOn closeDelim).length == 1
+-- The unsanitized text does still carry the delimiter, so the guards above are not vacuous.
+#guard ((openDelim ++ "home/x").splitOn openDelim).length == 2
+-- Length is preserved by a space rather than a deletion, so the text stays readable.
+#guard (commentSafe (openDelim ++ "home/x")).length == (openDelim ++ "home/x").length + 1
+-- Text carrying neither delimiter is returned unchanged.
+#guard commentSafe "(□A → A)" == "(□A → A)"
+
 /-! ## The round trip through `lake env lean` -/
 
 /-- The preamble a generated module needs: the registry, the substitution layer, and the two

@@ -301,6 +301,25 @@ def derivationSource {fc : FrameClass} :
 
 /-! ## The generated entry -/
 
+/--
+Neutralize Lean's block-comment delimiters in text destined for a generated comment.
+
+This is not hygiene theatre. Lean's block comments **nest**, so one opening delimiter anywhere
+inside a doc comment opens an inner comment that the doc comment's own closing delimiter then
+closes, leaving the outer one unterminated and the whole file failing to parse with
+`unterminated comment` reported at end of file -- a diagnostic that points nowhere near the
+cause. Any interpolated text can carry the sequence: a filesystem path beginning with a slash and
+a hyphen, for instance, which is exactly how this was found, when a scratch directory named that
+way reached a generated module's doc comment.
+
+A space is inserted between the two characters rather than either being deleted, so the text
+stays readable and its length is preserved. This docstring itself spells neither delimiter out,
+for the same reason it exists.
+-/
+def commentSafe (s : String) : String :=
+  (s.replace "/-" "/ -").replace "-/" "- /"
+
+
 /-- Rejoin a `(by decide)` or `(by simp)` block that splitting on spaces broke in two, so that
 `wrapSource` treats it as one unbreakable token. A tactic moved onto a continuation line is read
 at a different indentation; merging rather than exempting the pair from the width check is also
@@ -374,9 +393,9 @@ def entrySource (ns declName : String) (atoms : List Atom) {φ : Formula}
   let arity := atoms.length
   let concreteName := declName ++ "Concrete"
   let substName := declName ++ "Subst"
-  let pretty := (schemaFormula atoms φ).prettyPrint
+  let pretty := commentSafe (schemaFormula atoms φ).prettyPrint
   String.intercalate "\n"
-    [ wrapSource 0 ("/-- The derivation the tableau extracted for `" ++ φ.prettyPrint
+    [ wrapSource 0 ("/-- The derivation the tableau extracted for `" ++ commentSafe φ.prettyPrint
         ++ "`, over its own concrete atoms. Generated; do not edit by hand. -/")
     , "private def " ++ concreteName ++ " : DerivationTree FrameClass.Base []"
     , wrapSource 4 (formulaSource φ ++ " :=")

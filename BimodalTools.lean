@@ -26,6 +26,7 @@ import BimodalTools.ProofFirstGenerator
 import BimodalTools.ProofStepExtractor
 import BimodalTools.SentenceExport
 import BimodalTools.TableauBridge
+import BimodalTools.TheoremPipeline
 import BimodalTools.TraceExport
 -- The `*Main` modules are deliberately absent: each declares a root-namespace `main`, so two
 -- of them cannot share one environment. They are reached through their `lean_exe` targets.
