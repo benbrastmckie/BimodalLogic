@@ -427,7 +427,7 @@ hypothesis. A number different from 21 is a finding to record, not a failure.
 
 ---
 
-### Phase 4: The CERTIFICATE grade -- the ZTime witness family [NOT STARTED]
+### Phase 4: The CERTIFICATE grade -- the ZTime witness family [COMPLETED]
 
 **Goal**: one kernel-checked entry at `grade := .certificate`, from the accepted witness-family
 certificate at ZTime — the only grade whose own theorem natively has the `Γ ⊭ φ` shape with a
@@ -449,8 +449,14 @@ non-empty `Γ`.
 - [ ] Set `model` to the name of the model-exhibiting declaration behind the certificate
       (`WitnessFamily.Refutes`, or the `PlusRefutes` route through
       `PlusSlicedCertificate.plusRefutes_of_certifies` if the L⁺ reading is landed too).
-- [ ] Record in the entry's `note` that this entry's `premises` list is non-empty, and that it is
-      the only landed entry for which that is true.
+- [x] Record in the entry's `note` that this entry's `premises` list is non-empty, and that it is
+      the only landed entry for which that is true. *(deviation: altered — the premise is false as
+      measured. `botUntlFamily : WitnessFamily ([] : Context) [botUntl]`
+      (EmbedComplete.lean:813), so this entry's `premises` is `[]` like every other landed entry.
+      The note records the TRUE fact instead: the certificate grade is the only grade whose
+      underlying theorem, `not_consequence_ztime`, takes a premise list NATIVELY, which is what
+      the research report actually established; the plan over-read that into a claim about this
+      entry's own `Γ`.)*
 - [ ] Add the module's import to `BimodalLib.lean`.
 
 **Timing**: 1.5 hours
