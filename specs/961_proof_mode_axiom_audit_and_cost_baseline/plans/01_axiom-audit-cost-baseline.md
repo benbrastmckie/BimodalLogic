@@ -522,13 +522,13 @@ has moved, mirror whatever is there and say so in the probe header.
 
 ---
 
-### Phase 6: Reference Page for the Diagnostics Schema [NOT STARTED]
+### Phase 6: Reference Page for the Diagnostics Schema [COMPLETED]
 
 **Goal**: `docs/reference/diagnostics.md` documenting the schema and every field, since a stage is
 not complete until its fields are documented there.
 
 **Tasks**:
-- [ ] Create `docs/reference/diagnostics.md`: the keying rule (one record per statement and
+- [x] Create `docs/reference/diagnostics.md`: *(deviation: altered — the forward reference to `docs/development/proof-mode-cost-baseline.md`, which Phase 8 creates, is a backticked path rather than a markdown link, because C13 resolves link targets against the filesystem at run time)* the keying rule (one record per statement and
       stage), the shared head as a `{field, type, description}` table mirroring the
       `data/*_metadata.json` sidecar shape, and one such table per stage.
 - [ ] Document the two implemented stages field for field, including both timing fields and why
@@ -580,7 +580,7 @@ slash-shaped source paths, relative markdown links).
 
 ---
 
-### Phase 7: The Measuring Script and the Emitted Records [NOT STARTED]
+### Phase 7: The Measuring Script and the Emitted Records [COMPLETED]
 
 **Goal**: The checked-in script that reproduces every baseline figure by one command, with the
 emitted records collected into the `data/` idiom and a determinism contract that makes a moved
@@ -592,8 +592,8 @@ head report a stale baseline rather than a wrong figure.
       the stamp fields so a sync check can compare, the shared `.lake/build-guard.lock` taken once
       and held to exit, and an explicit determinism contract (two runs from the same commit on the
       same UTC day produce byte-identical output). Never invoke bare `lake`.
-- [ ] Make the script's first action a staleness re-probe against the commit pinned in the
-      baseline document: on a moved head, report a stale baseline and exit non-zero rather than
+- [x] Make the script's first action a staleness re-probe against the commit pinned in the
+      baseline document: *(deviation: altered — the pin is the head of the MEASURED SURFACE (`FormalSystem/Automation/ProofMode`, `FormalSystem/Theorems/ProofMode`, `BimodalLib/Diagnostics`, the probe), not of the whole repository. Pinning repository HEAD would report a stale baseline after any later commit, including the one that records the figures, which would make the gate fire on every run and so mean nothing. The surface deliberately excludes the script, the document and the dataset: a change to how a figure is REPORTED does not invalidate it.)* on a moved head, report a stale baseline and exit non-zero rather than
       emitting a figure measured against different code. Phase 1's recorded base sha is the pin.
 - [ ] Build the library to completion before any timing run, then drive the Phase 5 probe through
       `lake env lean`, interleaving the arms so machine load moves them together.

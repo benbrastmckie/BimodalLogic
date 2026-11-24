@@ -1004,4 +1004,52 @@ def viewFoldUnfold (provider : Γ ⊢[fc] A.neg.box.neg) : Γ ⊢[fc] A.diamond 
 
 end Views
 
+/-! ### The COMPARE stage
+
+The dataset is supposed to carry records for both implemented stages, and a `reprove` record on
+its own says nothing about whether a script is shorter or longer than the proof a human would
+write. These rows pair one proof-mode script with a hand proof of the same judgment, built from
+`DerivationTree` constructors directly.
+
+`reference_kind` is `hand` here, and only `hand`. There is no tableau-extracted proof in the tree
+to compare against yet, so emitting an `extracted` row would mean fabricating a reference. The
+`extracted` branch -- under which `length_ratio` is null, because against an extracted proof a
+script is measured for coverage and built-derivation size rather than brevity -- is exercised in
+`Tests/BimodalLibTest/DiagnosticsTest.lean`, where it is an assertion about the emitter rather
+than a claim about the library.
+
+Both declarations are closed, so both derivation sizes are present rather than null. That is the
+other reason this pair is worth having in the dataset: every acceptance mirror above is schematic,
+so without it no record in the dataset would carry a derivation measure at all.
+-/
+
+namespace Compare
+
+open FormalSystem.Syntax FormalSystem.ProofSystem
+
+/-- A closed atom, so the compared judgment has no schema variable. -/
+def p : Formula := .atom ⟨"p", none⟩
+
+/-- A second closed atom. -/
+def q : Formula := .atom ⟨"q", none⟩
+
+-- The proof-mode script: three tactic invocations.
+#reprove_record scriptMP stage "reprove" outcome "closed_by_rules"
+  failure "none" tactics "lstart,lapply,lexact" escape 0 in
+def scriptMP : [p.imp q, p] ⊢ q := by
+  lstart hAB hA
+  lapply hAB
+  lexact hA
+
+/-- The hand proof of the same judgment: three constructor applications. -/
+def handMP : [p.imp q, p] ⊢ q :=
+  .modus_ponens [p.imp q, p] p q
+    (.assumption [p.imp q, p] (p.imp q) (by simp))
+    (.assumption [p.imp q, p] p (by simp))
+
+-- Three tactic invocations against three constructor applications.
+#compare_record scriptMP handMP kind "hand" lengths 3 3
+
+end Compare
+
 end ProofModeCostBaseline

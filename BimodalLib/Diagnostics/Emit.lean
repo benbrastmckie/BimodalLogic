@@ -196,8 +196,13 @@ def axiomsOf (declName : Name) : CommandElabM (List String) := do
 The frame class named in a declaration's type, when the type names a closed `FrameClass`
 constructor. A schematic statement abstracting over the frame class has none, and records
 `"schematic"` rather than guessing one.
+
+Named `frameClassOfType` and not `frameClassOf`: `BimodalLib.frameClassOf` already exists in
+`BimodalLib/Registry.lean`, and `check-module-invariants.sh` C17's dead-declaration census keys on
+a declaration's last dot-segment, so two declarations sharing a base name mask each other and
+neither can ever be reported dead.
 -/
-def frameClassOf (info : ConstantInfo) : CommandElabM String := do
+def frameClassOfType (info : ConstantInfo) : CommandElabM String := do
   let found ← liftTermElabM <| Meta.MetaM.run' do
     let mut result : Option String := none
     let ty := info.type
@@ -451,7 +456,7 @@ def elabReproveRecord : CommandElab := fun stx => do
     { statement := ← statementIdOf declName
       stage := stg
       fragment := ← fragmentOf declName
-      frameClass := ← frameClassOf info
+      frameClass := ← frameClassOfType info
       commit := commit
       command := command }
   let record : ReproveRecord :=
@@ -505,7 +510,7 @@ def elabCompareRecord : CommandElab := fun stx => do
     { statement := ← statementIdOf scriptName
       stage := .compare
       fragment := statementFragment
-      frameClass := ← frameClassOf scriptInfo
+      frameClass := ← frameClassOfType scriptInfo
       commit := commit
       command := command }
   let ratio :=

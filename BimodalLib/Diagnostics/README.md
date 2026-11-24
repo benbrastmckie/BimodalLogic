@@ -23,8 +23,8 @@ fields are documented there.
 
 ## Why a measure of a core type is declared here
 
-`derivationSize` measures `FormalSystem.ProofSystem.DerivationTree`, whose `height` lives in
-`FormalSystem/ProofSystem/Derivation.lean`. The size measure is filed here instead because it is
+`derivationSize` measures the `DerivationTree` of `FormalSystem/ProofSystem/Derivation.lean`,
+whose `height` lives in that same file. The size measure is filed here instead because it is
 observational: nothing in the proof system needs it, its only consumer is this schema, and keeping
 it out of the core leaves `FormalSystem/`'s generated inventories unmoved by a measure that proves
 nothing. `Size.lean`'s own module docstring records the trade-off.

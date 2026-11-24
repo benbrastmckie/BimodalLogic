@@ -19,6 +19,7 @@ Most reference materials are theory-specific. See:
 | Document | Description |
 |----------|-------------|
 | [API_REFERENCE.md](API_REFERENCE.md) | Project-wide API documentation (key types, functions, and modules) |
+| [diagnostics.md](diagnostics.md) | The one record schema for every stage of the library pipeline: the shared head, the two implemented stages (`reprove`, `compare`) field for field, the five reserved stages' agreed payloads, the three nullability rules, the two emitter commands and every error message each pins |
 | [state-topology-appendix-support.md](state-topology-appendix-support.md) | Maps each element of the manuscript's task-semantics topology appendix to the Lean declaration that certifies it, with axiom profiles, and names every statement the library does **not** certify. Keyed by paper label and quotable phrase, never by line number |
 
 ## Records of Record

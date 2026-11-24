@@ -1,0 +1,7 @@
+# Phase 7 handoff
+
+- **Immediate next action**: Phase 8 — `docs/development/proof-mode-cost-baseline.md` from `data/proof-mode-diagnostics.jsonl`, plus the two docs listings, then the complete gate set.
+- **State**: Phases 1–7 COMPLETED. `check-module-invariants.sh --no-build` is back to exactly the Phase 1 baseline (C12 at 2, C20 at 9, both pre-existing and outside this task's files). `lake build BimodalLib BimodalLibTest --wfail` exit 0. Both field-set directions between `Record.lean` and `docs/reference/diagnostics.md` agree for all seven stages (6 head + 11 reprove + 8 compare + the five reserved lists).
+- **The measuring script is green on every criterion**: exit 0 and writes both files; two `--json` runs byte-identical (75 lines, `cmp`); every line valid JSON carrying all six shared-head fields; sidecar `fields` has 25 entries parsed from the reference page with bidirectional agreement enforced as a hard check (exit 2 on divergence); the staleness re-probe fires with exit 3 on a wrong pin.
+- **Pin to record in the Phase 8 document**: `- **Measured surface commit**: \`eaef00527a9af20f2823852682721069964a5875\``
+- **Two gate findings fixed in Phase 6, both in this task's own files**: C5 read `FormalSystem.ProofSystem.DerivationTree` in `BimodalLib/Diagnostics/README.md` as a module path (reworded to name the file); C23 flagged `frameClassOf` in `Emit.lean` as shadowing `BimodalLib.frameClassOf` (renamed `frameClassOfType`, with the reason recorded in its docstring).

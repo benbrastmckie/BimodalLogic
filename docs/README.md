@@ -383,6 +383,7 @@ User-facing documentation for working with Bimodal:
 Reference materials for Bimodal logic:
 
 - [README.md](reference/README.md) - Directory overview and quick lookup guide
+- [diagnostics.md](reference/diagnostics.md) - The library pipeline's one record schema, field for field, with both emitter commands
 - [axiom-reference.md](reference/axiom-reference.md) - Complete axiom schemas with examples
 - [tactic-reference.md](reference/tactic-reference.md) - Bimodal-specific tactic usage
 - [operators.md](reference/operators.md) - TM operator reference and Unicode notation
