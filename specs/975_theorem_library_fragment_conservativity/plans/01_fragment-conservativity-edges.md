@@ -370,28 +370,28 @@ as variables, is derivable in the cell calculus of `L`.
 
 ---
 
-### Phase 4: The parametric translation theorem and the collapse translation [NOT STARTED]
+### Phase 4: The parametric translation theorem and the collapse translation [COMPLETED]
 
 **Goal**: The argument stated once: a translation satisfying three hypotheses gives
 conservativity of a sublanguage; and the collapse translation with its structural lemmas.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Conservativity/Fragments/Translation.lean`. State the
+- [x] Create `FormalSystem/Metalogic/Conservativity/Fragments/Translation.lean`. State the
   theorem for `tr : Formula → Formula` commuting with `imp` and `bot`, a sublanguage `L` and a
   class `fc`, under: (1) for every axiom instance admissible at `fc`, its translation is cell
   derivable; (2) cell derivability of `tr φ` gives that of `tr (□φ)`, of `tr (Gφ)` and of
   `tr φ.reflectTime`; (3) `tr φ = φ` when `L φ`. Conclusion: a formula of `L` with a closed TM
   derivation at `fc` is cell derivable. Proof by induction on the derivation, generalized over
-  the context as far as the closed case needs.
-- [ ] Create `FormalSystem/Metalogic/Conservativity/Fragments/Collapse.lean`. Define the collapse
+  the context as far as the closed case needs. *(deviation: altered — the theorem asks commutation with `imp` only; commutation with `bot` is not used by the induction and is not a hypothesis)*
+- [x] Create `FormalSystem/Metalogic/Conservativity/Fragments/Collapse.lean`. Define the collapse
   translation with the two flags of the scratch file (dense or discrete reading; `□` kept or
   erased), port `tr_reflect` and the two fixed-point lemmas from
   `scratch/collapse_translation_check.lean`, restated over the Phase 2 sublanguage predicates in
   place of `profileF`, and prove hypothesis (2) for both targets (it reduces to necessitation in
-  the modal cell and to the identity where the operator is erased).
-- [ ] Do not port `STruth` or `tr_axiom_valid`; they were evidence that the route is sound and
+  the modal cell and to the identity where the operator is erased). *(deviation: altered — the Boolean and modal sublanguages are the recursive predicates `BooleanFormula` and `ModalFormula` defined in this file; the reading per frame class is the function `denseReading`, so the edge theorems need no case split on the class)*
+- [x] Do not port `STruth` or `tr_axiom_valid`; they were evidence that the route is sound and
   are not used by the proof.
-- [ ] Add both imports to `Fragments.lean`; regenerate as in Phase 2.
+- [x] Add both imports to `Fragments.lean`; regenerate as in Phase 2.
 
 **Timing**: 1.5 hours
 

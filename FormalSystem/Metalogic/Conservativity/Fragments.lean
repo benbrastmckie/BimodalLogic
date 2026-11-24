@@ -6,6 +6,8 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Metalogic.Conservativity.Fragments.Calculus
 import FormalSystem.Metalogic.Conservativity.Fragments.PropComplete
+import FormalSystem.Metalogic.Conservativity.Fragments.Translation
+import FormalSystem.Metalogic.Conservativity.Fragments.Collapse
 
 /-!
 # Conservativity of TM over the fragments of its language
@@ -23,4 +25,8 @@ Each entry reads *Module* — *Contents*:
   theorem inside a sublanguage
 * `Conservativity/Fragments/PropComplete.lean` — `evalProp`, `Tautology`, and
   `tautology_derivable`: propositional completeness inside a sublanguage
+* `Conservativity/Fragments/Translation.lean` — `conservative_of_translation`: the argument for
+  an edge, stated once for an arbitrary translation, sublanguage and frame class
+* `Conservativity/Fragments/Collapse.lean` — `BooleanFormula`, `ModalFormula`, the translation
+  `collapse` and the lemmas that make it an instance of the parametric theorem
 -/
