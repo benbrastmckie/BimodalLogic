@@ -1,15 +1,43 @@
 {
-  "status": "planned",
-  "phases_completed": 0,
+  "status": "implemented",
+  "dispatch_seq": 3,
+  "phases_completed": 8,
   "phases_total": 8,
-  "summary": "Wrote an 8-phase, 13-hour plan for the M13 diagnostics standard, axiom audit and cost baseline. Research had already measured every baseline figure at commit 521385a9, so no phase is discovery work: each checks in the harness that reproduces an already-compiled number. Planning resolved the one decision research deferred (the new computable derivation node-count measure lands in BimodalLib/Diagnostics/, not FormalSystem/ProofSystem/Derivation.lean, because touching the core would move four generated surfaces, one of them commit-blocking via .githooks/pre-commit) and scheduled four same-phase gate collisions the research report had not enumerated (status.typ regeneration on every Tests/ addition, readme-lint Check 1 and Check 4, and C30's ban on an unscoped maxHeartbeats under scripts/, which sites the timing probe under specs/evidence/ instead). The plan validates clean with 0 warnings.",
+  "summary": "All eight phases of task 961 completed and committed across eight phase commits. Delivered the axiom-audit test module (14 #guard_msgs-pinned #print axioms rows pinning the [propext]/classical boundary in TM and TM-plus), the one diagnostics record schema covering all seven library-pipeline stages with reprove and compare implemented and the other five reserved, the two emitter commands with all eight throwError paths pinned one-for-one, a computable derivation node-count measure, docs/reference/diagnostics.md documenting every field, a 75-record cost probe, the one-command measuring script with a staleness re-probe and byte-identical --json determinism, and docs/development/proof-mode-cost-baseline.md. Both measured growth laws reproduced exactly on a fresh instrument: lintro nesting is 5n^2+17n+41 in term size (residual zero, n=2..16) while heartbeats grow linearly, and a nested logical rewrite costs exactly +346 term nodes per scope level. Full lake build --wfail, lake test and lake build BimodalLib BimodalLibTest --wfail all exit 0; sorry count 0; axiom count unchanged at 14.",
   "blockers": [],
   "artifacts": [
     {
+      "type": "summary",
+      "path": "specs/961_proof_mode_axiom_audit_and_cost_baseline/summaries/01_axiom-audit-cost-baseline-summary.md",
+      "summary": "Implementation summary for all eight phases, with the full verify-all.sh delta table and per-failure attribution."
+    },
+    {
       "type": "plan",
       "path": "specs/961_proof_mode_axiom_audit_and_cost_baseline/plans/01_axiom-audit-cost-baseline.md",
-      "summary": "8-phase plan (13h): gate baseline, axiom audit test module, diagnostics record schema plus derivation-size measure, the two emitter commands with #guard_msgs negative tests, the cost probe, docs/reference/diagnostics.md, the measuring script and emitted records, and the baseline document with the final gate."
+      "summary": "All eight phase headings marked [COMPLETED], with Phase 8 carrying a Verification Notes subsection recording the scoped discharge and the batch deferral."
+    },
+    {
+      "type": "doc",
+      "path": "docs/development/proof-mode-cost-baseline.md",
+      "summary": "The recorded cost baseline: provenance, reproduction command, both growth laws, per-tier figures, the 48-script acceptance corpus, and what the document does not claim."
+    },
+    {
+      "type": "doc",
+      "path": "docs/reference/diagnostics.md",
+      "summary": "The one record schema for every pipeline stage, field for field, with both emitter commands and all eight pinned error messages."
+    },
+    {
+      "type": "evidence",
+      "path": "specs/evidence/proof-mode-cost-baseline/README.md",
+      "summary": "Measurement conditions, the not-wired-into-check-evidence-probes.sh decision, and the 48-against-52 breakdown."
     }
   ],
-  "dispatch_seq": 2
+  "notes": [
+    "Full gate set DEFERRED to the batch stage per this dispatch's directive; this task touches no path under .claude/** and no source-store path. Scoped discharge was the plan's own nine named checks run directly, plus verify-all.sh as a delta against the Phase 1 captured baseline.",
+    "verify-all.sh: 6 PASS, 3 FAIL. All three failures (check-module-invariants C12/C20, readme-lint 4 new stale dates, check-paper-definitions lem:uniq/thm:s5) are outside this task's file scope, confirmed mechanically against git diff --name-only 889bf7c0..HEAD.",
+    "Two gate findings WERE this task's own and were fixed rather than waived: C5 (a module-shaped declaration name in BimodalLib/Diagnostics/README.md) and C23 (frameClassOf shadowing BimodalLib.frameClassOf, renamed frameClassOfType).",
+    "data/proof-mode-diagnostics.jsonl, its sidecar and the data/README.md row are written on disk but NOT committed: .gitignore ignores /data outright and git ls-files data/ returns zero. The regenerating script and the schema are tracked, so one command reproduces the data.",
+    "Plan scope hypotheses resolved: four throwError paths became eight; 52 acceptance mirrors became 48 (the 52 is grep -c '^example', which counts four #guard_msgs-guarded negative fixtures).",
+    "An argument-free verify-touched.sh escalated to the full 102-suite agent-system battery via its OWED fallback and self-deadlocked on /run/user/1000/.gate-lock held by its own first pass; torn down via TaskStop. Its 8 NEW failures are all under .claude/scripts/tests/, where this task changed nothing."
+  ]
 }

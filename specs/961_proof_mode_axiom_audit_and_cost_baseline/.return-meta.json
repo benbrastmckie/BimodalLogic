@@ -1,30 +1,96 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 14,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/961_proof_mode_axiom_audit_and_cost_baseline/plans/01_axiom-audit-cost-baseline.md",
-      "summary": "8-phase, 13-hour plan covering the diagnostics record schema, the RE-PROVE/COMPARE emitter commands, docs/reference/diagnostics.md, the axiom audit test module, and the cost baseline with its checked-in measuring script."
+      "type": "summary",
+      "path": "specs/961_proof_mode_axiom_audit_and_cost_baseline/summaries/01_axiom-audit-cost-baseline-summary.md",
+      "summary": "All 8 phases: axiom-audit module (14 pinned rows), the 7-stage diagnostics record schema with its two emitters and 8 pinned error paths, the reference page, the cost probe, the measuring script, and the recorded baseline."
     }
   ],
-  "phase_count": 8,
-  "estimated_hours": 13,
-  "dependency_waves": [[1], [2, 3], [4], [5, 6], [7], [8]],
-  "next_steps": "Run /orchestrate 961 to execute the plan",
-  "memory_candidates": [
+  "completion_data": {
+    "completion_summary": "Added the proof-mode axiom audit (14 #guard_msgs-pinned #print axioms rows, one representative script per tactic family in TM and TM-plus, pinning the [propext]/classical boundary rather than only its classical side), the one diagnostics record schema covering all seven library-pipeline stages with the reprove and compare payloads implemented and the other five reserved, the two emitter commands with all eight throwError paths pinned one-for-one, a computable derivation node-count measure, the reference page documenting every field of every stage, a 75-record cost probe, the one-command measuring script with a staleness re-probe and a byte-identical --json determinism contract, and the recorded baseline. Reproduced both measured growth laws exactly on a fresh instrument: lintro nesting is 5n^2+17n+41 in term size with residual zero for n=2..16, and a nested logical rewrite costs exactly +346 term nodes per scope level over d=0..4.",
+    "roadmap_items": []
+  },
+  "modified_files": [
+    "BimodalLib.lean",
+    "BimodalLib/Diagnostics/Emit.lean",
+    "BimodalLib/Diagnostics/README.md",
+    "BimodalLib/Diagnostics/Record.lean",
+    "BimodalLib/Diagnostics/Size.lean",
+    "BimodalLib/README.md",
+    "Tests/BimodalLibTest.lean",
+    "Tests/BimodalLibTest/DiagnosticsTest.lean",
+    "Tests/BimodalLibTest/README.md",
+    "Tests/BimodalTest.lean",
+    "Tests/BimodalTest/Automation/ProofModeAxioms.lean",
+    "Tests/BimodalTest/Automation/README.md",
+    "docs/README.md",
+    "docs/development/README.md",
+    "docs/development/proof-mode-cost-baseline.md",
+    "docs/reference/README.md",
+    "docs/reference/diagnostics.md",
+    "scripts/proof-mode-cost-baseline.sh",
+    "specs/961_proof_mode_axiom_audit_and_cost_baseline/gate-baseline.md",
+    "specs/961_proof_mode_axiom_audit_and_cost_baseline/handoffs/phase-2-handoff-20261123.md",
+    "specs/961_proof_mode_axiom_audit_and_cost_baseline/handoffs/phase-4-handoff-20261123.md",
+    "specs/961_proof_mode_axiom_audit_and_cost_baseline/handoffs/phase-7-handoff-20261123.md",
+    "specs/961_proof_mode_axiom_audit_and_cost_baseline/plans/01_axiom-audit-cost-baseline.md",
+    "specs/961_proof_mode_axiom_audit_and_cost_baseline/summaries/01_axiom-audit-cost-baseline-summary.md",
+    "specs/evidence/proof-mode-cost-baseline/README.md",
+    "specs/evidence/proof-mode-cost-baseline/cost-probe.lean",
+    "typst/generated/status.typ"
+  ],
+  "sapience_notes": [
     {
-      "content": "In BimodalLogic, where a new Lean declaration is FILED is a gate-cost decision, not only a design one, because the repository derives four independent generated surfaces from FormalSystem/ line counts: typst/generated/status.typ's formalsystem-line-count (commit-blocking via .githooks/pre-commit, which refuses any commit staging a .lean path while status.typ is stale), the per-file inventory row in that directory's own README.md generated block (checked by check-module-invariants.sh INV), the Live-lines-of-code totals block in the repository-root README.md, and the directory README's Last verified date under readme-lint.sh Check 4 (gated, ENFORCE_README_DATES=1). Adding one small computable measure beside DerivationTree.height in FormalSystem/ProofSystem/Derivation.lean therefore costs four reconciliation steps plus a full lake build --wfail of FormalSystem; filing the same measure in BimodalLib/Diagnostics/ costs none of them, because status.typ counts FormalSystem/, Tests/ and BimodalTools/ and not BimodalLib/. The reusable planning move: before siting a new declaration, ask which generated surfaces derive a quantity from the candidate directory, and check each one's commit-blocking/advisory posture, since a commit-blocking surface cannot be deferred to a reconciliation phase.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/961_proof_mode_axiom_audit_and_cost_baseline/plans/01_axiom-audit-cost-baseline.md",
-      "confidence": 0.8,
-      "suggested_keywords": ["generated-surface-coupling", "declaration-placement", "pre-commit-blocking", "typst-sync-check", "readme-lint", "lean-plan-authoring"]
+      "subject": "Lean 4 syntax atoms reserve their spelling module-wide unless declared non-reserved",
+      "value": "A plain string atom in a `syntax` declaration (e.g. `\" stage \"`) reserves that spelling as a token for the entire module, which then makes `stage` unusable as a local identifier or structure field name in the same file -- including in the structure instances the elaborator itself builds. Declaring the atom with `&\" stage \"` (nonReservedSymbol) fixes it and still yields a `Syntax.atom` that an atom filter removes, so positional argument reading is unaffected. Measured on Lean v4.33.0-rc1 in BimodalLogic."
+    },
+    {
+      "subject": "A Lean command elaborator that wraps a declaration must set Elab.async false",
+      "value": "Declaration bodies elaborate in a background task by default, so a wrapper command that calls elabCommand and then looks the declaration up in getEnv finds nothing -- the failure presents as `unknown declaration`, naming the right constant for the wrong reason. `withScope (fun sc => { sc with opts := sc.opts.setBool `Elab.async false })` around the inner elabCommand is required, not a preference, and it also makes the heartbeat delta include the body's own elaboration, which is the bulk of what such a measurement is for."
+    },
+    {
+      "subject": "Reduction cannot evaluate a structurally recursive Lean measure on a closed term; compiled evaluation can",
+      "value": "Measured on a closed DerivationTree: `whnf` at .all transparency and `Meta.reduce` with both skipTypes and skipProofs false each reduce the ARGUMENT to constructor form and then leave the application `derivationSize d` unreduced, so Meta.evalNat sees no literal. The working route is Meta.evalExpr behind the @[implemented_by] pattern -- and the application must be built with Meta.mkAppM, not mkApp, because the measure's frame class, context and formula are implicit and a bare mkApp puts the derivation into the first implicit slot and fails on a type mismatch that names nothing relevant."
+    },
+    {
+      "subject": "grep -c '^example' over Lean test fixtures overcounts acceptance scripts",
+      "value": "In BimodalLogic the five ProofMode*Test modules report 52 under `grep -c '^example'`, but four of those are #guard_msgs-guarded NEGATIVE fixtures whose `example` also begins at column 0 -- 48 positive acceptance scripts, all four negatives in ProofModeBooleanTest.lean. A research report and a plan both carried the 52. A cost probe must mirror only the positive ones: a script asserted to fail has no cost worth recording, and mirroring one puts a deliberately-failing declaration into a probe required to elaborate clean."
+    },
+    {
+      "subject": "A staleness pin should name the measured surface, not repository HEAD",
+      "value": "A reproduction script whose staleness gate compares repository HEAD against a pinned commit fires on every later commit -- including the one that records the figures -- so the gate always trips and therefore means nothing. Pinning `git log -1 --format=%H -- <the paths whose change could move a figure>` instead, deliberately excluding the script, the document and the dataset, makes the gate fire exactly when the measurement is actually invalidated. Verified in BimodalLogic: the gate correctly refused at exit 3 when a commit moved the measured surface, and passed again once the pin was advanced."
+    },
+    {
+      "subject": "Parsing a sidecar's field list out of its own reference page makes doc/data drift mechanically impossible",
+      "value": "Asking a dataset's *_metadata.json `fields` array to be derived from the reference page's own field tables, and then failing the generating script (exit 2) when the page's key set and the emitted records' key set differ in EITHER direction, converts a documentation convention into a check. In BimodalLogic this immediately caught a real gap: the cost probe emitted only reprove records and no compare record, so eight documented compare fields were never emitted."
+    },
+    {
+      "subject": "verify-touched.sh derives touched paths from the working tree, so a committed phase can escalate it into a full sweep",
+      "value": "An argument-free `verify-touched.sh` in BimodalLogic resolved 14 working-tree paths for a phase whose own work was already committed -- so it saw only unrelated leftover dirt (four .githooks/* files) plus one brand-new file. Five unmappable paths triggered the OWED fallback, which ran the whole 102-suite agent-system battery and then launched a second pass that self-deadlocked on /run/user/1000/.gate-lock held by its own first pass. One unmapped unrelated path is enough to turn the narrow invocation into exactly the full sweep a batch-deferral directive exists to prevent."
+    },
+    {
+      "subject": "BimodalLogic ignores /data outright, so no generated dataset can be committed there",
+      "value": "`.gitignore` ignores `/data` and `git ls-files data/` returns zero tracked files. A plan asking for a dataset, a sidecar and a data/README.md inventory row as committed artifacts cannot be satisfied: git-commit-scoped.sh drops all three as gitignored pathspecs. The correct posture is the one the repository already implies -- track the regenerating script and the schema it emits against, so one command reproduces the data -- but the plan should say so rather than listing untrackable files as deliverables."
     }
   ],
   "metadata": {
-    "session_id": "sess_1795489185_6c2ae6_961",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
-  },
-  "dispatch_seq": 2
+    "session_id": "sess_1795489185_6c2ae6",
+    "agent_type": "lean-implementation-agent",
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "task_dir": "specs/961_proof_mode_axiom_audit_and_cost_baseline",
+    "dispatch_seq": 3,
+    "compliance_check": "passed",
+    "vacuous_count_repo_wide": 2,
+    "vacuous_count_note": "Both repo-wide hits are pre-existing in FormalSystem/ (PointTransport.lean:163 AnyPoint, TemporalStructures.lean:495 int_domain_universal), last touched by PR #11; this task changed no FormalSystem/ file. vacuous_count above is this task's own file scope.",
+    "full_gate_deferred": true,
+    "full_gate_deferral_note": "Phase 8 declares Verification Tier: full. Per this dispatch's batch-gate-deferral directive, verify-deploy.sh was deferred to the orchestration close rather than independently run; this task touches no path under .claude/** and no source-store path. Scoped discharge: the plan's own nine named checks run directly, plus scripts/verify-all.sh as a delta against the Phase 1 captured baseline (6 PASS, 3 FAIL, every failure outside this task's file scope and confirmed so against git diff --name-only)."
+  }
 }
