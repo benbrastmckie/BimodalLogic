@@ -16,7 +16,7 @@
 | [M1: Repository hygiene](#milestone-m1) | active | 0/7 | none |
 | [M10: The written record: errata, open questions, examples and docs](#milestone-m10) | planned | 0/5 | none |
 | [M8: The tableau decidability engine](#milestone-m8) | active | 0/8 | none |
-| [M2: BimodalLib: the evidence base the mode is measured against](#milestone-m2) | active | 3/5 | none |
+| [M2: BimodalLib: the evidence base the mode is measured against](#milestone-m2) | active | 4/5 | none |
 | [M4: Linear-time rules, usability and gate two](#milestone-m4) | planned | 0/7 | none |
 | [M5: One interface, and the entries that need it](#milestone-m5) | planned | 0/3 | none |
 | [M6: Specification reasoning, dual verification and the manual](#milestone-m6) | planned | 0/5 | none |
@@ -263,19 +263,19 @@ Carry the TM tableau from engine totality at a quantified branch budget through 
 
 Give the theorem library its layout by fragment and frame class, fill the fragments the tableau reaches, keep every refutation checked, and make filing by smallest fragment a theorem.
 
-- **Progress**: active -- 1/2 batches, 3/5 tasks done -- 972 and 973 collide with no open PR but sit behind 961, and so behind 960's hold, so nothing left here can be entered
+- **Progress**: active -- 1/2 batches, 4/5 tasks done -- 972 and 973 collide with no open PR but sit behind 961, and so behind 960's hold, so nothing left here can be entered
 - **Review**: none
 - **Gate**: BimodalLib builds; every closed derivation outside Theorems/ProofMode/ is registered with its fragment, frame class and substitution class and a check fails on an unregistered one; verdicts and countermodels are admitted only at a stated grade; and the conservativity table is generated from the theorems. Entry needs 960 unheld, and so #8 merged or declined.
 
 **Batch 1** (done) -- Whether stability is rightly a Modal family: no file scope, the cheapest de-risking while 977 waits
 
-**Batch 2** -- Gated: 972 and 973 touch no open PR but sit behind 961, and so behind 960's hold (2/4 done)
+**Batch 2** -- Gated: 972 and 973 touch no open PR but sit behind 961, and so behind 960's hold (3/4 done)
 
 ```
-/orchestrate 972, 973
-972 PARTIAL         theorem_library_tableau_pipeline
-973 blocked:972     theorem_library_countermodels
+/orchestrate 973
+973 ready           theorem_library_countermodels
 971 done            theorem_library_layout_and_registry
+972 done            theorem_library_tableau_pipeline
 975 done            theorem_library_fragment_conservativity
 ```
 
@@ -294,7 +294,7 @@ Add the linearity split and Until/Since introduction, unfolding and induction, f
 /orchestrate 949, 950, 948
 949 HOLD            proof_mode_linearity_case_tactic
 950 HOLD            proof_mode_until_since_intro_unfold_induction
-948 blocked:947,949,950,972  proof_mode_reprove_temporal_slice   <- gate two: a measured report and a missing-rule list, no GO / RE-PLAN verdict
+948 blocked:947,949,950  proof_mode_reprove_temporal_slice   <- gate two: a measured report and a missing-rule list, no GO / RE-PLAN verdict
 ```
 
 **Batch 2** -- Frame coverage at Dense and RTime, held by the gate but needing nothing else from it
