@@ -1,5 +1,5 @@
 ---
-next_project_number: 991
+next_project_number: 992
 ---
 
 # TODO
@@ -13,9 +13,9 @@ next_project_number: 991
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,890,935,960,962,973,977,986,987,988,989 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,890,935,960,962,973,977,986,987,988,989,991 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
 | 2 | 231,282,296,429,497,763,862,869,944,954,955,969,984 | 298,428,502,604,761,960,962,977,986,989 | algebraic-representation, dataset-enhancement, decidability, ... |
-| 3 | 410,498,499,500,861,873,932,945 | 429,497,763,869,944 | algebraic-representation, decidability, semantics, ... |
+| 3 | 410,498,499,500,873,932,945 | 429,497,869,944 | algebraic-representation, decidability, semantics, ... |
 | 4 | 125,411,543,874,875,876,946 | 410,498,499,500,873,945,969 | algebraic-representation, decidability, metalogic, ... |
 | 5 | 430,501,947 | 125,411,946,955,973 | algebraic-representation, decidability, proof-mode |
 | 6 | 412,949,951,963,965 | 178,430,947,954 | decidability, proof-mode |
@@ -63,13 +63,13 @@ next_project_number: 991
           └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program...
             └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT...
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
-713 [HOLD] — OPTIONAL, FILED NOT SCHEDULED -- AND LOAD-BEARING AS A CHECK....
+713 [NOT STARTED] — SCHEDULABLE AND LOAD-BEARING AS A CHECK. User ruling...
 734 [HOLD] — Run experiment E4: decide StabSaturated on the Bool fixture's...
 761 [PARTIAL] — AMENDED 2026-11-16 (statement replaced — the READ-OFF /...
   └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
-    └─ 861 [RESEARCHED] — Record the one-sided transport refutation in the RaySummary...
   └─ 862 [RESEARCHED] — Promote cntAt\_eq\_of\_pend\_eq\_fwd into LadderAgree as a...
 831 [NOT STARTED] — RESEARCH TASK, verdict-first. State and attempt the...
+991 [NOT STARTED] — RESEARCH TASK, verdict-first; the deliverable is a verdict...
 
 ### Formula Refactor
 
@@ -138,7 +138,7 @@ next_project_number: 991
     └─ 946 [HOLD] — NO ModalTemporal MODULE OR CLASS... (see above)
 962 [NOT STARTED] — MILESTONE M9b (records/proof-mode.md), STREAM: metatheory....
   └─ 953 [NOT STARTED] — With the interface as one class per operator family and... (see above)
-973 [NOT STARTED] — MILESTONE M20 (records/proof-mode.md), LANE: library. Theorem...
+973 [RESEARCHED] — MILESTONE M20 (records/proof-mode.md), LANE: library. Theorem...
   └─ 947 [NOT STARTED] — REVISED: GATE ONE IS A SWEEP OVER A SELECTION OF LIBRARY... (see above)
 986 [NOT STARTED] — Report the real cause when a view fails to apply. applyView...
   └─ 969 [HOLD] — LOCATION (binding over any module path named below): the view... (see above)
@@ -146,6 +146,16 @@ next_project_number: 991
   └─ 950 [HOLD] — ARCHITECTURE (records/proof-mode-architecture.md): tier... (see above)
 
 ## Tasks
+
+### 991. Depth zero gate verdict
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+
+**Description**: RESEARCH TASK, verdict-first; the deliverable is a verdict plus grounds, not a construction. specs/ROADMAP.md Stage 0 carries "Decide who owns the depth-0 gate" as its one unchecked blocking item, and no open task owns lifting it: the ladder realization theorem records that no dispatch can advance it. THE GATE LIFTS ON EXACTLY ONE OF TWO EVENTS, and this task must deliver one of them: cellLE_zero_const_of_kappa_eq lands as a sorryAx-free theorem, or CellLEZeroConstOfKappaEq is refuted under ParamsOk. THE CRUX, already narrowed: whether a ForwardSlackWitnessed hypothesis at a POSITIVE amount is satisfiable at any state the depth-0 induction reaches, in its EXISTENTIAL-over-paths form only. DO NOT RE-ATTEMPT the per-path form: it is already refuted by ClimbWitness.hasForwardSlack_refuted_unconditional. WHAT PRIOR WORK ESTABLISHED, read before any derivation and do not re-derive: the consumer-shape reachability probe (specs/evidence/forward-slack-pin-cascade/consumer-shape-witness.lean, with specs/archive/934_depth_zero_reachability_probe/summaries/01_consumer-shape-reachability-probe-summary.md) shows the existential over paths is doing real work -- climbC_isLadderPath and climbC_not_hasForwardSlack give a second ladder path through the same state with no forward slack at any positive amount, so the per-path form fails where the cell-level form holds -- and that probe explicitly disclaims deciding the gate or claiming a discharge. Also read the depth-0 gate rest-state plan and the "What would lift the depth-0 gate" section of the idle-insertion-cascade restatement plan under the ladder realization task directory. WHY THIS EXISTS: ten phases of the ladder realization theorem are NOT STARTED and three are BLOCKED behind this gate, and milestone M7 (L-plus at integer time) is active and parked on it. On a verdict either way, the ladder realization theorem is restated against it.
+
+---
 
 ### 989. Pointed semantic lemmas after merge followups
 - **Status**: [NOT STARTED]
@@ -222,10 +232,11 @@ next_project_number: 991
 ---
 
 ### 973. Theorem library countermodels
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: proof-mode
 - **Dependencies**: Task 971, Task 972
+- **Research**: [973_theorem_library_countermodels/reports/01_theorem-library-countermodels.md]
 
 **Description**: MILESTONE M20 (records/proof-mode.md), LANE: library. Theorem library: countermodels. Keep every refuted inference with a checked refutation. A countermodel entry records an inference `Γ ⊭ φ`, a frame class, a model, and a proof of non-validity at one of three grades: SEMANTIC (a Lean theorem by an explicit model), CERTIFICATE (a finite certificate accepted by a proved checker, the witness-family checkers at ZTime), GATED TABLEAU (an open saturated branch passing the gates, with the gate theorem applied). A fourth grade, EVALUATOR-CHECKED (a refutation checked by the evaluator of records/semantic-proof-mode.md against witnesses the caller supplies), is anticipated but not admitted by this record yet: its client is the evaluator milestone, C3 of records/milestones.md, and it waits on that evaluator and on records/semantic-proof-mode.md landing, neither of which exists on `main` today — do not assume this grade is as ready as the three above. (1) Define the entry type and its registration, filed by the fragment of the refuted inference and the strongest frame class at which the model lives. (2) Register the hand-built refutations already in the tree: FormalSystem/PlusLanguage/PlusNonValidities.lean, FormalSystem/StarLanguage/StarNonValidities.lean where the inference is statable in L or L⁺, and the independence results under FormalSystem/Metalogic/Independence/. (3) Admit the gated tableau refutations and accepted certificates produced by `theorem_library_tableau_pipeline`. An ungated `invalid` verdict stays a conjecture and is never admitted. (4) TRANSFER, each resting on a named theorem: a model at a stronger frame class refutes at every weaker class it belongs to; a countermodel in L refutes in L⁺ through `plusValidIn_ofFormula_iff`. (5) NEAR MISSES: where a refuted inference is the converse of a theorem entry or a schema with its side condition dropped, the two entries name each other; the five refutations bounding the `⊡` axiom set are the model. (6) LOOKUP: an inference can be looked up, up to renaming of atoms, for use by `proof_mode_countermodels_for_unclosed_leaves`. DONE WHEN: the three grades exist with at least one entry each, the existing refutations are registered, lookup is tested, and the reference page documents the grades. Hard dependency: `theorem_library_layout_and_registry`. Sequencing: after `theorem_library_tableau_pipeline`, which supplies the tableau-fed entries; parts (1), (2), (4) and (5) do not need it. The design is records/theorem-library.md; milestones, lanes and gates are in records/proof-mode.md. BimodalLib imports FormalSystem and FormalSystem never imports BimodalLib. Nothing in BimodalLib contains `sorry`, a new `axiom` or `native_decide`. When this record implements part of the design, revise docs/ to describe what now exists and cut that part from the record under records/.
 
@@ -699,30 +710,6 @@ NAMING CONSTRAINT, which has already cost one round elsewhere: gate C26 and C16'
 
 ---
 
-### 862. Promote cntAt_eq_of_pend_eq_fwd into LadderAgree as a strict sharpening
-- **Effort**: small
-- **Status**: [RESEARCHED]
-- **Task Type**: lean4
-- **Topic**: decidability
-- **Dependencies**: Task 761, Task 852
-- **Parent**: Task 855
-
-**Description**: Promote cntAt_eq_of_pend_eq_fwd from the evidence probe into FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean as a strict sharpening of the landed cntAt_eq_of_pend_eq. The landed theorem's own proof already reads its hypothesis only at positions at or above the compared one, so the forward-only hypothesis suffices -- the same proof at a weaker hypothesis, verified sorry-free in specs/evidence/seam-gluing-ray-product/one-sided-count-move-refutation.lean. Land it beside the existing theorem, derive the existing theorem from the sharpening or state why that direction is not worth the churn, and keep the probe compiling. No sorry, no new axiom, axiom profile within [propext, Classical.choice, Quot.sound]; check-evidence-probes.sh and the full guarded lake build must both stay green.
-
----
-
-### 861. Record the one-sided transport refutation in the RaySummary refutation table
-- **Effort**: small
-- **Status**: [RESEARCHED]
-- **Task Type**: markdown
-- **Topic**: decidability
-- **Dependencies**: Task 761, Task 763, Task 838
-- **Parent**: Task 855
-
-**Description**: Add the one-sided transport refutation row to the RaySummary refutation table in FormalSystem/Metalogic/Decidability/RaySummary/README.md, recording the NEGATIVE verdict that the probe specs/evidence/seam-gluing-ray-product/one-sided-count-move-refutation.lean establishes: the one-sided open-modal factorization does not crack the transport condition. State the mechanism as the probe states it -- the ladder countdown and the closure eventualities read the same forward half-line, so freezing the future leaves nothing to transport and freeing it loses the realized type. Cite the probe file and its headline declarations by name. Scope: README.md only; no .lean edits. Do not claim any decidability consequence.
-
----
-
 ### 831. Dense time certificate dichotomy gate
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
@@ -824,6 +811,12 @@ FILE SCOPE: new `LadderRealize.lean` plus the shared library set (`RaySummary.le
 
 NOT COSTABLE, and why: T3 landed no bound (its stabilization lemma is refuted); sized by the open index sub-problem and by how much of `Realize.lean` (1004 lines) transfers; the README records it has no figure. Design of record: `specs/757_lplus_decidability_successor_task_set/followup-scope-spec.md` Sections A, C and H4.
 
+FOLDED IN 2026-11-24 -- two separate records were closed into this one (their audit verdicts were subset-of-open and duplicate-of-open against this task; both carried a description only, no artifacts, and nothing referenced their directories). Both touch paths already inside this task's file scope. They are independent of the depth-0 gate and can be done at any time:
+
+(i) THE ONE-SIDED REFUTATION TABLE ROW. Add the one-sided transport refutation row to the RaySummary refutation table in FormalSystem/Metalogic/Decidability/RaySummary/README.md, recording the NEGATIVE verdict that the probe specs/evidence/seam-gluing-ray-product/one-sided-count-move-refutation.lean establishes: the one-sided open-modal factorization does not crack the transport condition. State the mechanism as the probe states it -- the ladder countdown and the closure eventualities read the same forward half-line, so freezing the future leaves nothing to transport and freeing it loses the realized type. Cite the probe file and its headline declarations by name. Scope: README.md only; no .lean edits. Do not claim any decidability consequence.
+
+(ii) THE FORWARD PEND-COUNTDOWN RIGIDITY SHARPENING. Promote cntAt_eq_of_pend_eq_fwd from the same probe into FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean as a strict sharpening of the landed cntAt_eq_of_pend_eq. The landed theorem's own proof already reads its hypothesis only at positions at or above the compared one, so the forward-only hypothesis suffices -- the same proof at a weaker hypothesis, verified sorry-free in that probe. Land it beside the existing theorem, derive the existing theorem from the sharpening or state why that direction is not worth the churn, and keep the probe compiling. No sorry, no new axiom, axiom profile within [propext, Classical.choice, Quot.sound]; check-evidence-probes.sh and the full guarded lake build must both stay green.
+
 ---
 
 ### 734. E4 mosaic stabsaturated mixed germ probe
@@ -859,13 +852,12 @@ ACCEPTANCE. One probe file under `specs/evidence/seam-gluing-ray-product/` compi
 ---
 
 ### 713. Formalize ctl star reduction 2exptime lower bound
-- **Status**: [HOLD]
-- **Held**: 2026-10-03
+- **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 
-**Description**: OPTIONAL, FILED NOT SCHEDULED -- AND LOAD-BEARING AS A CHECK. This task stays unscheduled: status HOLD (user ruling 2026-10-03; prior_status not_started), dependencies [], nothing depends on it. What has changed since it was filed is the claim that "none of the L-plus programme's recommendations rest on it." That is no longer accurate. Its 2EXPTIME lower bound -- ARGUED, not formalized -- is the sanity ceiling that three live records cite against any proposed decision procedure for L-plus. It is load-bearing as a check even while unproved.
+**Description**: SCHEDULABLE AND LOAD-BEARING AS A CHECK. User ruling 2026-11-24: released from HOLD to not_started, on the grounds recorded in the next sentence. Dependencies [], nothing depends on it. What has changed since it was filed is the claim that "none of the L-plus programme's recommendations rest on it." That is no longer accurate. Its 2EXPTIME lower bound -- ARGUED, not formalized -- is the sanity ceiling that three live records cite against any proposed decision procedure for L-plus. It is load-bearing as a check even while unproved.
 
 ITS ROLE: THE SANITY CEILING. Three records USE this task's argued lower bound as the bound-sanity check -- nothing cheaper than 2EXPTIME is a credible decision procedure. All three were re-verified against the tree on 2026-10-07 (task 738), at their archive locations:
 
@@ -889,7 +881,7 @@ CANONICAL WORDING OF THE CONSEQUENCE (quote this, verbatim, in any record that r
 
 WHAT IT COSTS. A CTL-star syntax and semantics must be added to the tree, which is substantial standalone work the programme otherwise has no need for. Task 706 rates the risk that the reduction has a gap as LOW (its R4) and records it as affecting the complexity picture only.
 
-KEEP-OR-ABANDON IS A PHASE 0 USER RULING, NOT MADE HERE. This revision records the task's role; it does not decide the task's fate and does not schedule it. The decidability-programme review's Section C (specs/archive/721_decidability_programme_review_l_and_lplus/followup-scope-spec.md, Section C at line 220) restates the choice as the user's: keep this as a write-up note, or abandon it. RECOMMENDATION ONLY, not a decision: keep it as a write-up note, because it is load-bearing as a check even while unproved -- abandoning the record would leave the three citing documents pointing at nothing. If the ruling is to abandon, the three citing records need their sanity-check bullets re-sourced to the argument's actual homes (706's Q4 and the archived 703 round-2 section 1.6) rather than to this task.
+KEEP-OR-ABANDON WAS RULED ON 2026-11-24: KEEP AND SCHEDULE. The grounds are the ones this record already states -- the bound is load-bearing as a check even while unproved, and abandoning the record would leave the three citing documents pointing at nothing. The decidability-programme review's Section C (specs/archive/721_decidability_programme_review_l_and_lplus/followup-scope-spec.md, Section C at line 220) restates the choice as the user's: keep this as a write-up note, or abandon it. RECOMMENDATION ONLY, not a decision: keep it as a write-up note, because it is load-bearing as a check even while unproved -- abandoning the record would leave the three citing documents pointing at nothing. If the ruling is to abandon, the three citing records need their sanity-check bullets re-sourced to the argument's actual homes (706's Q4 and the archived 703 round-2 section 1.6) rather than to this task.
 
 ---
 
