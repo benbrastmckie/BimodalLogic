@@ -92,7 +92,7 @@ Every subdirectory has exactly one **sibling** aggregator: `X.lean` sits *beside
 | `Algebraic.lean` | 40 | `Algebraic/` |
 | `BXCanonical.lean` | 43 | `BXCanonical/` |
 | `Bundle.lean` | 47 | `Bundle/` |
-| `Conservativity.lean` | 469 | `Conservativity/` |
+| `Conservativity.lean` | 470 | `Conservativity/` |
 | `ConvexConsequence.lean` | 44 | Aggregator for the metatheory of the convex-index consequence relations C3 and C4; holds no declarations |
 | `Core.lean` | 40 | `Core/` |
 | `Decidability.lean` | 202 | `Decidability/` |
@@ -110,7 +110,7 @@ sibling directory. The list is generated, so a file that moves out (four of them
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic rows=loose filter=non-aggregators -->
 | Loose non-aggregator | Lines | Role |
 |----------------------|------:|------|
-| `Conservativity.lean` | 469 | Conservativity of the extension |
+| `Conservativity.lean` | 470 | Conservativity of the extension |
 | `AuxiliaryAtoms.lean` | 903 | Soundness of Reynolds' Auxiliary-Atoms rule over L⁺, transposed to `⊡`/`G≤` — `aa_sound_int` over every regular frame over `intOrder`, `aa_sound_ztime` at `FrameClass.ZTime` by carrier normalization, and `aa_reflectTime_sound_ztime` as the mirror by reflection. The rule runs on the forward-cone unravelling (`Semantics/ConeUnravelling.lean`) under a valuation that reads the auxiliary atoms off a finite-state machine run along the recorded path, forgets them by a finite-family freshness congruence, and projects along the two-way bounded morphism. Soundness only: no completeness, decidability or axiomatizability claim follows |
 | `Compactness.lean` | 237 | Compactness and strong completeness for Base and Dense, by ultraproduct model existence |
 | `DedekindNonCompactness.lean` | 539 | Non-compactness of the Dedekind frame class — the `{G(⊤ S ¬q), F(G ¬q)} ∪ {Xqⁿ⊤}` witness, finitely satisfiable over `ℝ` and unsatisfiable over every Dedekind-complete carrier, refuting `CompactDedekind` and `StrongCompletenessDedekind` |
@@ -158,7 +158,7 @@ self-named inner root it once delegated to has been absorbed into it.
 | [`Algebraic/`](Algebraic/README.md) | 5 | 2,415 | Quotient algebra, ultrafilter/MCS correspondence, flow-frame countermodel engine |
 | [`BXCanonical/`](BXCanonical/README.md) | 28 | 23,165 | Chronicle completeness route; the wired entry point |
 | [`Bundle/`](Bundle/README.md) | 9 | 2,863 | Bundled families of MCSs and their coherence conditions |
-| [`Conservativity/`](Conservativity/README.md) | 32 | 11,186 | Conservativity of TM over the base language L⁻: the translation, the backward direction, and the CEB/CEF/CED/CEC status record |
+| [`Conservativity/`](Conservativity/README.md) | 34 | 11,413 | Conservativity of TM over the base language L⁻: the translation, the backward direction, and the CEB/CEF/CED/CEC status record |
 | [`ConvexConsequence/`](ConvexConsequence/README.md) | 6 | 1,388 | The metatheory of the convex-index consequence relations C3 and C4 of `Semantics/ConvexTruth.lean`: the separations from C1 and from each other, and the axiom-survival table as one theorem per row |
 | [`Core/`](Core/README.md) | 3 | 1,345 | MCS machinery shared by all three routes |
 | [`Decidability/`](Decidability/README.md) | 186 | 127,509 | Tableau decision procedure and countermodel extraction |

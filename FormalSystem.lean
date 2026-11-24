@@ -91,6 +91,8 @@ import FormalSystem.Metalogic.Conservativity.DenseObstructionTransfer
 import FormalSystem.Metalogic.Conservativity.Fragment
 import FormalSystem.Metalogic.Conservativity.FragmentAxiomatization
 import FormalSystem.Metalogic.Conservativity.FragmentCompactness
+import FormalSystem.Metalogic.Conservativity.Fragments
+import FormalSystem.Metalogic.Conservativity.Fragments.Calculus
 import FormalSystem.Metalogic.Conservativity.MinusCanonicalFrame
 import FormalSystem.Metalogic.Conservativity.MinusChainCompleteness
 import FormalSystem.Metalogic.Conservativity.MinusChronicle

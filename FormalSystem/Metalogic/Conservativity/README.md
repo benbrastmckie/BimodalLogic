@@ -34,6 +34,7 @@ than deferred debt.
 | `Fragment.lean` | 197 | <!-- TODO: add description --> |
 | `FragmentAxiomatization.lean` | 348 | The canonical per-class verdict record for the native H/G axiomatization of `TMFrag`: Σ_Base = (Sp), Σ_ZTime = Z1, Σ_Dense = Σ_RTime = ∅; soundness `TM⁻ + Σ_fc ⊆ TMFrag fc` at all four classes and strictness over TM⁻ at Base/ZTime machine-checked; completeness literature-backed only, present in Lean solely as the explicit hypothesis `ChainComplete` of `minusExt_iff_tmFrag_of_chainComplete` |
 | `FragmentCompactness.lean` | 151 | <!-- TODO: add description --> |
+| `Fragments.lean` | 23 | Aggregator for the conservativity of TM over the fragments of `L`; holds no declarations. |
 | `MinusCanonicalFrame.lean` | 495 | The canonical relations `canR` (`Gχ ∈ Γ ⟹ χ ∈ Δ`) and `canBox` on `MPoint fc`: transitivity, the past characterisation `canR_iff_past`, `F`/`P`/`◇` witnesses through one generic Lindenbaum-seed lemma, seriality, **density at `.Dense`** (`exists_canR_between`, the one DN use), weak linearity both ways from TL and its TR mirror, and the S5/MF facts on `canBox` |
 | `MinusChainCompleteness.lean` | 211 | **The `.Dense` row closed**: `chainComplete_dense : ChainComplete FrameClass.Dense ∅` via a bundle of ℚ-chronicles in one `canBox`-class, the truth lemma for `chainSat`, and a refutation engine; corollaries `minusExt_iff_tmFrag_dense`, `minusValidIn_chainValidIn`, `tmMinusComplete_dense`, `forward_dense` |
 | `MinusChronicle.lean` | 678 | Burgess 1984 §2.5's step-by-step construction over ℚ, at `.Dense` only: finite-support coherent `Stage`s, the placement lemmas `insert_future`/`insert_past` (weak linearity) and `fill` (density, seriality at the ends), an ω-iteration along an enumeration in which every requirement recurs, and its limit `exists_chronicle_through : ∀ Γ₀, ∃ c : Chronicle, c.c 0 = Γ₀` |
@@ -48,6 +49,7 @@ than deferred debt.
 | `Star.lean` | 60 | Aggregator for the L⋆ metatheory; holds no declarations. |
 | `TMCompletenessReduction.lean` | 329 | <!-- TODO: add description --> |
 | `Z1Countermodel.lean` | 220 | <!-- TODO: add description --> |
+| `Fragments/` | — | Conservativity of TM over the fragments of its own language `L`: the calculus of a sublanguage, with every derived formula inside it. |
 | `Open/` | — | The restricted-modal extension L^▷ = L⁺ + `▷`/`◁` and its proof system: axiom validity through thirteen block helpers and two wildcard-free 71-arm dispatch lemmas, soundness at every frame class, and conservativity over TM at all four classes and over TM⁺ in both directions — the TM⁺ row unconditional and syntactic, carrying no engine. No completeness is claimed for the L^▷ system at any class. |
 | `Plus/` | — | <!-- TODO: add description --> |
 | `Star/` | — | The register extension L⋆ = L⁺ + `↑ⁱ`/`↓ⁱ` and its logic TM⋆: axiom validity, soundness, conservativity over TM (unconditional) and over TM⁺ (a conditional pair, whose hypothesis is refuted at Base by `Metalogic/Independence/PlusIncompleteness.lean` and open elsewhere), and the completeness OPEN record. |

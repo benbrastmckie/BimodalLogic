@@ -25,6 +25,7 @@ import FormalSystem.Metalogic.Conservativity.MinusChainCompleteness
 import FormalSystem.Metalogic.Conservativity.Plus
 import FormalSystem.Metalogic.Conservativity.Star
 import FormalSystem.Metalogic.Conservativity.Open
+import FormalSystem.Metalogic.Conservativity.Fragments
 
 /-!
 # The TM⁻/TM conservativity bridge — backward direction

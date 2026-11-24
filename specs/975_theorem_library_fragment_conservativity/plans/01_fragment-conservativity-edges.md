@@ -257,35 +257,35 @@ soundness and the countermodel it rests on.
 
 ---
 
-### Phase 2: The cell calculus over an abstract sublanguage [NOT STARTED]
+### Phase 2: The cell calculus over an abstract sublanguage [COMPLETED]
 
 **Goal**: A `Prop`-valued derivability relation restricted to a sublanguage, with its basic
 lemmas and a deduction theorem by plain induction, in `FormalSystem`.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Conservativity/Fragments/Calculus.lean`. Before defining a
+- [x] Create `FormalSystem/Metalogic/Conservativity/Fragments/Calculus.lean`. Before defining a
   sublanguage predicate, check for an existing one to reuse
   (`FormalSystem/Metalogic/Decidability/Propositional/Decidable.lean`,
   `.../Verified/Termination/MintBound/BoxFree.lean`).
-- [ ] Define the closure conditions on a sublanguage `L : Formula → Prop`: contains `bot`; `imp`
+- [x] Define the closure conditions on a sublanguage `L : Formula → Prop`: contains `bot`; `imp`
   is in `L` exactly when both parts are; invariant under `reflectTime`. State them as a structure
   or class so the theorems take one hypothesis.
-- [ ] Define the calculus as an inductive `Prop` indexed by `L`, a frame class, a context and a
+- [x] Define the calculus as an inductive `Prop` indexed by `L`, a frame class, a context and a
   formula, on the pattern of `DerivationTree`, with the side condition that every derived formula
   is in `L` and with the necessitation rules and TR restricted to the empty context. Name
   `def`s and the inductive in lowerCamelCase or UpperCamelCase with no non-trailing underscore.
-- [ ] Prove: the conclusion is in `L`; monotonicity in `L`; weakening of contexts; a cell
+- [x] Prove: the conclusion is in `L`; monotonicity in `L`; weakening of contexts; a cell
   derivation yields `Nonempty (DerivationTree fc Γ φ)`.
-- [ ] Prove the deduction theorem by induction on the derivation (no well-founded recursion).
-- [ ] Create `FormalSystem/Metalogic/Conservativity/Fragments.lean` (umbrella, imports
+- [x] Prove the deduction theorem by induction on the derivation (no well-founded recursion).
+- [x] Create `FormalSystem/Metalogic/Conservativity/Fragments.lean` (umbrella, imports
   `Calculus`) and `FormalSystem/Metalogic/Conservativity/Fragments/README.md`.
-- [ ] Add `import FormalSystem.Metalogic.Conservativity.Fragments` to
+- [x] Add `import FormalSystem.Metalogic.Conservativity.Fragments` to
   `FormalSystem/Metalogic/Conservativity.lean` (import line only; its docstring is revised in
   Phase 9).
-- [ ] Regenerate: `lake exe mk_all --lib FormalSystem`; `lake build`;
+- [x] Regenerate: `lake exe mk_all --lib FormalSystem`; `lake build`;
   `bash scripts/typst-sync-check.sh --fix`; `bash scripts/check-module-invariants.sh --emit-inventory`.
   Stage the regenerated files with this phase.
-- [ ] If the new upward-import check fires (`scripts/check-metalogic-cycles.sh`), stop and record
+- [x] If the new upward-import check fires (`scripts/check-metalogic-cycles.sh`), stop and record
   it: no import in this plan is expected to be upward (`Metalogic` is layer 3, `Theorems` layer 2,
   `ProofSystem` below).
 
