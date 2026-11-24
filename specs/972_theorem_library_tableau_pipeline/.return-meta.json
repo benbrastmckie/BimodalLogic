@@ -1,30 +1,99 @@
 {
-  "status": "planned",
+  "status": "partial",
+  "requires_user_review": true,
+  "review_reason": "Phases 1-3 of 8 complete and verified; Phases 4-8 not started. A design ruling is needed before Phase 7: assert_no_subsumed_entries unscoped reports 26 of 190 live registry rows as substitution instances of another row, so wiring it globally as Phase 7 specifies would turn the build red on hand-curated named laws.",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true
+  },
+  "partial_progress": {
+    "stage": "phase_3_complete",
+    "details": "Phases 1 (COMPLETED WITH EXCLUSIONS), 2 (COMPLETED) and 3 (COMPLETED) landed in commits fb36574fa, dcee738eb, 202e9b8ad and d8e8adf1f. Phases 4-8 (Lean-source emitter, five reserved-stage emitters, driver executable, end-to-end run, docs revision) not started. Phase 4 depends only on Phase 2, which is landed, so the next dispatch can start there directly.",
+    "phases_completed": 3,
+    "phases_total": 8
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/972_theorem_library_tableau_pipeline/plans/01_tableau-pipeline-into-library.md",
-      "summary": "Eight-phase plan assembling the five-stage tableau pipeline into BimodalLib: the missing L-level uniform substitution as data, a subsumption matcher, a Lean-source emitter, the five reserved-stage diagnostics emitters, the driver executable, the end-to-end run at the user-ruled bound, and the docs/record revision."
-    }
-  ],
-  "metadata": {
-    "session_id": "sess_1795489185_6c2ae6_972",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 8,
-    "estimated_hours": 14.5,
-    "dependency_waves": 5
-  },
-  "memory_candidates": [
+      "type": "summary",
+      "path": "specs/972_theorem_library_tableau_pipeline/summaries/01_tableau-pipeline-into-library-summary.md",
+      "summary": "Phases 1-3 of 8: the gate baseline and measured figures, the L-level uniform substitution as data, and the subsumption matcher with its tests and build-time command."
+    },
     {
-      "content": "In BimodalLogic, readme-lint.sh Check 4's grandfathering is ASYMMETRIC and this asymmetry decides per-phase plan work: scripts/readme-date-baseline.txt pins BimodalTools/README.md, FormalSystem/README.md and FormalSystem/ProofSystem/README.md as `stale` at exact stamps, and refreshing any of those stamps permanently UN-grandfathers it and turns the gate red -- so a phase touching those trees must leave the stamp alone (extending the file listing is still fine). BimodalLib/README.md and BimodalLib/Theorems/README.md carry NO baseline row, so a commit under BimodalLib/** makes them stale and they MUST be refreshed in that same phase. Separately, typst/generated/status.typ counts FormalSystem/, Tests/ and BimodalTools/ .lean lines but NOT BimodalLib/ (scripts/typst-status-counts.sh:202-207), while .githooks/pre-commit fires on any staged .lean path: a BimodalLib-only phase needs no status.typ regeneration, every phase touching the other three does, commit-blocking.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/972_theorem_library_tableau_pipeline/plans/01_tableau-pipeline-into-library.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["readme-lint", "readme-date-baseline", "typst-sync-check", "status.typ", "gate-collision", "plan-authoring"]
+      "type": "other",
+      "path": "specs/972_theorem_library_tableau_pipeline/probes/baseline.md",
+      "summary": "The Phase 1 gate baseline, the four carried figures re-confirmed live, the enumeration yield, the four-way DECIDE split, and the eight-gate pass rate per (fragment, frame class)."
     }
   ],
-  "next_steps": "Run /orchestrate 972 to execute the plan",
-  "dispatch_seq": 5
+  "modified_files": [
+    "FormalSystem/ProofSystem/Substitution.lean",
+    "FormalSystem.lean",
+    "FormalSystem/ProofSystem/README.md",
+    "FormalSystem/README.md",
+    "README.md",
+    "BimodalLib/Subsumption.lean",
+    "BimodalLib.lean",
+    "BimodalLib/README.md",
+    "Tests/BimodalLibTest/SubsumptionTest.lean",
+    "Tests/BimodalLibTest.lean",
+    "typst/generated/status.typ",
+    "specs/972_theorem_library_tableau_pipeline/plans/01_tableau-pipeline-into-library.md",
+    "specs/972_theorem_library_tableau_pipeline/probes/baseline.md",
+    "specs/972_theorem_library_tableau_pipeline/probes/gate-yield-probe.lean",
+    "specs/972_theorem_library_tableau_pipeline/summaries/01_tableau-pipeline-into-library-summary.md",
+    "specs/state.json"
+  ],
+  "user_decision": {
+    "question": "assert_no_subsumed_entries reports 26 of the 190 live BimodalLib registry rows as substitution instances of another row. These are deliberate named laws, not defects: Combinators.topThm is Combinators.identity at bot (its own proof term is literally 'identity Formula.bot'), and Propositional.em unfolds to (A -> bot) -> (A -> bot), an instance of A -> A. Phase 7's plan task wires the command into BimodalLib/Theorems/Complete.lean so that 'non-redundancy of the registry becomes a build invariant', which would turn the build red on all 26. Which scope should the build invariant have?",
+    "options": [
+      "Wire the PREFIX-SCOPED form over BimodalLib.Theorems.Enumerated, so non-redundancy is a property of machine-generated entries only. This is what the code supports today, what the task description's own ADMIT rule asks for, and it keeps the build green with no baseline file.",
+      "Wire the UNSCOPED form and baseline the 26 grandfathered rows in the shape scripts/readme-date-baseline.txt uses, so the registry is globally non-redundant going forward while the existing named laws are exempt.",
+      "Wire the UNSCOPED form and drop the 26 rows. Not recommended: it deletes named laws the reference manual cites."
+    ],
+    "blocking": false,
+    "default": "Wire the prefix-scoped form over BimodalLib.Theorems.Enumerated.",
+    "context": "Nothing is wired globally today, so the build is green under any choice until this is settled. Phases 4-6 can proceed without the ruling; only Phase 7's wiring step needs it. See the summary's Follow-ups section."
+  },
+  "metadata": {
+    "session_id": "sess_1795489185_6c2ae6",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "passed",
+    "scoped_verification": "verify-touched.sh (batch gate deferral); exits 1 on 9 agent-system suites under .claude/scripts/tests/, none attributable to this task -- all four commits touch zero paths under .claude/ or agent-system/, verified per commit. Consistent with the stale 'core' extension this dispatch's own deploy-freshness context announced."
+  },
+  "sapience_notes": [
+    {
+      "subject": "BimodalLogic registry non-redundancy is not a global property",
+      "value": "assert_no_subsumed_entries over BimodalLib's live registry reports 26 of 190 rows as substitution instances of another row, and they are deliberate, not defects: Combinators.topThm proves the top formula with the body 'identity Formula.bot', so it IS identity at bot by its own proof term, and Propositional.em unfolds to (A -> bot) -> (A -> bot), an instance of A -> A. Any design that makes registry non-redundancy a global build invariant will go red on hand-curated named laws. Non-redundancy is a property of MACHINE-GENERATED entries, and the check has to be prefix-scoped to the generated namespace."
+    },
+    {
+      "subject": "The lake build guard does not serialize non-lake siblings",
+      "value": "Taking a wall-clock measurement under flock on .lake/build-guard.lock is NOT sufficient to get an uncontended figure in this repo. The lock serializes lake invocations only. A sibling /orchestrate dispatch's run-all.sh --jobs auto shell test sweep over ~120 suites takes no lake lock, drove load average to 6.45 on 24 cores, and made two runs of the same Lean probe on the same commit report 38252 ms and 36071 ms for byte-identical input. Counts reproduced exactly; only timings moved. Under a multi-task batch, report counts and label every timing contended."
+    },
+    {
+      "subject": "Eight-gate certified refutation is structurally unavailable at ZTime",
+      "value": "In BimodalLogic, BranchGates.regionLabel and BranchGates.temporalWitness come back false for EVERY formula at FrameClass.ZTime, so BranchGates.gated is 0 of 11 on an exhaustive Boolean c5 sample while every other gate passes 11 of 11 and all three other frame classes gate 11 of 11. The eight-gate route to a certified refutation is therefore not merely rare at ZTime, it is unavailable; the witness-family certificate accepted by decidableCertifies is the only route there. A ZTime gated=false is expected, never a retryable surprise."
+    },
+    {
+      "subject": "extractionFailed is a first-class tableau outcome, not a rounding error",
+      "value": "Measured live over BimodalLogic's ModalBoolean fragment at complexity 5 (133 formulas, 2-atom pool): valid 10, invalid 71, fuelExhausted 26, extractionFailed 26. extractionFailed is as large as fuelExhausted and larger than valid. Those formulas ARE valid (the tableau closed) but carry no derivation term, so they are never admissible to a theorem library. Reading a dataset's 'valid' column as the admissible yield therefore overcounts badly -- the same error the c4 figure makes, where 17 valid minus 15 structural_prefilter leaves 2 derivation-bearing. Keep DecisionResult's four constructor names in any record; FormulaLabel's three collapse this distinction."
+    },
+    {
+      "subject": "Mirroring an existing verified Lean module beats re-deriving it",
+      "value": "BimodalLogic's L-level uniform substitution (substF, substF_reflectTime, Axiom.ofSubst with 20 arms, Axiom.minFrameClass_ofSubst, DerivationTree.subst with 7 arms, DerivationTree.substNil) compiled clean on the FIRST build with zero warnings because FormalSystem/PlusLanguage/Substitution.lean is an arm-for-arm template one language up and the plan said to mirror it rather than re-derive. The non-obvious part the template already solved: the time_reflection case must recurse at the SHIFTED substitution (fun p => (sigma p).reflectTime) and transport along substF_reflectTime, because substF sigma (reflectTime phi) differs from reflectTime (substF sigma phi) at the atoms. A source-level atom rename has nothing to transport along and is unsound there."
+    },
+    {
+      "subject": "Enumeration yield figures are meaningless without the atom pool",
+      "value": "BimodalLogic's formula enumeration is superexponential in atom-pool size, so a yield figure quoted without its pool cannot be compared to another. At a 2-atom pool the surviving counts after deduplicateCanonical and the profileF fragment filter are Boolean 14 (complexity 5) and ModalBoolean 133 (complexity 5), against a plan expectation of 902 and 751 drawn from a dataset tabulation at a wider pool -- a 60x gap that is entirely the pool, not the filter. Any command that reports a yield must record the pool as an explicit parameter alongside the complexity bound, and 'complexity N' means N pattern-aware operator layers in enumerateUpToDepth's maxSize measure, not N primitive nodes."
+    },
+    {
+      "subject": "Harvested file_scope inherits a plan's omissions and silently drops commits",
+      "value": "In this agent system, a task's file_scope is harvested from its plan's per-phase 'Files to modify' lists, so an omission there becomes a commit-time refusal. A plan that lists Tests/<Lib>Test/NewTest.lean but omits the test library ROOT Tests/<Lib>Test.lean causes git-commit-scoped.sh to drop the root as out-of-scope and commit the phase with the new test ORPHANED in HEAD -- it still builds locally because the working tree holds the import, so the defect is invisible without checking git show HEAD:<root>. Remedy: add the roots to file_scope via state-write.sh. Worth checking any plan that adds test files for this gap before committing."
+    }
+  ],
+  "next_steps": "Start the next dispatch at Phase 4 (the Lean-source emitter), which depends only on the landed Phase 2. Relay the subsumption-scope ruling before Phase 7.",
+  "dispatch_seq": 6
 }
