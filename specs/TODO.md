@@ -137,7 +137,7 @@ next_project_number: 993
     └─ 946 [HOLD] — NO ModalTemporal MODULE OR CLASS... (see above)
 962 [NOT STARTED] — MILESTONE M9b (records/proof-mode.md), STREAM: metatheory....
   └─ 953 [NOT STARTED] — With the interface as one class per operator family and... (see above)
-973 [PLANNED] — MILESTONE M20 (records/proof-mode.md), LANE: library. Theorem...
+973 [IMPLEMENTING] — MILESTONE M20 (records/proof-mode.md), LANE: library. Theorem...
   └─ 947 [NOT STARTED] — REVISED: GATE ONE IS A SWEEP OVER A SELECTION OF LIBRARY... (see above)
 986 [NOT STARTED] — Report the real cause when a view fails to apply. applyView...
   └─ 969 [HOLD] — LOCATION (binding over any module path named below): the view... (see above)
@@ -231,7 +231,7 @@ next_project_number: 993
 ---
 
 ### 973. Theorem library countermodels
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: proof-mode
 - **Dependencies**: Task 971, Task 972
