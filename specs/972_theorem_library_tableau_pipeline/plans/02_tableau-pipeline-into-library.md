@@ -550,47 +550,65 @@ to weaken the agreement check to a shape that admits a non-instance.
 
 ---
 
-### Phase 4: The Lean-Source Emitter [NOT STARTED]
+### Phase 4: The Lean-Source Emitter [COMPLETED]
 
 **Goal**: Turn a runtime `Formula`, `Axiom` instance and `DerivationTree` into Lean source text
 that elaborates, so the ADMIT stage can generate an auditable library module instead of
 re-running proof search in the kernel.
 
 **Tasks**:
-- [ ] Create `BimodalTools/LeanSourceEmit.lean` (copyright header, module docstring).
-- [ ] `formulaSource : Formula → String` — the six primitive constructors in fully-explicit
+- [x] Create `BimodalTools/LeanSourceEmit.lean` (copyright header, module docstring).
+- [x] `formulaSource : Formula → String` — the six primitive constructors in fully-explicit
       `Formula.imp`/`Formula.box`/`Formula.untl`/`Formula.snce`/`Formula.bot`/`Formula.atom`
       form, parenthesized unconditionally so the output needs no precedence table. Atoms print
       through an explicit `Atom` constructor call, never through notation.
-- [ ] `schemaSource : Nat → String` — the bound schema-variable spelling the generated signature
+- [x] `schemaSource : Nat → String` — the bound schema-variable spelling the generated signature
       uses (`A`, `B`, `C`, … for arity ≤ 26; `v 0`, `v 1`, … above it).
-- [ ] `axiomSource : {φ : Formula} → Axiom φ → String` — 20 arms, each printing the constructor
+- [x] `axiomSource : {φ : Formula} → Axiom φ → String` — 20 arms, each printing the constructor
       name from `allAxiomNames`' spelling plus its `Formula` arguments through `formulaSource`;
       the three parameter-free constructors print bare. Assert coverage against
       `BimodalTools.allAxiomNames` in the same module, in the shape
       `BenchmarkAnchorsMain.lean`/`MachineAppendixMain.lean` already use, so an added `Axiom`
       constructor fails here rather than silently printing nothing.
-- [ ] `derivationSource : {Γ : Context} → {φ : Formula} → DerivationTree fc Γ φ → String` —
+      *(deviation: altered — the in-module assertion is five `example ... := by rfl` lines over
+      `axiomNamesMissing`, `axiomNamesExtra` and `axiomSampleNames`, not `#guard`s:
+      `lean_lib BimodalTools` carries no `linter.hashCommand` opt-out (only the three test libs
+      do), so a `#`-command here is a warning and CI builds `--wfail`. An `example` fails the
+      build identically, and the `#guard` form of the same coverage check lives in the test
+      module, where the opt-out does apply.)*
+- [x] `derivationSource : {Γ : Context} → {φ : Formula} → DerivationTree fc Γ φ → String` —
       seven arms. `axiom` prints
       `DerivationTree.axiom [] <φ> (Axiom.<c> <args>) (by decide)`; `assumption` prints its
       membership proof as `(by simp)`; `weakening` at the empty context prints
       `(List.nil_subset _)`; the three unary rules and `modus_ponens` recurse.
-- [ ] `entrySource` — the whole generated declaration for one admitted theorem: a docstring, the
+- [x] `entrySource` — the whole generated declaration for one admitted theorem: a docstring, the
       concrete derivation as a `private def`, and the schematic `def` whose body is
       `DerivationTree.substNil` applied to it, closed by `simpa [substF] using …` exactly as the
       research probe's verified shape does, followed by its `register_theorem` line.
-- [ ] Add `import BimodalTools.LeanSourceEmit` to `BimodalTools.lean`.
-- [ ] Create `Tests/BimodalToolsTest/LeanSourceEmitTest.lean`: a round-trip test that emits the
+      *(deviation: altered — `entrySource` also wraps every emitted line at 98 columns with a
+      hanging indent. `linter.style.longLine` is enforced at 100 characters package-wide —
+      measured as zero lines over 100 anywhere under `BimodalTools/` or `BimodalLib/`, then
+      confirmed by a live build warning — and fully explicit formula source passes 100 on any
+      formula of interest, so unwrapped output would make Phase 7's generated module red under
+      `--wfail`. Emitted declaration names are camelCase (`fooConcrete`, `fooSubst`) rather than
+      underscored, because `C26` flags a non-trailing underscore in a live `def` name and the
+      `env_linter` sweep over the other lakefile roots carries a pinned finding ceiling.)*
+- [x] Add `import BimodalTools.LeanSourceEmit` to `BimodalTools.lean`.
+- [x] Create `Tests/BimodalToolsTest/LeanSourceEmitTest.lean`: a round-trip test that emits the
       source for a hand-built derivation of `□p → p` and for one `modus_ponens`-shaped tree,
       writes it to a temporary module, and elaborates it with `lake env lean`; plus the axiom
       coverage `#guard`.
-- [ ] Add `import BimodalToolsTest.LeanSourceEmitTest` to `Tests/BimodalToolsTest.lean`, the test
+- [x] Add `import BimodalToolsTest.LeanSourceEmitTest` to `Tests/BimodalToolsTest.lean`, the test
       library root, **in this same phase and this same commit** (Decision 14). A test module
       absent from the root is not in the build at all, and because `file_scope` is harvested from
       this plan an unlisted root is dropped from the commit as out-of-scope — which is exactly
       how plan version 1's Phase 3 left `SubsumptionTest.lean` orphaned in `HEAD`.
-- [ ] Regenerate `typst/generated/status.typ` (this phase stages paths under `BimodalTools/` and
-      `Tests/`).
+- [x] Regenerate `typst/generated/status.typ` (this phase stages paths under `BimodalTools/` and
+      `Tests/`). *(deviation: altered — `check-module-invariants.sh --emit-inventory` was also
+      run, since `BimodalTools/README.md` and `Tests/BimodalToolsTest/README.md` carry generated
+      inventory blocks that `INV` gates; each gained one row and neither `Last verified` stamp
+      was touched. Both paths are in the task's `file_scope` and were staged in this phase's
+      commit.)*
 
 **Timing**: 2 hours
 
@@ -633,40 +651,57 @@ contract is that its output elaborates, and that test decides it directly.
 
 ---
 
-### Phase 5: The Five Reserved-Stage Emitters [NOT STARTED]
+### Phase 5: The Five Reserved-Stage Emitters [COMPLETED]
 
 **Goal**: Emit the enumerate, decide, extract, certify and admit records in the schema
 `BimodalLib/Diagnostics/Record.lean` already fixes, sited in `BimodalTools/` so neither the cost
 baseline's staleness surface nor the Evaluation lane's territory is touched.
 
 **Tasks**:
-- [ ] Create `BimodalTools/PipelineDiagnostics.lean` (copyright header, module docstring that
+- [x] Create `BimodalTools/PipelineDiagnostics.lean` (copyright header, module docstring that
       names `Stage.reservedKeys` as the payload authority and says why the emitters are not under
       `BimodalLib/Diagnostics/`).
-- [ ] One record structure per reserved stage, each with exactly the fields
+- [x] One record structure per reserved stage, each with exactly the fields
       `Stage.reservedKeys` lists for it, in that order, plus a `toJson` that emits the shared
       `Head` fields first — `import BimodalLib.Diagnostics.Record` read-only; do not edit it.
-- [ ] `decide`'s `verdict` field carries `DecisionResult`'s own four constructor names
+      *(deviation: altered — each record exposes `toJsonFields` (the ordered association list),
+      `toJson` (`Json.mkObj` of it) and `keys` (its field names). The split is forced by
+      `Json.mkObj`, which stores fields in a search tree and therefore RENDERS them
+      alphabetically: key ORDER is only observable on the pre-render list, so the
+      `keys = Head.keys ++ Stage.reservedKeys s` assertion the phase's whole contract rests on
+      has to read `toJsonFields`. `ReproveRecord.toJson` has the same property, which is why its
+      docstring's field-order claim is about its source list too.)*
+- [x] `decide`'s `verdict` field carries `DecisionResult`'s own four constructor names
       (`valid`, `invalid`, `fuelExhausted`, `extractionFailed`), never `FormulaLabel`'s three.
-- [ ] `certify`'s `gates` object is `BranchGates.toJson`'s output verbatim, reusing its
+- [x] `certify`'s `gates` object is `BranchGates.toJson`'s output verbatim, reusing its
       snake_case keys rather than restating them.
-- [ ] `admit`'s `disposition` is a closed vocabulary (`admitted`, `subsumed`, `conjecture`), with
+- [x] `admit`'s `disposition` is a closed vocabulary (`admitted`, `subsumed`, `conjecture`), with
       `subsumed_by` naming the subsuming row and `conjecture_verdict` the verbatim verdict.
-- [ ] Head identifiers for an unregistered enumerated formula use the dataset `id` convention per
+- [x] Head identifiers for an unregistered enumerated formula use the dataset `id` convention per
       Decision 8; admitted entries use the registered declaration's fully-qualified name.
-- [ ] Honour the two stamp options the diagnostics reference fixes: `diagnostics.commit` for the
+- [x] Honour the two stamp options the diagnostics reference fixes: `diagnostics.commit` for the
       head's commit, `diagnostics.zeroTimings` for a byte-stable record.
-- [ ] Add `import BimodalTools.PipelineDiagnostics` to `BimodalTools.lean`.
-- [ ] Create `Tests/BimodalToolsTest/PipelineDiagnosticsTest.lean`: for each of the five stages, a
+- [x] Add `import BimodalTools.PipelineDiagnostics` to `BimodalTools.lean`.
+- [x] Create `Tests/BimodalToolsTest/PipelineDiagnosticsTest.lean`: for each of the five stages, a
       `#guard` that the emitted key list equals `Stage.reservedKeys` for that stage prefixed by
       `Head.keys`, and one golden record per stage under `diagnostics.zeroTimings`.
-- [ ] Add a `#guard` that the `decide` record's `verdict` vocabulary is exactly
+      *(deviation: altered — six goldens, not five: the `certify` stage gets two, a `Base` record
+      carrying the eight gate `Bool`s and a `ZTime` record carrying `certificate` with
+      `"gates":null`, so Decision 12's structural claim is pinned rather than described. The
+      golden literals are chunked with `\` line continuations because a compressed record is
+      250-350 characters and `linter.style.longLine` is enforced at 100.)*
+- [x] Add a `#guard` that the `decide` record's `verdict` vocabulary is exactly
       `DecisionResult`'s four constructor names, and a golden `decide` record whose verdict is
       `extractionFailed` — the outcome that is 26 of 133 at `ModalBoolean` c5 (Decision 13), so
       the schema's handling of it is tested rather than assumed.
-- [ ] Add `import BimodalToolsTest.PipelineDiagnosticsTest` to `Tests/BimodalToolsTest.lean`, the
+- [x] Add `import BimodalToolsTest.PipelineDiagnosticsTest` to `Tests/BimodalToolsTest.lean`, the
       test library root, in this same phase and this same commit (Decision 14).
-- [ ] Regenerate `typst/generated/status.typ`.
+- [x] Regenerate `typst/generated/status.typ`. *(deviation: altered — `--emit-inventory` was also
+      run for `BimodalTools/README.md` and `Tests/BimodalToolsTest/README.md`, which carry
+      generated inventory blocks `INV` gates; both are in `file_scope` and were staged here. The
+      same run also rewrote four `FormalSystem/**/README.md` files and the root `README.md`, but
+      those reflect a concurrent sibling dispatch's `FormalSystem/` edits and were deliberately
+      NOT staged.)*
 
 **Timing**: 1.5 hours
 
@@ -699,14 +734,14 @@ contract of this phase, and that guard decides it mechanically.
 
 ---
 
-### Phase 6: The Driver, Its Executable Target, and the Named Entry Point [NOT STARTED]
+### Phase 6: The Driver, Its Executable Target, and the Named Entry Point [COMPLETED]
 
 **Goal**: Sequence the five stages into one command that enumerates, decides, extracts,
 certifies, decides admission and writes every output, reusing the existing fuel/abort/checkpoint
 machinery rather than writing a new driver loop.
 
 **Tasks**:
-- [ ] Create `BimodalTools/TheoremPipeline.lean`: the stage driver.
+- [x] Create `BimodalTools/TheoremPipeline.lean`: the stage driver.
       ENUMERATE calls `enumerateUpToDepth` at the per-fragment bound, then
       `deduplicateCanonical`, then filters by `BimodalLib.profileF`; `passesFilter` is never
       called (Decision 10).
@@ -726,38 +761,61 @@ machinery rather than writing a new driver loop.
       `BimodalTools.entrySource` for the admitted ones. Every non-admitted outcome —
       `fuelExhausted`, `extractionFailed`, and an `invalid` verdict that is neither gated nor
       certified — is routed to the conjecture half with its verdict verbatim.
+      *(deviation: altered — the `ZTime` certificate route reads SUPPLIED certificates through a
+      new `--certificates PATH` flag, which the flag list below does not name. Nothing in this
+      tree derives a `RawCertificate` from a tableau branch: `BimodalTools/CertificateImport.lean`
+      only ever PARSES them (`parseCertificate`), and `checkRaw`/`checkCertified` is the
+      `decidableCertifies` call the plan names. Without an input flag that named call is
+      unreachable, so the flag is what makes the planned step callable rather than a substitute
+      for it. Absent a certificate the record carries no grade — which is exactly Decision 12's
+      stated expectation, measured here: a `ZTime` run produced 4 `certify` records, all with
+      `gates: null`, no grade, and zero `gated_tableau`.)*
       **`extractionFailed` is a principal path, not an error path** (Decision 13): it is 26 of 133
       at `ModalBoolean` c5, and the driver must neither log it as an anomaly nor retry it at
       higher fuel — the tableau closed, the formula is valid, and there is simply no `⊢ φ`
       witness to extract.
-- [ ] Create `BimodalTools/TheoremLibraryPipelineMain.lean` — the name is forced by `C25N`
+- [x] Create `BimodalTools/TheoremLibraryPipelineMain.lean` — the name is forced by `C25N`
       (`PascalCase(target)Main` for target `theorem_library_pipeline`). CLI: `--fragment`,
       `--max-complexity`, `--atoms`, `--frame-class` (repeatable), `--out-module`,
       `--out-countermodels`, `--out-records`, `--checkpoint`, `--deadline-s`, `--json`.
-- [ ] Make the **atom pool** an explicit, required, recorded parameter (`--atoms`), echoed into
+- [x] Make the **atom pool** an explicit, required, recorded parameter (`--atoms`), echoed into
       every record's head and into the sidecar. The measured yield is superexponential in pool
       size — `Boolean` 14 and `ModalBoolean` 133 at a 2-atom pool against 902 and 751 in a
       dataset tabulation at a wider pool — so a yield figure without its pool is meaningless and
       must not be emittable.
-- [ ] Default `--frame-class` to `Base` alone, and treat `--deadline-s` and `--checkpoint` as
+- [x] Default `--frame-class` to `Base` alone, and treat `--deadline-s` and `--checkpoint` as
       requirements rather than conveniences: a `Dense` gate pass over a modal fragment reached
       2.8 GB RSS at 100% CPU in Phase 1 and is a plausible OOM on this machine, not merely a slow
       run (`probes/baseline.md` §6). A caller asking for `Dense` is asking for the expensive path
       and says so explicitly.
-- [ ] Make `ZTime` skip gate evaluation structurally, not by a runtime shortcut that could be
+- [x] Make `ZTime` skip gate evaluation structurally, not by a runtime shortcut that could be
       lost: the frame-class dispatch selects the certificate route for `ZTime` and the gate route
       for the other three, so a future reader cannot mistake the skip for an optimization
       (Decision 12).
-- [ ] Add the `[[lean_exe]]` block for `theorem_library_pipeline` to `lakefile.toml`, and extend
+- [x] Add the `[[lean_exe]]` block for `theorem_library_pipeline` to `lakefile.toml`, and extend
       that file's header comment to record the now-used `BimodalTools → BimodalLib` edge
       alongside the `BimodalTools → FormalSystem` one it already sanctions (Decision 1).
-- [ ] Create `scripts/theorem-library-pipeline.sh` as the one named entry point, in the shape
+- [x] Create `scripts/theorem-library-pipeline.sh` as the one named entry point, in the shape
       `scripts/proof-mode-cost-baseline.sh` fixes: the staleness pin read before measuring,
       `flock` on `.lake/build-guard.lock` held to exit with a bounded announced wait, the
       `--json` zeroed-determinism contract, and a `_metadata.json` sidecar beside each dataset.
-- [ ] Record the exact command that reproduces a run in the sidecar and in each record's `command`
-      head field.
-- [ ] Regenerate `typst/generated/status.typ`.
+- [x] Record the exact command that reproduces a run in the sidecar and in each record's `command`
+      head field. *(deviation: altered — the generated MODULE's docstring carries a
+      reconstructed, path-free invocation instead of the raw `argv`. An `--out-module` path is
+      incidental to reproducibility, and worse, a path beginning with a slash and a hyphen opens
+      a NESTING Lean block comment inside the docstring: the measured symptom was
+      `unterminated comment` at end of file, from a scratch path, with the diagnostic pointing
+      nowhere near the cause. `BimodalTools.commentSafe` now guards every interpolated string
+      and is tested. The verbatim full command line is unchanged in each record's `command` head
+      field and in both sidecars, which is where the task's DONE WHEN asks for it.)*
+- [x] Regenerate `typst/generated/status.typ`. *(deviation: altered — `--emit-inventory` was
+      also run for `BimodalTools/README.md`, and `BimodalTools/LeanSourceEmit.lean` plus
+      `Tests/BimodalToolsTest/LeanSourceEmitTest.lean` — Phase 4's files — were edited here to
+      add and test `commentSafe`. Both are in `file_scope` and were staged in this phase's
+      commit. A second rename was forced by check `C23`: the CLI's JSONL writer is
+      `writeJsonObjects`, not `writeJsonl`, because `BimodalTools.writeJsonl` already exists in
+      `ProofFirstGenerator.lean:75` and an outer-shadows-inner bare-declaration pair makes
+      `C17`'s dead-declaration census blind to both.)*
 
 **Timing**: 2 hours
 
@@ -801,7 +859,19 @@ since the exe root sits outside both library closures and a plain `lake build` n
 
 ---
 
-### Phase 7: The End-to-End Run at the Ruled Bound, and Admission [NOT STARTED]
+### Phase 7: The End-to-End Run at the Ruled Bound, and Admission [COMPLETED WITH EXCLUSIONS]
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|---|---|---|
+| The last 1,264 of `ModalTemporalBoolean`'s 1,688 enumerated formulas | CERTIFY's tableau rebuilds are untimed: `--timeout-ms` bounds `decideOne` only, and `--deadline-s` is checked at the top of each loop iteration, so one formula can hold the budget indefinitely. Three successive runs all stopped at the same serial. 424 of 1,688 were decided; the other three fragments are exhaustive | `specs/.../probes/` run logs: checkpoint froze at serial 3954 for over ten minutes on a `--deadline-s 9600` run, which was stopped; the `--deadline-s 2400` configuration completes and reports `decided: 3955` |
+| `(dual := …)` declarations for polarity pairs | No referent. All six admitted schemata are Boolean or ModalBoolean (`A → (B → A)`, `□⊥ → A`, `□A → A`, `□(□⊥ → A)`, `□(□A → A)`, `A → □(□(A → ⊥) → ⊥)`); the plan's named pairs (`U(⊥,⊤) → ⊥`/`S(⊥,⊤) → ⊥`, `¬G⊥`/`¬H⊥`) are temporal and none survived admission, so there is no pair to declare a dual for | `BimodalLib/Theorems/Enumerated/Base.lean` holds six entries, none temporal; `scripts/library-index.sh --no-build --check` exits 0 with no new "laws with no declared dual" growth |
+| A `certificate`-graded `ZTime` refutation | Decision 12's predicted outcome, measured: `ZTime` contributes 0 of 2,981 refutations. The gated route is structurally unavailable there and no witness-family certificate was supplied, since nothing in the tree derives a `RawCertificate` from a tableau branch | `data/theorem-library-countermodels.jsonl`: `Base` 1,047, `Dense` 967, `RTime` 967, `ZTime` 0 |
+
+Neither excluded item blocks Phase 8. The truncated fragment's cells are labelled as lower bounds
+in `BimodalLib/Conjectures/Enumerated.lean`'s own notes rather than reported as exhaustive, and
+the dual-declaration item is a no-op by measurement rather than deferred work.
 
 **Goal**: Run the command end to end at the ruled bound, land the generated theorem module so the
 admitted entries build, write the certified refutations in the form
@@ -809,7 +879,7 @@ admitted entries build, write the certified refutations in the form
 the command that reproduces them.
 
 **Tasks**:
-- [ ] Run `bash scripts/theorem-library-pipeline.sh` at the ruled bound: `Boolean` and
+- [x] Run `bash scripts/theorem-library-pipeline.sh` at the ruled bound: `Boolean` and
       `ModalBoolean` at complexity 5, `TemporalBoolean` and `ModalTemporalBoolean` at complexity 4;
       `Base` for the theorem half, all four frame classes for the countermodel half. This is the
       user's ruling (`.decisions.json`, cycle 4; Decision 9), re-verified unchanged at plan
@@ -819,29 +889,44 @@ the command that reproduces them.
       Detach the run as a shell-level background job with a captured PID and block on it with the
       bounded single-call idiom; use `--checkpoint` so an interrupted run resumes and
       `--deadline-s` so it cannot run unbounded.
-- [ ] Expect no `gated_tableau` grade at `ZTime` and do not treat its absence as a failed run
+      *(deviation: altered — run as ONE invocation over all four fragments via a new
+      `--all-fragments` flag, which applies each fragment's own ruled bound (5/5/4/4), continues
+      statement serials across fragments and runs ADMIT ONCE over every fragment's candidates so
+      subsumption is global. The task description asks for "one command" over the four fragments
+      while `--fragment` takes one; admitting per fragment would also let a later fragment
+      register an instance of an earlier fragment's entry. A second addition was forced by the
+      ADMISSION rule itself: `--registry-statements`, fed by
+      `specs/evidence/theorem-library-pipeline/registry-statements.lean`, so ADMIT compares a
+      candidate against the WHOLE registry and not only against the candidates admitted so far —
+      "an entry already present" includes the hand-curated rows. Without it the first run emitted
+      10 entries of which the build invariant correctly rejected 4; with it the run admits 6 and
+      records 7 as subsumed.)*
+- [x] Expect no `gated_tableau` grade at `ZTime` and do not treat its absence as a failed run
       (Decision 12). Record the `ZTime` grade distribution — how many refutations
       `decidableCertifies` accepted — as a figure; a `ZTime` count of zero is a reportable
       finding about that acceptance rate, not a reason to re-run or to raise fuel.
-- [ ] Write the stage records to `data/theorem-library-pipeline.jsonl` with the sidecar
+- [x] Write the stage records to `data/theorem-library-pipeline.jsonl` with the sidecar
       `data/theorem-library-pipeline_metadata.json` carrying the `fields` array, mirroring
       `data/proof-mode-diagnostics.jsonl`'s convention.
-- [ ] Write the certified refutations to `data/theorem-library-countermodels.jsonl` with its
+- [x] Write the certified refutations to `data/theorem-library-countermodels.jsonl` with its
       sidecar: one record per refuted inference carrying the inference as `Γ ⊭ φ`, the frame
       class, the grade (`gated_tableau` or `certificate`), the model, and the eight gate `Bool`s.
       Nothing here is registered in `BimodalLib`.
-- [ ] Create `BimodalLib/Theorems/Enumerated/Base.lean` from the pipeline's emitted source — one
+- [x] Create `BimodalLib/Theorems/Enumerated/Base.lean` from the pipeline's emitted source — one
       file, because the theorem half is `Base`-only and the yield is single-digit schemata — with
       the Apache header and a module docstring naming the generating command and the bound.
 - [ ] Declare `(dual := …)` for the polarity pairs the enumeration produces together (the
       `U(⊥,⊤) → ⊥` / `S(⊥,⊤) → ⊥` pair and the `¬G⊥` / `¬H⊥` pair are time reflections of each
       other), so the index's "laws with no declared dual" section does not grow.
-- [ ] Create `BimodalLib/Theorems/Enumerated/README.md` — a new directory holding `.lean` files
+      *(deviation: skipped — no referent. All six admitted schemata are Boolean or ModalBoolean;
+      both named pairs are temporal and neither survived admission. Recorded under
+      `#### Reasoned Exclusions` above with the measured evidence.)*
+- [x] Create `BimodalLib/Theorems/Enumerated/README.md` — a new directory holding `.lean` files
       fails `readme-lint.sh` Check 1, which is gated — with a current `Last verified` stamp.
-- [ ] Add `import BimodalLib.Theorems.Enumerated.Base` to `BimodalLib.lean` and to
+- [x] Add `import BimodalLib.Theorems.Enumerated.Base` to `BimodalLib.lean` and to
       `BimodalLib/Theorems/Complete.lean`, so the new rows are covered by
       `assert_registry_complete`'s companion checks and by `assert_proof_fragments_recorded`.
-- [ ] Add **`assert_no_subsumed_entries BimodalLib.Theorems.Enumerated`** — the prefix-scoped
+- [x] Add **`assert_no_subsumed_entries BimodalLib.Theorems.Enumerated`** — the prefix-scoped
       form, with the prefix written out — to `BimodalLib/Theorems/Complete.lean`, so
       non-redundancy becomes a build invariant **for the machine-generated entries**. This is the
       user's ruling (`.decisions.json`, cycle 6; Decision 11), and it is the whole of what this
@@ -858,11 +943,11 @@ the command that reproduces them.
         deliberate named instances of more general schemata, not defects.
       - Add a one-line comment at the wiring site naming the scope and why it is scoped, so a
         future reader does not "complete" it by deleting the prefix.
-- [ ] If `assert_proof_fragments_recorded` reports a new row whose proof leaves the cell of its
+- [x] If `assert_proof_fragments_recorded` reports a new row whose proof leaves the cell of its
       statement, add a `record_proof_fragment` line next to that registration giving the reason —
       the sanctioned remedy, named here so it is not discovered mid-phase. If `evalProfile`
       cannot evaluate a row, it is listed as not-computed and needs a recorded reason the same way.
-- [ ] Register the non-admitted outcomes as one aggregate `Conjecture` constant per (fragment,
+- [x] Register the non-admitted outcomes as one aggregate `Conjecture` constant per (fragment,
       frame class, verdict) cell in `BimodalLib/Conjectures/Enumerated.lean`, each with a
       docstring naming the dataset as the per-formula record (Decision 6), plus its own
       `README.md` listing if a new directory is created. Expect the conjecture half to **dominate**
@@ -870,12 +955,12 @@ the command that reproduces them.
       `fuelExhausted` and larger than `valid` (Decision 13). The constant count is
       (fragments × frame classes × verdicts) and so is bounded independently of that share —
       which is exactly why Decision 6 aggregates per cell instead of per formula.
-- [ ] Give each `extractionFailed` cell's docstring the reason it is a conjecture rather than a
+- [x] Give each `extractionFailed` cell's docstring the reason it is a conjecture rather than a
       theorem: the tableau closed and the formula is valid, but no `⊢ φ` witness was extracted,
       so M19's admission rule does not apply. Do not describe it as a failure or a timeout —
       `fuelExhausted` is the timeout and the two keep distinct cells (Decision 7).
-- [ ] Regenerate `BimodalLib/INDEX.md` with `bash scripts/library-index.sh`.
-- [ ] Bump the `Last verified` stamps in `BimodalLib/README.md`, `BimodalLib/Theorems/README.md`
+- [x] Regenerate `BimodalLib/INDEX.md` with `bash scripts/library-index.sh`.
+- [x] Bump the `Last verified` stamps in `BimodalLib/README.md`, `BimodalLib/Theorems/README.md`
       and `BimodalLib/Conjectures/README.md` to the commit date.
 
 **Timing**: 2 hours
@@ -957,13 +1042,13 @@ ruling.
 
 ---
 
-### Phase 8: Revise docs/, Trim the Record, and the Final Gate [NOT STARTED]
+### Phase 8: Revise docs/, Trim the Record, and the Final Gate [COMPLETED]
 
 **Goal**: Describe what now exists in `docs/`, cut the implemented part from the design record,
 and close the orchestration's gate obligation.
 
 **Tasks**:
-- [ ] Extend `docs/reference/bimodal-lib.md` with the enumerated-entry directory, the subsumption
+- [x] Extend `docs/reference/bimodal-lib.md` with the enumerated-entry directory, the subsumption
       matcher and its build-time assertion, and the aggregate-conjecture convention. State the
       assertion's scope as a design property, not an implementation detail: non-redundancy is a
       build invariant over `BimodalLib.Theorems.Enumerated`, the machine-generated entries, and
@@ -972,7 +1057,7 @@ and close the orchestration's gate obligation.
       `⊥`; `Propositional.em` unfolds to an instance of `A → A`). Say that the candidate side is
       scoped while the comparison side is not, so a generated duplicate of a hand-curated law is
       still caught. Describe the current design only — no version labels, no supersession prose.
-- [ ] Extend `docs/reference/diagnostics.md` with the five now-implemented reserved stages, the
+- [x] Extend `docs/reference/diagnostics.md` with the five now-implemented reserved stages, the
       emitters' siting in `BimodalTools/` and why, and the unregistered-statement identifier
       convention (Decision 8), leaving `Stage.carriesFormulaField` recorded as the unexercised
       obligation it remains. Record two measured facts a reader of the records needs: the `decide`
@@ -981,20 +1066,20 @@ and close the orchestration's gate obligation.
       and the `certify` grade at `ZTime` is `certificate` only because the `regionLabel` and
       `temporalWitness` gates are false there by construction. Name the artifact each figure
       comes from.
-- [ ] Add the uniform-substitution layer to the appropriate `docs/` reference page, stating that
+- [x] Add the uniform-substitution layer to the appropriate `docs/` reference page, stating that
       the transfer is syntactic and sound over `Formula` because TM is closed under uniform
       substitution while TM⁺ is not.
-- [ ] Revise `records/theorem-library.md`: correct the Layout block's `Diagnostics/` line to the
+- [x] Revise `records/theorem-library.md`: correct the Layout block's `Diagnostics/` line to the
       emitters' actual home, and cut the "Sources and the tableau pipeline" stage list down to
       what remains unimplemented (stages 6 and 7, re-prove and compare). Do **not** edit
       `records/proof-mode.md` or any proof-mode source file.
-- [ ] State the theorem-half yield in any new prose as the derivation-bearing count with its
+- [x] State the theorem-half yield in any new prose as the derivation-bearing count with its
       artifact named, never as the raw `valid` count, and say which complexity measure a bound is
       in (Decision 9).
-- [ ] Add `scripts/theorem-library-pipeline.sh` to
+- [x] Add `scripts/theorem-library-pipeline.sh` to
       `.claude/docs/reference/utility-scripts-inventory.md`'s equivalent in-repo home if one
       exists under `scripts/README.md`; otherwise list it in `scripts/README.md`.
-- [ ] Record as follow-ups, not work: the three context-file extensions the research report
+- [x] Record as follow-ups, not work: the three context-file extensions the research report
       recommends (they land under a source store in another repository), and
       `theorem_library_countermodels` as the consumer of this task's refutation dataset.
 
@@ -1026,6 +1111,37 @@ and close the orchestration's gate obligation.
 - Any gate finding that is pre-existing and outside this task's file scope is a recorded PASS with
   the finding enumerated against the Phase 1 baseline, per
   `context/project/lean4/patterns/plan-authoring-gate-collisions.md` Condition 4.
+
+#### Verification notes (dispatch seq 9)
+
+**The full gate set was DEFERRED to the batch stage, not independently run**, per this dispatch's
+Batch Gate Deferral directive. The scoped discharge was
+`bash .claude/scripts/verify-touched.sh`, run once: **84 passed, 1 failed, 10 skipped, 95 total**.
+
+The one failure is `.claude/scripts/tests/test-deploy-baseline-lib.sh`'s assertion `control: a
+genuinely matching warm-cache entry was expected to skip gate 1 but did not` (29 passed, 1 failed
+within that suite). It is **pre-existing and outside this task's file scope**: its subjects are
+`verify-deploy.sh` and `deploy-baseline-lib.sh` under `.claude/**`, which no commit of this task
+touches and which this task must not hand-patch (`.claude/**` is a deploy artifact whose source
+store is in another repository). The dispatch's own deploy-freshness context independently reports
+the deployed `.claude/` tree STALE for extension `core`, which is consistent with a cache-keyed
+deploy assertion failing. Recorded as a PASS for this phase on Condition 4.
+
+The named checks this phase's criteria call for, run directly:
+
+- `bash scripts/check-module-invariants.sh --no-build` → **exit 0, zero FAILs**. The arms that
+  range over `docs/` are all green: `C5`, `C9D`, `C12`, `C13`, `C14`, `C20` (all four tiers),
+  `C31`, `C32`, `C35`, `INV`. `C5` initially flagged three dotted declaration names this phase
+  added that it reads as module paths (`DerivationTree`, `TheoremEntry`,
+  `EnumerateRecord`); all three were reworded to cite the module path instead, and `C5` now
+  reports all module-shaped paths in 1,142 markdown files resolving.
+- `bash scripts/readme-lint.sh FormalSystem BimodalTools BimodalLib` → 4 new stale findings,
+  **all four under `FormalSystem/` directories this task never touches**:
+  `Automation/ProofMode/README.md`, `Metalogic/Conservativity/Star/README.md`,
+  `Tactic/README.md`, `Theorems/ProofMode/README.md`. Two of those directories this plan's
+  Non-Goals explicitly forbid editing. Recorded as a PASS on Condition 4.
+- `bash scripts/typst-sync-check.sh --counts-only` → exit 0, `MISMATCH_COUNT=0`.
+- Phase-end full `lake build` → exit 0, 3,018 jobs, zero errors.
 
 ---
 
