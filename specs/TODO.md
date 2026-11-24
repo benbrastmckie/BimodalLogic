@@ -13,18 +13,18 @@ next_project_number: 991
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,869,890,935,960,962,977,986,987,988,989 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
-| 2 | 231,282,296,429,497,763,862,873,932,944,954,955,961,969,984 | 298,428,502,604,761,869,960,977,986,989 | algebraic-representation, dataset-enhancement, decidability, ... |
-| 3 | 410,498,499,500,861,874,875,876,945,972 | 429,497,763,873,944,961 | algebraic-representation, decidability, metalogic, ... |
-| 4 | 125,411,543,946,973 | 410,498,499,500,945,969,972 | algebraic-representation, decidability, metalogic, ... |
-| 5 | 430,501,947 | 125,411,946,955,961 | algebraic-representation, decidability, proof-mode |
-| 6 | 412,949,951,963,965 | 430,947,954 | decidability, proof-mode |
+| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,890,935,960,961,962,977,986,987,988,989 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
+| 2 | 231,282,296,429,497,763,862,869,944,954,955,969,972,984 | 298,428,502,604,761,960,961,962,977,986,989 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 3 | 410,498,499,500,861,873,932,945,973 | 429,497,763,869,944,972 | algebraic-representation, decidability, semantics, ... |
+| 4 | 125,411,543,874,875,876,946 | 410,498,499,500,873,945,969 | algebraic-representation, decidability, metalogic, ... |
+| 5 | 430,501,947 | 125,411,946,955,973 | algebraic-representation, decidability, proof-mode |
+| 6 | 412,949,951,963,965 | 178,430,947,954 | decidability, proof-mode |
 | 7 | 482,950,964 | 412,949,963,987 | decidability, proof-mode |
-| 8 | 177,948 | 178,282,296,481,482,543,950,972 | formula-refactor, proof-mode |
+| 8 | 177,948 | 178,282,296,481,482,543,950 | formula-refactor, proof-mode |
 | 9 | 952 | 948,951,964 | proof-mode |
-| 10 | 953,956,966,968,974 | 952,962,973 | proof-mode |
+| 10 | 953,956,966,968,974 | 952,962 | proof-mode |
 | 11 | 957 | 956 | proof-mode |
-| 12 | 967 | 957,966,973 | proof-mode |
+| 12 | 967 | 957,966 | proof-mode |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -93,10 +93,10 @@ next_project_number: 991
 
 ### Semantics
 
-869 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
-  └─ 932 [NOT STARTED] — Land the four ofStepRel constraint lemmas and an ofStepPlain...
 989 [NOT STARTED] — Three follow-ups named in the posted review of the pointed...
   └─ 984 [NOT STARTED] — Promote next\_iff\_covBy and prev\_iff\_covBy of...
+869 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
+  └─ 932 [NOT STARTED] — Land the four ofStepRel constraint lemmas and an ofStepPlain...
 
 ### Syntax
 
@@ -134,15 +134,12 @@ next_project_number: 991
     └─ 963 [NOT STARTED] — ARCHITECTURE (records/proof-mode-architecture.md): tier... (see above)
   └─ 955 [NOT STARTED] — MILESTONE M2 (records/proof-mode.md), STREAM: closure...
     └─ 947 [NOT STARTED] — REVISED: GATE ONE IS A SWEEP OVER A SELECTION OF LIBRARY... (see above)
-  └─ 961 [NOT STARTED] — REVISED: THIS RECORD ALSO FIXES THE DIAGNOSTICS STANDARD...
-    └─ 947 [NOT STARTED] — REVISED: GATE ONE IS A SWEEP OVER A SELECTION OF LIBRARY... (see above)
-    └─ 972 [NOT STARTED] — MILESTONE M19 (records/proof-mode.md), LANE: library. Theorem...
-      └─ 948 [NOT STARTED] — REVISED: GATE TWO IS A SWEEP OVER A SELECTION OF LIBRARY... (see above)
-      └─ 973 [NOT STARTED] — MILESTONE M20 (records/proof-mode.md), LANE: library. Theorem...
-        └─ 967 [NOT STARTED] — REVISED (records/proof-mode.md, M14b;... (see above)
-        └─ 974 [NOT STARTED] — MILESTONE M21 (records/proof-mode.md), LANE: library, then... (see above)
   └─ 969 [HOLD] — LOCATION (binding over any module path named below): the view...
     └─ 946 [HOLD] — NO ModalTemporal MODULE OR CLASS... (see above)
+961 [NOT STARTED] — REVISED: THIS RECORD ALSO FIXES THE DIAGNOSTICS STANDARD...
+  └─ 972 [NOT STARTED] — MILESTONE M19 (records/proof-mode.md), LANE: library. Theorem...
+    └─ 973 [NOT STARTED] — MILESTONE M20 (records/proof-mode.md), LANE: library. Theorem...
+      └─ 947 [NOT STARTED] — REVISED: GATE ONE IS A SWEEP OVER A SELECTION OF LIBRARY... (see above)
 962 [NOT STARTED] — MILESTONE M9b (records/proof-mode.md), STREAM: metatheory....
   └─ 953 [NOT STARTED] — With the interface as one class per operator family and... (see above)
 986 [NOT STARTED] — Report the real cause when a view fails to apply. applyView...
@@ -291,7 +288,7 @@ next_project_number: 991
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: proof-mode
-- **Dependencies**: Task 947
+- **Dependencies**: Task 178, Task 947
 
 **Description**: REVISED (records/proof-mode.md, M12): where proof-mode proofs of library entries live is settled, BimodalLib/ProofMode/<Fragment>/, and this record does not decide it. The ruling still needed is what 'default' means, with candidates (a) new example and case-study modules must use the mode; (b) every new derived theorem is registered in BimodalLib with a proof-mode script beside it; (c) the mode stays optional outside the library's sweeps. ADDED TO DONE WHEN: the guide states that a theorem entering BimodalLib comes with a proof-mode script or a recorded failure class. The module proved in the mode must be outside both the tests and the library's sweeps, so FormalSystem/Examples/ProofMode/Adoption.lean stands. MILESTONE M12 (records/proof-mode.md), STREAM: evaluation and writing. Opens on a GO verdict, alongside the linear-time rules. Proof mode: adoption after the Perpetuity adequacy verdict. FIRST read docs/development/proof-mode-adequacy-perpetuity.md, produced by `proof_mode_reprove_perpetuity`; if its verdict is RE-PLAN, stop and report. On GO, decide and write down in docs/user-guide/derivation-proof-mode.md where proof-mode proofs live, which kinds of new derivation are to be written in the mode, and what "default" means given that FormalSystem/Theorems/ is below FormalSystem/Automation/ in the layer order (ORGANISATION.md) and cannot import it. Then prove at least one module in the mode that is neither a test nor an adequacy module, under FormalSystem/Examples/ProofMode/. USER RULING NEEDED BEFORE IMPLEMENTATION: the meaning of "default". The candidates are (a) new example and case-study modules must use the mode; (b) new derived theorems get a proof-mode companion under FormalSystem/Examples/; (c) the mode stays optional and this record only fixes where its proofs live. Research presents the three with their costs and the plan stops for the ruling. DONE WHEN: the guide section exists and the module builds. Hard dependency: `proof_mode_reprove_perpetuity` with a GO verdict. ADJACENCY: `publication_examples_and_demo` declares FormalSystem/Examples/ as a directory, and `proof_mode_reprove_temporal_slice` adds a sibling module and an import line to FormalSystem/Examples.lean; neither presupposes this record, so the overlap serializes dispatch and is not a dependency.
 
@@ -331,7 +328,7 @@ next_project_number: 991
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: proof-mode
-- **Dependencies**: Task 960
+- **Dependencies**: None
 
 **Description**: REVISED: THIS RECORD ALSO FIXES THE DIAGNOSTICS STANDARD (records/theorem-library.md, 'Diagnostics'; records/proof-mode.md, M13), and the adequacy gate now depends on it HARD. In addition to the audit and baseline below: (a) define ONE record schema for every stage of the library pipeline (enumerate, decide, extract, certify, admit, re-prove, compare), a record keyed by statement identifier and stage and carrying fragment, frame class, commit and the command that produced it, with the per-stage fields the record lists; (b) implement the commands that emit the RE-PROVE and COMPARE records for a proof-mode script (outcome, failure class, tactic count and distinct tactics, size of any term-mode escape, elaboration time, size of the derivation built, script length against the hand proof), which the cost script below is the first use of; (c) document the schema and every field at docs/reference/diagnostics.md, since a stage is not complete until its fields are documented. The other stages' emitters are written by `theorem_library_tableau_pipeline` against this schema. Design the schema against the existing dataset records under data/ and BimodalTools/ so that one is not invented beside the other. CONSUMERS: `proof_mode_reprove_perpetuity` (hard), `theorem_library_tableau_pipeline` (hard). COORDINATION WITH OPEN CONTRIBUTIONS. Three stacked pull requests from a collaborator are open against this area: #7 (logical rewriting `lrewrite` / `lsimp`, the congruence kit), #8 (Until/Since introduction, folding and ZTime unfolding, `linduction`, whole-judgment time reflection, `keeping`, strict leads-to rules) and #9 (a semantic mode, asked to be re-proposed separately). If #7 has merged, add one nested logical rewrite to the cost baseline: composed congruence certificates are the terms most likely to be large, and the contribution promised a baseline and recorded none. Report the axiom audit and the cost per tier (views, derivation). MILESTONE M13 (records/proof-mode.md), STREAM: evaluation. Does not wait on the Perpetuity adequacy verdict: it changes no rule and no tactic. It is ordered BEFORE the adequacy gate (`proof_mode_reprove_perpetuity` depends on it) so that the gate report can quote a cost figure. Proof mode: axiom audit and cost baseline. No test states which axioms a proof-mode derivation depends on, and nothing measures the derivation terms the tactics build. (1) Add a test module, on the pattern of Tests/BimodalTest/WalkthroughAxioms.lean, that asserts the axiom set of at least one derivation per tactic family (basic, modal, temporal, discrete) in TM and in TM⁺. (2) Record a baseline: derivation-term size and elaboration time for each acceptance example and for one long script with at least five nested `lintro` steps, since `lintro` discharges through the deduction theorem, which transforms a whole derivation, so cost on long scripts is an open question. Write the figures and the command that reproduces them to docs/development/proof-mode-cost-baseline.md, with the measuring script checked in. DONE WHEN: the audit test passes in `lake test` and the baseline file exists with its reproduction command. Hard dependencies: none; the dependency on the file split is for the test directory layout only. The derivation proof mode lives in FormalSystem/Automation/ProofMode/ (elaborators) and FormalSystem/Theorems/ProofMode/ (tactic-independent derivation-producing rules); FormalSystem/Theorems/ must not import FormalSystem/Automation/. Every tactic must assemble native DerivationTree / PlusDerivationTree constructors and proved rules only; nothing semantic may stand in for a derivation. Every new `throwError` path gets a negative test asserting its message (`#guard_msgs`). The existing acceptance tests must keep passing unchanged. Milestones, lanes and gates are in records/proof-mode.md.
 
@@ -457,7 +454,7 @@ next_project_number: 991
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: proof-mode
-- **Dependencies**: Task 946, Task 955, Task 961, Task 971
+- **Dependencies**: Task 946, Task 955, Task 961, Task 971, Task 973
 
 **Description**: REVISED: GATE ONE IS A SWEEP OVER A SELECTION OF LIBRARY ENTRIES (records/theorem-library.md, 'Evaluating the proof mode'; records/proof-mode.md, M3). This supersedes the corpus, the module location and the measurement format in the original description below; the GO / RE-PLAN criteria are unchanged. (1) SELECTION: choose theorem entries registered in BimodalLib from the Boolean and ModalBoolean fragments and from the Perpetuity section of ModalTemporalBoolean, the six principles P1-P6 included, and fix the list in the plan before any script is written, with a stated reason for each entry: the rule, tactic or scope it exercises, or that it is a result people need to write. The selection must exercise every rule the scope chain and the leaf closer provide, and must not include an entry that repeats a measurement already taken; it is meant to be small enough to finish and is enlarged later only where a sweep shows something unexercised. (2) LOCATION: scripts live under BimodalLib/ProofMode/<Fragment>/, each elaborated against the TYPE of its registered statement by the pairing command of `theorem_library_layout_and_registry`, without citing the reference proof or any lemma that restates it. Nothing is added under FormalSystem/Examples/. (3) RECORDS: every attempt has a diagnostic record in the schema of `proof_mode_axiom_audit_and_cost_baseline`, with one of four outcomes (closed by the mode's rules alone; with leaf automation; with a term-mode escape; not closed) and, unless the first, one failure class (missing rule, missing tactic for an existing rule, automation too weak, script too awkward, too slow, defect in the mode). (4) LENGTH is compared against HAND proofs only; an entry whose only reference proof is tableau-extracted counts toward coverage and the missing-rule list. (5) The report at docs/development/proof-mode-adequacy-perpetuity.md opens with the verdict, states for each entry what it tests, and ends with the missing-rule list, each item added or named with a proposed description. The sweep is re-runnable by one command. DEPENDENCIES NOW: hard on `theorem_library_layout_and_registry` (the entries and the pairing) and on `proof_mode_axiom_audit_and_cost_baseline` (the records), in addition to the scope chain and the leaf closer. ON GO this also opens `theorem_library_stability_entries`. RULE SET UNDER MEASUREMENT. The gate measures the rules of the scope chain, the leaf closer and the views tier. Whether logical rewriting (pull request #7) and the contributed temporal rules (#8) may be used in the scripts is open decision 5 of records/proof-mode-architecture.md and needs the user's ruling before the plan fixes the allowed rule set; state the ruling at the top of the report. Report scripts' use of each tier separately (views, derivation). MILESTONE M3, GATE ONE (records/proof-mode.md), STREAM: evaluation. DEPENDENCIES AS FILED: `proof_mode_always_sometimes_scopes` and `proof_mode_close_leaves_with_automation` (hard: the gate measures exactly that rule set), and `proof_mode_axiom_audit_and_cost_baseline` (sequencing: quote its cost baseline in the report and re-run its measuring script on the new module). ON GO this opens five records: `proof_mode_linearity_case_tactic`, `proof_mode_dense_and_real_time_rules`, `proof_mode_nested_intro_patterns`, `proof_mode_adoption_after_perpetuity_verdict`, and through them the rest. ON RE-PLAN every one of those is held until its record is revised. ADJACENCY: `publication_examples_and_demo` declares FormalSystem/Examples/ as a directory; neither record presupposes the other. ORIGINAL DESCRIPTION FOLLOWS. Proof mode adequacy test: re-prove Theorems/Perpetuity. The P1-P6 scripts already exist as acceptance tests from the always/sometimes task; this task owns the SUPPORTING LEMMAS, the measurement and the verdict. Re-prove the supporting lemmas of FormalSystem/Theorems/Perpetuity/ (Helpers.lean, Principles.lean, MonotonicityDuality.lean: `boxToFuture`, `boxToPast`, `diamond4`, `modal5`, `boxConjIntro*`, `persistence`, `alwaysMono`, the duality lemmas, `bridge1`/`bridge2`, ...) in the proof mode, and collect them with the P1-P6 scripts in a new module FormalSystem/Examples/ProofMode/Perpetuity.lean, ALONGSIDE the existing proofs (do not delete or replace them; Theorems/ must not import Automation/). The scripts may use only axioms, native constructors, general proof-mode rules and one another; they must not cite the original Perpetuity declarations. Write the report to docs/development/proof-mode-adequacy-perpetuity.md recording, per declaration: non-blank proof lines and tactic/term-step count for the original and for the script, and every rule or tactic found missing or awkward. THIS IS A GATE: the report must open with an explicit GO or RE-PLAN verdict. GO requires the scripts to be shorter in aggregate and for a clear majority of declarations, with no declaration needing a raw term-mode escape longer than its original; otherwise the verdict is RE-PLAN, with a concrete recommendation for how each downstream proof-mode task should change. On RE-PLAN, finish with user review required (requires_user_review) so that no downstream proof-mode task is dispatched on the unrevised plan. DONE WHEN: the module builds and the report with its verdict exists at the stated path. Source: research/NEW_DIRECTIONS.md, row PM-4. The derivation proof mode lives in FormalSystem/Automation/ProofMode/ (elaborators) and FormalSystem/Theorems/ProofMode/ (tactic-independent derivation-producing rules), with acceptance tests in Tests/BimodalTest/Automation/ProofModeTest.lean and the user guide at docs/user-guide/derivation-proof-mode.md. Every tactic must assemble native DerivationTree / PlusDerivationTree constructors and proved rules only; nothing semantic may stand in for a derivation. Add acceptance tests and update the user guide and both ProofMode READMEs for every tactic added or changed. Every new `throwError` path gets a negative test asserting its message (`#guard_msgs`). The existing acceptance tests must keep passing unchanged.
 
@@ -672,7 +669,7 @@ VERIFICATION GATE. Guarded scoped build of `FormalSystem.OpenLanguage` green, th
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: semantics
-- **Dependencies**: Task 743, Task 898
+- **Dependencies**: Task 743, Task 898, Task 962
 
 **Description**: PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the repository is now completeness and decidability of the stability-modal language L-plus; L^▷ is a secondary line of investigation, kept and not abandoned. This task belongs to the L^▷ exploration stage of specs/ROADMAP.md, off both critical paths: do not dispatch it ahead of, or batch it with, L-plus critical-path work. Its content below stands except where this paragraph says otherwise.
 
