@@ -23,8 +23,8 @@
 #   - everything under Tests/ (65 files). `BimodalTest` and `BimodalToolsTest` declare
 #     `srcDir = "Tests"`, so their roots are `Tests/BimodalTest.lean` and
 #     `Tests/BimodalToolsTest.lean`; `./BimodalTest.lean` does not exist and will not.
-# CI runs `--strict FormalSystem BimodalTools`, which covers the first group (and re-covers the
-# library, redundantly but cheaply). Tests/ is NOT in the CI invocation; it is clean under
+# CI runs `--strict FormalSystem BimodalTools BimodalLib`, which covers the first group (and
+# re-covers the two libraries, redundantly but cheaply). Tests/ is NOT in the CI invocation; it is clean under
 # `--strict Tests` today, and adding it is a one-word change to the CI step.
 #
 # The predicate below mirrors Mathlib's `copyrightHeaderChecks`

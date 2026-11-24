@@ -13,6 +13,8 @@ that it fails, with a pinned message, on what it should not.
 | `RegistryCheckTest.lean` | `assert_registry_complete` fails on the fixture's unregistered derivation and passes once it is registered; `register_theorem` refuses a rule and a non-derivation |
 | `PairingTest.lean` | `reprove` accepts a second proof, rejects a drifted one as a type error, and refuses a declaration with no row |
 | `IndexTest.lean` | The polarity census on each defined operator; a declared dual read back from its row |
-| `Fixtures/` | `UnregisteredDerivation.lean`: one closed derivation that no registration module names |
+| `EdgeTableTest.lean` | The status of each conservativity edge read off its verdict; a verdict cannot be built without its proof; the rendered edge section lists every registered edge |
+| `ProofFragmentTest.lean` | `assert_proof_fragments_recorded` fails on the fixture's theorem, whose proof leaves the cell of its statement, passes once a reason is recorded, and reports a reason recorded for a proof that stays inside its cell; a proved edge is a reason by itself |
+| `Fixtures/` | `UnregisteredDerivation.lean`: one closed derivation that no registration module names. `UnrecordedProofFragment.lean`: one registered theorem in Until alone derived through `□`, with no recorded reason |
 
 *Last verified: 2026-11-23*
