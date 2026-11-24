@@ -1,0 +1,17 @@
+{
+  "status": "researched",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/961_proof_mode_axiom_audit_and_cost_baseline/reports/01_axiom-audit-cost-baseline.md",
+      "summary": "Axiom audit and cost baseline for the derivation proof mode, measured in-research at commit 521385a9: 13 compiled #print axioms rows across the four tactic families plus TM-plus, views and the merged congruence kit; lintro nesting cost closed-form 5n^2+17n+41 (exact, n=2..16) with linear heartbeats; nested logical rewrite 785+346d (PR #7 merged, conditional active); per-tier views/derivation cost table; one-schema diagnostics design against the existing data/ and BimodalLib record shapes; and the structural finding that #print axioms cannot name an example, so the audit module needs named mirrors."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1795489185_6c2ae6_961",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
