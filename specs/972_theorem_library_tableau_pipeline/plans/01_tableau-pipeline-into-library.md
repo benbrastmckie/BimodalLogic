@@ -1,7 +1,7 @@
 # Implementation Plan: Task #972
 
 - **Task**: 972 - Theorem library: tableau pipeline
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 14.5 hours
 - **Dependencies**: `theorem_library_layout_and_registry` (landed), `proof_mode_axiom_audit_and_cost_baseline` (landed)
 - **Research Inputs**: specs/972_theorem_library_tableau_pipeline/reports/01_tableau-pipeline-into-library.md
@@ -206,7 +206,20 @@ licence to parallelize across a shared generated surface.
 
 ---
 
-### Phase 1: Baseline Pin and the Two Unmeasured Figures [NOT STARTED]
+### Phase 1: Baseline Pin and the Two Unmeasured Figures [COMPLETED WITH EXCLUSIONS]
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|---|---|---|
+| `ModalBoolean` gate rows at `Dense`, `ZTime`, `RTime` | Gate evaluation at `Dense` on a modal fragment is the dominant cost of the whole pipeline and does not complete under batch contention; the run reached 2.8 GB RSS at 100% CPU with `earlyoom` configured to prefer killing `lean` | `probes/baseline.md` §6; run 1 did not finish these four rows in 9 min of wall clock |
+| `TemporalBoolean` and `ModalTemporalBoolean` figures entirely | Same cost wall, reached before these two fragments were started | `probes/baseline.md` §§3–6 |
+| An uncontended timing figure | The plan's `.lake/build-guard.lock` mitigation does not serialize the non-`lake` sibling sweep that caused the contention, so no wall-clock figure is clean | `probes/baseline.md` §6: 38252 ms vs 36071 ms for byte-identical input, while every count reproduced exactly |
+
+Neither excluded row blocks a later phase. Phase 6's three defaults are decided by the figures
+that **were** measured — the `ZTime` gate collapse (0 of 11, structural), the `Base`-vs-`Dense`
+cost asymmetry, and the atom-pool sensitivity of the yield — and each excluded row would refine
+a default already chosen rather than change it.
 
 **Goal**: Capture the pre-task state of every gate this plan will later be judged against, and
 take the two figures the research report leaves unmeasured — the eight-gate pass rate per
