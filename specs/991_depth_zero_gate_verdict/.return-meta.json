@@ -1,30 +1,98 @@
 {
-  "status": "planned",
-  "dispatch_seq": 2,
+  "status": "implemented",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 14,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/991_depth_zero_gate_verdict/plans/01_depth-zero-gate-step-fragment-bridge.md",
-      "summary": "Six-phase, 9.5-hour plan for the settled step-fragment-bridge route, landing CellLEZeroConstOfKappaEq restricted to StepFrag under its own name while leaving the reserved name unclaimed."
+      "type": "summary",
+      "path": "specs/991_depth_zero_gate_verdict/summaries/01_depth-zero-gate-step-fragment-bridge-summary.md",
+      "summary": "Landed cellLE_zero_const_of_kappa_eq_stepFrag sorryAx-free: the reserved depth-0 schema holds on StepFrag from ParamsOk at generic parameters, leaving cellLE_zero_const_of_kappa_eq unclaimed."
     }
   ],
-  "memory_candidates": [
+  "completion_data": {
+    "completion_summary": "The depth-0 gate's verdict is delivered in the positive direction on the step fragment: cellLE_zero_const_of_kappa_eq_stepFrag discharges CellLEZeroConstOfKappaEq for every StepFrag formula from ParamsOk itself, at generic parameters, sorryAx-free, with StepFrag as the single added hypothesis. Getting there discharged the two owed threshold inequalities from (K3) via a new pure-syntax bound dBack_add_dFwd_le_closure_card, repaired (K4)'s forward conjunct from 2*dFwd+1 to 2*dFwd+2, and restated every landed record that repair falsifies against a newly frozen ParamsOkPre. The reserved name cellLE_zero_const_of_kappa_eq remains carried by no declaration, and the gate's crux is re-sited in-source on the measured residue: stab-free formulas carrying an unbounded U/S jump.",
+    "roadmap_items": [
+      "specs/ROADMAP.md Stage 0's crux wording still names the forward-slack question and should be re-sited on the measured residue (stab-free formulas with an unbounded U/S jump); /roadmap owns the roadmap_milestones/roadmap_context entries the file renders from, and this task wrote no roadmap entry.",
+      "Milestone M7's ladder band unparks on this verdict: the ladder realization theorem's own plan record is restated against it by its own task, as a /revise rather than a dispatch."
+    ]
+  },
+  "modified_files": [
+    "FormalSystem/Metalogic/Decidability/RaySummary/CounterQuotient.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderStepFrag.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+    "FormalSystem/Metalogic/README.md",
+    "README.md",
+    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
+    "docs/theorem-index.md",
+    "scripts/check-evidence-probes.sh",
+    "specs/991_depth_zero_gate_verdict/plans/01_depth-zero-gate-step-fragment-bridge.md",
+    "specs/991_depth_zero_gate_verdict/probe-draft/threshold-depth-sum.lean",
+    "specs/991_depth_zero_gate_verdict/summaries/01_depth-zero-gate-step-fragment-bridge-summary.md",
+    "specs/evidence/forward-slack-pin-cascade/ordinary-window-regime.lean",
+    "specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean",
+    "specs/evidence/seam-gluing-ray-product/ladder-cell-obligation-refutation.lean",
+    "specs/evidence/seam-gluing-ray-product/ladder-chain-object-clip-refutation.lean",
+    "specs/evidence/seam-gluing-ray-product/ladder-step-fragment-gap-depth.lean",
+    "specs/state.json",
+    "typst/generated/status.typ"
+  ],
+  "sapience_notes": [
     {
-      "content": "When a Lean plan must site a new theorem that joins two sibling modules' vocabularies, resolve the import DAG by TRANSITIVE closure before planning a new module or a new import edge. In BimodalLogic's RaySummary layer, LadderAgree and LadderStepFrag look like disjoint siblings (LadderAgree imports only AnchorLayer + CounterQuotient; LadderStepFrag imports only LadderRealize), yet LadderAgree IS in LadderStepFrag's closure via LadderStepFrag -> LadderRealize -> LadderChain -> LadderPump -> LadderAgree. Reading only the two files' own import lines would have forced a new module, which in this repository additionally owes lake exe mk_all, a module-inventory regeneration and a check-metalogic-cycles.sh allowlist check. The cheap authoring-time confirmation is to assemble the plan's pinned Challenge signatures with a single candidate import and compile them (lean-challenge-snapshot.sh --dry-run --compile): a successful compile proves every referenced declaration resolves from that one import, settling siting mechanically rather than by reading import lines.",
-      "category": "PATTERN",
-      "source_artifact": "specs/991_depth_zero_gate_verdict/plans/01_depth-zero-gate-step-fragment-bridge.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["lean4", "import-closure", "module-siting", "plan-authoring", "challenge-statements", "transitive-imports"]
+      "subject": "BimodalLogic depth-0 gate: the verdict and the residue it leaves",
+      "value": "The depth-0 gate lifts in the POSITIVE direction on the step fragment, not via either of the two events originally filed. cellLE_zero_const_of_kappa_eq_stepFrag (FormalSystem/Metalogic/Decidability/RaySummary/LadderStepFrag.lean) discharges CellLEZeroConstOfKappaEq for every StepFrag formula from ParamsOk at generic parameters, sorryAx-free. The refutation direction has NO depth-0 candidate: every separating family compiled anywhere in the tree (thetaC, sigC b, mixC a k, dblC j) is diaF- or .stab-rooted and so fails the schema's own stab-free hypothesis. The open residue is exactly the stab-free formulas carrying an UNBOUNDED U/S jump -- a guard other than bottom under an untl or a snce. The reserved name cellLE_zero_const_of_kappa_eq stays carried by no declaration."
+    },
+    {
+      "subject": "BimodalLogic: the two owed threshold inequalities come from (K3) alone",
+      "value": "2*(dBack phi + dFwd phi) <= Tc and <= Tn follow from ParamsOk through (K3)'s two conjuncts only -- (K2)'s margin arm is not needed and buys nothing. The one new piece of mathematical content is dBack_add_dFwd_le_closure_card: dBack counts snce-rooted closure members, dFwd counts untl-rooted ones, no member is both, so the two counts sit in DISJOINT filters of plusSubformulaClosure. From there k <= 2^k, 1 <= Fintype.card Q and card_prodState reach tShort Q phi. The snce/untl +1 cases need a no-self-containment step that FormalSystem/PlusLanguage/Subformulas.lean does not carry: a local structural size function (not sizeOf, whose atom arm reads Atom's own size) plus monotonicity along subformulas."
+    },
+    {
+      "subject": "BimodalLogic (K4): the forward conjunct was one short and the asymmetry is forced",
+      "value": "paramsOkK4's forward conjunct read 2*dFwd phi + 1 <= B and now reads 2*dFwd phi + 2 <= B, with Bof's middle arm moved to match. The asymmetry against the backward arm (2*dBack) is FORCED, not conservative: LadderStepFrag.lean's module docstring point 2 derives the derived relation's gap clips from the one-step closure conditions Zrel_succ/Zrel_pred as G+ = 2a and G- = 2b + 2, so the asymmetry lives on the Zrel side and (K4) was the short side. The measurement that forced it is specs/evidence/seam-gluing-ray-product/ladder-step-fragment-gap-depth.lean's sigC family: BofPre_sigC = 2b+1 against Bof_sigC = 2b+2."
+    },
+    {
+      "subject": "Repairing a definition that FALSIFIES landed theorems: the frozen-copy pattern",
+      "value": "When a definition repair makes landed records FALSE rather than merely unproved, the sanctioned route in BimodalLogic is a library-level frozen copy, not a deletion or a weakening. paramsOkK4Pre / ParamsOkPre / paramsOkPre_params were landed in CounterQuotient.lean, and each falsified record was restated against them with its WRITTEN CLIP UNCHANGED, plus a companion rejection record (not_paramsOkK4_thetaC_clip) saying the live predicate rejects that clip. One trap: a paramsOkPre_params stated at Bof cannot discharge the restatements, because after the repair Bof outputs a DIFFERENT value from the written clip -- it must be stated with the fourth argument written out as the PRE-REPAIR Bof body."
+    },
+    {
+      "subject": "Bounded-block-edit hazard: a slice end index matched a prose citation of a section heading",
+      "value": "A multi-line markdown splice that computes its end index with s.index('## Section Name') searched from position 0 can match a PROSE CITATION of that section earlier in the file rather than the heading itself, putting the end index BEFORE the start index. The slice is then empty and the write SILENTLY DUPLICATES the whole region between them instead of erroring. Caught on task 991 in BimodalLogic: 115 duplicated plan-file lines, with the intended edit never applied. Two cheap guards: match both anchors at LINE START (l.startswith(...)) and assert end > start before writing. This is the concrete failure mode .claude/context/patterns/bounded-block-edit.md warns about."
+    },
+    {
+      "subject": "BimodalLogic probe promotion: linter.style.show fires on promoted probe bodies",
+      "value": "A proof body promoted VERBATIM from a specs/evidence/ probe into FormalSystem/ can fail CI even though the probe compiles, because probes run through lake env lean WITHOUT the package's leanOptions while library modules get the full Mathlib syntax-linter set and CI builds --wfail. Concretely, Zrel_of_kappa_eq's three goal-restating `show` lines were flagged by linter.style.show (they restate Zrel's clauses with the two LadderState projections reduced, a definitional change); the idiomatic non-linted replacement is `change`. Separately, renaming a declaration to a longer name pushes docstring lines past the 100-character limit and files past their longFile baselines, and neither surfaces until the module rebuilds."
+    },
+    {
+      "subject": "BimodalLogic git-commit-scoped.sh does not expand file_scope globs",
+      "value": "git-commit-scoped.sh's containment guard silently DROPS a pathspec that specs/state.json's file_scope covers only via a glob: an entry like specs/evidence/seam-gluing-ray-product/*.lean does not admit specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean. The commit still succeeds, minus those files, with only a WARN line. The fix is to append the EXPLICIT paths to file_scope (re-serialising state.json with json.dump(..., ensure_ascii=False) to avoid corrupting non-ASCII already in the file) and re-run the commit. Verified on this repo at task 991 phase 5."
+    },
+    {
+      "subject": "BimodalLogic: lean-challenge-snapshot.sh --check false ambiguity on probe-promoted names",
+      "value": "The advisory --check verdict reports 'resolves to more than one declaration' for every pinned identifier that exists both in its originating specs/evidence/ probe and in the library copy promoted from it -- four of five names on task 991. It reports no drift; it cannot compare at all. This is the known false-ambiguity defect the plan-compliance rule names, and it MUST NOT be read as a drift finding. Token-for-token signature agreement has to be confirmed separately, by #check on each landed declaration against the plan's Lean Challenge Statements block."
     }
   ],
   "metadata": {
-    "session_id": "sess_1795527603_539f56_991",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 6,
-    "estimated_hours": 9.5,
-    "dependency_waves": 6
-  },
-  "next_steps": "Run /orchestrate 991 to execute the plan"
+    "session_id": "sess_1795527603_539f56",
+    "agent_type": "lean-implementation-agent",
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "task_dir": "specs/991_depth_zero_gate_verdict",
+    "dispatch_seq": 3,
+    "compliance_check": "passed",
+    "phases_completed": 6,
+    "phases_total": 6,
+    "vacuous_preexisting_repo_wide": 2,
+    "vacuous_preexisting_note": "Two repo-wide matches, both pre-existing and in files this task never touched: FormalSystem/Semantics/PointTransport.lean's AnyPoint (landed 2026-11-23, PR #11) and FormalSystem/Examples/TemporalStructures.lean's int_domain_universal (landed 2026-10-14). Both verified present at HEAD~6 via git show.",
+    "batch_gate_deferral": "The complete gate set was NOT independently run in this dispatch; it is deferred to the single batch-stage sweep at the end of this /orchestrate invocation and attributed back by modified_files. The scoped discharge used instead is the UNMAPPABLE-CRITERION route: the phases' own declared criteria name check-evidence-probes.sh, check-module-invariants.sh and typst-sync-check.sh, which no verify-deploy.sh --only-gate N expresses, and verify-touched.sh derives touched paths from the whole working tree (selecting agent-system shell suites off the concurrent sibling dispatch's untracked files). Each named check was run directly."
+  }
 }

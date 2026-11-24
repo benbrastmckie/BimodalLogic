@@ -1,7 +1,7 @@
 # Implementation Plan: Task #991
 
 - **Task**: 991 - Depth-0 gate verdict: enter the step-fragment bridge and land `CellLEZeroConstOfKappaEq` restricted to `StepFrag`
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 9.5 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/991_depth_zero_gate_verdict/reports/01_depth-zero-gate-verdict.md`

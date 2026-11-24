@@ -13,9 +13,9 @@ next_project_number: 993
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,734,831,890,935,960,962,977,986,987,988,989,991 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
-| 2 | 231,282,296,429,497,761,869,944,954,955,969,984 | 298,428,502,604,960,962,977,986,989,991 | algebraic-representation, dataset-enhancement, decidability, ... |
-| 3 | 410,498,499,500,763,873,932,945 | 429,497,761,869,944 | algebraic-representation, decidability, semantics, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,890,935,960,962,977,986,987,988,989 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
+| 2 | 231,282,296,429,497,763,869,944,954,955,969,984 | 298,428,502,604,761,960,962,977,986,989 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 3 | 410,498,499,500,873,932,945 | 429,497,869,944 | algebraic-representation, decidability, semantics, ... |
 | 4 | 125,411,543,874,875,876,946 | 410,498,499,500,873,945,969 | algebraic-representation, decidability, metalogic, ... |
 | 5 | 430,501,947 | 125,411,946,955 | algebraic-representation, decidability, proof-mode |
 | 6 | 412,949,951,963,965 | 178,430,947,954 | decidability, proof-mode |
@@ -65,10 +65,9 @@ next_project_number: 993
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
 713 [NOT STARTED] — SCHEDULABLE AND LOAD-BEARING AS A CHECK. User ruling...
 734 [HOLD] — Run experiment E4: decide StabSaturated on the Bool fixture's...
+761 [PARTIAL] — AMENDED 2026-11-16 (statement replaced — the READ-OFF /...
+  └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
 831 [NOT STARTED] — RESEARCH TASK, verdict-first. State and attempt the...
-991 [PLANNED] — RESEARCH TASK, verdict-first; the deliverable is a verdict...
-  └─ 761 [PARTIAL] — AMENDED 2026-11-16 (statement replaced — the READ-OFF /...
-    └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
 
 ### Formula Refactor
 
@@ -145,12 +144,13 @@ next_project_number: 993
 ## Tasks
 
 ### 991. Depth zero gate verdict
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Research**: [991_depth_zero_gate_verdict/reports/01_depth-zero-gate-verdict.md]
 - **Plan**: [991_depth_zero_gate_verdict/plans/01_depth-zero-gate-step-fragment-bridge.md]
+- **Summary**: [991_depth_zero_gate_verdict/summaries/01_depth-zero-gate-step-fragment-bridge-summary.md]
 
 **Description**: RESEARCH TASK, verdict-first; the deliverable is a verdict plus grounds, not a construction. specs/ROADMAP.md Stage 0 carries "Decide who owns the depth-0 gate" as its one unchecked blocking item, and no open task owns lifting it: the ladder realization theorem records that no dispatch can advance it. THE GATE LIFTS ON EXACTLY ONE OF TWO EVENTS, and this task must deliver one of them: cellLE_zero_const_of_kappa_eq lands as a sorryAx-free theorem, or CellLEZeroConstOfKappaEq is refuted under ParamsOk. THE CRUX, already narrowed: whether a ForwardSlackWitnessed hypothesis at a POSITIVE amount is satisfiable at any state the depth-0 induction reaches, in its EXISTENTIAL-over-paths form only. DO NOT RE-ATTEMPT the per-path form: it is already refuted by ClimbWitness.hasForwardSlack_refuted_unconditional. WHAT PRIOR WORK ESTABLISHED, read before any derivation and do not re-derive: the consumer-shape reachability probe (specs/evidence/forward-slack-pin-cascade/consumer-shape-witness.lean, with specs/archive/934_depth_zero_reachability_probe/summaries/01_consumer-shape-reachability-probe-summary.md) shows the existential over paths is doing real work -- climbC_isLadderPath and climbC_not_hasForwardSlack give a second ladder path through the same state with no forward slack at any positive amount, so the per-path form fails where the cell-level form holds -- and that probe explicitly disclaims deciding the gate or claiming a discharge. Also read the depth-0 gate rest-state plan and the "What would lift the depth-0 gate" section of the idle-insertion-cascade restatement plan under the ladder realization task directory. WHY THIS EXISTS: ten phases of the ladder realization theorem are NOT STARTED and three are BLOCKED behind this gate, and milestone M7 (L-plus at integer time) is active and parked on it. On a verdict either way, the ladder realization theorem is restated against it.
 

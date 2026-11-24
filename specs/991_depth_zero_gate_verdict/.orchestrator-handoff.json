@@ -1,21 +1,66 @@
 {
-  "status": "planned",
-  "dispatch_seq": 2,
-  "phases_completed": 0,
+  "status": "implemented",
+  "dispatch_seq": 3,
+  "phases_completed": 6,
   "phases_total": 6,
-  "summary": "Wrote the implementation plan for the settled step-fragment-bridge route: 6 linear phases, 9.5 hours, landing cellLE_zero_const_of_kappa_eq_stepFrag (CellLEZeroConstOfKappaEq restricted to StepFrag) while leaving the reserved name cellLE_zero_const_of_kappa_eq unclaimed. Verified the route discharges its named obligation and compiled all five plan-pinned Lean Challenge signatures against the live tree (exit 0), which confirmed no new module or import is needed because LadderAgree is already in LadderStepFrag's import closure via LadderPump. Enumerated the (K4) repair's falsification set at authoring time -- three landed records, resolved as one atomic-batch phase on the tree's own frozen-pre-repair-copy precedent -- plus five gate collisions from the lean4 plan-authoring checklist.",
+  "summary": "All six phases of the step-fragment-bridge plan closed. The deliverable cellLE_zero_const_of_kappa_eq_stepFrag is landed sorryAx-free: CellLEZeroConstOfKappaEq holds for every StepFrag formula from ParamsOk itself at generic parameters, with StepFrag as the single added hypothesis, and the reserved name cellLE_zero_const_of_kappa_eq stays carried by no declaration. Getting there discharged the two owed threshold inequalities from (K3) via the new pure-syntax bound dBack_add_dFwd_le_closure_card, repaired (K4)'s forward conjunct from 2*dFwd+1 to 2*dFwd+2, and restated every landed record that repair falsifies against a newly frozen ParamsOkPre. The gate's crux is re-sited in-source on the measured residue: stab-free formulas carrying an unbounded U/S jump.",
   "blockers": [],
   "artifacts": [
     {
+      "type": "summary",
+      "path": "specs/991_depth_zero_gate_verdict/summaries/01_depth-zero-gate-step-fragment-bridge-summary.md",
+      "summary": "Completion summary for the step-fragment bridge: what landed, the six deviations, the full verification record, and the two owed follow-ups (/roadmap crux re-siting, /meta context extensions)."
+    },
+    {
       "type": "plan",
       "path": "specs/991_depth_zero_gate_verdict/plans/01_depth-zero-gate-step-fragment-bridge.md",
-      "summary": "Six-phase, 9.5-hour plan for the step-fragment bridge: threshold go/no-go probe, threshold discharge from ParamsOk, (K4) repair plus restatement of every record it falsifies (atomic-batch), bridge promotion and the StepFrag-restricted schema, wired-probe and generated-surface reconciliation, in-source crux re-siting."
+      "summary": "All six phase headings marked [COMPLETED], every checklist item ticked, deviations annotated inline, and per-phase verification notes recorded including the batch gate deferral."
+    },
+    {
+      "type": "evidence",
+      "path": "specs/evidence/forward-slack-pin-cascade/ordinary-window-regime.lean",
+      "summary": "Promoted from probe-draft/ and WIRED in scripts/check-evidence-probes.sh: regime segregation, the populated ordinary half on which every landed depth-0 inclusion is vacuous, the diaF/.stab stab-free failures, and (K4)'s forward deficit recorded against the frozen conjunct beside its closure."
+    },
+    {
+      "type": "probe",
+      "path": "specs/991_depth_zero_gate_verdict/probe-draft/threshold-depth-sum.lean",
+      "summary": "The Phase 1 go/no-go probe. Verdict GO; fully subsumed by Phase 2's landed library lemmas, so dropped rather than wired."
     }
   ],
-  "metadata": {
-    "session_id": "sess_1795527603_539f56_991",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
-  }
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 14,
+    "build_passed": true,
+    "compliance_check": "passed"
+  },
+  "modified_files": [
+    "FormalSystem/Metalogic/Decidability/RaySummary/CounterQuotient.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderCell.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/LadderStepFrag.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+    "FormalSystem/Metalogic/README.md",
+    "README.md",
+    "Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean",
+    "docs/theorem-index.md",
+    "scripts/check-evidence-probes.sh",
+    "specs/991_depth_zero_gate_verdict/plans/01_depth-zero-gate-step-fragment-bridge.md",
+    "specs/991_depth_zero_gate_verdict/probe-draft/threshold-depth-sum.lean",
+    "specs/991_depth_zero_gate_verdict/summaries/01_depth-zero-gate-step-fragment-bridge-summary.md",
+    "specs/evidence/forward-slack-pin-cascade/ordinary-window-regime.lean",
+    "specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean",
+    "specs/evidence/seam-gluing-ray-product/ladder-cell-obligation-refutation.lean",
+    "specs/evidence/seam-gluing-ray-product/ladder-chain-object-clip-refutation.lean",
+    "specs/evidence/seam-gluing-ray-product/ladder-step-fragment-gap-depth.lean",
+    "specs/state.json",
+    "typst/generated/status.typ"
+  ],
+  "follow_ups": [
+    "/roadmap: re-site specs/ROADMAP.md Stage 0's crux wording from the forward-slack question onto the measured residue (stab-free formulas with an unbounded U/S jump). This task wrote no roadmap entry: ROADMAP.md carries a do-not-edit generator banner and is rendered from specs/state.json's roadmap_milestones/roadmap_context entries, which /roadmap owns.",
+    "/meta: two context-extension recommendations from the research dispatch belong to the agent system's source store, not this library -- (a) that diaF is the box-dot dual and is what every compiled separating family reads the gap with, and (b) a schema-hypothesis-deficit table as a first-class artifact kind.",
+    "The ladder realization theorem's own plan record is restated against this verdict by its own task, as a /revise rather than a dispatch."
+  ]
 }
