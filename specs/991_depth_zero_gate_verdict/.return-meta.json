@@ -1,34 +1,30 @@
 {
-  "status": "researched",
-  "dispatch_seq": 1,
+  "status": "planned",
+  "dispatch_seq": 2,
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/991_depth_zero_gate_verdict/reports/01_depth-zero-gate-verdict.md",
-      "summary": "Verdict-first depth-0 gate research: neither lifting event is deliverable and the recorded crux is mis-narrowed; four compiled measurements show the collision space is kappa-segregated into two halves (only one discharged), every compiled separating family is stab-rooted so no depth-0 refutation candidate exists, and the landed step-fragment bridge is short by exactly one (K4) token plus two owed thresholds."
-    },
-    {
-      "type": "other",
-      "path": "specs/991_depth_zero_gate_verdict/probe-draft/ordinary-window-regime.lean",
-      "summary": "Task-local draft probe, compiled sorryAx-free (exit 0): kappa_ne_of_regime_cross, regN fixture + regN_isLadderPath, ordinary_window_collision_nonvacuous, diaF_not_stabFree, stab_not_stabFree, paramsOkK4_one_short_of_Zrel_forward_arm."
+      "type": "plan",
+      "path": "specs/991_depth_zero_gate_verdict/plans/01_depth-zero-gate-step-fragment-bridge.md",
+      "summary": "Six-phase, 9.5-hour plan for the settled step-fragment-bridge route, landing CellLEZeroConstOfKappaEq restricted to StepFrag under its own name while leaving the reserved name unclaimed."
     }
   ],
-  "user_decision": {
-    "question": "The depth-0 gate's recorded crux (is ForwardSlackWitnessed satisfiable at a positive amount) is measurably insufficient to lift the gate: it is one of four independent hypothesis deficits, and the refutation direction has no depth-0 candidate because every compiled separating family carries a stab letter. Which route should own the gate next?",
-    "options": [
-      "Enter the step-fragment bridge - repair paramsOkK4's forward conjunct to 2*dFwd+2 <= B, discharge 2*(dBack+dFwd) <= Tcof/Tnof, and land the depth-0 schema restricted to StepFrag, then re-site the roadmap's Stage 0 crux on the residue (stab-free formulas with an unbounded U/S jump)",
-      "Enter the ordinary window regime c <= n + 1 - land the downward cell inclusion that no declaration in the tree provides, as the missing half of the kappa-segregated collision space",
-      "Continue on ForwardSlackWitnessed (a general multi-type-cell discharge at the consumer shape), accepting that success leaves the gate unlifted",
-      "Leave the gate unowned and re-state the ladder realization theorem against an undecided gate"
-    ],
-    "recommended": "Enter the step-fragment bridge - repair paramsOkK4's forward conjunct to 2*dFwd+2 <= B, discharge 2*(dBack+dFwd) <= Tcof/Tnof, and land the depth-0 schema restricted to StepFrag, then re-site the roadmap's Stage 0 crux on the residue (stab-free formulas with an unbounded U/S jump)",
-    "blocking": true,
-    "obligation": "Discharge the four numeric hypotheses of Zrel_of_kappa_eq (specs/evidence/seam-gluing-ray-product/ladder-step-fragment-gap-depth.lean:731) from ParamsOk, so that cellAt_const_of_kappa_eq_stepFrag (:754) yields CellLEZeroConstOfKappaEq restricted to StepFrag phi as a sorryAx-free theorem under its own name, leaving the reserved name cellLE_zero_const_of_kappa_eq unclaimed."
-  },
+  "memory_candidates": [
+    {
+      "content": "When a Lean plan must site a new theorem that joins two sibling modules' vocabularies, resolve the import DAG by TRANSITIVE closure before planning a new module or a new import edge. In BimodalLogic's RaySummary layer, LadderAgree and LadderStepFrag look like disjoint siblings (LadderAgree imports only AnchorLayer + CounterQuotient; LadderStepFrag imports only LadderRealize), yet LadderAgree IS in LadderStepFrag's closure via LadderStepFrag -> LadderRealize -> LadderChain -> LadderPump -> LadderAgree. Reading only the two files' own import lines would have forced a new module, which in this repository additionally owes lake exe mk_all, a module-inventory regeneration and a check-metalogic-cycles.sh allowlist check. The cheap authoring-time confirmation is to assemble the plan's pinned Challenge signatures with a single candidate import and compile them (lean-challenge-snapshot.sh --dry-run --compile): a successful compile proves every referenced declaration resolves from that one import, settling siting mechanically rather than by reading import lines.",
+      "category": "PATTERN",
+      "source_artifact": "specs/991_depth_zero_gate_verdict/plans/01_depth-zero-gate-step-fragment-bridge.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["lean4", "import-closure", "module-siting", "plan-authoring", "challenge-statements", "transitive-imports"]
+    }
+  ],
   "metadata": {
     "session_id": "sess_1795527603_539f56_991",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 6,
+    "estimated_hours": 9.5,
+    "dependency_waves": 6
+  },
+  "next_steps": "Run /orchestrate 991 to execute the plan"
 }
