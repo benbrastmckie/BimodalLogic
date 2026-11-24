@@ -3,53 +3,83 @@
 
 - Completeness and decidability of L-plus, the stability-modal language (L plus the stability operator). L and L-plus are the repository's two fronts, and the stability operator's state-locality is the one anchor every decidability engine in this tree rests on.
 - Make the derivation proof mode the ordinary way derivations in this repository are written, and then carry it to specification reasoning: safety and liveness arguments about systems described in TM. Every tactic assembles derivation-tree constructors and proved rules; no model, validity argument or completeness result stands in for a derivation.
-- Build BimodalLib: theorems, countermodels and conjectures indexed by language fragment and frame class, filled from the tableau, with conservativity proved along every fragment edge so that filing by smallest fragment is a theorem rather than a convention.
 - Close the residual repository-hygiene backlog: readers that work on the compressed datasets, the c7 labeling chain finished, and the large data moved off the repository.
+- Build BimodalLib: theorems, countermodels and conjectures indexed by language fragment and frame class, filled from the tableau, with conservativity proved along every fragment edge so that filing by smallest fragment is a theorem rather than a convention.
 - Keep L-triangle, the open-modal language, as a secondary line of investigation -- demoted, not abandoned, by the 2026-11-05 ruling, and never dispatched ahead of or batched with L-plus critical-path work.
 
 | Milestone | Status | Tasks done | Review |
 |---|---|---|---|
-| [M0: The PR review round: a posted decision on each of the five contributions](#milestone-m0) | closed 2026-11-23 | - | none |
-| [M2: BimodalLib: the evidence base the mode is measured against](#milestone-m2) | planned | 3/5 | none |
-| [M3: Proof-mode rule set up to gate one](#milestone-m3) | planned | 0/11 | none |
-| [M1: Repository hygiene](#milestone-m1) | active | 0/7 | none |
 | [M7: L-plus at integer time: decidability and route R3](#milestone-m7) | active | 0/6 | none |
+| [M9: Algebraic representation and MF rigidity](#milestone-m9) | planned | 0/8 | none |
+| [M3: Proof-mode rule set up to gate one](#milestone-m3) | planned | 0/11 | none |
 | [M13: What the merges leave owed: the signature layer and the follow-ups](#milestone-m13) | active | 0/4 | none |
+| [M1: Repository hygiene](#milestone-m1) | active | 0/7 | none |
+| [M10: The written record: errata, open questions, examples and docs](#milestone-m10) | planned | 0/5 | none |
 | [M8: The tableau decidability engine](#milestone-m8) | active | 0/8 | none |
+| [M2: BimodalLib: the evidence base the mode is measured against](#milestone-m2) | active | 3/5 | none |
 | [M4: Linear-time rules, usability and gate two](#milestone-m4) | planned | 0/7 | none |
 | [M5: One interface, and the entries that need it](#milestone-m5) | planned | 0/3 | none |
 | [M6: Specification reasoning, dual verification and the manual](#milestone-m6) | planned | 0/5 | none |
 | [M12: The semantic mode: evaluator, mode and adapter](#milestone-m12) | planned | - | none |
-| [M9: Algebraic representation and MF rigidity](#milestone-m9) | planned | 0/8 | none |
-| [M10: The written record: errata, open questions, examples and docs](#milestone-m10) | planned | 0/5 | none |
 | [M11: L-triangle: the open-modal exploration backlog](#milestone-m11) | planned | 0/6 | none |
+| [M0: The PR review round: a posted decision on each of the five contributions](#milestone-m0) | closed 2026-11-23 | - | none |
 
 See also: [Rules, conventions and repo context](#roadmap-context)
 
-<a id="milestone-m0"></a>
-## M0: The PR review round: a posted decision on each of the five contributions
+<a id="milestone-m7"></a>
+## M7: L-plus at integer time: decidability and route R3
 
-Closed 2026-11-23 -- review: none -- Reported on all five contributions, reconciled the records, and stated D4 once over TruthEnv
+Decide validity of the stability-modal language at integer time in Lean, past the ladder realization theorem to Decidable (PlusValidZTime phi), and settle whether a determinization-free route to completeness exists.
 
-<a id="milestone-m2"></a>
-## M2: BimodalLib: the evidence base the mode is measured against
-
-Give the theorem library its layout by fragment and frame class, fill the fragments the tableau reaches, keep every refutation checked, and make filing by smallest fragment a theorem.
-
-- **Progress**: planned -- 1/2 batches, 3/5 tasks done -- 970 and 971 are the highest-leverage ready lines and collide with nothing in any open PR; gate one carries an edge on 971
+- **Progress**: active -- 0/3 batches, 0/6 tasks done -- 935 and 831 declare no file scope, so no open contribution can collide; the ladder band is parked on the depth-0 gate ruling
 - **Review**: none
-- **Gate**: BimodalLib builds; every closed derivation outside Theorems/ProofMode/ is registered with its fragment, frame class and substitution class and a check fails when one is added unregistered; tableau verdicts and countermodels are admitted only at a stated grade; and the conservativity table is generated from the theorems.
+- **Gate**: cellLE_zero_const_of_kappa_eq lands sorry-free or CellLEZeroConstOfKappaEq is refuted under ParamsOk; the ladder realization theorem closes; Decidable (PlusValidZTime phi) is stated and proved; and route R3 has a recorded verdict either way.
 
-**Batch 1** (done) -- Whether stability is rightly a Modal family: no file scope, the cheapest de-risking while 977 waits
-
-**Batch 2** -- The registry every later library record reads: no open-PR collision, the deepest unblock ready (2/4 done)
+**Batch 1** -- Route R3: does a determinization-free progress measure for L-plus ZTime completeness exist
 
 ```
-/orchestrate 972, 973
-972 blocked:961     theorem_library_tableau_pipeline
-973 blocked:972     theorem_library_countermodels
-971 done            theorem_library_layout_and_registry
-975 done            theorem_library_fragment_conservativity
+/orchestrate 935 --hard --lit
+935 ready           determinization_free_progress_measure_design
+```
+
+**Batch 2** -- The dense-time dichotomy gating L-R3, the only identified non-ZTime decidability route
+
+```
+/orchestrate 831 --research --lit
+831 ready           dense_time_certificate_dichotomy_gate
+```
+
+**Batch 3** -- Ladder realization with all three dependents, parked on the depth-0 gate no open task owns
+
+```
+/orchestrate 761, 862, 763, 861 --hard --lit
+761 PARTIAL         ladder_realization_theorem   <- no dispatch can advance it: the depth-0 gate is owned by no open task
+763 blocked:761     ladder_lift_decidability_corollary
+861 blocked:761,763 Record the one-sided transport refutation in the RaySummary refutation table
+862 blocked:761     Promote cntAt_eq_of_pend_eq_fwd into LadderAgree as a strict sharpening
+```
+
+<a id="milestone-m9"></a>
+## M9: Algebraic representation and MF rigidity
+
+Ground the representation front in Goldblatt and BRV, bring the Shift-closed Tense S5 Algebra class into live code, prove the Jonsson-Tarski representation for the bimodal case, and machine-check the MF correspondence results.
+
+- **Progress**: planned -- 0/1 batches, 0/8 tasks done -- No member declares a file scope, so no merge can collide with the chain; 502 enters today and 125 then 543 close it
+- **Review**: none
+- **Gate**: The representation theorem holds for the Shift-closed Tense S5 Algebra class with Until and Since, one representation route survives the reconciliation with the shift-set theorem rather than two running in parallel, and 543's correspondence and rigidity results compile.
+
+**Batch 1** -- The algebraic front on one line, from the grounding to the capstone and 543's rigidity
+
+```
+/orchestrate 502, 497, 498, 499, 500, 125, 501, 543 --hard --lit
+125 blocked:498,499 jonsson_tarski_representation_bimodal_sus
+497 blocked:502     port_stsa_class_and_add_g_operator
+498 blocked:497     build_complex_algebra_for_task_frames
+499 blocked:497     build_ultrafilter_frame_and_prove_task_frame_axioms
+500 blocked:497     reconcile_shiftset_representation_with_stsa_route
+501 blocked:125     extend_stsa_with_until_since_operators
+543 blocked:500     formalize_mf_correspondence_rigidity
+502 ready           ground_algebraic_representation_in_goldblatt_and_brv
 ```
 
 <a id="milestone-m3"></a>
@@ -57,9 +87,9 @@ Give the theorem library its layout by fragment and frame class, fill the fragme
 
 Put the mode in the operator-family layout, extend the bimodal scope rules, close leaves by automation and measure the merged tactics, then re-prove the perpetuity selection and take the verdict.
 
-- **Progress**: planned -- 0/4 batches, 0/11 tasks done -- 962 then 986 are enterable today; 960 is genuinely held on four ProofMode overlaps, and the 969 -> 946 -> 947 chain waits on the #8 merge
+- **Progress**: planned -- 0/4 batches, 0/11 tasks done -- 962 and 986 enter today; every later batch sits behind 960's hold, and so behind #8 merging or being declined
 - **Review**: none
-- **Gate**: 947's report at docs/development/proof-mode-adequacy-perpetuity.md opens with GO or RE-PLAN. GO requires the proof-mode scripts to be shorter than the hand proofs in aggregate and for a clear majority of the gate's entries, with no entry needing a raw term-mode escape longer than its hand proof.
+- **Gate**: 947's report at docs/development/proof-mode-adequacy-perpetuity.md opens with GO or RE-PLAN: the scripts shorter than the hand proofs in aggregate and for a clear majority of entries, none needing a term-mode escape longer than its hand proof. Past 962 and 986, entry needs 960 unheld -- update-task-status.sh preflight 960 unhold <session> -- once #8 closes.
 
 **Batch 1** -- Deduction theorems for Star and Open: no predecessor, off the gate, no open-PR collision
 
@@ -68,32 +98,63 @@ Put the mode in the operator-family layout, extend the bimodal scope rules, clos
 962 ready           proof_mode_deduction_theorems_star_open
 ```
 
-**Batch 2** -- A view's real failure cause, before the views tier freezes it; one real file overlap with #8
+**Batch 2** -- A view's real failure cause before the views tier freezes it; #8 only adds elsewhere in that file
 
 ```
 /orchestrate 986
-986 ready           proof_mode_views_report_swallowed_view_error   <- one real overlap with #8 on Tactic/FormulaViews.lean; lands before the views tier
+986 ready           proof_mode_views_report_swallowed_view_error   <- #8 only adds viewHead? to FormulaViews.lean, far from the applyView handler this edits
 ```
 
-**Batch 3** -- The operator-family layout every later record files into; genuinely held by #8 and #9 overlap
+**Batch 3** -- The operator-family layout every later record files into, held until #8 or #9 closes
 
 ```
 /orchestrate 960
-960 ready           proof_mode_split_shared_test_and_guide_files   <- genuinely held: four real ProofMode overlaps with #8 and #9; research and planning may proceed
+960 HOLD            proof_mode_split_shared_test_and_guide_files   <- HELD on 28 real #8/#9 overlaps; lift via update-task-status.sh preflight 960 unhold <session>
 ```
 
-**Batch 4** -- All five pre-gate streams to gate one; 960 and 986 stay outside only because this is MAX_TASKS
+**Batch 4** -- Gated: every member sits behind 960, so this line enters only once that hold is lifted
 
 ```
 /orchestrate 969, 944, 945, 946, 955, 961, 954, 947
-944 blocked:960     proof_mode_s5_aware_box_scopes
-945 blocked:944     proof_mode_cross_modal_scopes_mf_tf
-946 blocked:945,969 proof_mode_always_sometimes_scopes
-947 blocked:946,955,961  proof_mode_reprove_perpetuity   <- GO / RE-PLAN gate; RE-PLAN stops the proof-mode sequence
+944 HOLD            proof_mode_s5_aware_box_scopes
+945 HOLD            proof_mode_cross_modal_scopes_mf_tf
+946 HOLD            proof_mode_always_sometimes_scopes
+969 HOLD            proof_mode_views_tier   <- behind 977 and so behind the #8 merge; 946 and gate one 947 follow it
+947 blocked:946,955,961,973  proof_mode_reprove_perpetuity   <- GO / RE-PLAN gate; now also behind 973 on BimodalLib.lean, at no wave cost
 954 blocked:960     proof_mode_error_message_coverage
 955 blocked:960     proof_mode_close_leaves_with_automation
 961 blocked:960     proof_mode_axiom_audit_and_cost_baseline
-969 blocked:960,977,986  proof_mode_views_tier   <- behind 977 and so behind the #8 merge; 946 and gate one 947 follow it
+```
+
+<a id="milestone-m13"></a>
+## M13: What the merges leave owed: the signature layer and the follow-ups
+
+Land the records the open contributions release: the D1 signature layer that the derivation layout and the one interface both file into, and the follow-ups the temporal rules and the pointed semantic lemmas each leave owed.
+
+- **Progress**: active -- 0/3 batches, 0/4 tasks done -- 989 and 984 are free and enter today; 977 and 987 wait on #8 merging or being declined
+- **Review**: none
+- **Gate**: The signature layer is implemented with Formula, PlusFormula and StarFormula as instances and the eighteen doubled derived operators written once; and every follow-up each merged contribution leaves owed is closed, or re-filed against the merged tree with a reason. 977 and 987 enter only once #8 merges or is declined, 977 via update-task-status.sh preflight 977 unhold <session>.
+
+**Batch 1** -- The merged pointed-semantic-lemma follow-ups: all four files on main, no open PR touches them
+
+```
+/orchestrate 989, 984
+984 blocked:989     promote_next_prev_covby_to_generic_lemmas   <- TemporalRules.lean is on main, so this waits only on its edge to 989
+989 ready           pointed_semantic_lemmas_after_merge_followups   <- all four scope files are on main and no open PR touches them; free today
+```
+
+**Batch 2** -- Held: Phase 1 needs #8's TemporalViews files, and #10 overlaps records/proof-mode-architecture.md
+
+```
+/orchestrate 977
+977 HOLD            connective_signature_layer_shared_primitives   <- HELD: Phase 1 needs TemporalViews.lean and TemporalFormulaViews.lean, carried only by #8
+```
+
+**Batch 3** -- The temporal rules' owed follow-ups: two of its four files exist only on #8's branch
+
+```
+/orchestrate 987
+987 HOLD            temporal_rules_followups_fold_names_and_progress_tests   <- two of its four files exist only on #8s branch; waits on #8 merging or being declined
 ```
 
 <a id="milestone-m1"></a>
@@ -101,7 +162,7 @@ Put the mode in the operator-family layout, extend the bimodal scope rules, clos
 
 Close the residual hygiene backlog: dataset readers that work on compressed data, the c7 labeling chain finished, and the large datasets moved off the repository.
 
-- **Progress**: active -- 0/3 batches, 0/7 tasks done -- 988 is the one line a dispatch clears outright; hygiene stays below the library and the pre-gate rule set
+- **Progress**: active -- 0/3 batches, 0/7 tasks done -- Nothing here touches an open contribution: 988 and the 604-headed chain enter today; only 257 waits on the account token
 - **Review**: none
 - **Gate**: One shared reader opens both .jsonl and .jsonl.zst with the Lean executables reaching compressed data; the 298-headed dataset chain is terminal; and 257 is either migrated or re-scoped once the account token exists.
 
@@ -130,68 +191,42 @@ Close the residual hygiene backlog: dataset readers that work on compressed data
 257 BLOCKED         large_data_storage_huggingface   <- needs the Hugging Face account token only the owner can supply
 ```
 
-<a id="milestone-m7"></a>
-## M7: L-plus at integer time: decidability and route R3
+<a id="milestone-m10"></a>
+## M10: The written record: errata, open questions, examples and docs
 
-Decide validity of the stability-modal language at integer time in Lean, past the ladder realization theorem to Decidable (PlusValidZTime phi), and settle whether a determinization-free route to completeness exists.
+Land the paper-side record the two fronts owe: the GHR erratum, the C3 completeness question, the ball-space source behind the frame definition, publication-quality examples, and a final docs sweep.
 
-- **Progress**: active -- 0/3 batches, 0/6 tasks done -- 935 and 831 are the two enterable research lines; the ladder line waits on a ruling on the depth-0 gate
+- **Progress**: planned -- 0/4 batches, 0/5 tasks done -- 890, 570 and 664 declare no file scope and 178 collides with nothing; 177 stays last behind its 27 edges
 - **Review**: none
-- **Gate**: cellLE_zero_const_of_kappa_eq lands sorry-free or CellLEZeroConstOfKappaEq is refuted under ParamsOk; the ladder realization theorem closes; Decidable (PlusValidZTime phi) is stated and proved; and route R3 has a recorded verdict either way.
+- **Gate**: The erratum and the C3 question are recorded, the Cmiel-Kuhlmann source is in the corpus, Examples/ demonstrates the headline results at publication quality, and README.md, docs/ and the module docstrings are re-audited against the tree.
 
-**Batch 1** -- Route R3: does a determinization-free progress measure for L-plus ZTime completeness exist
-
-```
-/orchestrate 935 --hard --lit
-935 ready           determinization_free_progress_measure_design
-```
-
-**Batch 2** -- The dense-time dichotomy gating L-R3, the only identified non-ZTime decidability route
+**Batch 1** -- The two completeness-side records: the GHR94 erratum and the open C3 completeness question
 
 ```
-/orchestrate 831 --research --lit
-831 ready           dense_time_certificate_dichotomy_gate
+/orchestrate 890, 570 --lit
+570 ready           c3_completeness_question
+890 ready           ghr_lemma_10_2_3_case5_erratum_reference_manual
 ```
 
-**Batch 3** -- Ladder realization with all three dependents, parked on the depth-0 gate no open task owns
+**Batch 2** -- The publication-quality Examples/ expansion: free today, and 965 now sequences behind it
 
 ```
-/orchestrate 761, 862, 763, 861 --hard --lit
-761 PARTIAL         ladder_realization_theorem   <- no dispatch can advance it: the depth-0 gate is owned by no open task
-763 blocked:761     ladder_lift_decidability_corollary
-861 blocked:761,763 Record the one-sided transport refutation in the RaySummary refutation table
-862 blocked:761     Promote cntAt_eq_of_pend_eq_fwd into LadderAgree as a strict sharpening
+/orchestrate 178
+178 ready           publication_examples_and_demo
 ```
 
-<a id="milestone-m13"></a>
-## M13: What the merges leave owed: the signature layer and the follow-ups
-
-Land the records the open contributions release: the D1 signature layer that the derivation layout and the one interface both file into, and the follow-ups the temporal rules and the pointed semantic lemmas each leave owed.
-
-- **Progress**: active -- 0/3 batches, 0/4 tasks done -- 977 is BLOCKED: its Phase 1 gate needs TemporalViews files absent from main, and no open PR is merge-ready, so all four lines wait
-- **Review**: none
-- **Gate**: The signature layer is implemented with Formula, PlusFormula and StarFormula as instances and the eighteen doubled derived operators written once; and every follow-up each merged contribution leaves owed is closed, or re-filed against the merged tree with a stated reason.
-
-**Batch 1** -- The D1 signature layer, now blocked: its Phase 1 needs the TemporalViews files only #8 carries
+**Batch 3** -- Corpus ingest of the Cmiel ball-space source the manuscript's def:frame footnote cites
 
 ```
-/orchestrate 977
-977 BLOCKED         connective_signature_layer_shared_primitives   <- BLOCKED: Phase 1 needs TemporalViews.lean and TemporalFormulaViews.lean, carried only by #8
+/orchestrate 664
+664 ready           ingest_cmiel_kuhlmann_ball_space_source
 ```
 
-**Batch 2** -- The temporal rules' owed follow-ups once #8 lands; 950 builds on the same modules
+**Batch 4** -- README, docs/ and module-docstring polish; last in the mainline programme behind 27 edges
 
 ```
-/orchestrate 987
-987 EXT-BLOCKED     temporal_rules_followups_fold_names_and_progress_tests   <- waits on the temporal rules contribution merging
-```
-
-**Batch 3** -- Everything owed on the pointed semantic lemmas once #11 lands, stated over the clause classes
-
-```
-/orchestrate 989, 984
-984 EXT-BLOCKED     promote_next_prev_covby_to_generic_lemmas   <- waits on TemporalRules.lean reaching main with the pointed semantic lemmas
-989 EXT-BLOCKED     pointed_semantic_lemmas_after_merge_followups   <- waits on the pointed semantic lemmas contribution merging
+/orchestrate 177
+177 blocked:178,282,296,298,428,429,430,481,482,543  update_readme_and_module_docstrings
 ```
 
 <a id="milestone-m8"></a>
@@ -199,7 +234,7 @@ Land the records the open contributions release: the D1 signature layer that the
 
 Carry the TM tableau from engine totality at a quantified branch budget through the repaired truth lemma and the admissibility lemmas to refutation-core decidability and proof extraction.
 
-- **Progress**: active -- 0/2 batches, 0/8 tasks done -- 428's marker is mis-set and its scope needs a user ruling; 410 already carries a plan
+- **Progress**: active -- 0/2 batches, 0/8 tasks done -- No open contribution touches the tableau tree; 481 enters today and 428's scope still needs a user ruling
 - **Review**: none
 - **Gate**: valid iff allClosed is assembled, provability is decidable with its completeness corollaries, and the proof-extraction obligation is discharged or refused with a recorded reason.
 
@@ -223,29 +258,50 @@ Carry the TM tableau from engine totality at a quantified branch budget through 
 482 blocked:412     discharge_proof_extraction_completeness
 ```
 
+<a id="milestone-m2"></a>
+## M2: BimodalLib: the evidence base the mode is measured against
+
+Give the theorem library its layout by fragment and frame class, fill the fragments the tableau reaches, keep every refutation checked, and make filing by smallest fragment a theorem.
+
+- **Progress**: active -- 1/2 batches, 3/5 tasks done -- 972 and 973 collide with no open PR but sit behind 961, and so behind 960's hold, so nothing left here can be entered
+- **Review**: none
+- **Gate**: BimodalLib builds; every closed derivation outside Theorems/ProofMode/ is registered with its fragment, frame class and substitution class and a check fails on an unregistered one; verdicts and countermodels are admitted only at a stated grade; and the conservativity table is generated from the theorems. Entry needs 960 unheld, and so #8 merged or declined.
+
+**Batch 1** (done) -- Whether stability is rightly a Modal family: no file scope, the cheapest de-risking while 977 waits
+
+**Batch 2** -- Gated: 972 and 973 touch no open PR but sit behind 961, and so behind 960's hold (2/4 done)
+
+```
+/orchestrate 972, 973
+972 blocked:961     theorem_library_tableau_pipeline
+973 blocked:972     theorem_library_countermodels
+971 done            theorem_library_layout_and_registry
+975 done            theorem_library_fragment_conservativity
+```
+
 <a id="milestone-m4"></a>
 ## M4: Linear-time rules, usability and gate two
 
 Add the linearity split and Until/Since introduction, unfolding and induction, frame coverage at Dense and RTime, nested patterns and a readable goal display, and sweep the temporal fragment.
 
-- **Progress**: planned -- 0/4 batches, 0/7 tasks done -- Enterable only on a GO verdict at 947; RE-PLAN holds each until its own record is revised; 950 additionally waits on 987 and the #8 merge
+- **Progress**: planned -- 0/4 batches, 0/7 tasks done -- Behind gate one and so behind 960's hold; 950 additionally waits on 987 and on #8 landing its TemporalZTime modules
 - **Review**: none
-- **Gate**: 948's measured report and missing-rule list are delivered, each item either added there or named with a proposed follow-up description. Gate two carries no GO/RE-PLAN verdict as filed.
+- **Gate**: 948's measured report and missing-rule list are delivered, each item either added there or named with a proposed follow-up description. Gate two carries no GO/RE-PLAN verdict as filed. Entry waits on a GO verdict at 947, itself behind 960's hold and so behind #8 merging or being declined.
 
 **Batch 1** -- The linear-time rules and gate two's measured report; enterable only on a GO verdict at 947
 
 ```
 /orchestrate 949, 950, 948
+949 HOLD            proof_mode_linearity_case_tactic
+950 HOLD            proof_mode_until_since_intro_unfold_induction
 948 blocked:947,949,950,972  proof_mode_reprove_temporal_slice   <- gate two: a measured report and a missing-rule list, no GO / RE-PLAN verdict
-949 blocked:947     proof_mode_linearity_case_tactic
-950 blocked:949,987 proof_mode_until_since_intro_unfold_induction
 ```
 
 **Batch 2** -- Frame coverage at Dense and RTime, held by the gate but needing nothing else from it
 
 ```
 /orchestrate 951
-951 blocked:947     proof_mode_dense_and_real_time_rules
+951 HOLD            proof_mode_dense_and_real_time_rules
 ```
 
 **Batch 3** -- The usability stream: nested intro patterns, then the goal display designed against them
@@ -260,7 +316,7 @@ Add the linearity split and Until/Since introduction, unfolding and induction, f
 
 ```
 /orchestrate 965
-965 blocked:947     proof_mode_adoption_after_perpetuity_verdict
+965 blocked:178,947 proof_mode_adoption_after_perpetuity_verdict
 ```
 
 <a id="milestone-m5"></a>
@@ -268,15 +324,15 @@ Add the linearity split and Until/Since introduction, unfolding and induction, f
 
 Prove each rule once over an interface instead of once for TM and once for TM-plus, give every object language with a calculus an instance or a stated reason, and enter and sweep the stability entries.
 
-- **Progress**: planned -- 0/3 batches, 0/3 tasks done
+- **Progress**: planned -- 0/3 batches, 0/3 tasks done -- 952 waits on gate one, on 977 and on 964, so every batch here sits behind both 960's hold and 977's
 - **Review**: none
-- **Gate**: No proof-mode rule is proved twice; every object language with a derivation calculus has an instance or a recorded reason for lacking one; and the stability entries are registered with their substitution classes and swept into a report with a missing-rule list.
+- **Gate**: No proof-mode rule is proved twice; every object language with a derivation calculus has an instance or a recorded reason for lacking one; and the stability entries are registered with their substitution classes and swept into a report with a missing-rule list. 952 also needs 977 unheld, and so #8 merged or declined.
 
 **Batch 1** -- The join: one class per family and per interaction, with nothing else editing ProofMode
 
 ```
 /orchestrate 952
-952 blocked:948,951,963,964,969,977  proof_mode_abstract_frontend_interface
+952 HOLD            proof_mode_abstract_frontend_interface
 ```
 
 **Batch 2** -- The Minus instance and the per-language accounting, whose honest outcome may be a written reason
@@ -298,15 +354,15 @@ Prove each rule once over an interface instead of once for TM and once for TM-pl
 
 Carry the mode from derivations to safety and liveness arguments about systems described in TM, answer a leaf it cannot close with a checked countermodel, and document the mode in the reference manual.
 
-- **Progress**: planned -- 0/2 batches, 0/5 tasks done
+- **Progress**: planned -- 0/2 batches, 0/5 tasks done -- The deepest proof-mode band: 956 and 968 sit behind 952 and so behind both holds; 967 also waits on 973
 - **Review**: none
-- **Gate**: A worked route from a transition system to a TM derivation is written up, every unclosed leaf is answered by a library or tableau countermodel or handed to the ModelChecker where neither reaches, and the manual chapter cites declaration names that are live in the tree.
+- **Gate**: A worked route from a transition system to a TM derivation is written up, every unclosed leaf is answered by a library or tableau countermodel or handed to the ModelChecker where neither reaches, and the manual chapter cites declaration names live in the tree. Both batches sit behind 952, and so behind 960's hold.
 
 **Batch 1** -- Verification architecture: the liveness rules, the report that hinges it, and the two closers
 
 ```
 /orchestrate 956, 957, 966, 967
-956 blocked:948,950,952  proof_mode_leads_to_invariance_library
+956 HOLD            proof_mode_leads_to_invariance_library
 957 blocked:956     proof_mode_transition_systems_tm_specifications
 966 blocked:952,955 proof_mode_decision_procedure_leaf_closers
 967 blocked:957,966,973  proof_mode_countermodels_for_unclosed_leaves
@@ -324,91 +380,35 @@ Carry the mode from derivations to safety and liveness arguments about systems d
 
 Goal C of records/milestones.md: a semantic evaluator for truth at a named point of a named model, the semantic proof mode beside the derivation mode, and the soundness adapter joining them. Neither half has a task record yet.
 
-- **Progress**: planned -- no batches yet -- The semantic goal shape is researched and delivered; the record is unmerged at #10 and neither half has a record
+- **Progress**: planned -- no batches yet -- records/semantic-proof-mode.md is absent from main and arrives only with #10; neither half has a record yet
 - **Review**: none
-- **Gate**: records/semantic-proof-mode.md is on main, the goal shape and witness interface it leaves open are settled, and a task record exists for the evaluator and for the mode and its adapter.
-
-<a id="milestone-m9"></a>
-## M9: Algebraic representation and MF rigidity
-
-Ground the representation front in Goldblatt and BRV, bring the Shift-closed Tense S5 Algebra class into live code, prove the Jonsson-Tarski representation for the bimodal case, and machine-check the MF correspondence results.
-
-- **Progress**: planned -- 0/1 batches, 0/8 tasks done -- The only route to 543, the last high-priority L-plus metalogic task still open
-- **Review**: none
-- **Gate**: The representation theorem holds for the Shift-closed Tense S5 Algebra class with Until and Since, one representation route survives the reconciliation with the shift-set theorem rather than two running in parallel, and 543's correspondence and rigidity results compile.
-
-**Batch 1** -- The algebraic front on one line, from the grounding to the capstone and 543's rigidity
-
-```
-/orchestrate 502, 497, 498, 499, 500, 125, 501, 543 --hard --lit
-125 blocked:498,499 jonsson_tarski_representation_bimodal_sus
-497 blocked:502     port_stsa_class_and_add_g_operator
-498 blocked:497     build_complex_algebra_for_task_frames
-499 blocked:497     build_ultrafilter_frame_and_prove_task_frame_axioms
-500 blocked:497     reconcile_shiftset_representation_with_stsa_route
-501 blocked:125     extend_stsa_with_until_since_operators
-543 blocked:500     formalize_mf_correspondence_rigidity
-502 ready           ground_algebraic_representation_in_goldblatt_and_brv
-```
-
-<a id="milestone-m10"></a>
-## M10: The written record: errata, open questions, examples and docs
-
-Land the paper-side record the two fronts owe: the GHR erratum, the C3 completeness question, the ball-space source behind the frame definition, publication-quality examples, and a final docs sweep.
-
-- **Progress**: planned -- 0/4 batches, 0/5 tasks done -- 177 is genuinely last: ten non-terminal predecessors, one of them classified open mathematics
-- **Review**: none
-- **Gate**: The erratum and the C3 question are recorded, the Cmiel-Kuhlmann source is in the corpus, Examples/ demonstrates the headline results at publication quality, and README.md, docs/ and the module docstrings are re-audited against the tree.
-
-**Batch 1** -- The two completeness-side records: the GHR94 erratum and the open C3 completeness question
-
-```
-/orchestrate 890, 570 --lit
-570 ready           c3_completeness_question
-890 ready           ghr_lemma_10_2_3_case5_erratum_reference_manual
-```
-
-**Batch 2** -- The publication-quality Examples/ expansion; ready, and adjacent to the proof-mode modules
-
-```
-/orchestrate 178
-178 ready           publication_examples_and_demo
-```
-
-**Batch 3** -- Corpus ingest of the Cmiel ball-space source the manuscript's def:frame footnote cites
-
-```
-/orchestrate 664
-664 ready           ingest_cmiel_kuhlmann_ball_space_source
-```
-
-**Batch 4** -- README, docs/ and module-docstring polish; last in the mainline programme behind 27 edges
-
-```
-/orchestrate 177
-177 blocked:178,282,296,298,428,429,430,481,482,543  update_readme_and_module_docstrings
-```
+- **Gate**: records/semantic-proof-mode.md is on main, the goal shape and witness interface it leaves open are settled, and a task record exists for the evaluator and for the mode and its adapter. #10 is the record's only carrier, so this milestone opens only when #10 merges or is declined.
 
 <a id="milestone-m11"></a>
 ## M11: L-triangle: the open-modal exploration backlog
 
 Keep the open-modal language's backlog moving at low priority: truth invariance along a ray lifting, the syntax closures, incompleteness transfer at Base, and the decision record on the stability primitive.
 
-- **Progress**: planned -- 0/1 batches, 0/6 tasks done -- Secondary by the 2026-11-05 ruling: never dispatched ahead of, or batched with, L-plus critical-path work
+- **Progress**: planned -- 0/1 batches, 0/6 tasks done -- Secondary by the 2026-11-05 ruling, now mechanical: 869 carries an edge on 962, so the backlog cannot run ahead of it
 - **Review**: none
 - **Gate**: Each row of the backlog is landed or carries a recorded reason, and 876 reports on whether the stability operator could be removed as an OpenFormula primitive and at what cost, without attempting the removal.
 
-**Batch 1** -- The whole demoted L-triangle backlog: 869 first, whose PR overlaps are regenerated files only
+**Batch 1** -- Gated on 962: the demoted L-triangle backlog behind 869, which now sequences after it
 
 ```
 /orchestrate 869, 932, 873, 874, 875, 876
+869 blocked:962     open_modal_invariance_ray_agreement_lifting   <- demoted, and now behind 962 by edge: both write FormalSystem/OpenLanguage.lean
 873 blocked:869     open_language_subformula_closure
 874 blocked:873     open_language_substitution_closure
 875 blocked:873     open_language_incompleteness_transfer
 876 blocked:873     open_language_stability_primitive_removal
 932 blocked:869     Land the four ofStepRel constraint lemmas and an ofStepPlain constructor in I...
-869 ready           open_modal_invariance_ray_agreement_lifting   <- overlaps only regenerated inventory surfaces; stays demoted behind L-plus work
 ```
+
+<a id="milestone-m0"></a>
+## M0: The PR review round: a posted decision on each of the five contributions
+
+Closed 2026-11-23 -- review: none -- Reported on all five contributions, reconciled the records, and stated D4 once over TruthEnv
 
 <a id="roadmap-context"></a>
 ## Rules, conventions and repo context
@@ -426,29 +426,34 @@ Keep the open-modal language's backlog moving at low priority: truth invariance 
 ### Rules
 
 - L-plus is the front and L-triangle is secondary (2026-11-05). Its tasks are demoted, not abandoned, and are never dispatched ahead of, or batched with, L-plus critical-path work.
-- The enterable front leads the order (2026-11-23). No open contribution is merge-ready -- every one is CONFLICTING or DIRTY -- so the merge-gated round no longer leads: the library and rule-set work that collides with no open PR does, and M13 sits below it.
+- The enterable front leads the order (2026-11-23). No open contribution is merge-ready, so milestone order follows what dispatches today: M7 and M9 declare no file scope at all, M3's 962 and 986 and M13's 989 and 984 are free, and the library fill is now behind 960's hold.
 - Decidability before completeness (2026-11-02). At ZTime deciding validity makes the valid set recursive outright; Craig remains the instrument only for the weaker r.e.-only case at Base, Dense and RTime.
 - No Lean formalization of the Reynolds engine's sections 7-15 (901's Recommendation 8). Filing a record for any part of them is a ruling violation, not a judgement call.
 - Closedness of the canonical bundle is the completeness front's standing open problem, owned by no task and not to be filed: filing it needs a fresh user ruling reversing the sections 7-15 refusal.
 - The stability operator stays primitive in both languages (2026-11-05), and no constructor is added to PlusFormula, PlusAxiom or PlusDerivationTree.
 - No agent-system work is filed in this repository: this tree's .claude-extensions.json declares no reachable source_dir, so a record whose edit target resolves only under the source store cannot run from here.
-- 977 is BLOCKED (2026-11-23): its plan's Phase 1 gate needs PlusLanguage/TemporalViews.lean and Tactic/TemporalFormulaViews.lean, both absent from main and carried only by #8, and phases 1, 5 and 8 read #8-only files. Nothing was edited; see the task's issues.jsonl, iss_1795469726840_qnsMb4.
+- 977 is on hold (2026-11-23): its plan's Phase 1 gate needs PlusLanguage/TemporalViews.lean and Tactic/TemporalFormulaViews.lean, both absent from main and carried only by #8, and #10 edits records/proof-mode-architecture.md, which the record reads as binding. Lift when #8 closes.
 - 977 lands AFTER the temporal contribution, settled on evidence (2026-11-23) rather than recommendation: #8 edits neither Syntax/Formula.lean nor PlusLanguage/Formula.lean, so the before order saves no rebase, and the interval operators 977 owes exist only on #8's branch.
 - #8 merges on two conditions (records/milestones.md, what to do next): the carrying table's key widened to (source, target) and made non-private, and the one altered ProofModeTest.lean acceptance example split into the two cases it used to cover.
-- 960's IMPLEMENTATION must not be dispatched while #8 is open: its overlap is four real ProofMode source, test and guide paths, carried by #8 and #9, not a regenerated surface. Research and planning may proceed. This is a statement rather than a status: no hold is set.
+- 960 is on hold, not merely warned (2026-11-23). Its overlap is 28 real ProofMode source, test and guide paths carried by #8 and #9, not a regenerated surface. Research and planning stay admissible through an explicit override; lift with update-task-status.sh preflight 960 unhold <session>.
 - The 970 -> 977 relation is advisory, not an edge (2026-11-23): 970's report may move the stability operator to its own signature class, but 977's filed plan presupposes no such report, and 974 already carries edges on both 970 and 971 where that decision is load-bearing.
 - 947 is gate one: its report must open with an explicit GO or RE-PLAN verdict, and on RE-PLAN every record after it is held until its own record is revised. 948 is gate two and carries no verdict as filed.
 - The depth-0 gate behind 761 is owned by no open task, so no dependency edge can express that blocker and none was invented to replace the one that aged out. Its disposition is a user ruling.
+- 989 and 984 are no longer externally blocked (2026-11-23). All four of 989's scope files are on main -- Semantics/TemporalRules.lean and PointTransport.lean with both tests -- and no open PR touches any of them, so both roadmap_ext_blocked flags were cleared. 984 is gated only by its edge on 989.
+- PR #10 adds one scope conflict and no new gate (2026-11-23). It touches only records/README.md, records/proof-mode-architecture.md and records/semantic-proof-mode.md; the middle path is in 977's file_scope and 977's own hold_reason already names it. No other open record is scoped on records/.
+- 960 is the structural fix, not merely a predecessor (2026-11-23). The mutual ProofModeTest.lean, Automation/ProofMode.lean and derivation-proof-mode.md collisions among 944-969 are exactly the files it splits, so no serializing edges were written between those members.
+- Three edges were written for measured unordered overlaps (2026-11-23): 869 on 962 (OpenLanguage.lean, direction fixed by the L-triangle demotion), 947 on 973 (BimodalLib.lean, no wave cost), 965 on 178 (Examples/ProofMode/Adoption.lean inside 178's directory).
+- 974 needed no edge on 972 (2026-11-23): their BimodalLib/Theorems/ overlap is already serialized transitively, 974 -> 973 -> 972, so the pre-dispatch advisory is a false positive of the graph rather than a missing edge.
 
 ### Conventions
 
 - Each batch line is one invocation and batches are dependency-inclusive: a batch holding a blocker with its dependent is correct, while a dependent named without its out-of-batch blocker is dead weight.
 - MAX_TASKS is 8 and the work-cycle budget is per task per invocation (5 default, 13 under --hard), so re-run the same line until every member reports terminal.
 - Shared file scope serializes a batch rather than breaking it, and a collision against a live session's lock is not bypassable by --allow-scope-collision: wait for the holder, or batch with it.
-- Measured against the open PR diffs (2026-11-23): 12 of the 15 ready records collide with nothing in any open contribution -- 971, 970, 962, 988, 604, 935, 831, 502, 570, 890, 178, 664 -- and eight of those declare no file_scope at all, so no merge can collide with them.
-- Only three ready records overlap an open PR: 986 on Tactic/FormulaViews.lean, 960 on four ProofMode source, test and guide paths, and 869 on four auto-regenerated inventory surfaces, three READMEs and typst/generated/status.typ -- mechanical, not semantic.
+- Measured against the open PR diffs (2026-11-23): the dispatchable, conflict-free front is 962, 986, 988, 989, 604 with its 298 chain, 935, 831, 502, 570, 890, 664, 178 and 481, plus 869 at the back of the order; eight of those declare no file_scope at all.
+- Three ready records overlap an open PR for real (2026-11-23): 960 on 28 ProofMode source, test and guide paths, 986 on Tactic/FormulaViews.lean (where #8 only adds viewHead? far from applyView), and 869 on regenerated inventory surfaces alone.
 - 960 and 952 declare whole ProofMode directories on purpose, so nothing else may run beside either; the library records declare their own BimodalLib directories, and 178, 177, 257, 482, 875 and 876 declare theirs coarsely.
-- Nineteen open records carry no file_scope (125, 231, 411, 412, 497-502, 570, 604, 664, 713, 831, 890, 935, 970, 984), so the creation-time overlap check is blind on them. No task is filed for it.
+- Eighteen open records carry no file_scope (125, 231, 411, 412, 497-502, 570, 604, 664, 713, 831, 890, 935, 984), so the creation-time overlap check is blind on them. No task is filed for it.
 - A RESEARCHED status does not always mean a report exists: 861, 862 and 890 carry it with no linked artifact and no task directory, their research folded into the task description.
 - This file is generated from specs/state.json by scripts/roadmap-integration.sh; change milestone order, batch membership or a description through /roadmap, never by editing the file.
 
