@@ -523,13 +523,22 @@ All four probe scripts are preserved under
   `({ box := true, stab := false, temporal := false }, 1, "ModalBoolean")`.
 - `yield-probe.lean` — enumerate at bound 4 over two atoms, canonicalize, decide at `Base` and at
   `ZTime`, and tabulate verdict × `BranchGates.gated` per fragment. It compiles and runs (a 60s
-  foreground attempt was killed mid-run, not by an error), but **had not finished after 25
-  minutes of detached wall clock** and produced no figure within this dispatch. That
-  non-completion is itself a finding worth carrying into the plan: `evalBranchGates` re-runs
-  `buildTableau` for every `invalid` verdict, so gating the countermodel half roughly doubles the
-  DECIDE cost per formula, on top of the second pass at `ZTime`. The gate pass rate per
-  (fragment, frame class) is therefore **not measured here** and is the one figure the plan's
-  first phase should take before the bound is fixed in the command's defaults.
+  foreground attempt was killed mid-run by its own timeout, not by an error), but produced no
+  figure within this dispatch: it had not finished after ~25 minutes of detached wall clock, and
+  both instances were then stopped.
+  **This yields no usable cost figure, and the elapsed time must not be read as one.** Two copies
+  of the probe were running concurrently for most of that window — a launch call failed on its
+  PID-file write but had already backgrounded the job, so the relaunch added a second elaboration
+  competing for the same cores. The run was therefore core-starved by a factor of roughly two,
+  and ~25 minutes is an upper bound contaminated by self-contention, not a measurement of the
+  gate's cost.
+  What *is* established by reading the source, independent of the timing: `evalBranchGates`
+  re-runs `buildTableau` for every `invalid` verdict (because `DecisionResult` discards the branch
+  and the `TimeOrdering`), so gating the countermodel half adds one full tableau construction per
+  invalid formula on top of DECIDE. The gate pass rate per (fragment, frame class), and the real
+  marginal cost of gating, are both **unmeasured** and are the first two figures the plan's
+  opening phase should take — on a single uncontended run — before the bound is fixed in the
+  command's defaults.
 - `scripts/proof-mode-cost-baseline.sh --pin <mismatched sha>` — exit 3, "STALE BASELINE",
   confirming the `BimodalLib/Diagnostics` staleness surface.
 
