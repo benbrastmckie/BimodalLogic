@@ -1,7 +1,7 @@
 # Implementation Plan: Task #973
 
 - **Task**: 973 - Theorem library: countermodels
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 14 hours
 - **Dependencies**: `theorem_library_layout_and_registry` (landed); `theorem_library_tableau_pipeline` (landed, sequencing-only)
 - **Research Inputs**: specs/973_theorem_library_countermodels/reports/01_theorem-library-countermodels.md

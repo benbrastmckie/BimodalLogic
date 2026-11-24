@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "task_number": 973,
+  "plan_path": "specs/973_theorem_library_countermodels/plans/01_theorem-library-countermodels.md",
+  "project_root": "/home/benjamin/Projects/BimodalLogic",
+  "challenge_module": "Challenge",
+  "challenge_path": "Challenge.lean",
+  "theorem_names": [
+    "GenericConsequenceIn",
+    "gatesOK",
+    "genericConsequenceIn_nil",
+    "not_genericConsequenceIn_ofFormula",
+    "not_genericConsequenceIn_of_gatesOK",
+    "not_genericConsequenceIn_of_le"
+  ],
+  "route": "plan-declared",
+  "commit": "a76a46f6ef2b0886c4ee342065920a039003384a",
+  "content_sha256": "0a4e2b2577ebca9670ce71b002e0e51bf423472eab4caf8936796470e48148ef",
+  "created_at": "2026-11-24T12:08:19Z"
+}

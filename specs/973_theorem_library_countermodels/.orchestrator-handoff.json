@@ -1,15 +1,20 @@
 {
-  "status": "planned",
-  "dispatch_seq": 2,
-  "phases_completed": 0,
+  "status": "implemented",
+  "dispatch_seq": 3,
+  "phases_completed": 9,
   "phases_total": 9,
-  "summary": "Wrote a nine-phase implementation plan for the countermodel half of BimodalLib, integrating the research report in full. Phases land a PointTruth-generic CountermodelEntry type, both TRANSFER theorems, one kernel-checked entry at each of the three admitted grades, registration of the hand-built refutations in the tree, lookup up to atom renaming, the index census and near-miss invariant, tests, and the docs/record reconciliation. Bulk admission of the pipeline's 1,047 gated-tableau statements is a stated Non-Goal on the research report's measured line-cost FAIL, consistent with M20's own DONE WHEN clause. The plan validates with 0 warnings and its Lean Challenge Statements block compiles against the project toolchain.",
+  "summary": "All nine plan phases completed. The countermodel half of BimodalLib landed: a PointTruth-generic CountermodelEntry with the kernel-checked refutation and rfl-closed profile_eq, 13 rows across all three admitted grades (semantic 11, certificate 1, gated tableau 1), both TRANSFER theorems, the eight branch gates bundled with their bridge theorem, lookup up to renaming of atoms, a generated index census, assert_near_miss_targets_resolve as a build invariant, and tests in both directions. lake build BimodalLib BimodalLibTest --wfail exits 0 with zero errors and zero warnings; sorry, new-axiom and native_decide counts are all 0; check-module-invariants.sh matches its pre-task baseline exactly.",
   "blockers": [],
   "artifacts": [
     {
+      "type": "summary",
+      "path": "specs/973_theorem_library_countermodels/summaries/01_theorem-library-countermodels-summary.md",
+      "summary": "Implementation summary for the countermodel half of BimodalLib, with the measured verification results and four annotated plan deviations."
+    },
+    {
       "type": "plan",
       "path": "specs/973_theorem_library_countermodels/plans/01_theorem-library-countermodels.md",
-      "summary": "Nine-phase plan, ~14 hours, six dependency waves; four pinned Lean theorem goals plus two pinned definitions."
+      "summary": "All nine phase headings marked [COMPLETED], with four inline deviation annotations."
     }
   ]
 }

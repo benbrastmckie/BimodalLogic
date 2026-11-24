@@ -1,30 +1,96 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/973_theorem_library_countermodels/plans/01_theorem-library-countermodels.md",
-      "summary": "Nine-phase plan for the countermodel half of BimodalLib: a PointTruth-generic CountermodelEntry type, both TRANSFER theorems, one kernel-checked entry per admitted grade, registration of the hand-built refutations, lookup up to atom renaming, index census, tests, and the docs/record reconciliation."
+      "type": "summary",
+      "path": "specs/973_theorem_library_countermodels/summaries/01_theorem-library-countermodels-summary.md",
+      "summary": "The countermodel half of BimodalLib: the generic entry type, 13 kernel-checked rows across all three grades, both transfer theorems, gates-as-data, lookup up to renaming, the index census, and the near-miss build invariant."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Landed the countermodel half of BimodalLib: a PointTruth-generic CountermodelEntry whose refutation field the kernel checks and whose profile_eq makes filing computed; 13 rows covering SEMANTIC (11), CERTIFICATE (1) and GATED TABLEAU (1); both TRANSFER theorems; the eight branch gates bundled with their bridge theorem; lookup of an inference up to renaming of atoms; a generated index section with a per-grade census; assert_near_miss_targets_resolve as a build invariant; tests in both directions; and docs/reference/bimodal-lib.md documenting the grades. BimodalLib carries no sorry, no new axiom and no native_decide.",
+    "roadmap_items": []
+  },
+  "modified_files": [
+    "BimodalLib.lean",
+    "BimodalLib/Countermodel.lean",
+    "BimodalLib/Countermodel/Gates.lean",
+    "BimodalLib/Countermodel/Lookup.lean",
+    "BimodalLib/Countermodel/Transfer.lean",
+    "BimodalLib/Countermodels/Boolean/GatedTableau.lean",
+    "BimodalLib/Countermodels/Complete.lean",
+    "BimodalLib/Countermodels/ModalBoolean/Base.lean",
+    "BimodalLib/Countermodels/ModalTemporalBoolean/Base.lean",
+    "BimodalLib/Countermodels/TemporalBoolean/Dense.lean",
+    "BimodalLib/Countermodels/TemporalBoolean/RTime.lean",
+    "BimodalLib/Countermodels/TemporalBoolean/ZTime.lean",
+    "BimodalLib/INDEX.md",
+    "BimodalLib/Index.lean",
+    "BimodalLib/README.md",
+    "BimodalLib/Subsumption.lean",
+    "Tests/BimodalLibTest.lean",
+    "Tests/BimodalLibTest/CountermodelTest.lean",
+    "Tests/BimodalLibTest/Fixtures/UnresolvedNearMiss.lean",
+    "Tests/BimodalLibTest/GateAgreementTest.lean",
+    "docs/reference/bimodal-lib.md",
+    "records/theorem-library.md",
+    "typst/generated/status.typ",
+    "specs/973_theorem_library_countermodels/plans/01_theorem-library-countermodels.md",
+    "specs/973_theorem_library_countermodels/summaries/01_theorem-library-countermodels-summary.md",
+    "specs/973_theorem_library_countermodels/issues.jsonl"
+  ],
+  "sapience_notes": [
+    {
+      "subject": "Lean 4 open-in prefix and docstring order",
+      "value": "An `open X in` prefix must come BEFORE a declaration's docstring, not after it: the docstring is part of the declaration syntax the prefix wraps, so `/-- doc -/ open X in def f` fails with \"unexpected token 'open'; expected 'lemma'\". Measured on Lean v4.33.0-rc1."
+    },
+    {
+      "subject": "Lean 4 multi-line structure instance indentation",
+      "value": "A multi-line structure instance written `return { a := x, b := y,` with continuation lines indented less than the first field's column fails with \"unexpected identifier; expected '}'\", and the reported column points at the END of the last accepted line rather than at the offending token -- which sends you hunting for a reserved-token clash. Put the brace alone at the end of its line and indent all fields uniformly."
+    },
+    {
+      "subject": "A Name set with double-backtick syntax reads back as Name.str, not Name.mkStr",
+      "value": "In Lean 4.33 metaprogramming, a `Name` field populated with ``Foo reduces to an Expr headed by the CONSTRUCTOR `Name.str`, so a reader matching `Name.mkStr`/`Name.mkNum` (the ToExpr alias shape) returns none on it. A robust reader must handle Name.anonymous/Name.str/Name.num as well as the mkStr aliases."
+    },
+    {
+      "subject": "linter.style.longLine scope in a Lean package",
+      "value": "Measured in BimodalLogic: `linter.style.longLine` fires on CODE lines but not on docstring lines. A 135-character `#guard_msgs` expected-output docstring drew no warning while 107- and 111-character code lines each failed a `--wfail` build. So a verbatim expected-output block needs no exemption, but a long `#print axioms` line does."
+    },
+    {
+      "subject": "A new module's basename can silently break an unrelated citation lint",
+      "value": "Adding BimodalLib/Countermodel/Transfer.lean collided by basename with FormalSystem/Metalogic/WeakCanonical/Transfer.lean and flipped three bare `Transfer.lean:NNN` citations in two unrelated files from resolvable to ambiguous, breaking a pinned residual ceiling. Third recorded occurrence of the mechanism in this repo. Nothing warns at the point the new file is added; check new module basenames against the existing tree before landing them."
+    },
+    {
+      "subject": "A research probe's maxRecDepth should be re-measured, not inherited",
+      "value": "A research probe discharged eight decidable branch gates under `set_option maxRecDepth 10000`; re-measured at implementation time, `decide` closed the same goal at the DEFAULT depth of 512 with no set_option at all. Carrying the probe's bump forward would have hidden a later regression in exactly the quantity it was raised to protect."
+    },
+    {
+      "subject": "verify-touched.sh derives paths from the whole working tree",
+      "value": "Under a concurrent sibling dispatch, verify-touched.sh's own touched-path derivation picks up the sibling's untracked files and selects a large battery of suites unrelated to the current task -- 87 agent-system shell suites, selected over another dispatch's .githooks/* files. A per-gate scoped invocation (verify-deploy.sh --only-gate N --skip-unchanged) is the reliable scoped discharge when siblings are active."
+    },
+    {
+      "subject": "A plan premise about a measured fact must be re-checked before it is written into an artifact",
+      "value": "A plan instructed recording in a Lean definition's note field that its premise list was non-empty and uniquely so. Measured false: the witness family it was built from is declared over the empty context, so the list is empty. The research report had only claimed the underlying theorem takes a premise list natively -- a claim about a signature, which the plan over-read into a claim about the instance. Writing the instruction verbatim would have put a false statement into the source."
     }
   ],
   "metadata": {
-    "session_id": "sess_1795519747_5f7f6c_973",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 9,
-    "estimated_hours": 14,
-    "dependency_waves": [[1], [2, 6], [3, 4, 5], [7], [8], [9]]
-  },
-  "memory_candidates": [
-    {
-      "content": "In a Lean deploy-consumer repo, a plan phase's narrowing-selector output is NEVER the no-suite sentinel alone, even when every path the phase names maps to no shell suite. scripts/plan-file-scope-harvest.sh appends the repo's declared coupled generated surface (typst/generated/status.typ in BimodalLogic) to EVERY phase carrying a .lean edit, and that path maps to real suites (test-plan-file-scope-harvest.sh, test-validate-artifact.sh). validate-artifact.sh re-derives the selector over the HARVESTED set, not the authored list, so a sentinel-only Tier Justification is flagged as a false claim on every Lean phase. Author the justification against the harvested set: name the two real suites and omit the sentinel token entirely (the validator greps the whole justification block for it).",
-      "category": "INSIGHT",
-      "source_artifact": "specs/973_theorem_library_countermodels/plans/01_theorem-library-countermodels.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["tier-justification", "suite-selection", "plan-file-scope-harvest", "coupled-generated-surface", "lean-plan-authoring", "validate-artifact"]
-    }
-  ],
-  "next_steps": "Run /orchestrate 973 to execute the plan",
-  "dispatch_seq": 2
+    "session_id": "sess_1795519747_5f7f6c",
+    "agent_type": "lean-implementation-agent",
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "task_dir": "specs/973_theorem_library_countermodels",
+    "compliance_check": "passed",
+    "phases_completed": 9,
+    "phases_total": 9
+  }
 }
