@@ -19,6 +19,7 @@ fields are documented there.
 |------|-------------|
 | `Record.lean` | The `Stage` key, the shared `Head`, the closed `Outcome`/`FailureClass`/`ReferenceKind` enumerations, the `ReproveRecord` and `CompareRecord` payloads with their snake_case JSON serialization, and the five reserved stages' payload keys |
 | `Size.lean` | `derivationSize` and `plusDerivationSize`, the computable node count of a derivation, beside the existing `height`, with the ordering `height ≤ size` proved for both |
+| `Emit.lean` | `#reprove_record` and `#compare_record`, the two emitter commands, the four `diagnostics.*` stamp options, and the environment readers that derive `term_size`, `axioms`, `frame_class`, `fragment` and the two derivation measures |
 
 ## Why a measure of a core type is declared here
 
@@ -37,8 +38,10 @@ effect: a command that did would be both untestable and non-composable.
 ## Tests
 
 The emitters' error paths are pinned one-for-one by `#guard_msgs` negative tests in
-`Tests/BimodalLibTest/DiagnosticsTest.lean`, which also carries one positive smoke record so a
-green run is distinguishable from a run that emitted nothing.
+[Tests/BimodalLibTest/DiagnosticsTest.lean](../../Tests/BimodalLibTest/DiagnosticsTest.lean),
+which also carries three positive smoke records -- a schematic mirror, whose derivation measures
+are null, and a closed one compared against a hand proof under each reference kind -- so a green
+run is distinguishable from a run that emitted nothing.
 
 ---
 

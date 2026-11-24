@@ -15,6 +15,7 @@ that it fails, with a pinned message, on what it should not.
 | `IndexTest.lean` | The polarity census on each defined operator; a declared dual read back from its row |
 | `EdgeTableTest.lean` | The status of each conservativity edge read off its verdict; a verdict cannot be built without its proof; the rendered edge section lists every registered edge |
 | `ProofFragmentTest.lean` | `assert_proof_fragments_recorded` fails on the fixture's theorem, whose proof leaves the cell of its statement, passes once a reason is recorded, and reports a reason recorded for a proof that stays inside its cell; a proved edge is a reason by itself |
+| `DiagnosticsTest.lean` | The two record emitters in both directions: one smoke record per implemented stage with its whole JSON object pinned, and one `#guard_msgs` row per `throwError` path in `BimodalLib/Diagnostics/Emit.lean` (unknown declaration, no value to measure, and each of the four closed enumerations plus both halves of the `failure_class` nullability rule) |
 | `Fixtures/` | `UnregisteredDerivation.lean`: one closed derivation that no registration module names. `UnrecordedProofFragment.lean`: one registered theorem in Until alone derived through `□`, with no recorded reason |
 
 *Last verified: 2026-11-23*

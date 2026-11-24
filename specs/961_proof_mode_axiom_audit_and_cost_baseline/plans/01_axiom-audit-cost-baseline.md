@@ -376,7 +376,7 @@ one invocation covers the whole blast radius.
 
 ---
 
-### Phase 4: The Two Emitter Commands and Their Negative Tests [NOT STARTED]
+### Phase 4: The Two Emitter Commands and Their Negative Tests [COMPLETED]
 
 **Goal**: The commands that emit the RE-PROVE and COMPARE records for a proof-mode script, each
 `throwError` path pinned by a `#guard_msgs` negative test, with the cost script of Phase 7 as
@@ -397,7 +397,7 @@ their first consumer.
       statement with no registered row — which every mirror in this task is — fall back to the
       `data/`-style identifier convention and say so in the record, never silently emit an empty
       string.
-- [ ] Carry `commit`, date and `command` as registered string options
+- [x] Carry `commit`, date and `command` as registered string options *(deviation: altered — a FOURTH option, `diagnostics.zeroTimings`, was added beside the three stamps. Without it no positive smoke record can be pinned at all: `heartbeats` and `elab_ms` are the only fields of a record that are not a function of the commit and the toolchain. The `-D` route works as the primary plan expected, so the scratch-copy fallback is neither taken nor implemented)*
       (`register_option`), set from outside via `lake env lean -D<option>=<value>` so the tracked
       probe stays stamp-free. If a string option cannot be carried by `-D`, fall back to the
       script writing stamp lines into a scratch copy of the probe, and record which route was
@@ -425,7 +425,7 @@ their first consumer.
 reaches these modules, so one invocation covers both the emitters and every negative test that
 pins them.
 
-**Scope Hypothesis**: four `throwError` paths, hence four negative tests. This is an estimate made
+**Scope Hypothesis** *(resolved: eight, not four)*: four `throwError` paths, hence four negative tests. This is an estimate made
 before the elaborators are written: enumerate the real paths by grepping the finished
 `Emit.lean` for `throwError`, and write one `#guard_msgs` test per path found. The task's
 constraint is one negative test per new `throwError` path, not four — if the count differs, the

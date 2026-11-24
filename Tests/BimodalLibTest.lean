@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
+import BimodalLibTest.DiagnosticsTest
 import BimodalLibTest.EdgeTableTest
 import BimodalLibTest.FragmentTest
 import BimodalLibTest.IndexTest
