@@ -100,35 +100,35 @@ next_project_number: 991
 
 ### Syntax
 
-977 [BLOCKED] — Introduce a connective signature layer under FormalSystem so...
+977 [HOLD] — Introduce a connective signature layer under FormalSystem so...
 873 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
   └─ 874 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
   └─ 876 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 
 ### Proof Mode
 
-960 [NOT STARTED] — NO ModalTemporal MODULE OR CLASS...
-  └─ 944 [NOT STARTED] — FAMILY LAYOUT REVISED (records/proof-mode-architecture.md): ⊡...
-    └─ 945 [NOT STARTED] — NO ModalTemporal MODULE OR CLASS...
-      └─ 946 [NOT STARTED] — NO ModalTemporal MODULE OR CLASS...
+960 [HOLD] — NO ModalTemporal MODULE OR CLASS...
+  └─ 944 [HOLD] — FAMILY LAYOUT REVISED (records/proof-mode-architecture.md): ⊡...
+    └─ 945 [HOLD] — NO ModalTemporal MODULE OR CLASS...
+      └─ 946 [HOLD] — NO ModalTemporal MODULE OR CLASS...
         └─ 947 [NOT STARTED] — REVISED: GATE ONE IS A SWEEP OVER A SELECTION OF LIBRARY...
-          └─ 949 [NOT STARTED] — ARCHITECTURE (records/proof-mode-architecture.md): tier...
-            └─ 950 [NOT STARTED] — ARCHITECTURE (records/proof-mode-architecture.md): tier...
+          └─ 949 [HOLD] — ARCHITECTURE (records/proof-mode-architecture.md): tier...
+            └─ 950 [HOLD] — ARCHITECTURE (records/proof-mode-architecture.md): tier...
               └─ 948 [NOT STARTED] — REVISED: GATE TWO IS A SWEEP OVER A SELECTION OF LIBRARY...
-                └─ 952 [NOT STARTED] — NO ModalTemporal MODULE OR CLASS...
+                └─ 952 [HOLD] — NO ModalTemporal MODULE OR CLASS...
                   └─ 953 [NOT STARTED] — With the interface as one class per operator family and...
-                  └─ 956 [NOT STARTED] — ARCHITECTURE (records/proof-mode-architecture.md): tier...
+                  └─ 956 [HOLD] — ARCHITECTURE (records/proof-mode-architecture.md): tier...
                     └─ 957 [NOT STARTED] — MILESTONE M11 (records/proof-mode.md), STREAM: research and...
                       └─ 967 [NOT STARTED] — REVISED (records/proof-mode.md, M14b;...
                   └─ 966 [NOT STARTED] — MILESTONE M14a (records/proof-mode.md), STREAM: closure...
                     └─ 967 [NOT STARTED] — REVISED (records/proof-mode.md, M14b;... (see above)
                   └─ 968 [NOT STARTED] — STRUCTURE. Organize the chapter by...
                   └─ 974 [NOT STARTED] — MILESTONE M21 (records/proof-mode.md), LANE: library, then...
-          └─ 951 [NOT STARTED] — ARCHITECTURE (records/proof-mode-architecture.md): tier...
-            └─ 952 [NOT STARTED] — NO ModalTemporal MODULE OR CLASS... (see above)
+          └─ 951 [HOLD] — ARCHITECTURE (records/proof-mode-architecture.md): tier...
+            └─ 952 [HOLD] — NO ModalTemporal MODULE OR CLASS... (see above)
           └─ 963 [NOT STARTED] — ARCHITECTURE (records/proof-mode-architecture.md): tier...
             └─ 964 [NOT STARTED] — PATH REVISED: the gate-one scripts this record designs the...
-              └─ 952 [NOT STARTED] — NO ModalTemporal MODULE OR CLASS... (see above)
+              └─ 952 [HOLD] — NO ModalTemporal MODULE OR CLASS... (see above)
           └─ 965 [NOT STARTED] — REVISED (records/proof-mode.md, M12): where proof-mode proofs...
   └─ 954 [NOT STARTED] — COORDINATION WITH OPEN CONTRIBUTIONS. Three stacked pull...
     └─ 963 [NOT STARTED] — ARCHITECTURE (records/proof-mode-architecture.md): tier... (see above)
@@ -141,14 +141,14 @@ next_project_number: 991
       └─ 973 [NOT STARTED] — MILESTONE M20 (records/proof-mode.md), LANE: library. Theorem...
         └─ 967 [NOT STARTED] — REVISED (records/proof-mode.md, M14b;... (see above)
         └─ 974 [NOT STARTED] — MILESTONE M21 (records/proof-mode.md), LANE: library, then... (see above)
-  └─ 969 [NOT STARTED] — LOCATION (binding over any module path named below): the view...
-    └─ 946 [NOT STARTED] — NO ModalTemporal MODULE OR CLASS... (see above)
+  └─ 969 [HOLD] — LOCATION (binding over any module path named below): the view...
+    └─ 946 [HOLD] — NO ModalTemporal MODULE OR CLASS... (see above)
 962 [NOT STARTED] — MILESTONE M9b (records/proof-mode.md), STREAM: metatheory....
   └─ 953 [NOT STARTED] — With the interface as one class per operator family and... (see above)
 986 [NOT STARTED] — Report the real cause when a view fails to apply. applyView...
-  └─ 969 [NOT STARTED] — LOCATION (binding over any module path named below): the view... (see above)
-987 [NOT STARTED] — Two follow-ups owed after the temporal rules contribution...
-  └─ 950 [NOT STARTED] — ARCHITECTURE (records/proof-mode-architecture.md): tier... (see above)
+  └─ 969 [HOLD] — LOCATION (binding over any module path named below): the view... (see above)
+987 [HOLD] — Two follow-ups owed after the temporal rules contribution...
+  └─ 950 [HOLD] — ARCHITECTURE (records/proof-mode-architecture.md): tier... (see above)
 
 ## Tasks
 
@@ -158,7 +158,7 @@ next_project_number: 991
 - **Topic**: semantics
 - **Dependencies**: None
 
-**Description**: Three follow-ups named in the posted review of the pointed semantic lemmas contribution (branch feat/pointed-semantic-lemmas, milestone C1 of records/milestones.md) that no other record owns. None is a condition of merging; all wait on the merge, since the modules below are absent from main until then. Re-read the merged tree first and drop whatever the contributor already did. (1) A POSITIVE READING for `release_iff` and `trigger_iff`: each is stated as the negation of an Until or Since clause; add the direct universal-existential form a refutation script uses, proved from the existing one. (2) DOCSTRINGS: module docstring titles for the three generic modules, and one spelling of the `assert_not_exists` lock (the directory uses `Axiom DerivationTree`). (3) LEMMAS: `allFuture_persist` and `allPast_persist` for L-minus, which has no `untl`; and star-language versions of the time-shift and state-local transport factories. Each new lemma is stated over the clause classes so it is proved once for every language, with a test, including one at the star language. Related and separate: `connective_signature_layer_shared_primitives` owns the named interval operators and the `next` and `prev` encoding; `promote_next_prev_covby_to_generic_lemmas` owns the `next_iff_covBy` promotion.
+**Description**: Three follow-ups named in the posted review of the pointed semantic lemmas contribution (branch feat/pointed-semantic-lemmas, milestone C1 of records/milestones.md) that no other record owns. None was a condition of merging. That contribution has merged, and FormalSystem/Semantics/TemporalRules.lean, FormalSystem/Semantics/PointTransport.lean and both of their test modules are on main, so this record is dispatchable. Re-read the merged tree first and drop whatever the contributor already did. (1) A POSITIVE READING for `release_iff` and `trigger_iff`: each is stated as the negation of an Until or Since clause; add the direct universal-existential form a refutation script uses, proved from the existing one. (2) DOCSTRINGS: module docstring titles for the three generic modules, and one spelling of the `assert_not_exists` lock (the directory uses `Axiom DerivationTree`). (3) LEMMAS: `allFuture_persist` and `allPast_persist` for L-minus, which has no `untl`; and star-language versions of the time-shift and state-local transport factories. Each new lemma is stated over the clause classes so it is proved once for every language, with a test, including one at the star language. Related and separate: `connective_signature_layer_shared_primitives` owns the named interval operators and the `next` and `prev` encoding; `promote_next_prev_covby_to_generic_lemmas` owns the `next_iff_covBy` promotion.
 
 ---
 
@@ -173,7 +173,8 @@ next_project_number: 991
 ---
 
 ### 987. Temporal rules followups fold names and progress tests
-- **Status**: [NOT STARTED]
+- **Status**: [HOLD]
+- **Held**: 2026-11-24
 - **Task Type**: lean4
 - **Topic**: proof-mode
 - **Dependencies**: None
@@ -198,12 +199,13 @@ next_project_number: 991
 - **Topic**: semantics
 - **Dependencies**: Task 989
 
-**Description**: Promote next_iff_covBy and prev_iff_covBy of FormalSystem/SourceLanguage/SentenceTruth.lean onto the generic next_iff and prev_iff of FormalSystem/Semantics/TemporalRules.lean, once that module is on main (it arrives with the pointed semantic lemmas contribution, branch feat/pointed-semantic-lemmas, milestone C1 of records/milestones.md). SentenceTruth.lean docstring calls the duplication deliberate and unresolved and names promotion of one shared lemma as the eventual fix, blocked because the other copy of the succ-form fact sits in FormalSystem/Metalogic/DiscreteNonCompactness.lean and the import would be upward. TemporalRules.lean is at layer 1, as is SentenceTruth.lean, so the promotion has no layering cost; next_iff (L := Formula) M τ t PUnit.unit φ was checked to inhabit the statement of next_iff_covBy. Deliverable: the base-language lemmas become instances or one-line corollaries of the generic ones (or are removed with their uses repointed), the copy in Metalogic/DiscreteNonCompactness.lean is repointed likewise, and the deliberate-and-unresolved note in the SentenceTruth.lean docstring is replaced by the current state. No statement changes for downstream users.
+**Description**: Promote next_iff_covBy and prev_iff_covBy of FormalSystem/SourceLanguage/SentenceTruth.lean onto the generic next_iff and prev_iff of FormalSystem/Semantics/TemporalRules.lean, now that that module is on main (it arrived with the pointed semantic lemmas contribution, milestone C1 of records/milestones.md, since merged). SentenceTruth.lean docstring calls the duplication deliberate and unresolved and names promotion of one shared lemma as the eventual fix, blocked because the other copy of the succ-form fact sits in FormalSystem/Metalogic/DiscreteNonCompactness.lean and the import would be upward. TemporalRules.lean is at layer 1, as is SentenceTruth.lean, so the promotion has no layering cost; next_iff (L := Formula) M τ t PUnit.unit φ was checked to inhabit the statement of next_iff_covBy. Deliverable: the base-language lemmas become instances or one-line corollaries of the generic ones (or are removed with their uses repointed), the copy in Metalogic/DiscreteNonCompactness.lean is repointed likewise, and the deliberate-and-unresolved note in the SentenceTruth.lean docstring is replaced by the current state. No statement changes for downstream users.
 
 ---
 
 ### 977. Connective signature layer shared primitives
-- **Status**: [BLOCKED]
+- **Status**: [HOLD]
+- **Held**: 2026-11-24
 - **Task Type**: lean4
 - **Topic**: syntax
 - **Dependencies**: None
@@ -245,7 +247,8 @@ next_project_number: 991
 ---
 
 ### 969. Proof mode views tier
-- **Status**: [NOT STARTED]
+- **Status**: [HOLD]
+- **Held**: 2026-11-24
 - **Task Type**: lean4
 - **Topic**: proof-mode
 - **Dependencies**: Task 960, Task 977, Task 986
@@ -335,12 +338,13 @@ next_project_number: 991
 ---
 
 ### 960. Proof mode split shared test and guide files
-- **Status**: [NOT STARTED]
+- **Status**: [HOLD]
+- **Held**: 2026-11-24
 - **Task Type**: lean4
 - **Topic**: proof-mode
 - **Dependencies**: None
 
-**Description**: NO ModalTemporal MODULE OR CLASS (records/proof-mode-architecture.md, Interactions; binding over the text below wherever they differ): every interaction includes Boolean and every class other than Boolean extends Boolean. Rules joining Modal and Temporal, including the scope rules whose statements name no connective, are filed in ModalTemporalBoolean (PlusModalTemporalBoolean for TM+), in its scope-rule section. FAMILY LAYOUT REVISED (records/proof-mode-architecture.md, binding over the family list below wherever they differ): the families are Boolean, Modal and Temporal. There is NO Stability family and NO StabilityModal module. Rules, tactics, tests and guide sections for `⊡` and `⟐` are filed in the Modal modules (and in ModalBoolean, ModalTemporal, ModalTemporalBoolean by what else their statements name), as a section after the rules for `□` alone, so that the part TM instantiates can be read off. Module names list families in the order Modal, Temporal, Boolean. The interactions are ModalBoolean, TemporalBoolean, ModalTemporal and ModalTemporalBoolean. The same names are the fragment names of BimodalLib (records/theorem-library.md). The family layout is fixed with `⊡` in Modal; the shared statement is a K core with T, 4 and 5 as further members, and docs/development/stability-operator-family.md gives the grounds. MILESTONE M0 (records/proof-mode.md), STREAM: layout. FIRST IN THE PROGRAMME: every other proof-mode record files its work into the layout this one produces. COORDINATION WITH OPEN CONTRIBUTIONS. The rewriting contribution has merged and filed its own rules, tests and guide pages by family. The semantic-mode contribution is recommended for closure, its content superseded by the semantic lemmas and the semantic record. The temporal contribution (feat/proof-mode-temporal) is the only still-open blocker: it edits files this record moves and, like the rewriting contribution, already splits its own additions into per-family modules, so what remains to move once it merges is narrower than originally scoped — chiefly the shared guide index (docs/user-guide/derivation-proof-mode.md), both ProofMode READMEs, and whatever of FormalSystem/Automation/ProofMode/Meta.lean, Modal.lean and Temporal.lean predates the family split. Do NOT dispatch the implementation of this record while the temporal contribution is open: run it after it is merged or declined, and move whatever it added into the same layout. No hold flag is set on this task's record and its status is `not_started`; nothing needs lifting — the rule above describes when to dispatch, not a status to clear. Research and planning may proceed. Proof mode: establish the operator-family layout. The architecture record (records/proof-mode-architecture.md) files every rule, tactic, test and guide page by the operators its statement names. Families: Boolean, Modal, Stability (TM⁺), and Temporal with its Future and Past halves. Interactions are separate modules named by the families they join, Boolean included: ModalBoolean, TemporalBoolean, ModalTemporal, ModalTemporalBoolean, StabilityModal. Frame class is a suffix on the family: TemporalZTime, TemporalDense, TemporalRTime. A pure family module contains no implication in any statement. (1) RULES. Move the existing pure rules in FormalSystem/Theorems/ProofMode/ into modules named by that scheme, statements and proofs unchanged: Basic.lean to Boolean.lean; Possibility.lean to Modal.lean; Temporal.lean to Temporal.lean and TemporalBoolean.lean; Discrete.lean to TemporalZTime.lean; the TM⁺ copies likewise with their `Plus` prefix, PlusRules.lean staying as the TM⁺ base. Where an existing rule's statement names an implication and a second family, it goes to that interaction's module; list every such classification in the summary. (2) TACTICS. Rename the elaborator modules in FormalSystem/Automation/ProofMode/ to match (Basic.lean to Boolean.lean, Discrete.lean to TemporalZTime.lean), Meta.lean unchanged. No tactic changes behaviour or syntax. (3) TESTS. Split the acceptance examples into one file per family or interaction under Tests/BimodalTest/Automation/ProofMode/ (BooleanTest.lean, ModalTest.lean, TemporalTest.lean, TemporalZTimeTest.lean, and so on), every example unchanged; keep ProofModeTest.lean as an aggregator that only imports them. (4) GUIDE. Keep docs/user-guide/derivation-proof-mode.md as index and foundations, and give each family or interaction that has tactics its own page under docs/user-guide/proof-mode/ (boolean.md, modal.md, temporal.md, temporal-ztime.md, and so on). The index states the three tiers and the family scheme in a paragraph and links to the architecture record. (5) READMES. One bounded inventory section per module in each ProofMode README. (6) SCOPES. Check the `file_scope` declared on every open record whose slug begins `proof_mode_` against the layout actually produced and correct any path that differs; they were written against the names above. DONE WHEN: `lake build` and `lake test` pass with every existing example unchanged in the family files; no statement, proof or tactic behaviour has changed; every module name follows the scheme; and every open proof-mode record's `file_scope` names paths that exist or that the record will create. Hard dependencies: none. FormalSystem/Theorems/ must not import FormalSystem/Automation/.
+**Description**: NO ModalTemporal MODULE OR CLASS (records/proof-mode-architecture.md, Interactions; binding over the text below wherever they differ): every interaction includes Boolean and every class other than Boolean extends Boolean. Rules joining Modal and Temporal, including the scope rules whose statements name no connective, are filed in ModalTemporalBoolean (PlusModalTemporalBoolean for TM+), in its scope-rule section. FAMILY LAYOUT REVISED (records/proof-mode-architecture.md, binding over the family list below wherever they differ): the families are Boolean, Modal and Temporal. There is NO Stability family and NO StabilityModal module. Rules, tactics, tests and guide sections for `⊡` and `⟐` are filed in the Modal modules (and in ModalBoolean, ModalTemporal, ModalTemporalBoolean by what else their statements name), as a section after the rules for `□` alone, so that the part TM instantiates can be read off. Module names list families in the order Modal, Temporal, Boolean. The interactions are ModalBoolean, TemporalBoolean, ModalTemporal and ModalTemporalBoolean. The same names are the fragment names of BimodalLib (records/theorem-library.md). The family layout is fixed with `⊡` in Modal; the shared statement is a K core with T, 4 and 5 as further members, and docs/development/stability-operator-family.md gives the grounds. MILESTONE M0 (records/proof-mode.md), STREAM: layout. FIRST IN THE PROGRAMME: every other proof-mode record files its work into the layout this one produces. COORDINATION WITH OPEN CONTRIBUTIONS. The rewriting contribution has merged and filed its own rules, tests and guide pages by family. The semantic-mode contribution is recommended for closure, its content superseded by the semantic lemmas and the semantic record. The temporal contribution (feat/proof-mode-temporal) is the only still-open blocker: it edits files this record moves and, like the rewriting contribution, already splits its own additions into per-family modules, so what remains to move once it merges is narrower than originally scoped — chiefly the shared guide index (docs/user-guide/derivation-proof-mode.md), both ProofMode READMEs, and whatever of FormalSystem/Automation/ProofMode/Meta.lean, Modal.lean and Temporal.lean predates the family split. Do NOT dispatch the implementation of this record while the temporal contribution is open: run it after it is merged or declined, and move whatever it added into the same layout. This record is now held, so that its status carries the dispatch rule above rather than leaving it to this paragraph alone; `hold_reason` names the lift condition and `prior_status` holds the status to restore. Research and planning are still admissible, through an explicit `/orchestrate --research` or `--plan` override, which admits a held record for one dispatch and preserves the hold afterward. Proof mode: establish the operator-family layout. The architecture record (records/proof-mode-architecture.md) files every rule, tactic, test and guide page by the operators its statement names. Families: Boolean, Modal, Stability (TM⁺), and Temporal with its Future and Past halves. Interactions are separate modules named by the families they join, Boolean included: ModalBoolean, TemporalBoolean, ModalTemporal, ModalTemporalBoolean, StabilityModal. Frame class is a suffix on the family: TemporalZTime, TemporalDense, TemporalRTime. A pure family module contains no implication in any statement. (1) RULES. Move the existing pure rules in FormalSystem/Theorems/ProofMode/ into modules named by that scheme, statements and proofs unchanged: Basic.lean to Boolean.lean; Possibility.lean to Modal.lean; Temporal.lean to Temporal.lean and TemporalBoolean.lean; Discrete.lean to TemporalZTime.lean; the TM⁺ copies likewise with their `Plus` prefix, PlusRules.lean staying as the TM⁺ base. Where an existing rule's statement names an implication and a second family, it goes to that interaction's module; list every such classification in the summary. (2) TACTICS. Rename the elaborator modules in FormalSystem/Automation/ProofMode/ to match (Basic.lean to Boolean.lean, Discrete.lean to TemporalZTime.lean), Meta.lean unchanged. No tactic changes behaviour or syntax. (3) TESTS. Split the acceptance examples into one file per family or interaction under Tests/BimodalTest/Automation/ProofMode/ (BooleanTest.lean, ModalTest.lean, TemporalTest.lean, TemporalZTimeTest.lean, and so on), every example unchanged; keep ProofModeTest.lean as an aggregator that only imports them. (4) GUIDE. Keep docs/user-guide/derivation-proof-mode.md as index and foundations, and give each family or interaction that has tactics its own page under docs/user-guide/proof-mode/ (boolean.md, modal.md, temporal.md, temporal-ztime.md, and so on). The index states the three tiers and the family scheme in a paragraph and links to the architecture record. (5) READMES. One bounded inventory section per module in each ProofMode README. (6) SCOPES. Check the `file_scope` declared on every open record whose slug begins `proof_mode_` against the layout actually produced and correct any path that differs; they were written against the names above. DONE WHEN: `lake build` and `lake test` pass with every existing example unchanged in the family files; no statement, proof or tactic behaviour has changed; every module name follows the scheme; and every open proof-mode record's `file_scope` names paths that exist or that the record will create. Hard dependencies: none. FormalSystem/Theorems/ must not import FormalSystem/Automation/.
 
 ---
 
@@ -355,7 +359,8 @@ next_project_number: 991
 ---
 
 ### 956. Proof mode leads to invariance library
-- **Status**: [NOT STARTED]
+- **Status**: [HOLD]
+- **Held**: 2026-11-24
 - **Task Type**: lean4
 - **Topic**: proof-mode
 - **Dependencies**: Task 948, Task 950, Task 952
@@ -395,7 +400,8 @@ next_project_number: 991
 ---
 
 ### 952. Proof mode abstract frontend interface
-- **Status**: [NOT STARTED]
+- **Status**: [HOLD]
+- **Held**: 2026-11-24
 - **Task Type**: lean4
 - **Topic**: proof-mode
 - **Dependencies**: Task 948, Task 951, Task 963, Task 964, Task 969, Task 977
@@ -405,7 +411,8 @@ next_project_number: 991
 ---
 
 ### 951. Proof mode dense and real time rules
-- **Status**: [NOT STARTED]
+- **Status**: [HOLD]
+- **Held**: 2026-11-24
 - **Task Type**: lean4
 - **Topic**: proof-mode
 - **Dependencies**: Task 947
@@ -415,7 +422,8 @@ next_project_number: 991
 ---
 
 ### 950. Proof mode until since intro unfold induction
-- **Status**: [NOT STARTED]
+- **Status**: [HOLD]
+- **Held**: 2026-11-24
 - **Task Type**: lean4
 - **Topic**: proof-mode
 - **Dependencies**: Task 949, Task 987
@@ -425,7 +433,8 @@ next_project_number: 991
 ---
 
 ### 949. Proof mode linearity case tactic
-- **Status**: [NOT STARTED]
+- **Status**: [HOLD]
+- **Held**: 2026-11-24
 - **Task Type**: lean4
 - **Topic**: proof-mode
 - **Dependencies**: Task 947
@@ -455,7 +464,8 @@ next_project_number: 991
 ---
 
 ### 946. Proof mode always sometimes scopes
-- **Status**: [NOT STARTED]
+- **Status**: [HOLD]
+- **Held**: 2026-11-24
 - **Task Type**: lean4
 - **Topic**: proof-mode
 - **Dependencies**: Task 945, Task 969
@@ -465,7 +475,8 @@ next_project_number: 991
 ---
 
 ### 945. Proof mode cross modal scopes mf tf
-- **Status**: [NOT STARTED]
+- **Status**: [HOLD]
+- **Held**: 2026-11-24
 - **Task Type**: lean4
 - **Topic**: proof-mode
 - **Dependencies**: Task 944
@@ -475,7 +486,8 @@ next_project_number: 991
 ---
 
 ### 944. Proof mode s5 aware box scopes
-- **Status**: [NOT STARTED]
+- **Status**: [HOLD]
+- **Held**: 2026-11-24
 - **Task Type**: lean4
 - **Topic**: proof-mode
 - **Dependencies**: Task 960
