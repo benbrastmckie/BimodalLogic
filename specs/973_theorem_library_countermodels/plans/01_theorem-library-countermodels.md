@@ -350,7 +350,7 @@ the module this phase adds.
 
 ---
 
-### Phase 3: The SEMANTIC grade -- the hand-built refutations [NOT STARTED]
+### Phase 3: The SEMANTIC grade -- the hand-built refutations [COMPLETED]
 
 **Goal**: the refutations already in the tree that are statable in L or L⁺ are registered as
 entries, filed by fragment and maximal frame class, with the near-miss links the `⊡` refutations

@@ -14,6 +14,11 @@ import BimodalLib.Conservativity.Table
 import BimodalLib.Conservativity.TemporalBase
 import BimodalLib.Countermodel
 import BimodalLib.Countermodel.Transfer
+import BimodalLib.Countermodels.ModalBoolean.Base
+import BimodalLib.Countermodels.ModalTemporalBoolean.Base
+import BimodalLib.Countermodels.TemporalBoolean.Dense
+import BimodalLib.Countermodels.TemporalBoolean.RTime
+import BimodalLib.Countermodels.TemporalBoolean.ZTime
 import BimodalLib.Diagnostics.Record
 import BimodalLib.Diagnostics.Size
 import BimodalLib.Fragment
