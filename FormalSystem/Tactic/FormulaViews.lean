@@ -66,6 +66,14 @@ private def coreViews : Array View := #[
 /-- Built-in rows and extensions share the same lookup. -/
 private def allViews (env : Environment) : Array View := coreViews ++ views.getState env
 
+/-- Read the folded operator of a named formula view without changing a goal. -/
+def viewHead? (name formulaType : Name) : MetaM (Option Name) := do
+  let some view := (allViews (← getEnv)).find?
+      (fun row => row.name == name && row.formulaType == formulaType)
+    | return none
+  forallTelescope (← getConstInfo view.equation).type fun _ type =>
+    pure (type.eq?.bind fun (_, lhs, _) => lhs.getAppFn.constName?)
+
 /-- Register a formula-data equation with no proof premises. -/
 syntax (name := registerLview) "register_lview " ident ppSpace ident : command
 

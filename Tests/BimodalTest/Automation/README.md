@@ -18,6 +18,10 @@ Tests for proof automation tactics.
 | ProofModeModalBooleanTest.lean | Modal simplification and named formula views |
 | ProofModeTemporalBooleanTest.lean | Temporal rewriting and frame premises |
 | ProofModeModalTemporalBooleanTest.lean | Rewriting across modal and temporal scopes |
+| ProofModeCarryingTest.lean | The carrying table: pinned keys, rule statements, every row in TM and TM⁺, rejections |
+| ProofModeTemporalBooleanProgressTest.lean | Strict leads-to composition |
+| ProofModeTemporalTest.lean | Contextual temporal proof examples |
+| ProofModeTemporalZTimeTest.lean | One-step temporal rules and integer-time frame guards |
 | ProofModeAxioms.lean | Pinned `#print axioms` rows, one per tactic family, in TM and TM⁺ |
 | DatasetGeneratorTest.lean | Structural pre-filter pins and hybrid labelling smoke tests |
 

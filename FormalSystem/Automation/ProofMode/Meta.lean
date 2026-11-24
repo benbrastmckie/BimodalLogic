@@ -69,6 +69,30 @@ def judgment? (type : Expr) : MetaM (Option Judgment) := do
     | _ => return none
   return some ⟨language, args[0]!, args[1]!, args[2]!⟩
 
+/-- Read the judgment carried by an elaborated native proof. -/
+def proofJudgment (proof : Expr) : MetaM Judgment := do
+  let some judgment ← judgment? (← inferType proof)
+    | throwError "expected a native derivation"
+  return judgment
+
+/-- User-facing symbol of a registered unary operator. -/
+def operatorSymbol : Name → String
+  | `allFuture => "G"
+  | `allPast => "H"
+  | `box => "□"
+  | `stab => "⊡"
+  | `next => "X"
+  | `prev => "Y"
+  | operator => operator.toString
+
+/-- Collect explicit telescope parameters and implicit holes inserted by term elaboration. -/
+def proofParameters (proof : Expr) (parameters : Array Expr) : MetaM (Array Expr) := do
+  let mut result := parameters
+  for mvarId in ← getMVars (mkAppN proof parameters) do
+    let argument := mkMVar mvarId
+    if !result.contains argument then result := result.push argument
+  return result
+
 /-- Require a native TM or TM⁺ goal. -/
 def requireJudgment (goal : MVarId) : MetaM Judgment := do
   let some judgment ← judgment? (← goal.getType)
@@ -165,15 +189,9 @@ def elaborateProof (term : Syntax) : TacticM Expr :=
 /-- Apply the native modus-ponens constructor to two derivations. -/
 def modusPonens (judgment : Judgment) (implication premise : Expr) : MetaM Expr := do
   let some args ← operatorArgs? judgment.language `imp 2
-      (← requireJudgmentFromProof implication).formula
+      (← proofJudgment implication).formula
     | throwError "expected an object-language implication"
   mkAppM (← judgment.language.derivationRule `modus_ponens)
     #[judgment.context, args[0]!, args[1]!, implication, premise]
-where
-  /-- Read the native judgment carried by a derivation term. -/
-  requireJudgmentFromProof (proof : Expr) : MetaM Judgment := do
-    let some judgment ← judgment? (← inferType proof)
-      | throwError "expected a native derivation"
-    return judgment
 
 end FormalSystem.Automation.ProofMode

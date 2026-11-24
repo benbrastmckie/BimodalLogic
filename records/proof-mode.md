@@ -228,12 +228,13 @@ declares a `file_scope`.
   Since facts, in both time directions and both languages; Until and Since have introduction,
   one-step unfolding at `ZTime`, and an induction rule of which `forwardInvariantRule` is an
   instance; and `linvariant` is expressed through that induction rule.
-- **Current state**: the temporal contribution, not yet merged, contributes Until and Since
-  introduction, one-step unfolding at `ZTime`, `keeping` (carrying `G` and `H` facts across
-  steps), whole-judgment time reflection, and the strict leads-to layer. Its one-step rules use
-  `expand` and `contract`, which is the settled naming for this family — distinct from
-  `lunfold`/`lfold`, the unrelated views pair of M16. The generalizing induction rule is a
-  separate part of this milestone and remains open; see the proposed statement below.
+- **Current state**: in place are Until and Since introduction, one-step contraction at every class
+  and expansion at `ZTime`, backward induction at `ZTime`, `keeping` (carrying `G` and `H` facts
+  across steps, through the carrying table), whole-judgment time reflection, and the strict
+  leads-to layer. The one-step rules use `expand` and `contract`, which is the settled naming for
+  this family — distinct from `lunfold`/`lfold`, the unrelated views pair of M16. The generalizing
+  induction rule is a separate part of this milestone and remains open; see the proposed statement
+  below.
 - **Hard dependencies**: M3 with a GO verdict. Both records read the gate-one report first.
 - **Sequencing-only dependencies**: inside M4, the case split is filed before the Until and
   Since rules. This is sequencing only for all three parts. The principles introduction and
@@ -265,6 +266,11 @@ machine-checked; deriving it is the work of `proof_mode_until_since_intro_unfold
 Backward induction, from `G(Gφ → φ)` and `F(Gφ)` to `Gφ`, is in the library as
 `futureBackwardInduction` and is a different rule: `forwardInvariantRule` is not an instance of
 it, so it does not meet the done-when.
+
+For the semantic argument on ℤ, fix a strict Until witness. The step premise proves `C` at
+the witness's predecessor from the event. At earlier predecessors the guard and `C` hold
+at the next point, so the same premise propagates `C` back to the current point. A native
+derivation of the combined rule remains part of M4.
 
 ### M5: Gate two, temporal fragment sweep
 

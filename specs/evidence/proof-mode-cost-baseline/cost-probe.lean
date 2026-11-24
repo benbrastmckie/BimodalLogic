@@ -231,13 +231,13 @@ def m16 : [A, A.imp A.next, (A.imp A.next).allFuture] ⊢[FrameClass.ZTime] A.al
   · lexact hNow
   · lexact hFuture
 
--- An abstract frame retains the certificate as a real proof obligation.
--- source: ProofModeTest.lean, positive acceptance script 17 of 31
+-- With no certificate in scope an abstract frame leaves the premise as a goal before the body.
+-- source: ProofModeTest.lean, the script without a local certificate
 #reprove_record m17 stage "reprove" outcome "closed_with_term_escape"
   failure "missing_tactic" tactics "lstep,lintro,lexact,exact" escape 1 in
-def m17 (fc : FrameClass) (hFrame : FrameClass.ZTime ≤ fc) : ⊢[fc] (A.imp A).next := by
+def m17 (fc : FrameClass) (hEq : fc = FrameClass.ZTime) : ⊢[fc] (A.imp A).next := by
   lstep future using []
-  · exact hFrame
+  · exact hEq.ge
   · lintro hA
     lexact hA
 

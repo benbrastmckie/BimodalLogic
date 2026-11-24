@@ -7,6 +7,7 @@ Authors: Tanner Duve
 import FormalSystem.Theorems.ProofMode.Basic
 import FormalSystem.Theorems.ProofMode.Possibility
 import FormalSystem.Theorems.ProofMode.Temporal
+import FormalSystem.Theorems.ProofMode.TemporalComposition
 import FormalSystem.Theorems.ProofMode.Discrete
 import FormalSystem.Theorems.ProofMode.PlusRules
 import FormalSystem.Theorems.ProofMode.PlusModal

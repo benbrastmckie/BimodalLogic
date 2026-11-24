@@ -273,15 +273,15 @@ module.
 | `□` and `⊡` scopes carrying facts by 4 and 5 | Derivation | Modal | `proof_mode_s5_aware_box_scopes` |
 | `□`-facts into temporal scopes | Derivation | Modal with Temporal with Boolean, in its scope-rule section | `proof_mode_cross_modal_scopes_mf_tf` |
 | always and sometimes | Derivation | Temporal; Modal with Temporal with Boolean for `□`-facts entering them | `proof_mode_always_sometimes_scopes` |
-| Carrying `G` and `H` facts across steps | Derivation | Temporal | contributed; one carrying table shared with the two scope records above |
+| Carrying `G` and `H` facts across steps | Derivation | Temporal | contributed; one carrying table, `carryRules` in `FormalSystem/Automation/ProofMode/Carrying.lean`, keyed by source and target operator and shared with the two scope records above. A row only names its rule, which is filed by the families its statement names |
 | Until and Since introduction and monotonicity | Derivation | Temporal | `proof_mode_until_since_intro_unfold_induction`; introduction contributed |
-| One-step unfolding and folding, backward induction | Derivation | Temporal at ZTime | same record; contributed, with folding at every class |
+| One-step unfolding and folding, backward induction | Derivation | Temporal at ZTime | same record; `expand` is gated at ZTime and `contract` holds at Base |
 | Until and Since induction generalizing invariance | Derivation | Temporal at ZTime | same record; statement proposed and not yet derived, see M4 of [proof-mode.md](proof-mode.md) |
 | Linearity cases | Derivation | Temporal | `proof_mode_linearity_case_tactic` |
 | Whole-judgment time reflection | Derivation | Temporal | contributed |
 | Leads-to consequence, transitivity, cases | Derivation | Temporal with Boolean | `proof_mode_leads_to_invariance_library`; the rules are stated for the present-inclusive definition, and the contributed strict rules are the layer beneath it |
 | Dense and RTime rules | Derivation | Temporal at Dense and RTime | `proof_mode_dense_and_real_time_rules` |
-| Folding and unfolding defined operators, inclusive forms, formula equalities | Views | every family | `proof_mode_views_tier`; the pair is `lunfold` and `lfold`; the first rows of the view table are contributed with the rewriting tactics, exposed through the pair |
+| Folding and unfolding defined operators, inclusive forms, formula equalities | Views | every family | `proof_mode_views_tier`; the pair is `lunfold` and `lfold`; the registry holds modal, adjacent, inclusive, weak and dual temporal views |
 | Logical rewriting under operators, bounded simplification | Derivation | Generic path composition; Boolean, Modal and Temporal steps; seed rules in `ModalBoolean`; scope conversions in `ModalTemporalBoolean` | M17; `lrewrite` and `lsimp` apply native rules only. The syntax planner is shared with other tiers. |
 | Leaf closing | Derivation | Boolean | `proof_mode_close_leaves_with_automation`, `proof_mode_decision_procedure_leaf_closers` |
 | Refutation of an unclosed leaf | none: a diagnostic, it builds nothing | the fragment of the leaf | `proof_mode_countermodels_for_unclosed_leaves`, through the countermodel half of the library |
@@ -291,10 +291,5 @@ module.
 
 ## Open decisions
 
-1. **Do the Until and Since tactics keep `unfold` and `fold` as keywords?** The contributed
-   `luntil unfold` and `luntil fold` are derivation steps that use the ZTime axioms, where
-   `lunfold` and `lfold` name views. The tactic heads differ, so principle 1 is met to the
-   letter, but one word then names a view and a logical step. The options are to keep the
-   keywords, or to rename them `expand` and `contract` so that fold and unfold belong to the
-   views tier alone. The recommendation is to rename. This is a matter of taste and awaits the
-   user's ruling.
+None. The one-step Until and Since rules are `expand` and `contract`; `fold` and `unfold` belong
+to the views tier alone.
