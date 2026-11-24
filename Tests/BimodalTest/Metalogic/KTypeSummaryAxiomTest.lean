@@ -3630,20 +3630,22 @@ open FormalSystem.Metalogic.Decidability.RaySummary in
 #guard_msgs in
 #print axioms Srel.mono
 
-/-! ### The agreement on `kappa`-classes refuted at (K4)'s clip (`RaySummary/LadderRealize.lean`)
+/-! ### The agreement on `kappa`-classes refuted at the PRE-REPAIR (K4)'s clip
+(`RaySummary/LadderRealize.lean`)
 
 One pin: the existential refutation of the agreement's schema at the clip
-`max (2 * dBack phi + 1) (max (2 * dFwd phi + 1) 2)`. Its two-state witness is `private` to the
+`max (2 * dBack phi + 1) (max (2 * dFwd phi + 1) 2)`, under the frozen `ParamsOkPre` — the live
+`(K4)` rejects that clip (`not_paramsOkK4_thetaC_clip`). Its two-state witness is `private` to the
 module and is pinned through this theorem. -/
 
 open FormalSystem.Metalogic.Decidability.RaySummary in
-/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_kappa_collision_cellAt_ne_at_K4_clip' depends on axioms: [propext,
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_kappa_collision_cellAt_ne_at_K4_clip_pre' depends on axioms: [propext,
  Classical.choice,
  Quot.sound] -/
 #guard_msgs in
-#print axioms exists_kappa_collision_cellAt_ne_at_K4_clip
+#print axioms exists_kappa_collision_cellAt_ne_at_K4_clip_pre
 
-/-! ### `Real` is NOT certified at (K4)'s clip (`RaySummary/LadderRealize.lean`)
+/-! ### `Real` is NOT certified at the PRE-REPAIR (K4)'s clip (`RaySummary/LadderRealize.lean`)
 
 One pin: the existential refutation of `certStabK` — condition (5) — and hence of `certAdmK` ON
 `Real` itself, at the same clip and the same two-state witness. It is the certificate-side reading
@@ -3651,30 +3653,33 @@ of the entry above, and it closes the route to `Real ⊆ Dmax` through `dmax_max
 state `Real ⊄ Dmax`. -/
 
 open FormalSystem.Metalogic.Decidability.RaySummary in
-/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_paramsOk_real_not_certAdmK' depends on axioms: [propext,
+/-- info: 'FormalSystem.Metalogic.Decidability.RaySummary.exists_paramsOkPre_real_not_certAdmK' depends on axioms: [propext,
  Classical.choice,
  Quot.sound] -/
 #guard_msgs in
-#print axioms exists_paramsOk_real_not_certAdmK
+#print axioms exists_paramsOkPre_real_not_certAdmK
 
 open FormalSystem.Metalogic.Decidability.RaySummary in
 open FormalSystem.Syntax FormalSystem.PlusLanguage in
-/-- **THE RESTRICTION CHECK.** The refutation is read at the `(K4)` clip `Bof` itself outputs, with
-`ParamsOk` discharged at the same tuple — not at a clip chosen to defeat it. A version stated at an
-unconstrained `B`, or without the `ParamsOk` conjunct, would not typecheck here. -/
+/-- **THE RESTRICTION CHECK.** The refutation is read at the `(K4)` clip the PRE-REPAIR `(K4)`
+admitted and `Bof` output before its forward conjunct was repaired to `2 * dFwd phi + 2 ≤ B`, with
+`ParamsOkPre` discharged at the same tuple — not at a clip chosen to defeat it. A version stated at
+an unconstrained `B`, or without the frozen parameter conjunct, would not typecheck here. The live
+`ParamsOk` is NOT available at this clip: `not_paramsOkK4_thetaC_clip` records that the repaired
+`(K4)` rejects it. -/
 example : ∃ (Q : Type) (_ : Fintype Q) (_ : Nonempty Q)
       (step : Q → Q → Bool) (pend : Q → Bool) (lab : Q → Atom → Bool)
       (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
       (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
       (phi : PlusFormula) (Tc Tn P : ℕ),
-      ParamsOk step pend lab phi Tc Tn P
+      ParamsOkPre step pend lab phi Tc Tn P
           (max (2 * dBack phi + 1) (max (2 * dFwd phi + 1) 2)) ∧
       ¬ certAdmK step pend lab phi Tc Tn P
           (max (2 * dBack phi + 1) (max (2 * dFwd phi + 1) 2))
           (Real step pend lab phi Tc Tn P
             (max (2 * dBack phi + 1) (max (2 * dFwd phi + 1) 2)) fwd bwd) := by
   obtain ⟨Q, hQ, hne, step, pend, lab, fwd, bwd, phi, Tc, Tn, P, hp, -, hadm⟩ :=
-    exists_paramsOk_real_not_certAdmK
+    exists_paramsOkPre_real_not_certAdmK
   exact ⟨Q, hQ, hne, step, pend, lab, fwd, bwd, phi, Tc, Tn, P, hp, hadm⟩
 
 

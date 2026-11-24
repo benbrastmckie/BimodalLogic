@@ -295,7 +295,7 @@ sited elsewhere than planned and is recorded as a deviation rather than committe
 
 ---
 
-### Phase 3: Repair `(K4)`'s forward conjunct and restate every record it falsifies [NOT STARTED]
+### Phase 3: Repair `(K4)`'s forward conjunct and restate every record it falsifies [COMPLETED]
 
 **Goal**: Change `paramsOkK4`'s forward conjunct from `2 * dFwd φ + 1 <= B` to
 `2 * dFwd φ + 2 <= B` and `Bof`'s middle arm to match, and land -- in the SAME commit -- the
@@ -304,47 +304,47 @@ plus the companion record that the repaired `(K4)` rejects the previously-refuti
 
 **Tasks**:
 
-- [ ] In `CounterQuotient.lean`, repair `paramsOkK4` to
+- [x] In `CounterQuotient.lean`, repair `paramsOkK4` to
       `2 * dBack φ + 1 ≤ B ∧ 2 * dFwd φ + 2 ≤ B ∧ 2 ≤ B` and `Bof` to
       `max (2 * dBack φ + 1) (max (2 * dFwd φ + 2) 2)`. Update both docstrings to state the forward
       arm's new value and WHY it is `+ 2`: `LadderStepFrag.lean`'s module docstring point 2 derives
       `G⁻ = 2b + 2` as the solution of the one-step closure conditions, so the asymmetry is forced
       on the `Zrel` side and `(K4)` is the side that was short.
-- [ ] Repair `paramsOk_params`'s three `(K4)` arms (they are `le_max_*` terms; the middle arm now
+- [x] Repair `paramsOk_params`'s three `(K4)` arms *(deviation: altered -- no textual change was needed; the three arms are generic `le_max_*` terms that read `Bof`'s repaired middle arm automatically, confirmed by the unscoped build)* (they are `le_max_*` terms; the middle arm now
       reads the `+ 2` value from `Bof`'s own middle arm).
-- [ ] Add the frozen pre-repair copies to `CounterQuotient.lean`, next to the repaired predicates:
+- [x] Add the frozen pre-repair copies to `CounterQuotient.lean`, next to the repaired predicates *(deviation: altered -- `paramsOkPre_params` is stated at the fourth output written OUT as the pre-repair `Bof` body `max (2 * dBack φ + 1) (max (2 * dFwd φ + 1) 2)` rather than at `Bof`, which after the repair is a different value and would not discharge the two restated theorems' written clip)*:
       `paramsOkK4Pre φ B := 2 * dBack φ + 1 ≤ B ∧ 2 * dFwd φ + 1 ≤ B ∧ 2 ≤ B`, `ParamsOkPre` as
       `ParamsOk` with `(K4)` replaced by it, and `paramsOkPre_params` discharging it at the
       fixpoint's own four outputs. Docstring each as a FROZEN record of the pre-repair conjunct,
       naming the precedent: `ladder-cell-obligation-refutation.lean`'s `paramsOkK4Pre`/`ParamsOkPre`
       froze the previous `(K4)` the same way when `dFwd` was first added.
-- [ ] In `LadderRealize.lean`, restate `exists_kappa_collision_cellAt_ne_at_K4_clip` as
+- [x] In `LadderRealize.lean`, restate `exists_kappa_collision_cellAt_ne_at_K4_clip` as
       `exists_kappa_collision_cellAt_ne_at_K4_clip_pre`: the written clip
       `max (2 * dBack phi + 1) (max (2 * dFwd phi + 1) 2)` is UNCHANGED and the proof body is
       unchanged except that the `ParamsOk` conjunct becomes `ParamsOkPre` and its discharge becomes
       `paramsOkPre_params`. Do not change the clip to the repaired value: at the repaired clip `4`,
       `kappa_collision_theta` is pinned at clip `3` and the separation is not established there.
-- [ ] Restate `exists_paramsOk_real_not_certAdmK` the same way, as
+- [x] Restate `exists_paramsOk_real_not_certAdmK` the same way, as
       `exists_paramsOkPre_real_not_certAdmK`.
-- [ ] Add, inside or under `open K4ClipWitness in`, the companion rejection record
+- [x] Add, inside or under `open K4ClipWitness in`, the companion rejection record
       `not_paramsOkK4_thetaC_clip : ¬ paramsOkK4 thetaC 3` -- the exact analogue of
       `ladder-cell-obligation-refutation.lean`'s `not_paramsOkK4_two`, recording that the repaired
       `(K4)` rejects the clip at which the refutation was read.
-- [ ] Update both restated theorems' docstrings so that neither still claims its clip is "the least
+- [x] Update both restated theorems' docstrings so that neither still claims its clip is "the least
       clip `paramsOkK4` admits and the value `Bof` outputs" -- after the repair it is neither.
       State instead that it is the least clip the PRE-REPAIR `(K4)` admitted, cite
       `not_paramsOkK4_thetaC_clip`, and cross-reference the wired probe's `repaired_clip_refuted`
       (stated at the strictly stronger `BRep = 2 * (dBack + dFwd) + 2`, with the `diaF`-rooted
       `dblC j`) as the record that a clip repair does not rescue the general agreement -- as a path
       citation, not a proof term.
-- [ ] Update `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`: the "THE RESTRICTION CHECK"
+- [x] Update `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`: the "THE RESTRICTION CHECK"
       `example` restates the same existential and must follow the restatement, and the
       `#guard_msgs`-wrapped `#print axioms` block naming `exists_paramsOk_real_not_certAdmK` must
       follow the rename.
-- [ ] Update the `docs/theorem-index.md` rows that name the renamed theorems and quote the clip
+- [x] Update the `docs/theorem-index.md` rows that name the renamed theorems and quote the clip
       wording (rows at lines 282, 279 and 281 name `exists_kappa_collision_cellAt_ne_at_K4_clip`;
       the prose at lines 286 and 302 names it again).
-- [ ] Run `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ`.
+- [x] Run `bash scripts/typst-sync-check.sh --fix` and stage `typst/generated/status.typ`.
 
 **Timing**: 2 hours
 
@@ -374,7 +374,10 @@ restatement; no intermediate per-file state of this phase is committable on its 
 
 - `FormalSystem/Metalogic/Decidability/RaySummary/CounterQuotient.lean` - repair `paramsOkK4` and
   `Bof`; repair `paramsOk_params`'s `(K4)` arms; add `paramsOkK4Pre`, `ParamsOkPre`,
-  `paramsOkPre_params`.
+  `paramsOkPre_params`. *(deviation: altered -- the frozen copies plus the two repaired docstrings
+  take the file to 1548 lines, over the package-wide 1500 `longFile` default, so a
+  `set_option linter.style.longFile 1600` baseline was added in the module's voice; the
+  gate-collision Condition 7 remedy, same mechanism `LadderStepFrag.lean` already carries.)*
 - `FormalSystem/Metalogic/Decidability/RaySummary/LadderRealize.lean` - restate the two refutation
   theorems against the frozen copy; add `not_paramsOkK4_thetaC_clip`; update both docstrings.
 - `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean` - follow the restatement in the

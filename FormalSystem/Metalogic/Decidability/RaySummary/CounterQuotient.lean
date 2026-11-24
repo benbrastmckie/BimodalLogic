@@ -135,6 +135,13 @@ conditions are written in the existential guarded-path form, which is the promot
 them, and that lemma's right-hand side is the shape reproduced below.
 -/
 
+-- The file crosses the package-wide `longFile` limit (`lakefile.toml`, 1500).  The module is NOT
+-- split: the counter quotient, the four parameter sources `(K1)`-`(K4)` and their four outputs
+-- are one definition layer, and every parameter condition is read against `kappa`'s own five
+-- coordinates in this file.  The baseline is raised in place, one chunk at a time, and the linter
+-- checks it stays tight.
+set_option linter.style.longFile 1600
+
 open FormalSystem.Syntax FormalSystem.PlusLanguage FormalSystem.Metalogic.Decidability
 
 namespace FormalSystem.Metalogic.Decidability.RaySummary
@@ -1025,19 +1032,27 @@ noncomputable def Tnof {Q : Type} [Fintype Q] (step : Q → Q → Bool) (pend : 
 -- matching `unusedArguments` env_linter finding is exempted in `scripts/nolints.json` for the
 -- same reason, as `coh_iff`'s ported binders are.
 set_option linter.unusedVariables false in
-/-- **(K4)'s parameter output `B`.** The largest of `2 d_back + 1`, `2 d_fwd + 1` and `2`.
+/-- **(K4)'s parameter output `B`.** The largest of `2 d_back + 1`, `2 d_fwd + 2` and `2`.
 Source: (K4) — the formula's backward exactness depth `dBack`, its forward exactness depth `dFwd`
 (the wired probe `ladder-cell-obligation-refutation.lean`: the gap clip must dominate what a
 closure formula can pin forward through the next region's pin), and gate 1 (`gate1_cell_ne`),
-which reads the gap `n - c` and needs `2 ≤ B`. The factor `2` on the forward depth is the
-conservative mirror of the backward bound; the probe's separating family scales with `B` through
-an `X`-chain of depth `B + 2`, whose `dFwd` is `B + 3`, so this output exceeds every `B` that
-family can defeat. The signature carries `step`, `pend` and `lab` because the four parameter
-outputs are pinned at one signature; (K4) is the one source that quantifies the formula alone,
-and that is the content of this definition rather than an omission. -/
+which reads the gap `n - c` and needs `2 ≤ B`.
+
+**The forward arm is `+ 2`, not `+ 1`, and the asymmetry is forced rather than conservative.**
+`LadderStepFrag.lean`'s module docstring, point 2, derives the derived relation's own gap clip
+`G⁻ = 2 b + 2` as the solution of the one-step closure conditions `Zrel_succ`/`Zrel_pred` — the
+backward arm closes at `2 a` and the forward one at `2 b + 2`. So the asymmetry lives on the
+`Zrel` side and `(K4)` is the side that was short of it: at `+ 1` the clip `Bof` outputs does not
+dominate `Zrel`'s own forward demand and no `ParamsOk` consumer can discharge it. The probe's
+separating family scales with `B` through an `X`-chain of depth `B + 2`, whose `dFwd` is `B + 3`,
+so this output still exceeds every `B` that family can defeat.
+
+The signature carries `step`, `pend` and `lab` because the four parameter outputs are pinned at
+one signature; (K4) is the one source that quantifies the formula alone, and that is the content
+of this definition rather than an omission. -/
 noncomputable def Bof {Q : Type} [Fintype Q] (step : Q → Q → Bool) (pend : Q → Bool)
     (lab : Q → Atom → Bool) (φ : PlusFormula) : ℕ :=
-  max (2 * dBack φ + 1) (max (2 * dFwd φ + 1) 2)
+  max (2 * dBack φ + 1) (max (2 * dFwd φ + 2) 2)
 
 /-! ## The parameter conditions (K1)-(K4) -/
 
@@ -1096,13 +1111,21 @@ n-side separation that makes the two thresholds independent. -/
 def paramsOkK3 (Q : Type) [Fintype Q] (pend : Q → Bool) (φ : PlusFormula) (Tc Tn : ℕ) : Prop :=
   Tc + 2 * ell0 Q φ ≤ Tn + 1 ∧ 2 * tShort Q φ + tIdle pend + 2 ≤ Tc
 
-/-- **(K4)**: `B` is at least `2 d_back + 1`, at least `2 d_fwd + 1`, and at least `2`. Compiled
+/-- **(K4)**: `B` is at least `2 d_back + 1`, at least `2 d_fwd + 2`, and at least `2`. Compiled
 anchors: `gate1_cell_ne`, which reads the gap at distance two, and the wired probe
 `specs/evidence/seam-gluing-ray-product/ladder-cell-obligation-refutation.lean`, which refutes
 the depth-`0` cell obligation at a gap clip bounded by `dBack` alone — the cell reads the register
-forward through the next region's pin, so the clip must dominate the forward depth too. -/
+forward through the next region's pin, so the clip must dominate the forward depth too.
+
+**The forward conjunct is `2 d_fwd + 2`, and the asymmetry with the backward one is FORCED.**
+`LadderStepFrag.lean`'s module docstring, point 2, derives the derived relation's gap clip from
+the one-step closure conditions `Zrel_succ`/`Zrel_pred`: the backward arm closes at `2 a`, the
+forward arm at `2 b + 2`. A `(K4)` whose forward conjunct reads `2 d_fwd + 1` is therefore ONE
+SHORT of what `Zrel` demands, and a `ParamsOk` consumer cannot discharge
+`cellAt_const_of_kappa_eq_stepFrag`'s `hBb` from it. The frozen record of that shorter conjunct is
+`paramsOkK4Pre` below. -/
 def paramsOkK4 (φ : PlusFormula) (B : ℕ) : Prop :=
-  2 * dBack φ + 1 ≤ B ∧ 2 * dFwd φ + 1 ≤ B ∧ 2 ≤ B
+  2 * dBack φ + 1 ≤ B ∧ 2 * dFwd φ + 2 ≤ B ∧ 2 ≤ B
 
 /-- **THE PARAMETER CONDITIONS**, the conjunction of the four sources (K1)-(K4). This is NOT a
 predicate on four naturals: (K1) quantifies the certificate graph's cycle lengths on saturated
@@ -1146,6 +1169,49 @@ theorem paramsOk_params {Q : Type} [Fintype Q] [Nonempty Q] (step : Q → Q → 
   · exact le_max_left _ _
   · exact le_trans (le_max_left _ _) (le_max_right _ _)
   · exact le_trans (le_max_right _ _) (le_max_right _ _)
+
+/-! ### The PRE-REPAIR `(K4)`, frozen
+
+`(K4)`'s forward conjunct was `2 * dFwd φ + 1 ≤ B` and is now `2 * dFwd φ + 2 ≤ B`
+(`paramsOkK4` above): at `+ 1` the clip `Bof` outputs is one short of the derived relation's own
+forward demand `2 b + 2`, so no `ParamsOk` consumer could discharge it.  The repair makes two
+landed refutation records FALSE rather than merely unproved — their written clip is the least
+clip the SHORTER conjunct admitted, and the repaired conjunct rejects it
+(`not_paramsOkK4_thetaC_clip`, `LadderRealize.lean`) — so the shorter conjunct is frozen here and
+those records are restated against the frozen copy.
+
+The precedent is this tree's own: when `dFwd` was first added to `(K4)`, the wired probe
+`specs/evidence/seam-gluing-ray-product/ladder-cell-obligation-refutation.lean` froze the
+then-current conjunct as `Probe836A.paramsOkK4Pre`/`ParamsOkPre` and recorded the rejection as
+`Probe836A.not_paramsOkK4_two`.  These three declarations are the library-level analogue. -/
+
+/-- **`(K4)` AS IT READ BEFORE THE FORWARD REPAIR**, frozen as a record and not as a condition any
+construction should be stated against.  Its forward conjunct is `2 * dFwd φ + 1 ≤ B`, one short of
+`Zrel`'s own `2 b + 2`.  Strictly weaker than `paramsOkK4`. -/
+def paramsOkK4Pre (φ : PlusFormula) (B : ℕ) : Prop :=
+  2 * dBack φ + 1 ≤ B ∧ 2 * dFwd φ + 1 ≤ B ∧ 2 ≤ B
+
+/-- **THE PARAMETER CONDITIONS AS THEY READ BEFORE THE FORWARD REPAIR**: `ParamsOk` verbatim with
+`paramsOkK4Pre` as its fourth conjunct.  A FROZEN RECORD, carried so that the two landed
+refutations whose written clip the repaired `(K4)` rejects can be restated honestly rather than
+deleted or weakened in content. -/
+def ParamsOkPre {Q : Type} [Fintype Q] (step : Q → Q → Bool) (pend : Q → Bool)
+    (lab : Q → Atom → Bool) (φ : PlusFormula) (Tc Tn P B : ℕ) : Prop :=
+  paramsOkK1 step pend lab φ P ∧ paramsOkK2 step pend lab φ Tc P ∧
+    paramsOkK3 Q pend φ Tc Tn ∧ paramsOkK4Pre φ B
+
+/-- **THE FROZEN CONDITIONS ARE DISCHARGEABLE AT THE FIXPOINT'S OWN FOUR PRE-REPAIR OUTPUTS.**
+The first three are `paramsOk_params`'s own — none of `(K1)`, `(K2)` or `(K3)` reads `B` — and the
+fourth is the pre-repair `Bof` body `max (2 * dBack φ + 1) (max (2 * dFwd φ + 1) 2)`, which is the
+value the two restated refutations' written clips are read at. -/
+theorem paramsOkPre_params {Q : Type} [Fintype Q] [Nonempty Q] (step : Q → Q → Bool)
+    (pend : Q → Bool) (lab : Q → Atom → Bool) (φ : PlusFormula) :
+    ParamsOkPre step pend lab φ (Tcof step pend lab φ) (Tnof step pend lab φ)
+      (Pof step pend lab φ) (max (2 * dBack φ + 1) (max (2 * dFwd φ + 1) 2)) :=
+  ⟨(paramsOk_params step pend lab φ).1, (paramsOk_params step pend lab φ).2.1,
+    (paramsOk_params step pend lab φ).2.2.1,
+    le_max_left _ _, le_trans (le_max_left _ _) (le_max_right _ _),
+    le_trans (le_max_right _ _) (le_max_right _ _)⟩
 
 /-- **`ParamsOk` IS CLOSED UNDER INFLATING THE MODULUS, GIVEN THE INFLATED ROOM.** `P` may be
 replaced by `j * (P + 1) - 1` for any `j > 0`, so the modulus `P + 1` may be inflated to any

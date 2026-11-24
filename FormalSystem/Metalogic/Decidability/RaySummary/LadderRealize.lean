@@ -50,9 +50,9 @@ a datum of the CELL at the member's own world state, so the condition asks exact
 agreement and for nothing weaker (`stab_bit_agree_of_certStabK` below is the statement of that
 collapse). It is not claimed here, and neither is `real_certAdmK_of_paramsOk` or
 `real_subset_dmax`. They do NOT wait on the agreement: the agreement is REFUTED at `(K4)`'s gap
-clip (`exists_kappa_collision_cellAt_ne_at_K4_clip` at the end of this module), and condition (5)
+clip (`exists_kappa_collision_cellAt_ne_at_K4_clip_pre` at the end of this module), and condition (5)
 is refuted ON `Real` itself at that clip, together with `certAdmK` of `Real`
-(`exists_paramsOk_real_not_certAdmK`, likewise at the end of this module). So no theorem of the
+(`exists_paramsOkPre_real_not_certAdmK`, likewise at the end of this module). So no theorem of the
 shape `ParamsOk … → certAdmK … (Real …)` exists, and the route to `Real ⊆ Dmax` through
 `dmax_maximal` is closed. Whether `Real ⊆ Dmax` holds by some other route is open and is not
 claimed either way here.
@@ -1352,7 +1352,7 @@ carries none of the room, threshold or clip conditions the deletions ask for. **
 family stops short of the filed `cellAt_const_of_kappa_eq` on those collisions SPECIFICALLY** — the
 upward-saturated register family, moved countdowns, closures carrying a `⊡` letter, and paths
 outside the regime. **The filed statement itself is REFUTED**, on a `⊡`-carrying closure at the
-gap coordinate and at (K4)'s own clip, by `exists_kappa_collision_cellAt_ne_at_K4_clip` at the end
+gap coordinate and at (K4)'s own clip, by `exists_kappa_collision_cellAt_ne_at_K4_clip_pre` at the end
 of this module; the wired probe
 `specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean` compiles the same
 object independently (`cellAt_const_of_kappa_eq_schema_refuted`; `LadderCell.lean`, section "The
@@ -1420,7 +1420,7 @@ the two per-path regimes, one through each state because the two inclusions are 
 different tools through different source states. **It is NOT the filed statement**, which
 quantifies over every `kappa`-collision at every time component and at every closure, lies
 outside this theorem on exactly the coordinates listed above, and is REFUTED on a `⊡`-carrying
-closure (`exists_kappa_collision_cellAt_ne_at_K4_clip`); this theorem is landed under its own name
+closure (`exists_kappa_collision_cellAt_ne_at_K4_clip_pre`); this theorem is landed under its own name
 precisely so that the difference is visible. `hk` is load-bearing: it supplies the residue
 conjunct through `kappa_eq_components`, and nothing below re-assumes it.
 
@@ -1664,7 +1664,7 @@ with its DIAGONAL world state replaced by the filed statement's general `t`, whi
 register family, moved countdowns, closures carrying a `⊡` letter, and paths outside the regime.
 This widens the covered family by one coordinate and closes nothing else; the filed
 `cellAt_const_of_kappa_eq` is landed under no name and is REFUTED on a `⊡`-carrying closure
-(`exists_kappa_collision_cellAt_ne_at_K4_clip`).
+(`exists_kappa_collision_cellAt_ne_at_K4_clip_pre`).
 
 Paper: — (as `cellAt_const_of_kappa_eq_of_covered`) -/
 theorem cellAt_const_of_kappa_eq_of_covered_at_time [Fintype Q]
@@ -1698,7 +1698,7 @@ end CertificateBridge
 
 /-! ## The agreement on `kappa`-classes is refuted at (K4)'s clip
 
-One declaration, `exists_kappa_collision_cellAt_ne_at_K4_clip`, and the two-state object that
+One declaration, `exists_kappa_collision_cellAt_ne_at_K4_clip_pre`, and the two-state object that
 witnesses it. Everything in the namespace `K4ClipWitness` is `private`: the object, its ladder
 paths, the separating formula and its two membership lemmas are the witness's construction and are
 not part of this module's interface. The wired probe
@@ -2094,11 +2094,35 @@ private theorem clip_thetaC :
 end K4ClipWitness
 
 open K4ClipWitness in
-/-- **THE CELL AGREEMENT ON `kappa`-CLASSES FAILS AT (K4)'S CLIP.** There are a finite object, a
-labelling, a formula `phi`, thresholds and a modulus satisfying `ParamsOk` at the gap clip
-`B = max (2 * dBack phi + 1) (max (2 * dFwd phi + 1) 2)` — the least clip `paramsOkK4` admits, and
-the value `Bof` outputs — together with a `kappa`-collision at those parameters whose two cells
-DIFFER, at world time `0` and evaluation time `0`.
+/-- **THE REPAIRED (K4) REJECTS THE CLIP THE REFUTATION IS READ AT.** The companion record to the
+two restatements below: at the separating formula `thetaC` the repaired forward conjunct demands
+`2 * dFwd thetaC + 2 = 4`, which the written clip `3` does not meet. The exact analogue of
+`specs/evidence/seam-gluing-ray-product/ladder-cell-obligation-refutation.lean`'s
+`Probe836A.not_paramsOkK4_two`, which recorded the same rejection when `dFwd` was first added to
+`(K4)`. -/
+theorem not_paramsOkK4_thetaC_clip : ¬ paramsOkK4 thetaC 3 := by
+  intro h
+  have h2 : 2 * dFwd thetaC + 2 ≤ 3 := h.2.1
+  have hd : dFwd thetaC = 1 := rfl
+  omega
+
+open K4ClipWitness in
+/-- **THE CELL AGREEMENT ON `kappa`-CLASSES FAILS AT THE PRE-REPAIR (K4)'S CLIP.** There are a
+finite object, a labelling, a formula `phi`, thresholds and a modulus satisfying `ParamsOkPre` at
+the gap clip `B = max (2 * dBack phi + 1) (max (2 * dFwd phi + 1) 2)` — the least clip the
+PRE-REPAIR `paramsOkK4Pre` admitted, and the value `Bof` output before its forward conjunct was
+repaired to `2 * dFwd phi + 2 ≤ B` — together with a `kappa`-collision at those parameters whose
+two cells DIFFER, at world time `0` and evaluation time `0`.
+
+**Why the frozen conditions and not `ParamsOk`.** The repaired `(K4)` REJECTS this clip:
+`not_paramsOkK4_thetaC_clip` above records `¬ paramsOkK4 thetaC 3`, so `ParamsOk` at the written
+clip is FALSE and the statement this theorem replaces was falsified rather than merely
+unprovable. The clip is NOT moved to the repaired value: at the repaired clip `4`,
+`kappa_collision_theta` is pinned at `3` and the separation is not established there. What a clip
+repair does not rescue in general is recorded by the wired probe
+`specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean`'s
+`repaired_clip_refuted`, stated at the strictly stronger `BRep = 2 * (dBack + dFwd) + 2` with the
+`diaF`-rooted `dblC j` — cited here as a path, not as a proof term.
 
 **Which quantifier fails.** The schema "for every finite object, labelling, formula and parameter
 tuple satisfying `ParamsOk`, the cells of a `kappa`-collision are equal at every world time and
@@ -2123,23 +2147,24 @@ threshold pair and modulus, so no clip polynomial in the two exactness depths ma
 true. That strengthening is compiled in the probe only; this module carries no declaration of it,
 and whether a clip exponential in `dBack` suffices is not known.
 
-**Statement fidelity.** This is a statement about `ParamsOk` as `paramsOkK4` defines it in
-`CounterQuotient.lean`. It proves no agreement and no fibre equation: the names
-`cellAt_const_of_kappa_eq` and `ladderRealized` are carried by no declaration, and this theorem is
-the negation of the first one's schema and of any fibre equation reading the cell off
-`(q, kappa (c, n))` alone. It is not a device-discrimination claim, and every quantity named is a
-count.
+**Statement fidelity.** This is a statement about `ParamsOkPre` as `paramsOkK4Pre` freezes it in
+`CounterQuotient.lean` — the pre-repair `(K4)`, not the live one. It proves no agreement and no
+fibre equation: the names `cellAt_const_of_kappa_eq` and `ladderRealized` are carried by no
+declaration, and this theorem is the negation of the first one's schema and of any fibre equation
+reading the cell off `(q, kappa (c, n))` alone. It is not a device-discrimination claim, and every
+quantity named is a count.
 
 Paper: — (a refutation of this library's own counter quotient at its own gap clip; `kappa` and
 (K4) have no literature counterpart) -/
-theorem exists_kappa_collision_cellAt_ne_at_K4_clip :
+theorem exists_kappa_collision_cellAt_ne_at_K4_clip_pre :
     ∃ (Q : Type) (_ : Fintype Q) (_ : Nonempty Q)
       (step : Q → Q → Bool) (pend : Q → Bool) (lab : Q → Atom → Bool)
       (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
       (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
       (phi : PlusFormula) (Tc Tn P : ℕ) (q : Q) (c n c' n' : ℕ)
       (h : c ∈ Adm pend q) (h' : c' ∈ Adm pend q),
-      ParamsOk step pend lab phi Tc Tn P (max (2 * dBack phi + 1) (max (2 * dFwd phi + 1) 2)) ∧
+      ParamsOkPre step pend lab phi Tc Tn P
+          (max (2 * dBack phi + 1) (max (2 * dFwd phi + 1) 2)) ∧
       kappa Tc Tn P (max (2 * dBack phi + 1) (max (2 * dFwd phi + 1) 2)) (c, n)
         = kappa Tc Tn P (max (2 * dBack phi + 1) (max (2 * dFwd phi + 1) 2)) (c', n') ∧
       cellAt (ladderModel step pend fwd bwd lab) phi
@@ -2152,7 +2177,7 @@ theorem exists_kappa_collision_cellAt_ne_at_K4_clip :
     Tcof stepC pendC labC thetaC + 3 + (Pof stepC pendC labC thetaC + 1),
     Tcof stepC pendC labC thetaC, admZeroC _ (Tcof stepC pendC labC thetaC),
     admZeroC _ (Tcof stepC pendC labC thetaC),
-    paramsOk_params stepC pendC labC thetaC, ?_, ?_⟩
+    paramsOkPre_params stepC pendC labC thetaC, ?_, ?_⟩
   · rw [clip_thetaC]
     exact kappa_collision_theta _ _ _
   · exact thetaC_cell_ne _ _ (by omega)
@@ -2160,7 +2185,8 @@ theorem exists_kappa_collision_cellAt_ne_at_K4_clip :
 /-! ## `Real` is NOT certified: condition (5)'s `⟹` direction fails at `(K4)`'s clip
 
 The cell agreement `certStabK` of `Real` would be proved across is refuted at the gap clip
-`paramsOkK4` admits (`exists_kappa_collision_cellAt_ne_at_K4_clip` above), so the question of
+the pre-repair `paramsOkK4Pre` admitted (`exists_kappa_collision_cellAt_ne_at_K4_clip_pre`
+above), so the question of
 whether `Real` is certified is not left open by that refutation: it is settled against, and the
 two declarations below settle it inside this module rather than by appeal to a probe.
 
@@ -2235,16 +2261,26 @@ private theorem real_not_certStabK (Tc Tn P : ℕ) :
 end K4ClipWitness
 
 open K4ClipWitness in
-/-- **`Real` IS NOT CERTIFIED UNDER THE PARAMETER CONDITIONS.** There are a finite object, a
-labelling, a formula `phi` and thresholds and a modulus satisfying `ParamsOk` at the gap clip
-`B = max (2 * dBack phi + 1) (max (2 * dFwd phi + 1) 2)` — the least clip `paramsOkK4` admits and
-the value `Bof` outputs — at which the actually realizable subset `Real` fails condition (5), and
+/-- **`Real` IS NOT CERTIFIED UNDER THE PRE-REPAIR PARAMETER CONDITIONS.** There are a finite
+object, a labelling, a formula `phi` and thresholds and a modulus satisfying `ParamsOkPre` at the
+gap clip `B = max (2 * dBack phi + 1) (max (2 * dFwd phi + 1) 2)` — the least clip the PRE-REPAIR
+`paramsOkK4Pre` admitted and the value `Bof` output before its forward conjunct was repaired to
+`2 * dFwd phi + 2 ≤ B` — at which the actually realizable subset `Real` fails condition (5), and
 hence fails `certAdmK`.
+
+**Why the frozen conditions and not `ParamsOk`.** The repaired `(K4)` REJECTS this clip
+(`not_paramsOkK4_thetaC_clip`), so `ParamsOk` at the written clip is FALSE and the statement this
+theorem replaces was falsified rather than merely unprovable. The clip is NOT moved to the
+repaired value `4`: the collision `kappa_collision_theta` is pinned at `3` and the separation is
+not established at `4`. That a clip repair does not rescue the general agreement is recorded by
+the wired probe
+`specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean`'s
+`repaired_clip_refuted`, cited as a path and not as a proof term.
 
 **Which quantifier fails.** The schema "for every finite object, labelling, formula and parameter
 tuple satisfying `ParamsOk`, `Real` is `certAdmK`-certified" is false, and the clause it fails at
 is `certStabK`'s `⟹` direction at a `kappa`-collision whose two cells differ — the collision
-`exists_kappa_collision_cellAt_ne_at_K4_clip` exhibits, read from the certificate side. The `⟸`
+`exists_kappa_collision_cellAt_ne_at_K4_clip_pre` exhibits, read from the certificate side. The `⟸`
 direction is landed unconditionally by `real_certStabK_mpr` and is not contradicted.
 
 **The consequence for `Dmax`.** `dmax_maximal` places a certified set inside `Dmax`; with no
@@ -2252,21 +2288,21 @@ certification of `Real` available, that route to `Real ⊆ Dmax` is closed. This
 state `Real ⊄ Dmax`: `Dmax` is a union over the certified subsets of the carrier, and a member of
 `Real` may lie in a certified set that does not contain all of `Real`.
 
-**Statement fidelity.** This is a statement about `ParamsOk` as `paramsOkK4` defines it in
-`CounterQuotient.lean`. It proves no agreement, no certification and no inclusion; the names
-`cellAt_const_of_kappa_eq`, `ladderRealized`, `real_certStabK`, `real_certAdmK_of_paramsOk` and
-`real_subset_dmax` are carried by no declaration. It is not a device-discrimination claim, and
-every quantity named is a count.
+**Statement fidelity.** This is a statement about `ParamsOkPre` as `paramsOkK4Pre` freezes it in
+`CounterQuotient.lean` — the pre-repair `(K4)`, not the live one. It proves no agreement, no
+certification and no inclusion; the names `cellAt_const_of_kappa_eq`, `ladderRealized`,
+`real_certStabK`, `real_certAdmK_of_paramsOk` and `real_subset_dmax` are carried by no
+declaration. It is not a device-discrimination claim, and every quantity named is a count.
 
 Paper: — (a refutation of this library's own certificate at its own gap clip; `certStabK`, `Real`
 and (K4) have no literature counterpart) -/
-theorem exists_paramsOk_real_not_certAdmK :
+theorem exists_paramsOkPre_real_not_certAdmK :
     ∃ (Q : Type) (_ : Fintype Q) (_ : Nonempty Q)
       (step : Q → Q → Bool) (pend : Q → Bool) (lab : Q → Atom → Bool)
       (fwd : ∀ t x, ∃ y, RladAdm step pend t x y)
       (bwd : ∀ t x, ∃ y, RladAdm step pend (t - 1) y x)
       (phi : PlusFormula) (Tc Tn P : ℕ),
-      ParamsOk step pend lab phi Tc Tn P
+      ParamsOkPre step pend lab phi Tc Tn P
           (max (2 * dBack phi + 1) (max (2 * dFwd phi + 1) 2)) ∧
       ¬ certStabK phi Tc Tn P (max (2 * dBack phi + 1) (max (2 * dFwd phi + 1) 2))
           (Real step pend lab phi Tc Tn P
@@ -2277,7 +2313,7 @@ theorem exists_paramsOk_real_not_certAdmK :
             (max (2 * dBack phi + 1) (max (2 * dFwd phi + 1) 2)) fwd bwd) := by
   refine ⟨Qc, inferInstance, inferInstance, stepC, pendC, labC, fwdC, bwdC, thetaC,
     Tcof stepC pendC labC thetaC, Tnof stepC pendC labC thetaC, Pof stepC pendC labC thetaC,
-    paramsOk_params stepC pendC labC thetaC, ?_, ?_⟩
+    paramsOkPre_params stepC pendC labC thetaC, ?_, ?_⟩
   · exact real_not_certStabK _ _ _
   · exact fun h => real_not_certStabK _ _ _ h.2.2.2.2.1
 

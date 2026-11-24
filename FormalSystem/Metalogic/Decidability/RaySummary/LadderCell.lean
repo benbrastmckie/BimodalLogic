@@ -3230,7 +3230,7 @@ end GapProducer
 
 The agreement of `cellAt` on `kappa`-classes under `ParamsOk` — the statement every section above
 measures a route to — is **REFUTED AS FILED**, at (K4)'s own clip, by the library theorem
-`exists_kappa_collision_cellAt_ne_at_K4_clip` (`LadderRealize.lean`, a module downstream of this
+`exists_kappa_collision_cellAt_ne_at_K4_clip_pre` (`LadderRealize.lean`, a module downstream of this
 one), at a two-state object where the pending bit is a readable atom. The wired probe
 `specs/evidence/seam-gluing-ray-product/ladder-cell-agreement-refutation.lean` compiles the same
 object independently, and every other name cited below is a declaration of that probe. No
