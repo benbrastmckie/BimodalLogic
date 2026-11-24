@@ -1,7 +1,7 @@
 # Implementation Plan: Task #975
 
 - **Task**: 975 - Theorem library: fragment conservativity (milestone M22, lane metatheory)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 17 hours
 - **Dependencies**: 971 (`theorem_library_layout_and_registry`, completed) for the generated table and the check on entries; none for the theorems
 - **Research Inputs**: specs/975_theorem_library_fragment_conservativity/reports/01_fragment-conservativity-edges.md

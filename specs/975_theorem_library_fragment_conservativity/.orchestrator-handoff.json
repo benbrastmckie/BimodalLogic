@@ -1,15 +1,16 @@
 {
-  "status": "planned",
-  "summary": "Wrote a nine-phase sequential plan (17 hours) for task 975 from the research report. It lands the refutation of the temporal edge at Base, proves the Boolean and box-cell edges by one parametric translation theorem, generates the edge table and proof-fragment listing, and leaves the temporal edges at the other three classes as conjectures proposed for a record of their own. The plan departs from the soundness-bridge-completeness method named in the task description, as research recommended; the reasoning is in its Decisions section.",
-  "blockers": [],
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 6,
+  "summary": "All nine plan phases are complete and committed, one commit per phase. The Boolean and box-cell conservativity edges are proved at every frame class by one parametric translation theorem, the temporal edge at Base is refuted, and the remaining temporal edges are registered conjectures with a named obstruction; the edge table and the proof-fragment listing are generated in BimodalLib/INDEX.md. lake build --wfail and lake build BimodalLib BimodalLibTest --wfail are green; the scoped verify-touched.sh run exited 1 on one agent-system suite (test-deploy-propagation.sh) that reads no file this task changed, and the full gate is deferred to the batch stage.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/975_theorem_library_fragment_conservativity/plans/01_fragment-conservativity-edges.md",
-      "summary": "Nine-phase sequential plan (17h): land the machine-checked refutation of the temporal edge at Base, prove the Boolean and box-cell edges by a parametric translation theorem over a Prop-valued cell calculus in FormalSystem with within-forms in BimodalLib, generate the edge status table and proof-fragment listing from kernel-checked rows, and revise docs and records."
+      "type": "summary",
+      "path": "specs/975_theorem_library_fragment_conservativity/summaries/01_fragment-conservativity-edges-summary.md",
+      "summary": "All nine phases done: Boolean and box-cell edges proved, temporal edge at Base refuted, other temporal edges conjectures with a named obstruction, edge table and proof-fragment listing generated."
     }
   ],
-  "phases_completed": 0,
+  "phases_completed": 9,
   "phases_total": 9,
-  "dispatch_seq": 5
+  "blockers": []
 }

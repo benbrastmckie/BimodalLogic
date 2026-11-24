@@ -593,13 +593,13 @@
     {
       "project_number": 975,
       "project_name": "theorem_library_fragment_conservativity",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "description": "MILESTONE M22 (records/proof-mode.md), LANE: metatheory. Fragment conservativity: prove that each fragment's logic is conserved by every larger one, so that filing a statement at its smallest fragment is a theorem and not a convention. METHOD, following cslib (`conservative_over_cpl` and `evaluate_iff_of_classicalBridge` in Cslib/Logics/Propositional/Metalogic/ConservativityLift.lean, `modal_conservative_extension_param`, `temporal_conservative_over_cpl`): soundness of the larger logic; a semantic bridge showing by induction on the formula that truth of a smaller-language formula in a model of the larger logic agrees with truth in a model of the smaller, the model chosen to make the added operators trivial where that suffices; completeness of the smaller logic. State the argument ONCE in parametric form and instantiate it per edge. EDGES (records/theorem-library.md, Conservativity): L into L⁺ is proved at all four frame classes (`plusDerivable_ofFormula_iff`) and is only indexed here; Boolean into ModalBoolean and Boolean into TemporalBoolean, with completeness of the smaller from FormalSystem/Metalogic/Decidability/Propositional/; ModalBoolean with `□` into TM, which needs completeness of S5 for the `□`-fragment, not stated in the tree; TemporalBoolean into TM at each frame class, which needs completeness of the temporal schemata alone at that class, not stated in the tree; ModalBoolean with `□` into ModalBoolean with both operators, from the others or directly by the collapse. A fragment logic here is the set of TM axioms and rules whose statements lie in the fragment; research must first state each fragment's proof system precisely, as a predicate on TM derivations or as a calculus of its own, and say which. RESEARCH MUST ALSO determine, per edge, whether the needed completeness theorem is within reach (the S5 and Burgess-Xu completeness proofs in cslib are the model) and propose splitting an edge into its own record where it is a project in itself; an edge that is refuted is entered as a countermodel, and an edge left open stays a registered conjecture with what is known. Do NOT state any unproved edge with `sorry`. The edge from L⁻ into L is a different question, answered in FormalSystem/Metalogic/Conservativity/README.md, and is out of scope. DONE WHEN: every edge is proved, refuted or recorded as a conjecture with a named obstruction; the status table is generated from the theorems; each proved edge is in docs/theorem-index.md with its pinned axiom set; and no theorem entry has a proof fragment larger than its statement fragment without a recorded reason. Hard dependencies: none for the theorems; `theorem_library_layout_and_registry` for the generated table and the check on entries, so research, planning and the theorems may proceed before it. The design is records/theorem-library.md; milestones, lanes and gates are in records/proof-mode.md. BimodalLib imports FormalSystem and FormalSystem never imports BimodalLib. Nothing in BimodalLib contains `sorry`, a new `axiom` or `native_decide`. When this record implements part of the design, revise docs/ to describe what now exists and cut that part from the record under records/.",
       "topic": "proof-mode",
       "priority": "high",
       "created": "2026-11-20T18:44:46Z",
-      "last_updated": "2026-11-24T00:35:43Z",
+      "last_updated": "2026-11-24T01:51:37Z",
       "file_scope": [
         "BimodalLib.lean",
         "BimodalLib/Conjectures/Conservativity.lean",
@@ -750,9 +750,15 @@
           "path": "specs/975_theorem_library_fragment_conservativity/plans/01_fragment-conservativity-edges.md",
           "type": "plan",
           "summary": "Nine-phase sequential plan (17h): land the machine-checked refutation of the temporal edge at Base, prove the Boolean and box-cell edges by a parametric translation theorem over a Prop-valued cell calculus in FormalSystem with within-forms in BimodalLib, generate the edge status table and proof-fragment listing from kernel-checked rows, and revise docs and records."
+        },
+        {
+          "path": "specs/975_theorem_library_fragment_conservativity/summaries/01_fragment-conservativity-edges-summary.md",
+          "type": "summary",
+          "summary": "All nine phases done: Boolean and box-cell edges proved, temporal edge at Base refuted, other temporal edges conjectures with a named obstruction, edge table and proof-fragment listing generated."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Every conservativity edge of the fragment lattice is proved, refuted or a registered conjecture with a named obstruction. The Boolean and box-cell edges are proved at every frame class by a parametric translation theorem over a Prop-valued cell calculus (no completeness theorem used); the temporal edge at Base is refuted; BimodalLib/INDEX.md renders the edge table and the three registered theorems whose proof leaves its statement cell, enforced by a build-time check."
     },
     {
       "project_number": 970,
