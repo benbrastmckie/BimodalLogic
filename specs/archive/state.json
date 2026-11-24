@@ -5482,6 +5482,82 @@
   ],
   "completed_projects": [
     {
+      "title": "Promote cntAt_eq_of_pend_eq_fwd into LadderAgree as a strict sharpening",
+      "description": "Promote cntAt_eq_of_pend_eq_fwd from the evidence probe into FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean as a strict sharpening of the landed cntAt_eq_of_pend_eq. The landed theorem's own proof already reads its hypothesis only at positions at or above the compared one, so the forward-only hypothesis suffices -- the same proof at a weaker hypothesis, verified sorry-free in specs/evidence/seam-gluing-ray-product/one-sided-count-move-refutation.lean. Land it beside the existing theorem, derive the existing theorem from the sharpening or state why that direction is not worth the churn, and keep the probe compiling. No sorry, no new axiom, axiom profile within [propext, Classical.choice, Quot.sound]; check-evidence-probes.sh and the full guarded lake build must both stay green.",
+      "file_scope": [
+        "FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean",
+        "specs/evidence/seam-gluing-ray-product/one-sided-count-move-refutation.lean"
+      ],
+      "project_number": 862,
+      "project_name": "forward_pend_countdown_rigidity_sharpening",
+      "status": "abandoned",
+      "task_type": "lean4",
+      "effort": "small",
+      "parent_task": 855,
+      "topic": "decidability",
+      "dependencies": [
+        761,
+        852
+      ],
+      "created": "2026-11-05T02:10:19Z",
+      "last_updated": "2026-11-05T02:10:19Z",
+      "artifacts": [],
+      "audit_verdict": {
+        "verdict": "duplicate-of-open",
+        "project_number": 761,
+        "project_name": "ladder_realization_theorem",
+        "shared_paths": [
+          "FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean"
+        ],
+        "mechanical_class": "overlap",
+        "semantic_score": 0.46153846153846156,
+        "proposal": {
+          "id": "forward_pend_countdown_rigidity_sharpening",
+          "project_number": null,
+          "title": "Promote cntAt_eq_of_pend_eq_fwd into LadderAgree as a strict sharpening"
+        }
+      },
+      "abandoned": "2026-11-24T11:48:40Z"
+    },
+    {
+      "title": "Record the one-sided transport refutation in the RaySummary refutation table",
+      "description": "Add the one-sided transport refutation row to the RaySummary refutation table in FormalSystem/Metalogic/Decidability/RaySummary/README.md, recording the NEGATIVE verdict that the probe specs/evidence/seam-gluing-ray-product/one-sided-count-move-refutation.lean establishes: the one-sided open-modal factorization does not crack the transport condition. State the mechanism as the probe states it -- the ladder countdown and the closure eventualities read the same forward half-line, so freezing the future leaves nothing to transport and freeing it loses the realized type. Cite the probe file and its headline declarations by name. Scope: README.md only; no .lean edits. Do not claim any decidability consequence.",
+      "file_scope": [
+        "FormalSystem/Metalogic/Decidability/RaySummary/README.md"
+      ],
+      "project_number": 861,
+      "project_name": "one_sided_refutation_table_row",
+      "status": "abandoned",
+      "task_type": "markdown",
+      "effort": "small",
+      "parent_task": 855,
+      "topic": "decidability",
+      "dependencies": [
+        761,
+        763,
+        838
+      ],
+      "created": "2026-11-05T02:10:19Z",
+      "last_updated": "2026-11-05T02:10:19Z",
+      "artifacts": [],
+      "audit_verdict": {
+        "verdict": "subset-of-open",
+        "project_number": 761,
+        "project_name": "ladder_realization_theorem",
+        "shared_paths": [
+          "FormalSystem/Metalogic/Decidability/RaySummary/README.md"
+        ],
+        "mechanical_class": "subset",
+        "semantic_score": 0.4745762711864407,
+        "proposal": {
+          "id": "one_sided_refutation_table_row",
+          "project_number": null,
+          "title": "Record the one-sided transport refutation in the RaySummary refutation table"
+        }
+      },
+      "abandoned": "2026-11-24T11:48:23Z"
+    },
+    {
       "project_number": 971,
       "project_name": "theorem_library_layout_and_registry",
       "status": "completed",

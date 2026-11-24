@@ -14,7 +14,7 @@ next_project_number: 992
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
 | 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,890,935,960,962,973,977,986,987,988,989,991 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
-| 2 | 231,282,296,429,497,763,862,869,944,954,955,969,984 | 298,428,502,604,761,960,962,977,986,989 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 2 | 231,282,296,429,497,763,869,944,954,955,969,984 | 298,428,502,604,761,960,962,977,986,989 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,873,932,945 | 429,497,869,944 | algebraic-representation, decidability, semantics, ... |
 | 4 | 125,411,543,874,875,876,946 | 410,498,499,500,873,945,969 | algebraic-representation, decidability, metalogic, ... |
 | 5 | 430,501,947 | 125,411,946,955,973 | algebraic-representation, decidability, proof-mode |
@@ -67,7 +67,6 @@ next_project_number: 992
 734 [HOLD] — Run experiment E4: decide StabSaturated on the Bool fixture's...
 761 [PARTIAL] — AMENDED 2026-11-16 (statement replaced — the READ-OFF /...
   └─ 763 [NOT STARTED] — AMENDED 2026-10-11 (index deletion): the finite cell index...
-  └─ 862 [RESEARCHED] — Promote cntAt\_eq\_of\_pend\_eq\_fwd into LadderAgree as a...
 831 [NOT STARTED] — RESEARCH TASK, verdict-first. State and attempt the...
 991 [NOT STARTED] — RESEARCH TASK, verdict-first; the deliverable is a verdict...
 
@@ -138,7 +137,7 @@ next_project_number: 992
     └─ 946 [HOLD] — NO ModalTemporal MODULE OR CLASS... (see above)
 962 [NOT STARTED] — MILESTONE M9b (records/proof-mode.md), STREAM: metatheory....
   └─ 953 [NOT STARTED] — With the interface as one class per operator family and... (see above)
-973 [RESEARCHED] — MILESTONE M20 (records/proof-mode.md), LANE: library. Theorem...
+973 [PLANNING] — MILESTONE M20 (records/proof-mode.md), LANE: library. Theorem...
   └─ 947 [NOT STARTED] — REVISED: GATE ONE IS A SWEEP OVER A SELECTION OF LIBRARY... (see above)
 986 [NOT STARTED] — Report the real cause when a view fails to apply. applyView...
   └─ 969 [HOLD] — LOCATION (binding over any module path named below): the view... (see above)
@@ -232,7 +231,7 @@ next_project_number: 992
 ---
 
 ### 973. Theorem library countermodels
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: proof-mode
 - **Dependencies**: Task 971, Task 972
