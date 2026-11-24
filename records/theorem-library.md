@@ -294,11 +294,10 @@ obstacles, both to be cleared before the bulk is attempted:
   long-file baseline to its actual length.
 
 **The evaluator-checked fourth grade.** A refutation checked by the evaluator that
-`records/semantic-proof-mode.md` is to own — cited by path and not linked, because that record is
-not in the tree yet. Its client is the evaluator milestone of
-[milestones.md](milestones.md), and it waits on both the evaluator and the record; the grade
-constructor is deliberately absent from `BimodalLib.Grade` (`BimodalLib/Countermodel.lean`)
-until they exist, so that the type does not advertise a route that is not there.
+[semantic-proof-mode.md](semantic-proof-mode.md) owns. Its client is the evaluator milestone of
+[milestones.md](milestones.md), and it waits on the evaluator; the grade constructor is
+deliberately absent from `BimodalLib.Grade` (`BimodalLib/Countermodel.lean`) until the evaluator
+exists, so that the type does not advertise a route that is not there.
 
 ## Conjectures
 

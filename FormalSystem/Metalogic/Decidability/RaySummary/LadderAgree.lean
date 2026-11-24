@@ -3350,7 +3350,7 @@ refuted. The reserved name is claimed by nothing.
   (`LadderStepFrag.lean`) proves this schema for every formula of `StepFrag` — `⊡` and `□`
   unrestricted, `untl`/`snce` admitted only at the guard `⊥` — with `StepFrag φ` as the single
   added hypothesis, from `ParamsOk` itself and at generic parameters. Its route is
-  `cellAt_eq_of_Zrel` composed with `Zrel_of_kappa_eq`, whose four numeric hypotheses come from
+  `cellAt_eq_of_Zrel` composed with `Zrel.of_kappa_eq`, whose four numeric hypotheses come from
   `paramsOk_two_depth_sum_le_Tc`/`_le_Tn` (through `(K3)` alone, via the pure-syntax bound
   `dBack_add_dFwd_le_closure_card`) and `(K4)`'s two clip conjuncts. The schema's own stab-free
   hypothesis is NOT consumed there: `StepFrag` leaves `⊡` unrestricted.
