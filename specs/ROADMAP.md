@@ -11,7 +11,7 @@
 |---|---|---|---|
 | [M7: L-plus at integer time: decidability and route R3](#milestone-m7) | active | 0/6 | none |
 | [M9: Algebraic representation and MF rigidity](#milestone-m9) | planned | 0/8 | none |
-| [M3: Proof-mode rule set up to gate one](#milestone-m3) | planned | 0/11 | none |
+| [M3: Proof-mode rule set up to gate one](#milestone-m3) | planned | 1/11 | none |
 | [M13: What the merges leave owed: the signature layer and the follow-ups](#milestone-m13) | active | 0/4 | none |
 | [M1: Repository hygiene](#milestone-m1) | active | 0/7 | none |
 | [M10: The written record: errata, open questions, examples and docs](#milestone-m10) | planned | 0/5 | none |
@@ -87,7 +87,7 @@ Ground the representation front in Goldblatt and BRV, bring the Shift-closed Ten
 
 Put the mode in the operator-family layout, extend the bimodal scope rules, close leaves by automation and measure the merged tactics, then re-prove the perpetuity selection and take the verdict.
 
-- **Progress**: planned -- 0/4 batches, 0/11 tasks done -- 962 and 986 enter today; every later batch sits behind 960's hold, and so behind #8 merging or being declined
+- **Progress**: planned -- 0/4 batches, 1/11 tasks done -- 962 and 986 enter today; every later batch sits behind 960's hold, and so behind #8 merging or being declined
 - **Review**: none
 - **Gate**: 947's report at docs/development/proof-mode-adequacy-perpetuity.md opens with GO or RE-PLAN: the scripts shorter than the hand proofs in aggregate and for a clear majority of entries, none needing a term-mode escape longer than its hand proof. Past 962 and 986, entry needs 960 unheld -- update-task-status.sh preflight 960 unhold <session> -- once #8 closes.
 
@@ -112,18 +112,18 @@ Put the mode in the operator-family layout, extend the bimodal scope rules, clos
 960 HOLD            proof_mode_split_shared_test_and_guide_files   <- HELD on 28 real #8/#9 overlaps; lift via update-task-status.sh preflight 960 unhold <session>
 ```
 
-**Batch 4** -- Gated: every member sits behind 960, so this line enters only once that hold is lifted
+**Batch 4** -- Gated: every member sits behind 960, so this line enters only once that hold is lifted (1/8 done)
 
 ```
-/orchestrate 969, 944, 945, 946, 955, 961, 954, 947
+/orchestrate 969, 944, 945, 946, 955, 954, 947
 944 HOLD            proof_mode_s5_aware_box_scopes
 945 HOLD            proof_mode_cross_modal_scopes_mf_tf
 946 HOLD            proof_mode_always_sometimes_scopes
 969 HOLD            proof_mode_views_tier   <- behind 977 and so behind the #8 merge; 946 and gate one 947 follow it
-947 blocked:946,955,961,973  proof_mode_reprove_perpetuity   <- GO / RE-PLAN gate; now also behind 973 on BimodalLib.lean, at no wave cost
+947 blocked:946,955,973  proof_mode_reprove_perpetuity   <- GO / RE-PLAN gate; now also behind 973 on BimodalLib.lean, at no wave cost
 954 blocked:960     proof_mode_error_message_coverage
 955 blocked:960     proof_mode_close_leaves_with_automation
-961 blocked:960     proof_mode_axiom_audit_and_cost_baseline
+961 done            proof_mode_axiom_audit_and_cost_baseline
 ```
 
 <a id="milestone-m13"></a>
@@ -273,7 +273,7 @@ Give the theorem library its layout by fragment and frame class, fill the fragme
 
 ```
 /orchestrate 972, 973
-972 blocked:961     theorem_library_tableau_pipeline
+972 PARTIAL         theorem_library_tableau_pipeline
 973 blocked:972     theorem_library_countermodels
 971 done            theorem_library_layout_and_registry
 975 done            theorem_library_fragment_conservativity
