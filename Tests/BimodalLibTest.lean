@@ -11,3 +11,4 @@ import BimodalLibTest.IndexTest
 import BimodalLibTest.PairingTest
 import BimodalLibTest.ProofFragmentTest
 import BimodalLibTest.RegistryCheckTest
+import BimodalLibTest.SubsumptionTest
