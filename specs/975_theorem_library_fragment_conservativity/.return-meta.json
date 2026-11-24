@@ -1,0 +1,18 @@
+{
+  "status": "researched",
+  "dispatch_seq": 4,
+  "started_at": "2026-11-24T00:11:45Z",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/975_theorem_library_fragment_conservativity/reports/01_fragment-conservativity-edges.md",
+      "summary": "Per-edge verdicts for fragment conservativity: the TemporalBoolean-into-TM edge at Base is refuted (machine-checked in a scratch file), the Boolean and ModalBoolean edges are provable by a syntactic translation needing only propositional completeness inside a cell, and the temporal edges at Dense, ZTime and RTime are proposed as a separate record."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1795473212_9c9d94_975",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
