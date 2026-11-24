@@ -116,7 +116,7 @@ in the `Lemma7Wide` section below are the *only* new bridge, and they are pure r
 landed segment-bounded statements — no Prior axiom is applied in this module outside those four
 calls.
 
-## Relation to `truth_transfer` (`Transfer.lean:362`)
+## Relation to `truth_transfer` (`WeakCanonical/Transfer.lean:362`)
 
 `truth_transfer` does **not** transfer to Lemma 8 and is not used here. It is an
 Ehrenfeucht-Fraïssé argument: it moves an *existentially closed* temporal formula between two
