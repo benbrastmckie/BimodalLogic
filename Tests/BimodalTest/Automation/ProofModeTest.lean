@@ -125,11 +125,20 @@ example : [A, A.imp A.next, (A.imp A.next).allFuture] ⊢[FrameClass.ZTime] A.al
   · lexact hNow
   · lexact hFuture
 
--- An abstract frame retains the certificate as a real proof obligation.
+-- An exact local certificate discharges the frame premise: the body is the only goal.
 example (fc : FrameClass) (hFrame : FrameClass.ZTime ≤ fc) : ⊢[fc] (A.imp A).next := by
   lstep future using []
-  · exact hFrame
-  · lintro hA
+  guard_target =ₛ ([] : Context) ⊢[fc] A.imp A
+  lintro hA
+  lexact hA
+
+-- With no certificate in scope an abstract frame leaves the premise as a goal before the body.
+example (fc : FrameClass) (hEq : fc = FrameClass.ZTime) : ⊢[fc] (A.imp A).next := by
+  lstep future using []
+  · guard_target =ₛ FrameClass.ZTime ≤ fc
+    exact hEq.ge
+  · guard_target =ₛ ([] : Context) ⊢[fc] A.imp A
+    lintro hA
     lexact hA
 
 -- Native TM⁺ arguments may contain stability; no restriction to embedded TM formulas.

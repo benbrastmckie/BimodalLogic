@@ -20,7 +20,9 @@ Import the sibling [`ProofMode.lean`](../ProofMode.lean) aggregator for manual L
 | `Possibility.lean` | 28 | Possibility consequence through necessary implications |
 | `ScopeConversions.lean` | 44 | Finite checked scope-conversion adapters for native Plus guarantees |
 | `Temporal.lean` | 204 | Future/past consequence, bind, progress, and Until/Since mapping |
-| `Congruence/` | — | <!-- TODO: add description --> |
+| `TemporalComposition.lean` | 11 | Entry point for scoped temporal composition rules |
+| `Congruence/` | — | Generic position composition and its Boolean, modal and temporal steps |
+| `TemporalComposition/` | — | Strict introduction, reflection, persistence, one-step rules and leads-to |
 <!-- END GENERATED -->
 
 See the [congruence modules](Congruence/README.md) for checked rewriting.

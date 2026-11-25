@@ -5,6 +5,7 @@ Authors: Tanner Duve
 -/
 
 import FormalSystem.Automation.ProofMode.Modal
+import FormalSystem.Automation.ProofMode.TemporalZTime
 import FormalSystem.Theorems.ProofMode.Discrete
 import FormalSystem.Theorems.ProofMode.PlusDiscrete
 
@@ -14,25 +15,28 @@ import FormalSystem.Theorems.ProofMode.PlusDiscrete
 Next/Previous introduction shifts exactly the selected assumptions. Invariance leaves current
 initialization, the current one-step implication, and its strict G/H persistence as obligations.
 Both operations require an explicit or generated `FrameClass.ZTime ≤ fc` certificate.
+
+* `lstep future/past using [..] keeping [..] as h.. k..` additionally carries strict `G P`
+  (future) or `H P` (past) facts to the adjacent point. Temporal 4 gives `G(G P)`; the successor
+  indicator `X ⊤` (`succIndicatorAt`, from the same ZTime gate) moves it under `X` by
+  `nextOfAllFuture`; the shifted body therefore holds `G P` again. Bare current facts are
+  rejected. Names list `using` guarantees first, then kept facts.
+* `linduction future/past` applies the discrete backward-induction schema Z1, leaving
+  `G(G φ → φ)` and `F(G φ)` (past mirror with H/P). Strict G omits the present.
+
+The integer-time gate reuses an exact local certificate or decides a concrete tag. An abstract
+gate remains an explicit proof obligation.
 -/
 
 namespace FormalSystem.Automation.ProofMode
 
 open Lean Meta Elab Tactic
 
-private def discreteFrame (judgment : Judgment) :
-    TacticM (Expr × List MVarId) := do
-  let discrete := mkConst ``FormalSystem.ProofSystem.FrameClass.ZTime
-  let expected ← mkAppM ``LE.le #[discrete, judgment.frame]
-  if ← isDefEq judgment.frame discrete then
-    return (← mkAppM ``le_refl #[discrete], [])
-  let proof ← mkFreshExprSyntheticOpaqueMVar expected
-  return (proof, [proof.mvarId!])
-
 private def adjacent (past : Bool) (terms : Option (Array Syntax))
-    (names : Array Syntax) : TacticM Unit := withMainContext do
+    (keptTerms : Option (Array Syntax)) (names : Array Syntax) : TacticM Unit :=
+    withMainContext do
   let judgment ← requireJudgment (← getMainGoal)
-  let (frame, sideGoals) ← discreteFrame judgment
+  let (frame, sideGoals) ← integerTimeGate judgment
   let operator := if past then `prev else `next
   let rule := if past then judgment.language.ruleName
       ``FormalSystem.Theorems.ProofMode.generalizedPrevK
@@ -40,14 +44,19 @@ private def adjacent (past : Bool) (terms : Option (Array Syntax))
     else judgment.language.ruleName
       ``FormalSystem.Theorems.ProofMode.generalizedNextK
       ``FormalSystem.PlusLanguage.ProofMode.generalizedNextK
-  introduceMappedScope operator rule #[frame] terms names
+  match keptTerms with
+  | none => introduceMappedScope operator rule #[frame] terms names
+  | some kept =>
+    let selected ← scopedGuarantees judgment operator terms
+    let shifted ← carriedFacts judgment operator kept (some frame)
+    introduceScopeFromProofs operator rule #[frame] (selected ++ shifted) names
   setGoals (sideGoals ++ (← getGoals))
 
 private def invariant (past : Bool) : TacticM Unit :=
     withMainContext do
   let goal ← getMainGoal
   let judgment ← requireJudgment goal
-  let (frame, sideGoals) ← discreteFrame judgment
+  let (frame, sideGoals) ← integerTimeGate judgment
   let rule := if past then judgment.language.ruleName
       ``FormalSystem.Theorems.ProofMode.pastInvariant
       ``FormalSystem.PlusLanguage.ProofMode.pastInvariant
@@ -62,13 +71,45 @@ private def invariant (past : Bool) : TacticM Unit :=
   let goals ← goal.apply rule
   replaceMainGoal (sideGoals ++ goals)
 
-/-- Shift selected Next/Previous guarantees to a checked adjacent-point body. -/
+/-- Discrete backward induction (Z1): `G(G φ → φ)` and `F(G φ)` give `G φ` on integer time. -/
+private def induction (past : Bool) : TacticM Unit := withMainContext do
+  let goal ← getMainGoal
+  let judgment ← requireJudgment goal
+  let (universal, existential) := if past then (`allPast, `somePast)
+    else (`allFuture, `someFuture)
+  let some args ← operatorArgs? judgment.language universal 1 judgment.formula
+    | throwError "induction requires the matching universal temporal goal"
+  let (frame, sideGoals) ← integerTimeGate judgment
+  let whole ← formulaApp judgment.language universal #[args[0]!]
+  let step ← formulaApp judgment.language universal
+    #[← formulaApp judgment.language `imp #[whole, args[0]!]]
+  let eventually ← formulaApp judgment.language existential #[whole]
+  let hStep ← mkFreshExprSyntheticOpaqueMVar (← derivationType judgment judgment.context step)
+  let hEventually ← mkFreshExprSyntheticOpaqueMVar
+    (← derivationType judgment judgment.context eventually)
+  let rule := if past then judgment.language.ruleName
+      ``FormalSystem.Theorems.ProofMode.pastBackwardInduction
+      ``FormalSystem.PlusLanguage.ProofMode.pastBackwardInduction
+    else judgment.language.ruleName
+      ``FormalSystem.Theorems.ProofMode.futureBackwardInduction
+      ``FormalSystem.PlusLanguage.ProofMode.futureBackwardInduction
+  let proof ← mkAppM rule #[frame, hStep, hEventually]
+  unless ← isDefEq (← inferType proof) (← goal.getType) do
+    throwError "backward induction does not prove the current conclusion"
+  goal.assign proof
+  replaceMainGoal (sideGoals ++ [hStep.mvarId!, hEventually.mvarId!])
+
+/-- Shift selected Next/Previous guarantees to a checked adjacent-point body. `keeping [k]`
+also carries strict G/H facts. Names: `using` guarantees, then kept facts. -/
 syntax (name := lstep) "lstep" ppSpace colGt ident
-  (ppSpace "using" ppSpace "[" term,* "]")?
+  (ppSpace "using" ppSpace "[" term,* "]")? (ppSpace &"keeping" ppSpace "[" term,* "]")?
   (ppSpace "as" (ppSpace colGt ident)+)? : tactic
 
 /-- Apply integer-time invariance, leaving initialization and both step obligations. -/
 syntax (name := linvariant) "linvariant" ppSpace colGt ident : tactic
+
+/-- Apply discrete backward induction (Z1), leaving the persistent step and the eventual base. -/
+syntax (name := linduction) "linduction" ppSpace colGt ident : tactic
 
 private def pastDirection (kind : Syntax) : TacticM Bool :=
   match kind.getId with
@@ -78,9 +119,11 @@ private def pastDirection (kind : Syntax) : TacticM Bool :=
 
 elab_rules : tactic
   | `(tactic|
-      lstep $kind:ident $[using [$terms:term,*]]? $[as $names:ident*]?) => do
+      lstep $kind:ident $[using [$terms:term,*]]? $[keeping [$kept:term,*]]?
+        $[as $names:ident*]?) => do
     adjacent (← pastDirection kind) (terms.map (·.getElems.map (·.raw)))
-      (names.map (·.map (·.raw)) |>.getD #[])
+      (kept.map (·.getElems.map (·.raw))) (names.map (·.map (·.raw)) |>.getD #[])
   | `(tactic| linvariant $kind:ident) => do invariant (← pastDirection kind)
+  | `(tactic| linduction $kind:ident) => do induction (← pastDirection kind)
 
 end FormalSystem.Automation.ProofMode

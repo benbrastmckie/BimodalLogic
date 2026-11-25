@@ -76,8 +76,18 @@ example (A B : Formula) : [A.allFuture, B.someFuture] ⊢ (A.and B).someFuture :
 G/H are strict: they do not supply A at the present. F/P cases retain an eventual conclusion;
 they do not turn eventual assertions into current facts. Until/Since arguments are guard first,
 event second. Next/Previous scope introduction and invariance require `ZTime ≤ fc`; the tactics
-solve the reflexive ZTime instance or expose the certificate as an ordinary Lean goal.
+reuse exact local certificates, decide concrete tags, or expose the certificate as an ordinary Lean goal.
 Invariance requires A, A → X A, and G(A → X A), with the H/Y mirror for the past.
+
+## Temporal composition
+
+- [Strict Until/Since, reflection and contextual carrying](proof-mode-temporal.md)
+- [Expansion and contraction on adjacent steps](proof-mode-temporal-ztime.md)
+- [Strict leads-to composition](proof-mode-temporal-boolean-progress.md)
+
+`lapply rule` presents Lean proposition and native derivation premises first, then
+object-language implication premises, then remaining data parameters. Unresolved
+typeclass instances fail at the call.
 
 ## Checked rewriting and simplification
 

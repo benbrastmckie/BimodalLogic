@@ -70,6 +70,10 @@ import BimodalTest.Automation.ProofModeBooleanTest
 import BimodalTest.Automation.ProofModeModalBooleanTest
 import BimodalTest.Automation.ProofModeTemporalBooleanTest
 import BimodalTest.Automation.ProofModeModalTemporalBooleanTest
+import BimodalTest.Automation.ProofModeCarryingTest
+import BimodalTest.Automation.ProofModeTemporalBooleanProgressTest
+import BimodalTest.Automation.ProofModeTemporalTest
+import BimodalTest.Automation.ProofModeTemporalZTimeTest
 import BimodalTest.Automation.ProofModeAxioms
 import BimodalTest.Automation.WeakeningSearchTest
 import BimodalTest.Integration.Helpers

@@ -182,12 +182,11 @@ The places where the channels meet, each with the agreement it needs.
    contributions, and channel B changes no statement, proof or tactic behaviour while moving.
 2. **One carrying table.** `keeping` carries `G` and `H` facts (A2); `□` facts carried by 4, 5,
    MF and TF are rows of the same table, added by `proof_mode_s5_aware_box_scopes` and
-   `proof_mode_cross_modal_scopes_mf_tf` (A5). The shape asked of the contribution as a condition
-   of merging, not yet confirmed accepted, is a `CarryRule` keyed by `(source, target)` — the
-   operator of the fact carried and the scope entered — with the `(TM, TM⁺)` rule pair as its
-   value and a `framed` flag for a row taking a leading `FrameClass.ZTime ≤ fc` certificate, in a
-   module both tactic families import (`Automation/ProofMode/Carrying.lean`, not
-   `Automation/ProofMode/Temporal.lean`) and not `private`. `ModalTemporalBoolean` is the one
+   `proof_mode_cross_modal_scopes_mf_tf` (A5). A row is a `CarryRule` keyed by
+   `(source, target)` — the operator of the fact carried and the scope entered — with the
+   `(TM, TM⁺)` rule pair as its value and a `framed` flag for a row taking a leading
+   `FrameClass.ZTime ≤ fc` certificate. The table, `carryRules`, is public in
+   `Automation/ProofMode/Carrying.lean`, which both tactic families import. `ModalTemporalBoolean` is the one
    interaction both channels file into; rows are added one at a time and neither channel
    restructures it alone.
 3. **One view table.** A1 contributes its first rows, A4 owns the tier. The position and polarity
