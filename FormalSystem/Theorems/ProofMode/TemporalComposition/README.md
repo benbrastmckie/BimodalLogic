@@ -5,7 +5,7 @@
 |------|------:|-------------|
 | `Temporal.lean` | 168 | Strict introduction, contextual reflection and persistence |
 | `TemporalBoolean.lean` | 229 | Strict leads-to consequence, transitivity and cases |
-| `TemporalZTime.lean` | 208 | One-step rules and adjacent persistence with checked frame premises |
+| `TemporalZTime.lean` | 210 | One-step rules and adjacent persistence with checked frame premises |
 <!-- END GENERATED -->
 
-*Last verified: 2026-11-22*
+*Last verified: 2026-11-25*

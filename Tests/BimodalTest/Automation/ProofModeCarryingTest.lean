@@ -131,4 +131,26 @@ example : [A.allFuture] ⊢[FrameClass.Dense] A.allFuture.next := by
   lstart hA
   lstep future using [] keeping [hA] as hA
 
+-- A kept fact must have a determined formula: an unapplied formula parameter leaves a
+-- metavariable that no carrying row can be selected against.
+/-- error: `keeping` needs a determined formula; supply its arguments explicitly -/
+#guard_msgs in
+example (d : ∀ φ : Formula, [A.allFuture] ⊢ φ.allFuture) :
+    [A.allFuture] ⊢ A.allFuture.allFuture := by
+  lstart hA
+  ltemporal_intro future using [] keeping [d _] as hA
+
+-- `Carrying.lean`'s other two added diagnostics have no constructible trigger from user syntax
+-- and are recorded here rather than pinned:
+--
+-- * "no carrying rule enters the {target} scope" fires only when NO row has the requested
+--   target. The three in-tree `carriedFacts` call sites pass `next`/`prev` (from `lstep`) or
+--   `allFuture`/`allPast` (from the eventuality and scope introductions), and all four are
+--   `carryRules` targets. The arm guards a future caller passing, say, `box` -- `lmodal_intro`
+--   has no `keeping` clause today, so no such call site exists.
+-- * "carrying {source} facts into the {target} scope requires FrameClass.ZTime ≤ …" fires only
+--   when a framed row matches and no certificate was supplied. The framed rows are exactly the
+--   two whose target is `next`/`prev`, reached only from `lstep`, which always passes its own
+--   gate certificate. The gate itself is pinned by the `FrameClass.Dense` example above.
+
 end BimodalTest.Automation.ProofModeCarryingTest

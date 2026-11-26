@@ -31,6 +31,9 @@ private def progressRule (judgment : Judgment) (rule : Name) : MetaM Name := do
         ``FormalSystem.PlusLanguage.ProofMode.leadsToTrans)
     | `pastLeadsToTrans => pure (``FormalSystem.Theorems.ProofMode.pastLeadsToTrans,
         ``FormalSystem.PlusLanguage.ProofMode.pastLeadsToTrans)
+    -- Unreachable from parsed syntax: `rule` is supplied by the elaborators in this module, never
+    -- by the user, and every value they pass is matched above. The arm guards a future caller
+    -- that passes an unregistered name, and is deliberately unpinned for want of a trigger.
     | _ => throwError "unregistered strict leads-to rule {rule}"
   return judgment.language.ruleName pair.1 pair.2
 

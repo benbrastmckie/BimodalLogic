@@ -21,63 +21,63 @@ open FormalSystem.Theorems.Combinators FormalSystem.Theorems.TemporalDerived
 
 variable {fc : FrameClass} {Γ : Context}
 
-/-! ## One-step fold and unfold -/
+/-! ## One-step contraction and expansion -/
 
 /-- `X e ∨ X(g ∧ U g e) → U g e`, at every frame class. -/
-def untilFoldRule (guard event : Formula) :
+def untilContractRule (guard event : Formula) :
     ⊢[fc] ((Formula.next event).or (Formula.next (guard.and (Formula.untl guard event)))).imp
       (Formula.untl guard event) :=
   (DiscreteUnfolding.unfoldBackward event guard).lift (FrameClass.base_le fc)
 
 /-- `Y e ∨ Y(g ∧ S g e) → S g e`, at every frame class: closed time reflection of the Base
-Until fold. -/
-def sinceFoldRule (guard event : Formula) :
+Until contraction. -/
+def sinceContractRule (guard event : Formula) :
     ⊢[fc] ((Formula.prev event).or (Formula.prev (guard.and (Formula.snce guard event)))).imp
       (Formula.snce guard event) :=
-  reflectThm (untilFoldRule guard.reflectTime event.reflectTime) (by
+  reflectThm (untilContractRule guard.reflectTime event.reflectTime) (by
     simp only [Formula.next, Formula.prev, Formula.or, Formula.and, Formula.neg,
       Formula.reflectTime, Formula.reflect_time_involution])
 
 /-- `U g e → X e ∨ X(g ∧ U g e)`, requiring integer time. -/
-def untilUnfoldRule (hFrame : FrameClass.ZTime ≤ fc) (guard event : Formula) :
+def untilExpandRule (hFrame : FrameClass.ZTime ≤ fc) (guard event : Formula) :
     ⊢[fc] (Formula.untl guard event).imp
       ((Formula.next event).or (Formula.next (guard.and (Formula.untl guard event)))) :=
   (DiscreteUnfolding.unfoldForward event guard).lift hFrame
 
 /-- `S g e → Y e ∨ Y(g ∧ S g e)`, requiring integer time. -/
-def sinceUnfoldRule (hFrame : FrameClass.ZTime ≤ fc) (guard event : Formula) :
+def sinceExpandRule (hFrame : FrameClass.ZTime ≤ fc) (guard event : Formula) :
     ⊢[fc] (Formula.snce guard event).imp
       ((Formula.prev event).or (Formula.prev (guard.and (Formula.snce guard event)))) :=
   (DiscreteUnfolding.unfoldBackwardSince event guard).lift hFrame
 
 /-- Reduce an Until goal to its one-step disjunction, at every frame class. -/
-def untilFold {guard event : Formula}
+def untilContract {guard event : Formula}
     (h : Γ ⊢[fc] (Formula.next event).or (Formula.next (guard.and (Formula.untl guard event)))) :
     Γ ⊢[fc] Formula.untl guard event :=
-  ctxMp (thmIn (untilFoldRule guard event)) h
+  ctxMp (thmIn (untilContractRule guard event)) h
 
 /-- Reduce a Since goal to its one-step disjunction, at every frame class. -/
-def sinceFold {guard event : Formula}
+def sinceContract {guard event : Formula}
     (h : Γ ⊢[fc] (Formula.prev event).or (Formula.prev (guard.and (Formula.snce guard event)))) :
     Γ ⊢[fc] Formula.snce guard event :=
-  ctxMp (thmIn (sinceFoldRule guard event)) h
+  ctxMp (thmIn (sinceContractRule guard event)) h
 
-/-- Unfold an Until fact one step on integer time. Both branches keep their `X` and must prove
+/-- Expand an Until fact one step on integer time. Both branches keep their `X` and must prove
 the common conclusion. -/
-def untilUnfoldCases (hFrame : FrameClass.ZTime ≤ fc) {guard event C : Formula}
+def untilExpandCases (hFrame : FrameClass.ZTime ≤ fc) {guard event C : Formula}
     (h : Γ ⊢[fc] Formula.untl guard event)
     (hEvent : Formula.next event :: Γ ⊢[fc] C)
     (hContinue : Formula.next (guard.and (Formula.untl guard event)) :: Γ ⊢[fc] C) :
     Γ ⊢[fc] C :=
-  orCases (ctxMp (thmIn (untilUnfoldRule hFrame guard event)) h) hEvent hContinue
+  orCases (ctxMp (thmIn (untilExpandRule hFrame guard event)) h) hEvent hContinue
 
-/-- Unfold a Since fact one step on integer time, keeping `Y` in both branches. -/
-def sinceUnfoldCases (hFrame : FrameClass.ZTime ≤ fc) {guard event C : Formula}
+/-- Expand a Since fact one step on integer time, keeping `Y` in both branches. -/
+def sinceExpandCases (hFrame : FrameClass.ZTime ≤ fc) {guard event C : Formula}
     (h : Γ ⊢[fc] Formula.snce guard event)
     (hEvent : Formula.prev event :: Γ ⊢[fc] C)
     (hContinue : Formula.prev (guard.and (Formula.snce guard event)) :: Γ ⊢[fc] C) :
     Γ ⊢[fc] C :=
-  orCases (ctxMp (thmIn (sinceUnfoldRule hFrame guard event)) h) hEvent hContinue
+  orCases (ctxMp (thmIn (sinceExpandRule hFrame guard event)) h) hEvent hContinue
 
 /-- `G φ → (X ψ → X φ)`: persistent information holds at an existing successor. -/
 private def nextOfAllFutureRule (φ ψ : Formula) : ⊢[fc] φ.allFuture.imp (ψ.next.imp φ.next) :=
@@ -121,65 +121,67 @@ variable {fc : FrameClass} {Γ : PlusContext}
 
 open TemporalSchema
 
-/-! ### Fold and unfold -/
+/-! ### Contraction and expansion -/
 
 /-- `X e ∨ X(g ∧ U g e) → U g e`, at every frame class. -/
-def untilFoldRule (guard event : PlusFormula) :
+def untilContractRule (guard event : PlusFormula) :
     PlusDerivationTree fc [] (((PlusFormula.next event).or
       (PlusFormula.next (guard.and (.untl guard event)))).imp (.untl guard event)) :=
-  .ofTMSubst (assign4 guard event guard guard) (Theorems.ProofMode.untilFoldRule (atom 0) (atom 1))
+  .ofTMSubst (assign4 guard event guard guard)
+    (Theorems.ProofMode.untilContractRule (atom 0) (atom 1))
 
 /-- `Y e ∨ Y(g ∧ S g e) → S g e`, at every frame class. -/
-def sinceFoldRule (guard event : PlusFormula) :
+def sinceContractRule (guard event : PlusFormula) :
     PlusDerivationTree fc [] (((PlusFormula.prev event).or
       (PlusFormula.prev (guard.and (.snce guard event)))).imp (.snce guard event)) :=
-  .ofTMSubst (assign4 guard event guard guard) (Theorems.ProofMode.sinceFoldRule (atom 0) (atom 1))
+  .ofTMSubst (assign4 guard event guard guard)
+    (Theorems.ProofMode.sinceContractRule (atom 0) (atom 1))
 
 /-- `U g e → X e ∨ X(g ∧ U g e)`, requiring integer time. -/
-def untilUnfoldRule (hFrame : FrameClass.ZTime ≤ fc) (guard event : PlusFormula) :
+def untilExpandRule (hFrame : FrameClass.ZTime ≤ fc) (guard event : PlusFormula) :
     PlusDerivationTree fc [] ((PlusFormula.untl guard event).imp ((PlusFormula.next event).or
       (PlusFormula.next (guard.and (.untl guard event))))) :=
   .ofTMSubst (assign4 guard event guard guard)
-    (Theorems.ProofMode.untilUnfoldRule hFrame (atom 0) (atom 1))
+    (Theorems.ProofMode.untilExpandRule hFrame (atom 0) (atom 1))
 
 /-- `S g e → Y e ∨ Y(g ∧ S g e)`, requiring integer time. -/
-def sinceUnfoldRule (hFrame : FrameClass.ZTime ≤ fc) (guard event : PlusFormula) :
+def sinceExpandRule (hFrame : FrameClass.ZTime ≤ fc) (guard event : PlusFormula) :
     PlusDerivationTree fc [] ((PlusFormula.snce guard event).imp ((PlusFormula.prev event).or
       (PlusFormula.prev (guard.and (.snce guard event))))) :=
   .ofTMSubst (assign4 guard event guard guard)
-    (Theorems.ProofMode.sinceUnfoldRule hFrame (atom 0) (atom 1))
+    (Theorems.ProofMode.sinceExpandRule hFrame (atom 0) (atom 1))
 
 /-- Reduce an Until goal to its one-step disjunction, at every frame class. -/
-def untilFold {guard event : PlusFormula}
+def untilContract {guard event : PlusFormula}
     (h : PlusDerivationTree fc Γ ((PlusFormula.next event).or
       (PlusFormula.next (guard.and (.untl guard event))))) :
     PlusDerivationTree fc Γ (.untl guard event) :=
-  ctxMp (thmIn (untilFoldRule guard event)) h
+  ctxMp (thmIn (untilContractRule guard event)) h
 
 /-- Reduce a Since goal to its one-step disjunction, at every frame class. -/
-def sinceFold {guard event : PlusFormula}
+def sinceContract {guard event : PlusFormula}
     (h : PlusDerivationTree fc Γ ((PlusFormula.prev event).or
       (PlusFormula.prev (guard.and (.snce guard event))))) :
     PlusDerivationTree fc Γ (.snce guard event) :=
-  ctxMp (thmIn (sinceFoldRule guard event)) h
+  ctxMp (thmIn (sinceContractRule guard event)) h
 
-/-- Unfold an Until fact one step on integer time, keeping `X` in both branches. -/
-def untilUnfoldCases (hFrame : FrameClass.ZTime ≤ fc) {guard event C : PlusFormula}
+/-- Expand an Until fact one step on integer time, keeping `X` in both branches. -/
+def untilExpandCases (hFrame : FrameClass.ZTime ≤ fc) {guard event C : PlusFormula}
     (h : PlusDerivationTree fc Γ (.untl guard event))
     (hEvent : PlusDerivationTree fc (PlusFormula.next event :: Γ) C)
     (hContinue : PlusDerivationTree fc
       (PlusFormula.next (guard.and (.untl guard event)) :: Γ) C) :
     PlusDerivationTree fc Γ C :=
-  orCases (ctxMp (thmIn (untilUnfoldRule hFrame guard event)) h) hEvent hContinue
+  orCases (ctxMp (thmIn (untilExpandRule hFrame guard event)) h) hEvent hContinue
 
-/-- Unfold a Since fact one step on integer time, keeping `Y` in both branches. -/
-def sinceUnfoldCases (hFrame : FrameClass.ZTime ≤ fc) {guard event C : PlusFormula}
+/-- Expand a Since fact one step on integer time, keeping `Y` in both branches. -/
+def sinceExpandCases (hFrame : FrameClass.ZTime ≤ fc) {guard event C : PlusFormula}
     (h : PlusDerivationTree fc Γ (.snce guard event))
     (hEvent : PlusDerivationTree fc (PlusFormula.prev event :: Γ) C)
     (hContinue : PlusDerivationTree fc
       (PlusFormula.prev (guard.and (.snce guard event)) :: Γ) C) :
     PlusDerivationTree fc Γ C :=
-  orCases (ctxMp (thmIn (sinceUnfoldRule hFrame guard event)) h) hEvent hContinue
+  orCases (ctxMp (thmIn (sinceExpandRule hFrame guard event)) h) hEvent hContinue
 
 /-- Move a persistent fact under an existing next witness; no successor is asserted. -/
 def nextOfAllFuture {φ ψ : PlusFormula} (hφ : PlusDerivationTree fc Γ φ.allFuture)

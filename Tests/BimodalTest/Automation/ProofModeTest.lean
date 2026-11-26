@@ -239,4 +239,46 @@ example : [A, A.imp B] ⊢ B.and A := by
     · lexact hB
     · lexact hA
 
+/-! ## Negative tests: the added diagnostics in `Modal.lean`, `Meta.lean` and `Discrete.lean` -/
+
+/-- error: the goal does not have the requested universal modality -/
+#guard_msgs in
+example : [A.box] ⊢ A := by
+  lstart h
+  lmodal_intro necessity using []
+
+-- The name list, when supplied, must match the guarantee count exactly. One guarantee is
+-- selected here, so the interpolated figure in the message is fixed at 1.
+/-- error: expected 1 body hypothesis names in the supplied guarantee order -/
+#guard_msgs in
+example : [A.box] ⊢ A.box := by
+  lstart h
+  lmodal_intro necessity using [h] as x y
+
+/-- error: induction requires the matching universal temporal goal -/
+#guard_msgs in
+example : [A] ⊢[FrameClass.ZTime] A := by
+  lstart h
+  linduction future
+
+-- Three added diagnostics in these modules have no constructible trigger from user syntax, so
+-- they are recorded here rather than pinned. All three were established by compiled probe, not
+-- by reading:
+--
+-- * `Modal.lean`'s "expected a native derivation", in the guarantee loop of `scopedGuarantees`.
+--   Every proof reaching that loop has already passed `adaptProof`, whose own
+--   "expected a native derivation, not a semantic fact or a validity proof" fires first
+--   (measured: `lmodal_intro necessity using [True.intro]` reports adaptProof's message), and
+--   the `using`-less path builds its proofs with `assumptionProof`, which cannot produce a
+--   non-derivation.
+-- * `Meta.lean`'s "expected a native derivation", in `proofJudgment`. Every in-tree call site
+--   passes either an `adaptProof` result or a term built by `mkAppM` from a checked rule, so
+--   the `judgment?` lookup never fails. The arm guards a future caller that passes a raw
+--   elaborated term.
+-- * `Discrete.lean`'s "backward induction does not prove the current conclusion". The rule is
+--   applied to the goal's own `args[0]`, context and frame, so its type agrees with the goal's
+--   by construction; a direction mismatch is caught one step earlier by
+--   "induction requires the matching universal temporal goal" (measured: `linduction past` on a
+--   `G`-headed goal reports that message, not this one).
+
 end BimodalTest.Automation.ProofModeTest

@@ -100,6 +100,9 @@ private def compositionRule (judgment : Judgment) (rule : Name) : MetaM Name := 
         ``FormalSystem.PlusLanguage.ProofMode.reflectGoal)
     | `reflectContext => pure (``FormalSystem.Theorems.ProofMode.reflectContext,
         ``FormalSystem.PlusLanguage.ProofMode.reflectContext)
+    -- Unreachable from parsed syntax: `rule` is supplied by this module's own elaborators,
+    -- never by the user, and every value they pass is matched above. The arm guards a future
+    -- caller passing an unregistered name, and is deliberately unpinned for want of a trigger.
     | _ => throwError "unregistered temporal composition rule {rule}"
   return judgment.language.ruleName pair.1 pair.2
 
@@ -114,8 +117,25 @@ def integerTimeGate (judgment : Judgment) : TacticM (Expr × List MVarId) := do
   if (← instantiateMVars type).hasExprMVar then
     throwError "the frame class of the goal is undetermined"
   let gate ← mkFreshExprMVar type
-  let pending ← try resolveRuleParameters #[gate] catch _ =>
-    throwError "integer-time reasoning requires FrameClass.ZTime ≤ {judgment.frame}"
+  -- Narrowed from a bare `catch _`: only `resolveRuleParameters`' own frame-class rejection is
+  -- reported as a frame-class problem. Anything else -- a `maxRecDepth`, an interrupt, a
+  -- `Decidable`-synthesis failure arising for another reason -- keeps its original message
+  -- appended, so the real cause reaches the user. The dedicated substring predicate is outside
+  -- this module's import closure, so the match is written with `splitOn` instead.
+  --
+  -- The append branch is deliberately unpinned: no trigger for it is constructible from user
+  -- syntax. The guard one line above already rejects an undetermined frame class, so the gate
+  -- type is always closed by the time `resolveRuleParameters` sees it; `FrameClass` has exactly
+  -- four constructors and `Decidable (FrameClass.ZTime ≤ ·)` is synthesizable at every one of
+  -- them, so `mkDecide`/`whnf` cannot fail here; and a `maxRecDepth` or an interrupt is not
+  -- reachable from a test. The branch exists so that a future non-decidable tag, or an interrupt,
+  -- surfaces its own cause rather than a false frame-class diagnosis.
+  let pending ← try resolveRuleParameters #[gate] catch error => do
+    let original ← error.toMessageData.toString
+    if (original.splitOn "incompatible concrete frame classes").length > 1 then
+      throwError "integer-time reasoning requires FrameClass.ZTime ≤ {judgment.frame}"
+    else
+      throwError "integer-time reasoning requires FrameClass.ZTime ≤ {judgment.frame}\n{original}"
   return (gate, pending)
 
 /-! ## Eventuality cases, advance and universal introduction with `keeping` -/
@@ -327,6 +347,10 @@ private partial def reflectView (language : Language) (formula : Expr) : MetaM E
   for (source, target) in viewPairs do
     if (← viewHead? source language.formulaNamespace) == some head then
       let some reflected ← viewHead? target language.formulaNamespace
+        -- Unreachable: every one of `viewPairs`' eight targets is registered by
+        -- `register_lview` for BOTH `Formula` and `PlusFormula`, so `viewHead?` cannot return
+        -- `none` for a pair whose source just matched. The arm guards a future one-sided
+        -- registration, and is deliberately unpinned for want of a trigger.
         | throwError "missing reflected formula view {target}"
       return ← mkAppM reflected (← formula.getAppArgs.mapM (reflectView language))
   for fixed in #[`atom, `bot, `top] do
@@ -355,6 +379,13 @@ private partial def reflectContextView (language : Language) (context : Expr) : 
 private def reflectedType (judgment : Judgment) (actual : Expr) : MetaM Expr := do
   let expected ← derivationType judgment (← reflectContextView judgment.language judgment.context)
     (← reflectView judgment.language judgment.formula)
+  -- Defensive invariant with no constructible trigger: `reflectionPairs` mirrors `reflectTime`'s
+  -- own structural recursion, each view pair agrees by its `register_lview` expand equation, and
+  -- an unregistered head is wrapped in `reflectTime` itself, so the syntactic mirror is defeq to
+  -- the native rule's type in every case. Probed across the three structurally distinct classes
+  -- -- a registered view (`inclusiveUntil`), a second view family (`weakUntil`), and a
+  -- registered-but-unmirrored head that falls through to the wrap (`before`) -- and all three
+  -- reflected defeq. Deliberately unpinned for want of a trigger.
   unless ← isDefEq expected actual do
     throwError "reflected view does not match the native reflection rule"
   return expected

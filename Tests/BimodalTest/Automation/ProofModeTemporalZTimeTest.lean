@@ -62,4 +62,26 @@ example : [Formula.untl A B] ⊢[FrameClass.Dense] Formula.untl A B := by
   lstart h
   luntil expand h as he hc
 
+-- The gate's sibling guard: an integer-time rule invoked where the goal's frame class is still a
+-- metavariable is refused before the gate parameter is ever created. The frame component of the
+-- pair is deliberately left open -- assigning it is what would determine the frame class and
+-- silence the guard -- so its own unsolved-goals report is pinned alongside.
+/--
+error: the frame class of the goal is undetermined
+---
+error: unsolved goals
+case frame
+fc : FrameClass
+Γ : Context
+A B C : Formula
+⊢ FrameClass
+-/
+#guard_msgs in
+example : (f : FrameClass) ×
+    ([Formula.untl Formula.bot Formula.bot] ⊢[f] Formula.untl Formula.bot Formula.bot) := by
+  refine ⟨?frame, ?proof⟩
+  case proof =>
+    lstart h
+    luntil expand h as he hc
+
 end BimodalTest.Automation.ProofModeTemporalZTimeTest

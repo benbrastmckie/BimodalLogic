@@ -56,7 +56,15 @@ private def exactProof (term : Syntax) : TacticM Unit := withMainContext do
 
 /-- Apply a once-elaborated native theorem; leave data parameters inferable from its premises.
 Only holes created since `firstNewIndex` become new goals. Proposition and native derivation
-premises come first, followed by object implications and then undetermined data parameters. -/
+premises come first, followed by object implications and then undetermined data parameters.
+
+`firstNewIndex` MUST be snapshotted from `(← getMCtx).mvarCounter` BEFORE `proof` is elaborated.
+The goal-partitioning loop below drops every metavariable whose declaration index is below
+`firstNewIndex`, and elaborating the proof term is what creates the rule's own parameter
+metavariables. A counter read AFTER elaboration therefore sits above all of them, so every
+parameter metavariable is filtered out, none becomes a goal, and the surrounding `by` block fails
+later with an opaque placeholder-synthesis error rather than at this call. `applyProof` below is
+the in-tree caller that reads the counter in the required order. -/
 def applyDerivationProof (proof : Expr) (firstNewIndex : Nat) : TacticM Unit := withMainContext do
   let goal ← getMainGoal
   let judgment ← requireJudgment goal
@@ -76,13 +84,6 @@ def applyDerivationProof (proof : Expr) (firstNewIndex : Nat) : TacticM Unit := 
     antecedents := antecedents.push args[0]!
     conclusion := args[1]!
   unless matched do throwError "lapply exceeded the implication-chain limit"
-  for i in [:parameters.size] do
-    if binders[i]!.isInstImplicit && !(← parameters[i]!.mvarId!.isAssigned) then
-      let instanceGoal := parameters[i]!.mvarId!
-      let instanceType ← instanceGoal.getType
-      let message := m!"lapply could not synthesize the required instance {instanceType}"
-      unless ← Term.synthesizeInstMVarCore instanceGoal (extraErrorMsg? := some message) do
-        throwError message
   proof ← adaptProof proof judgment
   let mut premises : Array MVarId := #[]
   for antecedent in antecedents do
@@ -90,8 +91,21 @@ def applyDerivationProof (proof : Expr) (firstNewIndex : Nat) : TacticM Unit := 
       (← derivationType judgment judgment.context antecedent)
     proof ← modusPonens judgment proof premise
     premises := premises.push premise.mvarId!
+  -- Defensive invariant check with no constructible trigger from user syntax: once the
+  -- implication chain above has matched the conclusion against `judgment.formula` and
+  -- `adaptProof` has aligned frame class, object language and context, the two types agree by
+  -- construction. A frame-class mismatch -- the nearest candidate trigger -- is rejected one
+  -- step earlier by `adaptProof` with "different frame classes; supply an explicitly lifted
+  -- derivation" (measured). Hence no `#guard_msgs` pin for this arm.
   unless ← isDefEq (← inferType proof) (← goal.getType) do
     throwError "the applied rule produced an incompatible judgment"
+  for i in [:parameters.size] do
+    if binders[i]!.isInstImplicit && !(← parameters[i]!.mvarId!.isAssigned) then
+      let instanceGoal := parameters[i]!.mvarId!
+      let instanceType ← instanceGoal.getType
+      let message := m!"lapply could not synthesize the required instance {instanceType}"
+      unless ← Term.synthesizeInstMVarCore instanceGoal (extraErrorMsg? := some message) do
+        throwError message
   goal.assign proof
   let mut proofGoals : List MVarId := []
   let mut dataGoals : List MVarId := []

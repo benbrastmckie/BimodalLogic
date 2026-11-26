@@ -36,4 +36,4 @@ Context substitution supplies opaque guarantees without unfolding their proofs. 
 temporal scopes retain their mapped assumptions, and discrete rules expose their frame
 certificates. The [frontend](../../Automation/ProofMode/README.md) applies these rules.
 
-*Last verified: 2026-11-19*
+*Last verified: 2026-11-25*
