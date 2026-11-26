@@ -96,4 +96,4 @@ and is no longer part of the live architecture.
 
 ---
 
-*Last verified: 2026-11-12*
+*Last verified: 2026-11-25*

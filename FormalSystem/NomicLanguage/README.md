@@ -95,6 +95,11 @@ language. Every file here has a layer in the `LANGUAGE_FILE_LAYERS` table of
 a layer-1 file of any of them, or anything under `FormalSystem/Semantics/`. **A new file in this
 directory needs a row in that table.**
 
+`Formula.lean` imports `FormalSystem/Syntax/Connectives.lean` and makes `NomicFormula` an instance
+of the five primitive-operator classes `HasBot`, `HasImp`, `HasBox`, `HasUntl` and `HasSnce`. The
+nomic modal `◈` has no class there, and the derived operators of this directory keep their own
+definitions.
+
 ## References
 
 * JPL paper — `sub:RestrictedModalities`, `def:nomic-frame`, `def:nomic-properties`,
@@ -111,4 +116,4 @@ directory needs a row in that table.**
 
 ---
 
-*Last verified: 2026-11-24*
+*Last verified: 2026-11-25*

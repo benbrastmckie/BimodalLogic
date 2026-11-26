@@ -485,8 +485,8 @@ def zTimeRows : List Row :=
 
 /-- The three Dedekind axiom instances. `allRulesForFC` now has a `rTimeRules` arm (`priorUGap`,
 `priorSGap`, `sepRule`), and all three close. `kPlus`/`kMinus` are Reynolds' `K⁺`/`K⁻`
-(`Syntax/Formula.lean:197`, `Syntax/Formula.lean:210`), which those three rules are the only
-consumers of.
+(`Formula.kPlus` and `Formula.kMinus` in `Syntax/Formula.lean`), which those three rules are the
+only consumers of.
 
 Each rule triggers on its axiom's antecedent *conjunction* and adds the consequent
 persistently, so a row closes by contradiction between the added consequent and the negated

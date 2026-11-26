@@ -115,7 +115,7 @@ theorem release_iff_forall {L : Type} [TruthEnv L] [HasBot L] [BotClause L] [Has
     [HasUntl L] [UntlClause L]
     {F : TaskFrame} (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (event guard : L) :
-    TruthEnv.T M τ t e (neg (HasUntl.untl (neg guard) (neg event))) ↔
+    TruthEnv.T M τ t e (release event guard) ↔
       ∀ s : F.Duration, t < s → TruthEnv.T M τ s e event ∨
         ∃ r : F.Duration, t < r ∧ r < s ∧ TruthEnv.T M τ r e guard := by
   rw [release_iff]
@@ -135,7 +135,7 @@ theorem trigger_iff_forall {L : Type} [TruthEnv L] [HasBot L] [BotClause L] [Has
     [HasSnce L] [SnceClause L]
     {F : TaskFrame} (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (event guard : L) :
-    TruthEnv.T M τ t e (neg (HasSnce.snce (neg guard) (neg event))) ↔
+    TruthEnv.T M τ t e (trigger event guard) ↔
       ∀ s : F.Duration, s < t → TruthEnv.T M τ s e event ∨
         ∃ r : F.Duration, s < r ∧ r < t ∧ TruthEnv.T M τ r e guard := by
   rw [trigger_iff]

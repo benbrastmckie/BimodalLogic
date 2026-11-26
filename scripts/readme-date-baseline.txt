@@ -32,7 +32,6 @@ stale FormalSystem/Metalogic/BXCanonical/Chronicle/README.md 2026-09-21
 stale FormalSystem/Metalogic/BXCanonical/Filtration/README.md 2026-09-21
 stale FormalSystem/Metalogic/BXCanonical/Quasimodel/README.md 2026-09-21
 stale FormalSystem/Metalogic/BXCanonical/README.md 2026-09-21
-stale FormalSystem/Metalogic/Conservativity/README.md 2026-09-22
 stale FormalSystem/Metalogic/Core/README.md 2026-09-21
 stale FormalSystem/Metalogic/Core/RestrictedMCS/README.md 2026-09-21
 stale FormalSystem/Metalogic/Decidability/BiLasso/README.md 2026-09-27

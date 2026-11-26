@@ -35,6 +35,30 @@ The three extension languages are **not** subdirectories of this one. Each is a 
 component at the library root, carrying its syntax, its proof system and its semantics in one
 directory; L's own syntax is here and L's own semantics is at the `Semantics/` root.
 
+### One signature for the derived operators
+
+The formula types are separate inductive types, and they share one signature.
+[`Connectives.lean`](Connectives.lean) declares one class per primitive operator (`HasBot`,
+`HasImp`, `HasBox`, `HasUntl`, `HasSnce`, `HasStab`, `HasAllFuture`, `HasAllPast`) and writes each
+derived operator once, in the namespace `Sig`, over the weakest set of classes that types it. A
+formula type declares an instance for each primitive it has; nine formula types do (`Formula`,
+`MinusFormula`, `PlusFormula`, `StarFormula`, `OpenFormula`, `HybridFormula`, `QuantFormula`,
+`NomicFormula` and `USForm`).
+
+Four of them, `Formula`, `PlusFormula`, `StarFormula` and the `USForm` of
+`Metalogic/Expressiveness/SeparationZ/Syntax.lean`, also keep their own names for the derived
+operators (`Formula.diamond`, `PlusFormula.next`, and so on). Each is a `def` whose body
+[`ConnectivesElab.lean`](ConnectivesElab.lean)'s `sig%` generates from the `Sig` definition, so
+it equals the signature operator by `rfl`. The `Sig` operators are `abbrev`s and the
+per-language ones are not; the grounds are in
+[`records/proof-mode-architecture.md`](../../records/proof-mode-architecture.md).
+
+Three things read the signature: the truth-clause classes of
+[`Semantics/TruthClauses.lean`](../Semantics/TruthClauses.lean), whose lemmas are stated about
+the `Sig` operators; the temporal rules and interval lemmas of `Semantics/TemporalRules.lean`
+and `Semantics/TemporalIntervals.lean`; and operator recognition in
+[`Tactic/FormulaSyntax.lean`](../Tactic/FormulaSyntax.lean).
+
 ### The chain, and the one that is not in it
 
 **L ⊂ L⁺ ⊂ L⋆ is the extension chain.** Each adds constructors to the one before, and each

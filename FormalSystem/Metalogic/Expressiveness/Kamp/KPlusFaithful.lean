@@ -17,10 +17,10 @@ this tree's `kplus`.
 ## Three spellings of `K⁺`, and which transcribes which source
 
 This tree carries three, and the reader must keep them apart. The name-collision warning of
-`Formula.kPlus` (`Syntax/Formula.lean:188-193`) names the first two; this module adds the
+`Formula.kPlus` (`Syntax/Formula.lean:196-201`) names the first two; this module adds the
 third and, with the bridge lemmas below, reduces the *unbridged* spellings from two to zero.
 
-* `Formula.kPlus` (`Syntax/Formula.lean:181`), object level, `(untl ⊤ φ.neg).neg` — transcribes
+* `Formula.kPlus` (`Syntax/Formula.lean:205`), object level, `(untl ⊤ φ.neg).neg` — transcribes
   **the sources, exactly**.
 * `kplusOpen` (**this module**), `Prop` level, `∀ s > t, ∃ r ∈ (t,s), P(r)` — transcribes **the
   sources, exactly**; it is the semantic reading of `Formula.kPlus`.
@@ -39,7 +39,7 @@ The two source definitions, read verbatim from the corpus at this revision:
   abbreviation table, §1, **printed p.168**: `K⁺A` — *"for `¬U(⊤, ¬A)`"* — reading *"`A` will be
   true arbitrarily soon"*; with `U(A,B)(t)` iff *"there is `s > t` such that `A(s)` and for all
   `u`, if `t < u < s` then `B(u)`"*. Corroborated by Gabbay-Hodkinson-Reynolds 1994 §10.3.1
-  (`K⁺q = ¬U(⊤,¬q)`), which `Formula.kPlus` (`Syntax/Formula.lean:185-186`) already cites.
+  (`K⁺q = ¬U(⊤,¬q)`), which `Formula.kPlus` (`Syntax/Formula.lean:193-194`) already cites.
 
 **Neither source's `K⁺` carries a `¬A` conjunct at the point of evaluation.** Rabinovich's
 `Until` takes its eventuality as the *second* argument, so his `(¬F) Until True` is Reynolds'
@@ -136,7 +136,7 @@ def kminusOpen {sig : MonadicSignature}
 
 /-! ## The missing bridge
 
-`Formula.kPlus` (`Syntax/Formula.lean:181`) has stood in this tree, beside `kplusFormula`
+`Formula.kPlus` (`Syntax/Formula.lean:205`) has stood in this tree, beside `kplusFormula`
 (`Kamp/PriorINF.lean:~93`) and a name-collision warning, with **no lemma relating either to a
 truth condition**. These two lemmas are that bridge. -/
 
@@ -144,7 +144,7 @@ truth condition**. These two lemmas are that bridge. -/
 
     `TemporalTruth M atomMap t (Formula.kPlus P) ↔ kplusOpen M atomMap P t`.
 
-    `Formula.kPlus P` is `(untl P.neg ⊤).neg` (`Syntax/Formula.lean:197`), which is Reynolds'
+    `Formula.kPlus P` is `(untl P.neg ⊤).neg` (`Syntax/Formula.lean:205`), which is Reynolds'
     `¬U(⊤,¬P)` (abbreviation table §1, printed p.168) letter for letter under `Formula.untl`'s
     truth clause (`Expressiveness/Table.lean:188`). Unwinding: `U(⊤,¬P)(t)` says some `(t,s)` is
     entirely `P`-free, so its negation says every `(t,s)` contains a point at which `P` holds —
@@ -172,7 +172,7 @@ theorem kPlus_formula_correct {sig : MonadicSignature}
 
 /-- **The bridge, mirrored: `Formula.kMinus` is `kminusOpen`.**
 
-    `Formula.kMinus P` is `(snce P.neg ⊤).neg` (`Syntax/Formula.lean:210`), Reynolds' `¬S(⊤,¬P)`
+    `Formula.kMinus P` is `(snce P.neg ⊤).neg` (`Syntax/Formula.lean`), Reynolds' `¬S(⊤,¬P)`
     (printed p.168). `DerivedAxioms.priorSGap` (`ProofSystem/Axioms.lean:392`) and `Axiom.sep`
     (`:390`) are stated with it. -/
 theorem kMinus_formula_correct {sig : MonadicSignature}

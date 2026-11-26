@@ -27,10 +27,19 @@ Dedekind-class separability axiom.
 
 ## Dependencies
 
-- **Imports from**: `FormalSystem.Semantics.Validity`, `FormalSystem.ProofSystem.Derivation`,
+- **Imports from**: `FormalSystem.Semantics.Validity`, `FormalSystem.Semantics.TruthClauses`,
+  `FormalSystem.Semantics.DurationClassification`, `FormalSystem.ProofSystem.Derivation`,
   and Mathlib's order/Archimedean modules
 - **Imported by**: `FormalSystem.Metalogic.Soundness`,
-  `FormalSystem.Metalogic.Decidability.Verified.Decidable`
+  `FormalSystem.Metalogic.Decidability.Verified.Decidable`,
+  `FormalSystem.Metalogic.ConvexConsequence.FrameClassSurvival`, and the three axiom-validity
+  modules under `FormalSystem/Metalogic/Conservativity/` (`Plus/AxiomValidity.lean`,
+  `Star/StarAxiomValidity.lean`, `Open/OpenAxiomValidity.lean`), which read `GenericSchemata.lean`
+
+`GenericSchemata.lean` states each schema about the signature operators of
+`FormalSystem/Syntax/Connectives.lean` (`HasImp.imp`, `HasBox.box`, `HasUntl.untl`, …); a clause
+class such as `ImpClause` is a mixin over the matching primitive-operator class and supplies only
+the truth clause, so a lemma binds both, as in `[HasImp L] [ImpClause L]`.
 
 ## Related Documentation
 
@@ -39,4 +48,4 @@ Dedekind-class separability axiom.
 
 ---
 
-*Last verified: 2026-11-06*
+*Last verified: 2026-11-25*

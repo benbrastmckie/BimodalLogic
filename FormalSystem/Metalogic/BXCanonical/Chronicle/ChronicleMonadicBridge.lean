@@ -636,13 +636,13 @@ variable (root a b : Formula)
     chronicleEff root a.somePast = (chronicleEff root a).somePast := rfl
 
 /-- `chronicleEff` commutes with `K⁺`, since `Formula.kPlus` is `¬U(⊤,¬·)`
-(`Syntax/Formula.lean:181`). This is what lets the `Axiom.prior_U_gap` and `Axiom.sep` instances
+(`Syntax/Formula.lean`). This is what lets the `Axiom.prior_U_gap` and `Axiom.sep` instances
 be taken at the effective formula rather than at the original. -/
 @[simp] theorem chronicleEff_kPlus :
     chronicleEff root (Formula.kPlus a) = Formula.kPlus (chronicleEff root a) := rfl
 
 /-- `chronicleEff` commutes with `K⁻`, since `Formula.kMinus` is `¬S(⊤,¬·)`
-(`Syntax/Formula.lean:210`). -/
+(`Syntax/Formula.lean`). -/
 @[simp] theorem chronicleEff_kMinus :
     chronicleEff root (Formula.kMinus a) = Formula.kMinus (chronicleEff root a) := rfl
 
@@ -770,10 +770,10 @@ instances of the other axioms hold everywhere"*, executed in Lean:
    (`Kamp/KPlusFaithful.lean:155` / `:174`) read the `K⁺` / `K⁻` the axioms are stated with.
 
 Step 3's bridge lemma is the one the plan names: `Axiom.prior_U_gap` is stated with
-`Formula.kPlus` (`ProofSystem/Axioms.lean:445`; `Syntax/Formula.lean:197`), and
+`Formula.kPlus` (`ProofSystem/Axioms.lean:445`; `Syntax/Formula.lean:205`), and
 `kPlus_formula_correct` is what reads it semantically. `kplusFormula` (`Kamp/PriorINF.lean:~93`)
 is **not** substituted for it — the two differ by a conjunct and the name-collision warning at
-`Formula.kPlus` (`Syntax/Formula.lean:189`) says so.
+`Formula.kPlus` (`Syntax/Formula.lean:197`) says so.
 
 Reynolds gives no argument beyond the quoted sentence, so the Lean execution of steps 1-3 is
 original glue on a sourced statement. -/

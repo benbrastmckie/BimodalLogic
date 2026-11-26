@@ -72,9 +72,9 @@ conventions. **Neither carries a `¬F` conjunct at the point of evaluation.**
 
 **Where the source-exact spellings live in this tree:**
 
-* `Formula.kPlus` / `Formula.kMinus` (`FormalSystem/Syntax/Formula.lean:197`, `:210`) — the
+* `Formula.kPlus` / `Formula.kMinus` (`FormalSystem/Syntax/Formula.lean`) — the
   object-level source-exact spelling, `(untl ⊤ φ.neg).neg`, carrying the **name-collision warning at
-  `Syntax/Formula.lean:189`** which says of `kplusFormula` below that *"substituting one for the
+  `Syntax/Formula.lean:197`** which says of `kplusFormula` below that *"substituting one for the
   other silently transcribes a different axiom"*. `Axiom.prior_U_gap`
   (`ProofSystem/Axioms.lean:445`), `DerivedAxioms.priorSGap` and `Axiom.sep` (`:453`) are stated
   with these.
@@ -108,8 +108,8 @@ and the shims relating the two; neither this file's statements nor its proofs ch
     *"`K+(F)` holds at a moment `t` iff `t = inf({t′ | t′ > t and F holds at t′})`"*) and
     Reynolds' (printed p.168: `K⁺A` for `¬U(⊤,¬A)`) are the second conjunct alone. The
     source-exact operator is `kplusOpen` (`Kamp/KPlusFaithful.lean`), the `Prop`-level reading of
-    `Formula.kPlus` (`Syntax/Formula.lean:197`), whose name-collision warning is at
-    `Syntax/Formula.lean:189`; see also this section's comment block above. `kplus` is strictly
+    `Formula.kPlus` (`Syntax/Formula.lean:205`), whose name-collision warning is at
+    `Syntax/Formula.lean:197`; see also this section's comment block above. `kplus` is strictly
     stronger, and `kplus_iff_not_and_kplusOpen` states the difference exactly. -/
 def kplus {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
@@ -129,7 +129,7 @@ noncomputable def kplusFormula (P : Formula) : Formula :=
     `t = sup({t′ | t′ < t and F holds at t′})`"*) and Reynolds' (printed p.168: `K⁻A` for
     `¬S(⊤,¬A)`) are the second conjunct alone. The source-exact operator is `kminusOpen`
     (`Kamp/KPlusFaithful.lean`), the `Prop`-level reading of `Formula.kMinus`
-    (`Syntax/Formula.lean:210`). -/
+    (`Syntax/Formula.lean`). -/
 def kminus {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (P : Formula) (t : M.carrier) : Prop :=

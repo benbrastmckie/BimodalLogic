@@ -55,7 +55,12 @@ import line for another.
 
 ## Formula syntax and views
 
-`FormulaSyntax` and `FormulaPositions` inspect and rebuild formula expressions. `FormulaViews`
+`FormulaSyntax` and `FormulaPositions` inspect and rebuild formula expressions. `FormulaSyntax`
+recognizes an operator at any formula type through the connective signature of
+[`Syntax/Connectives.lean`](../Syntax/Connectives.lean): it matches the per-type constant first
+and then the `Sig` operator or primitive class at that type, so recognition reaches every type
+that has the signature instances, L⋆ among them. An operator the type lacks is an error, not a
+failed match. Building a formula still takes a `Language`, which is TM or TM⁺. `FormulaViews`
 applies a registered formula-data equation. These modules depend on formula definitions and Lean
 metaprogramming. Both derivation and pointed-model clients can import them directly.
 
@@ -70,4 +75,4 @@ metaprogramming. Both derivation and pointed-model clients can import them direc
 
 ---
 
-*Last verified: 2026-09-21*
+*Last verified: 2026-11-25*

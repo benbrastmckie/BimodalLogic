@@ -128,4 +128,4 @@ open.
 
 ---
 
-*Last verified: 2026-11-06*
+*Last verified: 2026-11-25*

@@ -150,7 +150,7 @@ variable (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
 
 `U(⊤,p) ∧ F¬p → U(¬p ∨ K⁺(¬p), p)`.
 
-`F ψ` is `U(ψ, ⊤)` and `K⁺` is `Formula.kPlus` (`Syntax/Formula.lean:181`), which is Reynolds'
+`F ψ` is `U(ψ, ⊤)` and `K⁺` is `Formula.kPlus` (`Syntax/Formula.lean:205`), which is Reynolds'
 `K⁺A = ¬U(⊤,¬A)` and **not** `Kamp/PriorINF.lean`'s differently-defined `kplusFormula` — see that
 definition's name-collision warning.
 

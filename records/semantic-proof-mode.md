@@ -189,7 +189,8 @@ evaluator that returns open obligations.
    exchanged-binder fault is common.
 3. **Sharing.** The evaluator imports nothing from `FormalSystem/Automation/ProofMode/` and
    recognizes operators through its own rule registry, not `FormalSystem/Tactic/FormulaSyntax.lean`,
-   which stops at TM⁺. The generic clause lemmas already apply at `StarFormula`, so the two L⋆
-   clients do not wait on the signature layer (D1), which later merges the per-language keys.
+   which reaches L⋆ as well as TM and TM⁺ through the signature layer. The generic clause lemmas
+   already apply at `StarFormula`, so the two L⋆ clients do not wait on the signature layer (D1),
+   which later merges the per-language keys.
 4. **Grade of an evaluator-checked refutation.** Decided by `theorem_library_countermodels` (B4).
 5. **Adoption threshold.** The provisional threshold above stands until step 3 reports.

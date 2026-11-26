@@ -14,6 +14,13 @@ propositional quantifiers), rest on `HistoryMorphism.lean` below. What stays her
 is L's own semantics, plus the two **cross-language bridges** that span two families and so
 belong to neither: `DeterministicBridge.lean` and `StateLocalTransfer.lean`.
 
+The generic semantic lemmas are stated about the connective signature of
+[`../Syntax/Connectives.lean`](../Syntax/Connectives.lean). Each truth-clause class of
+`TruthClauses.lean` takes the signature class of its operator as an instance binder, and the
+clause lemmas, the temporal rules of `TemporalRules.lean` and the interval lemmas of
+`TemporalIntervals.lean` name the derived operators of `Sig`. A language gets all of them by
+declaring its signature instances and its clause instances; none restates an operator.
+
 ## Contents
 
 This table is ordered by the layering, not alphabetically, and carries no line counts, so it is

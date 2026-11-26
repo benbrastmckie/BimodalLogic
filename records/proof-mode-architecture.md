@@ -72,6 +72,22 @@ table is needed. It is rejected on count, `Formula` having 26 defined operators 
 `PlusFormula` 22 besides the inclusive Until and Since forms, and on principle 6, since each
 extension would add tactic syntax.
 
+**Signature operators are reducible and per-language operators are not.** Each derived operator
+has one body, in the namespace `Sig` of `FormalSystem/Syntax/Connectives.lean`, and it is an
+`abbrev`: it unfolds to its primitive form at reducible transparency. A per-language operator
+such as `Formula.diamond` is a `def` whose body is generated from the signature operator, so the
+two are equal by `rfl` at default transparency and not at reducible transparency. A view row for
+a defined operator is therefore one `rfl` equation per signature operator per language, and the
+defined operators keep their rows in the table. The alternative is to make the per-language
+operators reducible as well. Its merits: a view is then definitional, a rule stated about `◇A`
+applies to `¬□¬A` under `rw` and `simp only` with no view step, and the rows for the defined
+operators leave the table. It is rejected on a measurement at L. With reducible `neg`, `and` and
+`diamond`, the clause lemma `imp_iff` of the primitive rewrites a conjunction before `and_iff`
+can, `and_iff` is reported unused, and the normal form of the `truth_norm` simp set changes; an
+implication into `⊥` is also indistinguishable from a negation. The size of that change over the
+library is unmeasured: measuring it takes a whole-library build with the reducible definitions
+in place.
+
 **The semantic tier is a separate mode.** It has its own directory, its own tactic names, its own
 guide and its own tests, and it registers nothing on derivation-tier syntax. Its code is placed
 by what it is:

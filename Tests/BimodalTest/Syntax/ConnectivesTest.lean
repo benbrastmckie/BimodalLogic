@@ -57,28 +57,51 @@ instance : HasSnce Toy := ⟨.snce⟩
 
 /-! Generated in dependency order: each definition mentions only names above it. -/
 
+/-- `Sig.neg` generated at `Toy`. -/
 def Toy.neg (φ : Toy) : Toy := sig% Sig.neg φ
+/-- `Sig.top` generated at `Toy`. -/
 def Toy.top : Toy := sig% Sig.top
+/-- `Sig.and` generated at `Toy`. -/
 def Toy.and (φ ψ : Toy) : Toy := sig% Sig.and φ ψ
+/-- `Sig.or` generated at `Toy`. -/
 def Toy.or (φ ψ : Toy) : Toy := sig% Sig.or φ ψ
+/-- `Sig.diamond` generated at `Toy`. -/
 def Toy.diamond (φ : Toy) : Toy := sig% Sig.diamond φ
+/-- `Sig.dstab` generated at `Toy`. -/
 def Toy.dstab (φ : Toy) : Toy := sig% Sig.dstab φ
+/-- `Sig.someFuture` generated at `Toy`. -/
 def Toy.someFuture (φ : Toy) : Toy := sig% Sig.someFuture φ
+/-- `Sig.allFuture` generated at `Toy`. -/
 def Toy.allFuture (φ : Toy) : Toy := sig% Sig.allFuture φ
+/-- `Sig.kPlus` generated at `Toy`. -/
 def Toy.kPlus (φ : Toy) : Toy := sig% Sig.kPlus φ
+/-- `Sig.after` generated at `Toy`. -/
 def Toy.after (φ ψ : Toy) : Toy := sig% Sig.after φ ψ
+/-- `Sig.next` generated at `Toy`. -/
 def Toy.next (φ : Toy) : Toy := sig% Sig.next φ
+/-- `Sig.somePast` generated at `Toy`. -/
 def Toy.somePast (φ : Toy) : Toy := sig% Sig.somePast φ
+/-- `Sig.allPast` generated at `Toy`. -/
 def Toy.allPast (φ : Toy) : Toy := sig% Sig.allPast φ
+/-- `Sig.kMinus` generated at `Toy`. -/
 def Toy.kMinus (φ : Toy) : Toy := sig% Sig.kMinus φ
+/-- `Sig.prev` generated at `Toy`. -/
 def Toy.prev (φ : Toy) : Toy := sig% Sig.prev φ
+/-- `Sig.always` generated at `Toy`. -/
 def Toy.always (φ : Toy) : Toy := sig% Sig.always φ
+/-- `Sig.sometimes` generated at `Toy`. -/
 def Toy.sometimes (φ : Toy) : Toy := sig% Sig.sometimes φ
+/-- `Sig.inclusiveUntil` generated at `Toy`. -/
 def Toy.inclusiveUntil (g ev : Toy) : Toy := sig% Sig.inclusiveUntil g ev
+/-- `Sig.release` generated at `Toy`. -/
 def Toy.release (φ ψ : Toy) : Toy := sig% Sig.release φ ψ
+/-- `Sig.weakUntil` generated at `Toy`. -/
 def Toy.weakUntil (φ ψ : Toy) : Toy := sig% Sig.weakUntil φ ψ
+/-- `Sig.inclusiveSince` generated at `Toy`. -/
 def Toy.inclusiveSince (g ev : Toy) : Toy := sig% Sig.inclusiveSince g ev
+/-- `Sig.trigger` generated at `Toy`. -/
 def Toy.trigger (φ ψ : Toy) : Toy := sig% Sig.trigger φ ψ
+/-- `Sig.weakSince` generated at `Toy`. -/
 def Toy.weakSince (φ ψ : Toy) : Toy := sig% Sig.weakSince φ ψ
 
 /-! ## A toy language over primitive tenses -/
@@ -95,10 +118,15 @@ instance : HasImp Tense := ⟨.imp⟩
 instance : HasAllFuture Tense := ⟨.allFuture⟩
 instance : HasAllPast Tense := ⟨.allPast⟩
 
+/-- `Sig.neg` generated at `Tense`. -/
 def Tense.neg (φ : Tense) : Tense := sig% Sig.neg φ
+/-- `Sig.and` generated at `Tense`. -/
 def Tense.and (φ ψ : Tense) : Tense := sig% Sig.and φ ψ
+/-- `Sig.someFuture'` generated at `Tense`. -/
 def Tense.someFuture' (φ : Tense) : Tense := sig% Sig.someFuture' φ
+/-- `Sig.somePast'` generated at `Tense`. -/
 def Tense.somePast' (φ : Tense) : Tense := sig% Sig.somePast' φ
+/-- `Sig.always'` generated at `Tense`. -/
 def Tense.always' (φ : Tense) : Tense := sig% Sig.always' φ
 
 /-! ## Literal bodies
@@ -433,6 +461,7 @@ error: sig%: `FormalSystem.Syntax.Sig.neg` survives in the generated body
 Define `BimodalTest.Syntax.ConnectivesTest.Bare.neg` before this definition.
 -/
 #guard_msgs in
+/-- Rejected: `Bare.neg` is not yet defined. -/
 def Bare.and (φ ψ : Bare) : Bare := sig% Sig.and φ ψ
 
 /-- A per-language `neg` that is not the signature's. -/
@@ -444,6 +473,7 @@ error: sig%: `BimodalTest.Syntax.ConnectivesTest.Bare.neg` exists but does not a
   Sig.neg φ
 -/
 #guard_msgs in
+/-- Rejected: `Bare.neg` disagrees with `Sig.neg`. -/
 def Bare.or (φ ψ : Bare) : Bare := sig% Sig.or φ ψ
 
 -- Not an application of a signature operator: a variable, and a per-language definition.
@@ -452,6 +482,7 @@ error: sig%: not an application of a signature operator:
   φ
 -/
 #guard_msgs in
+/-- Rejected: the body is a variable. -/
 def Bare.id (φ : Bare) : Bare := sig% φ
 
 /--
@@ -459,6 +490,7 @@ error: sig%: not an application of a signature operator:
   φ.neg
 -/
 #guard_msgs in
+/-- Rejected: the body applies a per-language definition. -/
 def Bare.neg' (φ : Bare) : Bare := sig% Bare.neg φ
 
 end BimodalTest.Syntax.ConnectivesTest

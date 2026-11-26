@@ -45,7 +45,7 @@ of `¬P ∧ ¬(⊤ S ¬P)`, exactly as `kplusFormula` (`PriorINF.lean:121`) is `
 * `kminusPred` / `kminusPred_eval` — the same at `TemporalPred` level; mirrors
   `kplusPred` / `kplusPred_eval` (`KPlusFaithfulRendering.lean:112`, `:114`).
 * `kminusOpenPred` / `kminusOpenPred_eval` — the **sources'** `K⁻` at `TemporalPred` level, on
-  `Formula.kMinus` (`Syntax/Formula.lean:210`); mirrors `kplusOpenPred` / `kplusOpenPred_eval`.
+  `Formula.kMinus` (`Syntax/Formula.lean`); mirrors `kplusOpenPred` / `kplusOpenPred_eval`.
 * `HasDedekindSUP.last_occ_tp` and `HasFaithfulDedekindSUP.last_occ_tp` — the `TemporalPred`-level
   wrappers of the two past carriers, following the pattern of `HasAttainedSUP.last_occ_tp`
   (`EANegationFix/BoundedFix.lean:72`) and `HasAttainedINF.first_occ_tp`
@@ -187,14 +187,14 @@ theorem kminusPred_eval {sig : MonadicSignature}
 
 /-- **The sources' `K⁻(P)` as a point type.** Mirror of `kplusOpenPred`
     (`KPlusFaithfulRendering.lean`), and, like it, needing no new formula: `Formula.kMinus`
-    (`Syntax/Formula.lean:210`) is `(snce P.neg ⊤).neg`, Reynolds' `¬S(⊤,¬P)` letter for letter
+    (`Syntax/Formula.lean`) is `(snce P.neg ⊤).neg`, Reynolds' `¬S(⊤,¬P)` letter for letter
     (abbreviation table §1, printed p.168).
 
     ADAPTED-FROM `kminusPred` above, which is pinned at `kminusFormula` and so carries this
     tree's extra `¬P(t)` conjunct. What changed: the conjunct is gone. Rabinovich 2014, PDF p.3,
     Definition (2): *"`K−(F)` holds at a moment `t` iff `t = sup({t′ | t′ < t and F holds at
     t′})`"* — nothing there constrains the point of evaluation. `Formula.kPlus`
-    (`Syntax/Formula.lean:189`) carries the standing name-collision warning; `kMinus` shares it. -/
+    (`Syntax/Formula.lean:197`) carries the standing name-collision warning; `kMinus` shares it. -/
 def kminusOpenPred (P : TemporalPred) : TemporalPred := ⟨Formula.kMinus P.formula⟩
 
 /-- `kminusOpenPred` evaluates to the sources' semantic `K⁻`, via the bridge lemma

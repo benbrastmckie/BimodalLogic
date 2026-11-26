@@ -49,7 +49,7 @@ operator. **Neither source's `K⁺` carries a `¬A` conjunct at the point of eva
 true is that *this tree's* `kplus` (`PriorINF.lean:114`) does carry one, and so is strictly
 stronger than the operator either paper defines; read through `kplus`, the left-to-right direction
 of the biconditional acquires a `¬P₁(z₀)` obligation the source's own `K⁺` never had. The tree's
-source-exact spellings are `Formula.kPlus` (`Syntax/Formula.lean:181`, with the name-collision
+source-exact spellings are `Formula.kPlus` (`Syntax/Formula.lean:205`, with the name-collision
 warning at `:163-179`) and, at the `Prop` level, `kplusOpen` (`Kamp/KPlusFaithful.lean`).
 
 In Rabinovich's Lemma 5.3 the infimum is in any case always taken at a point of the negation chain

@@ -356,7 +356,7 @@
       "group": "Inspection-only residue",
       "keyword_line": 232,
       "name": "FormalSystem.Semantics.TruthAt",
-      "span_end": 279,
+      "span_end": 274,
       "span_start": 165,
       "status": "resolved"
     },

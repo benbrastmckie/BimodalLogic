@@ -15,7 +15,7 @@ graph itself, with its exceptions drawn rather than described, is in
 | 3 | `Metalogic/`, `Automation/` | Soundness, completeness, compactness, decidability; tactics and proof search |
 | 2 | `Theorems/` | Derived object-logic theorems |
 | 1 | `Semantics/` | `TaskFrame`, `ConvexHistory`, `TaskModel`, `TruthAt`, validity |
-| 0 | `Syntax/`, `ProofSystem/`, `ForMathlib/`, `Init.lean`, `Tactic/`, `Version.lean` | Formulas, axioms, derivations; the shared preamble and the library's attribute declarations |
+| 0 | `Syntax/`, `ProofSystem/`, `ForMathlib/`, `Init.lean`, `Tactic/`, `Version.lean` | Formulas, axioms, derivations; the connective signature (`Syntax/Connectives.lean`), which every formula type instantiates and the truth-clause classes and operator recognition read; the shared preamble and the library's attribute declarations |
 | 0, 1, 3 — **per file** | `MinusLanguage/`, `PlusLanguage/`, `StarLanguage/`, `OpenLanguage/`, `HybridLanguage/`, `QuantLanguage/`, `SourceLanguage/` | One object language each, syntax through semantics (`OpenLanguage/`, `HybridLanguage/`, `QuantLanguage/` and `SourceLanguage/` are semantic only: they have no proof system); [layered file by file](#the-extension-language-directories-are-layered-per-file) |
 
 Every module under `FormalSystem/` has a layer. `layer_of` in
