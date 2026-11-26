@@ -36,9 +36,9 @@ run_meta do
         let some fact ← judgment? (← inferType parameters.back!)
           | throwError "{rule}: the fact is not last"
         unless result.language == language do throwError "{rule}: wrong language"
-        unless (← operatorArgs? language row.source 1 fact.formula).isSome do
+        unless (← operatorArgs? language.formulaType row.source 1 fact.formula).isSome do
           throwError "{rule}: wrong source"
-        let some body ← operatorArgs? language row.target 1 result.formula
+        let some body ← operatorArgs? language.formulaType row.target 1 result.formula
           | throwError "{rule}: wrong target"
         unless ← isDefEq body[0]! fact.formula do throwError "{rule}: the fact is not kept"
         let framed ← parameters.anyM fun parameter => return (← inferType parameter).isAppOf ``LE.le

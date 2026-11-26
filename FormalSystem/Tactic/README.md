@@ -11,7 +11,7 @@ dependency.
 |------|------:|-------------|
 | `Attr.lean` | 104 | Every attribute and named simp set the library uses: `truth_norm`, `reflect_time_norm`, `formula_unfold`, `formula_fold`, `@[tmLemma]` |
 | `FormulaPositions.lean` | 192 | Formula occurrence selection, path polarity and scope planning |
-| `FormulaSyntax.lean` | 122 | Checked TM and TM⁺ formula operator names and matching |
+| `FormulaSyntax.lean` | 132 | Operator recognition through the connective signature at any formula type; operator building for TM and TM⁺ |
 | `FormulaViews.lean` | 128 | The named formula equality table and `lunfold` / `lfold` |
 | `Meta.lean` | 118 | Shared `MetaM` plumbing for derivability goals: goal recognition, head-symbol readers, context rebuilding |
 | `TemporalFormulaViews.lean` | 46 | Named interval and dual views for TM and TM⁺ |

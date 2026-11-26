@@ -78,7 +78,7 @@ def scopedGuarantees (judgment : Judgment) (operator : Name)
   match terms with
   | none =>
     for formula in ← contextEntries judgment.context do
-      if (← operatorArgs? judgment.language operator 1 formula).isSome then
+      if (← operatorArgs? judgment.language.formulaType operator 1 formula).isSome then
         proofs := proofs.push (← assumptionProof judgment formula)
   | some terms =>
     for term in terms do
@@ -86,7 +86,7 @@ def scopedGuarantees (judgment : Judgment) (operator : Name)
   for proof in proofs do
     let some source ← judgment? (← inferType proof)
       | throwError "expected a native derivation"
-    unless (← operatorArgs? judgment.language operator 1 source.formula).isSome do
+    unless (← operatorArgs? judgment.language.formulaType operator 1 source.formula).isSome do
       throwError "selected guarantee must have the matching {operatorSymbol operator} scope"
   return proofs
 
@@ -97,13 +97,13 @@ def introduceScopeFromProofs (operator rule : Name) (parameters proofs : Array E
     (names : Array Syntax) : TacticM Unit := withMainContext do
   let goal ← getMainGoal
   let judgment ← requireJudgment goal
-  let some goalArgs ← operatorArgs? judgment.language operator 1 judgment.formula
+  let some goalArgs ← operatorArgs? judgment.language.formulaType operator 1 judgment.formula
     | throwError "the goal does not have the requested universal modality"
   let mut formulas : Array Expr := #[]
   for proof in proofs do
     let some source ← judgment? (← inferType proof)
       | throwError "expected a native derivation"
-    let some args ← operatorArgs? judgment.language operator 1 source.formula
+    let some args ← operatorArgs? judgment.language.formulaType operator 1 source.formula
       | throwError "selected guarantee does not have the requested modality"
     formulas := formulas.push args[0]!
   unless names.isEmpty || names.size == formulas.size do
@@ -143,11 +143,12 @@ private def modalUse (term : Syntax) (name : Option Name) : TacticM Unit := with
   let judgment ← requireJudgment goal
   let proof ← adaptProof (← elaborateProof term) judgment
   let some source ← judgment? (← inferType proof) | throwError "expected a derivation"
-  let (operator, args) ← match ← operatorArgs? judgment.language `box 1 source.formula with
+  let (operator, args) ←
+    match ← operatorArgs? judgment.language.formulaType `box 1 source.formula with
     | some args => pure (`modal_t, args)
     | none =>
       if judgment.language == .plus then
-        match ← operatorArgs? judgment.language `stab 1 source.formula with
+        match ← operatorArgs? judgment.language.formulaType `stab 1 source.formula with
         | some args => pure (`stab_t, args)
         | none => throwError "lmodal_use expected necessity or settledness"
       else throwError "lmodal_use expected necessity"
@@ -175,7 +176,7 @@ private def introducePossibility (settled : Bool) : TacticM Unit := withMainCont
   let operator := if settled then `dstab else `diamond
   if settled && judgment.language != .plus then
     throwError "settled possibility requires TM⁺"
-  let some _ ← operatorArgs? judgment.language operator 1 judgment.formula
+  let some _ ← operatorArgs? judgment.language.formulaType operator 1 judgment.formula
     | throwError "possibility introduction expected an object possibility goal"
   let ruleName := if settled then
       ``FormalSystem.PlusLanguage.ProofMode.settledPossibilityIntro
@@ -190,25 +191,25 @@ private def possibilityCases (term : Syntax) (selected : Option (Array Syntax))
   let goal ← getMainGoal
   let judgment ← requireJudgment goal
   let (scope, operator, conclusion) ←
-    match ← operatorArgs? judgment.language `diamond 1 judgment.formula with
+    match ← operatorArgs? judgment.language.formulaType `diamond 1 judgment.formula with
     | some args => pure (Scope.necessity, `diamond, args)
     | none =>
       if judgment.language != .plus then
         throwError "possibility cases require a possibility conclusion"
-      let some args ← operatorArgs? judgment.language `dstab 1 judgment.formula
+      let some args ← operatorArgs? judgment.language.formulaType `dstab 1 judgment.formula
         | throwError "possibility cases require a possibility conclusion"
       pure (Scope.settled, `dstab, args)
   let eventProof ← adaptProof (← elaborateProof term) judgment
   let some source ← judgment? (← inferType eventProof)
     | throwError "expected a native derivation"
-  let some event ← operatorArgs? judgment.language operator 1 source.formula
+  let some event ← operatorArgs? judgment.language.formulaType operator 1 source.formula
     | throwError "expected a possibility derivation"
   let guarantees ← scopedGuarantees judgment scope.operator selected
   let mut formulas : Array Expr := #[]
   for guarantee in guarantees do
     let some source ← judgment? (← inferType guarantee)
       | throwError "expected a native derivation"
-    let some args ← operatorArgs? judgment.language scope.operator 1 source.formula
+    let some args ← operatorArgs? judgment.language.formulaType scope.operator 1 source.formula
       | throwError "selected guarantee must have the matching modal scope"
     formulas := formulas.push args[0]!
   unless names.size == formulas.size + 1 do

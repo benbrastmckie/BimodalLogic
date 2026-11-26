@@ -10,6 +10,7 @@ import BimodalTest.Syntax.FormulaPropertyTest
 import BimodalTest.Syntax.LanguageDerivationTest
 import BimodalTest.Syntax.SentenceTranslationTest
 import BimodalTest.Syntax.ConnectivesTest
+import BimodalTest.Syntax.FormulaSyntaxTest
 import BimodalTest.ProofSystem.AxiomsTest
 import BimodalTest.ProofSystem.DerivationTest
 import BimodalTest.ProofSystem.DerivationPropertyTest

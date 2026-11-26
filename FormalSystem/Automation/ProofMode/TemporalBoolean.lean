@@ -45,11 +45,12 @@ private def progress (terms : Array Syntax) : TacticM Unit := withMainContext do
   let judgment ← requireJudgment goal
   let first ← adaptProof (← elaborateProof terms[0]!) judgment
   let second ← adaptProof (← elaborateProof terms[1]!) judgment
-  let name ← if (← operatorArgs? judgment.language `allFuture 1 judgment.formula).isSome then
+  let type := judgment.language.formulaType
+  let name ← if (← operatorArgs? type `allFuture 1 judgment.formula).isSome then
       pure (judgment.language.ruleName
         ``FormalSystem.Theorems.ProofMode.progressTrans
         ``FormalSystem.PlusLanguage.ProofMode.progressTrans)
-    else if (← operatorArgs? judgment.language `allPast 1 judgment.formula).isSome then
+    else if (← operatorArgs? judgment.language.formulaType `allPast 1 judgment.formula).isSome then
       pure (judgment.language.ruleName
         ``FormalSystem.Theorems.ProofMode.pastProgressTrans
         ``FormalSystem.PlusLanguage.ProofMode.pastProgressTrans)
@@ -65,13 +66,13 @@ private structure LeadsTo where
 
 private def leadsTo? (judgment : Judgment) (formula : Expr) : MetaM (Option LeadsTo) := do
   let read (persistent past : Bool) (body : Expr) : MetaM (Option LeadsTo) := do
-    let some imp ← operatorArgs? judgment.language `imp 2 body | return none
+    let some imp ← operatorArgs? judgment.language.formulaType `imp 2 body | return none
     let eventual := if past then `somePast else `someFuture
-    let some target ← operatorArgs? judgment.language eventual 1 imp[1]! | return none
+    let some target ← operatorArgs? judgment.language.formulaType eventual 1 imp[1]! | return none
     return some ⟨persistent, past, imp[0]!, target[0]!⟩
-  if let some body ← operatorArgs? judgment.language `allFuture 1 formula then
+  if let some body ← operatorArgs? judgment.language.formulaType `allFuture 1 formula then
     if let some result ← read true false body[0]! then return result
-  if let some body ← operatorArgs? judgment.language `allPast 1 formula then
+  if let some body ← operatorArgs? judgment.language.formulaType `allPast 1 formula then
     if let some result ← read true true body[0]! then return result
   if let some result ← read false false formula then return result
   read false true formula
@@ -94,7 +95,7 @@ private def progressCasesGoal : TacticM Unit := withMainContext do
   let judgment ← requireJudgment goal
   let shape ← requireLeadsTo judgment judgment.formula
   unless shape.persistent do throwError "lprogress cases expects a persistent G/H leads-to goal"
-  let some cases ← operatorArgs? judgment.language `or 2 shape.source
+  let some cases ← operatorArgs? judgment.language.formulaType `or 2 shape.source
     | throwError "lprogress cases expects a disjunctive source"
   let target ← eventually judgment shape.past shape.target
   let first ← temporalPremiseGoal judgment (← scopedImp judgment shape.past cases[0]! target)

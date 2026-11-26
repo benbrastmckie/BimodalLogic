@@ -138,7 +138,7 @@ def readRewriteEvidence (proof : Expr) : MetaM RewriteEvidence := do
       throwError "rewrite rule has an undetermined conclusion; supply its formula parameters"
     let mut next := none
     for operator in scopeOperators j.language do
-      if let some args ← rigidOperatorArgs? j.language operator 1 current then
+      if let some args ← rigidOperatorArgs? j.language.formulaType operator 1 current then
         next := some (operator, args[0]!)
         break
     match next with
@@ -147,9 +147,9 @@ def readRewriteEvidence (proof : Expr) : MetaM RewriteEvidence := do
       current := body
     | none => break
   let iffState ← saveState
-  if let some args ← rigidOperatorArgs? j.language `and 2 current then
-    if let some lhs ← rigidOperatorArgs? j.language `imp 2 args[0]! then
-      if let some rhs ← rigidOperatorArgs? j.language `imp 2 args[1]! then
+  if let some args ← rigidOperatorArgs? j.language.formulaType `and 2 current then
+    if let some lhs ← rigidOperatorArgs? j.language.formulaType `imp 2 args[0]! then
+      if let some rhs ← rigidOperatorArgs? j.language.formulaType `imp 2 args[1]! then
         let sourceMVars ← getMVars current
         let converse ← isDefEq lhs[0]! rhs[1]!
         let converse := converse && (← isDefEq lhs[1]! rhs[0]!)
@@ -157,7 +157,7 @@ def readRewriteEvidence (proof : Expr) : MetaM RewriteEvidence := do
         if converse && !changed then
           return ⟨proof, j, word, lhs[0]!, lhs[1]!, true⟩
   iffState.restore
-  let some args ← rigidOperatorArgs? j.language `imp 2 current
+  let some args ← rigidOperatorArgs? j.language.formulaType `imp 2 current
     | throwError "expected an implication or a conjunction of converse implications"
   return ⟨proof, j, word, args[0]!, args[1]!, false⟩
 

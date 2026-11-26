@@ -32,7 +32,7 @@ private def start (names : Array Syntax) : TacticM Unit := withMainContext do
 private def introduce (name : Name) : TacticM Unit := withMainContext do
   let goal ← getMainGoal
   let judgment ← requireJudgment goal
-  let some args ← operatorArgs? judgment.language `imp 2 judgment.formula
+  let some args ← operatorArgs? judgment.language.formulaType `imp 2 judgment.formula
     | throwError "lintro expected an object-language implication"
   let type ← mkConstWithFreshMVarLevels <| judgment.language.ruleName
     ``FormalSystem.Metalogic.Core.deductionTheorem
@@ -79,7 +79,7 @@ def applyDerivationProof (proof : Expr) (firstNewIndex : Nat) : TacticM Unit := 
     if ← isDefEq conclusion judgment.formula then
       matched := true
       break
-    let some args ← operatorArgs? judgment.language `imp 2 conclusion
+    let some args ← operatorArgs? judgment.language.formulaType `imp 2 conclusion
       | throwError "lapply conclusion does not match the goal"
     antecedents := antecedents.push args[0]!
     conclusion := args[1]!
@@ -132,7 +132,7 @@ private def applyProof (term : Syntax) : TacticM Unit := withMainContext do
 private def splitConjunction : TacticM Unit := withMainContext do
   let goal ← getMainGoal
   let judgment ← requireJudgment goal
-  let some _ ← operatorArgs? judgment.language `and 2 judgment.formula
+  let some _ ← operatorArgs? judgment.language.formulaType `and 2 judgment.formula
     | throwError "lsplit expected an object-language conjunction"
   let rule ← mkConstWithFreshMVarLevels <| judgment.language.ruleName
     ``FormalSystem.Theorems.Combinators.andIntro
@@ -171,7 +171,7 @@ private def casesProof (term : Syntax) (leftName rightName : Name) : TacticM Uni
   let judgment ← requireJudgment goal
   let proof ← adaptProof (← elaborateProof term) judgment
   let some source ← judgment? (← inferType proof) | throwError "expected a derivation"
-  if let some _ ← operatorArgs? judgment.language `and 2 source.formula then
+  if let some _ ← operatorArgs? judgment.language.formulaType `and 2 source.formula then
     let left ← mkAppM (judgment.language.ruleName
       ``FormalSystem.Theorems.ProofMode.andFst
       ``FormalSystem.PlusLanguage.ProofMode.andFst) #[proof]
@@ -180,7 +180,7 @@ private def casesProof (term : Syntax) (leftName rightName : Name) : TacticM Uni
       ``FormalSystem.PlusLanguage.ProofMode.andSnd) #[proof]
     let goal ← nameProof goal leftName left
     replaceMainGoal [← nameProof goal rightName right]
-  else if let some args ← operatorArgs? judgment.language `or 2 source.formula then
+  else if let some args ← operatorArgs? judgment.language.formulaType `or 2 source.formula then
     let leftContext ← mkAppM ``List.cons #[args[0]!, judgment.context]
     let rightContext ← mkAppM ``List.cons #[args[1]!, judgment.context]
     let left ← mkFreshExprSyntheticOpaqueMVar
@@ -203,7 +203,7 @@ private def casesProof (term : Syntax) (leftName rightName : Name) : TacticM Uni
 private def introduceDisjunction (left : Bool) : TacticM Unit := withMainContext do
   let goal ← getMainGoal
   let judgment ← requireJudgment goal
-  let some _ ← operatorArgs? judgment.language `or 2 judgment.formula
+  let some _ ← operatorArgs? judgment.language.formulaType `or 2 judgment.formula
     | throwError "expected an object disjunction"
   let ruleName := if left then judgment.language.ruleName
       ``FormalSystem.Theorems.Propositional.orIntroL

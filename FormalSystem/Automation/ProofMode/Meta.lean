@@ -21,7 +21,7 @@ namespace FormalSystem.Automation.ProofMode
 open Lean Meta Elab Tactic
 
 export FormalSystem.Tactic.FormulaSyntax
-  (formulaApp operatorArgs? rigidOperatorArgs?)
+  (formulaApp operatorArgs? rigidOperatorArgs? operatorConst)
 
 open FormalSystem.Tactic.FormulaSyntax (Language)
 
@@ -188,7 +188,7 @@ def elaborateProof (term : Syntax) : TacticM Expr :=
 
 /-- Apply the native modus-ponens constructor to two derivations. -/
 def modusPonens (judgment : Judgment) (implication premise : Expr) : MetaM Expr := do
-  let some args ← operatorArgs? judgment.language `imp 2
+  let some args ← operatorArgs? judgment.language.formulaType `imp 2
       (← proofJudgment implication).formula
     | throwError "expected an object-language implication"
   mkAppM (← judgment.language.derivationRule `modus_ponens)

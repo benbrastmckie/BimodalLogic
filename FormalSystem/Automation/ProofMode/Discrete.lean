@@ -64,7 +64,7 @@ private def invariant (past : Bool) : TacticM Unit :=
       ``FormalSystem.Theorems.ProofMode.forwardInvariant
       ``FormalSystem.PlusLanguage.ProofMode.forwardInvariant
   let operator := if past then `allPast else `allFuture
-  let some args ← operatorArgs? judgment.language operator 1 judgment.formula
+  let some args ← operatorArgs? judgment.language.formulaType operator 1 judgment.formula
     | throwError "invariance requires the matching universal temporal goal"
   let rule ← mkAppOptM rule
     #[some judgment.frame, some judgment.context, some args[0]!, some frame]
@@ -77,7 +77,7 @@ private def induction (past : Bool) : TacticM Unit := withMainContext do
   let judgment ← requireJudgment goal
   let (universal, existential) := if past then (`allPast, `somePast)
     else (`allFuture, `someFuture)
-  let some args ← operatorArgs? judgment.language universal 1 judgment.formula
+  let some args ← operatorArgs? judgment.language.formulaType universal 1 judgment.formula
     | throwError "induction requires the matching universal temporal goal"
   let (frame, sideGoals) ← integerTimeGate judgment
   let whole ← formulaApp judgment.language universal #[args[0]!]

@@ -73,7 +73,7 @@ def positionChildren (language : Language) (formula : Expr) : MetaM (Array Formu
   let formula ← instantiateMVars formula
   let read (formula : Expr) : MetaM (Array FormulaPosition) := do
     for operator in operators do
-      if formula.getAppFn.constName? == some (← language.operatorName operator) then
+      if formula.getAppFn.constName? == some (← operatorConst language.formulaType operator) then
         let arguments := formula.getAppArgs
         let names := positionNames operator
         if arguments.size == names.size then
@@ -131,7 +131,7 @@ def formulaOccurrences (language : Language) (formula : Expr)
 
 /-- Applied formula heads the planner cannot traverse. Atoms take a data argument. -/
 def stoppedWrappers (language : Language) (formula : Expr) : MetaM (Array Name) := do
-  let atom ← language.operatorName `atom
+  let atom ← operatorConst language.formulaType `atom
   let mut result := #[]
   for occurrence in ← formulaOccurrences language formula do
     let term := occurrence.formula
@@ -147,14 +147,14 @@ partial def primitiveSize (language : Language) (formula : Expr)
   let formula ← whnf (← instantiateMVars formula)
   let name := formula.getAppFn.constName?
   for (operator, arity) in #[(`imp, 2), (`box, 1), (`untl, 2), (`snce, 2)] do
-    if name == some (← language.operatorName operator) then
+    if name == some (← operatorConst language.formulaType operator) then
       let mut size := 1
       for argument in formula.getAppArgs[:arity] do
         size := size + (← primitiveSize language argument (fuel - 1))
         if size > fuel then throwError "formula size calculation exceeded {fuel} constructors"
       return size
   if language == .plus then
-    if name == some (← language.operatorName `stab) then
+    if name == some (← operatorConst language.formulaType `stab) then
       return 1 + (← primitiveSize language formula.getAppArgs[0]! (fuel - 1))
   return 1
 

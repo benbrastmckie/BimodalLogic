@@ -64,7 +64,7 @@ def carryRule? (judgment : Judgment) (target : Name) (formula : Expr) :
     MetaM (Option CarryRule) :=
   carryRules.findM? fun row => do
     if row.target != target then return false
-    return (← operatorArgs? judgment.language row.source 1 formula).isSome
+    return (← operatorArgs? judgment.language.formulaType row.source 1 formula).isSome
 
 /-- Elaborate the `keeping` facts and apply the carrying rule of each at the target scope. Framed
 rules use the caller's integer-time certificate. -/

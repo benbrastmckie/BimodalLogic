@@ -71,9 +71,9 @@ private def existentialOperator (scope : Scope) : Name :=
   | _ => `somePast
 
 private def temporalGoal (judgment : Judgment) : MetaM (Scope × Expr) := do
-  if let some args ← operatorArgs? judgment.language `someFuture 1 judgment.formula then
+  if let some args ← operatorArgs? judgment.language.formulaType `someFuture 1 judgment.formula then
     return (.future, args[0]!)
-  if let some args ← operatorArgs? judgment.language `somePast 1 judgment.formula then
+  if let some args ← operatorArgs? judgment.language.formulaType `somePast 1 judgment.formula then
     return (.past, args[0]!)
   throwError "expected a strict future or past eventuality goal"
 
@@ -148,7 +148,7 @@ private def eventualityCases (bind : Bool) (term : Syntax)
   let (scope, conclusion) ← temporalGoal judgment
   let eventProof ← adaptProof (← elaborateProof term) judgment
   let source ← proofJudgment eventProof
-  let some eventArgs ← operatorArgs? judgment.language (existentialOperator scope) 1
+  let some eventArgs ← operatorArgs? judgment.language.formulaType (existentialOperator scope) 1
       source.formula
     | throwError "the selected eventuality has the wrong time direction"
   let selectedProofs ← scopedGuarantees judgment scope.operator selected
@@ -157,7 +157,7 @@ private def eventualityCases (bind : Bool) (term : Syntax)
   let mut formulas : Array Expr := #[]
   for guarantee in guarantees do
     let source ← proofJudgment guarantee
-    let some args ← operatorArgs? judgment.language scope.operator 1 source.formula
+    let some args ← operatorArgs? judgment.language.formulaType scope.operator 1 source.formula
       | throwError "selected guarantee must have the matching universal time scope"
     formulas := formulas.push args[0]!
   unless names.size == formulas.size + 1 do
@@ -214,16 +214,17 @@ private def temporalUse (term : Syntax) : TacticM Unit := withMainContext do
   let mapping ← adaptProof (← elaborateProof term) judgment
   let source ← proofJudgment mapping
   let (scope, mappingArgs) ←
-    match ← operatorArgs? judgment.language `allFuture 1 source.formula with
+    match ← operatorArgs? judgment.language.formulaType `allFuture 1 source.formula with
     | some args => pure (Scope.future, args)
     | none =>
-      match ← operatorArgs? judgment.language `allPast 1 source.formula with
+      match ← operatorArgs? judgment.language.formulaType `allPast 1 source.formula with
       | some args => pure (Scope.past, args)
       | none => throwError "ltemporal_use requires a universally scoped implication"
-  let some implicationArgs ← operatorArgs? judgment.language `imp 2 mappingArgs[0]!
+  let some implicationArgs ← operatorArgs? judgment.language.formulaType `imp 2 mappingArgs[0]!
     | throwError "ltemporal_use requires an implication inside its time scope"
-  let universal ← operatorArgs? judgment.language scope.operator 1 judgment.formula
-  let eventual ← operatorArgs? judgment.language (existentialOperator scope) 1 judgment.formula
+  let universal ← operatorArgs? judgment.language.formulaType scope.operator 1 judgment.formula
+  let eventual ← operatorArgs? judgment.language.formulaType (existentialOperator scope) 1
+    judgment.formula
   let (operator, conclusion) ← match universal, eventual with
     | some args, _ => pure (scope.operator, args[0]!)
     | _, some args => pure (existentialOperator scope, args[0]!)
@@ -271,13 +272,13 @@ private def binaryTemporal (past guard : Bool) (term : Syntax) : TacticM Unit :=
   let judgment ← requireJudgment goal
   let operator := if past then `snce else `untl
   let scopeOperator := if past then `allPast else `allFuture
-  let some goalArgs ← operatorArgs? judgment.language operator 2 judgment.formula
+  let some goalArgs ← operatorArgs? judgment.language.formulaType operator 2 judgment.formula
     | throwError "expected the corresponding Until or Since goal"
   let mapping ← adaptProof (← elaborateProof term) judgment
   let source ← proofJudgment mapping
-  let some scopeArgs ← operatorArgs? judgment.language scopeOperator 1 source.formula
+  let some scopeArgs ← operatorArgs? judgment.language.formulaType scopeOperator 1 source.formula
     | throwError "monotonicity requires an implication in the matching time scope"
-  let some implicationArgs ← operatorArgs? judgment.language `imp 2 scopeArgs[0]!
+  let some implicationArgs ← operatorArgs? judgment.language.formulaType `imp 2 scopeArgs[0]!
     | throwError "monotonicity requires a scoped implication"
   let targetIndex := if guard then 0 else 1
   unless ← isDefEq implicationArgs[1]! goalArgs[targetIndex]! do
@@ -305,7 +306,7 @@ private def binaryTemporal (past guard : Bool) (term : Syntax) : TacticM Unit :=
 def binaryArgs (judgment : Judgment) (past : Bool) (formula : Expr) (what : String) :
     MetaM (Expr × Expr) := do
   let (operator, _, _, _) := binaryOperators past
-  let some args ← operatorArgs? judgment.language operator 2 formula
+  let some args ← operatorArgs? judgment.language.formulaType operator 2 formula
     | throwError "{what} expects {if past then "a Since" else "an Until"} formula"
   return (args[0]!, args[1]!)
 
@@ -342,7 +343,7 @@ private partial def reflectView (language : Language) (formula : Expr) : MetaM E
   let formula ← instantiateMVars formula
   let some head := formula.getAppFn.constName? | wrap formula
   for (source, target) in reflectionPairs language do
-    if head == (← language.operatorName source) then
+    if head == (← operatorConst language.formulaType source) then
       return ← formulaApp language target (← formula.getAppArgs.mapM (reflectView language))
   for (source, target) in viewPairs do
     if (← viewHead? source language.formulaNamespace) == some head then
@@ -354,7 +355,7 @@ private partial def reflectView (language : Language) (formula : Expr) : MetaM E
         | throwError "missing reflected formula view {target}"
       return ← mkAppM reflected (← formula.getAppArgs.mapM (reflectView language))
   for fixed in #[`atom, `bot, `top] do
-    if head == (← language.operatorName fixed) then return formula
+    if head == (← operatorConst language.formulaType fixed) then return formula
   wrap formula
 where
   wrap (formula : Expr) : MetaM Expr :=
