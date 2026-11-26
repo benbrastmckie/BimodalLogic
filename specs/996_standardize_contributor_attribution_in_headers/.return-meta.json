@@ -1,0 +1,106 @@
+{
+  "status": "implemented",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 2,
+    "axiom_count": 14,
+    "build_passed": true
+  },
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/996_standardize_contributor_attribution_in_headers/summaries/01_header-attribution-convention-gate-summary.md",
+      "summary": "Joint-Authors convention with an explicit threshold recorded, .mailmap identity map, a new candidate-reporting attribution gate wired as the eleventh check in verify-all.sh and ci.yml, 17 headers backfilled and 10 reviewed waivers."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Recorded the joint-`Authors:` header convention and its attribution threshold in docs/development/LEAN_STYLE_GUIDE.md section 4, added .mailmap plus scripts/check-header-attribution.sh (a candidate-reporting, .mailmap-folded, exclusion-aware, baseline-waivable gate) as the eleventh check in both scripts/verify-all.sh and .github/workflows/ci.yml, relaxed check-copyright-headers.sh's continuation-line predicate to accept Mathlib's real multi-line form, and resolved all 27 live attribution candidates as 17 backfilled joint headers plus 10 reviewed waivers each carrying its measurement. CITATION.cff now names both contributors with release metadata deliberately unbumped, and the scope of the \"attribution is correct\" claim is recorded with its exclusion list.",
+    "roadmap_items": []
+  },
+  "modified_files": [
+    "CONTRIBUTING.md",
+    "docs/development/LEAN_STYLE_GUIDE.md",
+    "scripts/check-copyright-headers.sh",
+    "scripts/check-header-attribution.sh",
+    "scripts/header-attribution-baseline.txt",
+    "scripts/verify-all.sh",
+    "scripts/README.md",
+    ".github/workflows/ci.yml",
+    ".mailmap",
+    "CITATION.cff",
+    ".syncprotect",
+    ".claude/rules/authorship-attribution.md",
+    "FormalSystem/Semantics/TemporalIntervals.lean",
+    "FormalSystem/Semantics/TemporalRules.lean",
+    "FormalSystem/Semantics/RankProgress.lean",
+    "FormalSystem/Semantics/PointTransport.lean",
+    "FormalSystem/Automation/ProofMode/Basic.lean",
+    "FormalSystem/Automation/ProofMode/Temporal.lean",
+    "FormalSystem/Automation/ProofMode/TemporalBoolean.lean",
+    "FormalSystem/Automation/ProofMode/TemporalZTime.lean",
+    "FormalSystem/Tactic/FormulaSyntax.lean",
+    "FormalSystem/PlusLanguage/TemporalViews.lean",
+    "Tests/BimodalTest/Automation/ProofModeCarryingTest.lean",
+    "Tests/BimodalTest/Automation/ProofModeTest.lean",
+    "Tests/BimodalTest/Automation/ProofModeTemporalTest.lean",
+    "Tests/BimodalTest/Automation/ProofModeTemporalBooleanProgressTest.lean",
+    "Tests/BimodalTest/Automation/ProofModeTemporalZTimeTest.lean",
+    "Tests/BimodalTest/Semantics/TemporalRulesTest.lean",
+    "Tests/BimodalTest/Semantics/PointTransportTest.lean",
+    "specs/996_standardize_contributor_attribution_in_headers/plans/01_header-attribution-convention-gate.md",
+    "specs/996_standardize_contributor_attribution_in_headers/summaries/01_header-attribution-convention-gate-summary.md"
+  ],
+  "user_decision": {
+    "blocking": false,
+    "question": "CITATION.cff now names Duve, Tanner in its top-level authors: list per the recorded decision, with version (1.0.0) and date-released (2026-09-07) deliberately left unbumped -- on the grounds that correcting an already-released record's attribution is not itself a release. Confirm that reading, or say if the amended citation record should carry a version bump and a new release date.",
+    "context": "The decision relayed into this dispatch directed adding Tanner Duve and required that whether version/date-released were bumped be decided and recorded rather than left silent. Both are recorded in the summary and in the style guide's scope paragraph. The entry omits email: the only address on record for that identity is a GitHub noreply alias, which is not a contact address. The file remains valid CFF 1.2.0."
+  },
+  "sapience_notes": [
+    {
+      "subject": "git %an is mailmap-blind; only %aN and %aE honour .mailmap",
+      "value": "On git 2.54.0, `git log --format='%an'` ignores .mailmap entirely and `--use-mailmap` does not rescue it; only the capital-letter placeholders %aN/%aE are folded. Measured on a 17831-commit repository: a header-attribution check reading %aN reports 27 candidates out of 1007 files, while the same check reading %an reports 980 -- indistinguishable from no check at all. Any tool comparing a file's recorded author names against git history must use %aN."
+    },
+    {
+      "subject": "A .mailmap cannot express an excluded identity",
+      "value": "A .mailmap can rename and merge author identities but has no 'drop' form by construction, so an identity that should earn no attribution at all (an agent identity, a bot) cannot be handled there and needs a separate exclusion set in the consuming tool. Equally, %aN does not surface Co-Authored-By trailers, so an exclusion set can never be derived from %aN output alone -- it must be stated deliberately."
+    },
+    {
+      "subject": "Attribution checks must report candidates, not verdicts",
+      "value": "git records who authored a commit, not whether that commit merged someone else's pull request or materially edited a file. A name-vs-history comparison therefore cannot produce a verdict. The workable design gates exit status on UNREVIEWED candidates against a stamped waiver baseline (row = path + identity + the file's current author line), so a reviewed-and-declined candidate goes green while any later header edit un-grandfathers the row and re-raises it."
+    },
+    {
+      "subject": "An import-only-diff rule beats an enumerated exemption list",
+      "value": "Barrel/aggregator roots attract commits that only add or reorder imports. Exempting them by a rule -- a committer whose whole +/- footprint on a file is import and blank lines earns no attribution -- clears them without naming them and keeps clearing them as the tree changes. Measured on this repository: the rule cleared 3 of 4 barrel roots automatically; the fourth survived because of one non-import docstring line, which is the honest reason to waive it. The tempting grounds 'its body is just imports' was measured FALSE (27/73/79/297 non-import body lines)."
+    },
+    {
+      "subject": "A near-equal +/- line count is the signature of a mechanical rename sweep",
+      "value": "When judging whether a commit earns authorship credit on a file, a diff whose additions and deletions are nearly equal and whose changed lines differ only in one renamed identifier is a propagation sweep, not authorship. Confirmed by inspecting at -U2 that each apparently-new line has its identical deletion one line up, re-wrapped. On this repository 7 of 24 forward attribution candidates were exactly this and were waived."
+    },
+    {
+      "subject": "A repo-local .claude/ rule can be untracked end to end",
+      "value": "Putting a convention into agent context via a repo-local rule file under .claude/rules/ plus a .syncprotect entry can leave BOTH halves untracked: in this repository /.claude is gitignored at .gitignore:107 and /.syncprotect at .gitignore:83. The route buys mid-dispatch context reach in one working copy and reaches no clone, no CI and no collaborator. Check both paths with git check-ignore before claiming any reach, and keep the durable record in tracked files."
+    },
+    {
+      "subject": "A duplicated expected=N assertion carries more prose than the plan counts",
+      "value": "Adding a check to a verification aggregator that asserts its own check count required five edits, not the three or four a plan predicts: the invocation, the report line, expected=N, AND every prose occurrence of the spelled-out count -- which appeared in four separate places (a PURPOSE line, an exit-code-contract line, a user-facing echo, and an in-comment 'checks 8 to 10' range). Grep for the spelled-out number, not just the numeral."
+    },
+    {
+      "subject": "Lean test libraries outside defaultTargets leave stale oleans after lake build",
+      "value": "In a Lake project where a test library declares srcDir = \"Tests\" and is absent from defaultTargets, a plain `lake build` reports complete success while every touched test module's .olean stays older than its source. Verifying a build covered the files you edited therefore needs a per-module .olean-newer-than-source check plus an explicit `lake build <TestLib>`, not just the success line and a zero error count."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1795656001_ea26db",
+    "agent_type": "lean-implementation-agent",
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "task_dir": "specs/996_standardize_contributor_attribution_in_headers",
+    "compliance_check": "skipped",
+    "phases_completed": 8,
+    "phases_total": 8
+  }
+}

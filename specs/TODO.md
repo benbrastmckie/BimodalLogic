@@ -1,25 +1,25 @@
 ---
-next_project_number: 993
+next_project_number: 1001
 ---
 
 # TODO
 
 ## Task Order
 
-*Updated 2026-11-24. Generated from state.json dependency graph.*
+*Updated 2026-11-26. Generated from state.json dependency graph.*
 
 **Goal**: Close the residual repository-hygiene backlog
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,890,935,960,962,977,986,987,988,989 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
-| 2 | 231,282,296,429,497,763,869,944,954,955,969,984 | 298,428,502,604,761,960,962,977,986,989 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 1 | 178,257,298,428,481,502,570,604,664,713,734,761,831,890,935,960,962,986,988,994,997,999,1000 | -- | algebraic-representation, completeness, dataset-enhancement, ... |
+| 2 | 231,282,296,429,497,763,869,944,954,955,969,995 | 298,428,502,604,761,960,962,986,994 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 410,498,499,500,873,932,945 | 429,497,869,944 | algebraic-representation, decidability, semantics, ... |
 | 4 | 125,411,543,874,875,876,946 | 410,498,499,500,873,945,969 | algebraic-representation, decidability, metalogic, ... |
 | 5 | 430,501,947 | 125,411,946,955 | algebraic-representation, decidability, proof-mode |
 | 6 | 412,949,951,963,965 | 178,430,947,954 | decidability, proof-mode |
-| 7 | 482,950,964 | 412,949,963,987 | decidability, proof-mode |
+| 7 | 482,950,964 | 412,949,963 | decidability, proof-mode |
 | 8 | 177,948 | 178,282,296,481,482,543,950 | formula-refactor, proof-mode |
 | 9 | 952 | 948,951,964 | proof-mode |
 | 10 | 953,956,966,968,974 | 952,962 | proof-mode |
@@ -55,7 +55,7 @@ next_project_number: 993
 
 ### Decidability
 
-428 [BLOCKED] — Engine totality at a quantified branch budget. Owns...
+428 [PLANNED] — Engine totality at a quantified branch budget. Owns...
   └─ 429 [NOT STARTED] — Repair the truth-lemma side conditions. Owns obstructions O2...
     └─ 410 [PLANNED] — Track B part 1 for the TM tableau decidability program...
       └─ 411 [NOT STARTED] — Track B part 2 for the TM tableau decidability program...
@@ -88,60 +88,267 @@ next_project_number: 993
 ### Repo Hygiene
 
 988 [NOT STARTED] — Fix scripts/readme-lint.sh reporting PASS in CI without...
+997 [NOT STARTED] — Make check-header-attribution.sh rename-aware and resolve...
+999 [NOT STARTED] — Re-pin the stale Challenge.lean Comparator snapshot against...
 
 ### Semantics
 
-989 [NOT STARTED] — Three follow-ups named in the posted review of the pointed...
-  └─ 984 [NOT STARTED] — Promote next\_iff\_covBy and prev\_iff\_covBy of...
+994 [NOT STARTED] — Build the semantic evaluator: truth at a named point of a...
 869 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
   └─ 932 [NOT STARTED] — Land the four ofStepRel constraint lemmas and an ofStepPlain...
 
+### Paper Alignment
+
+1000 [NOT STARTED] — Reconcile docs/reference/paper-definitions-of-record.md with...
+
 ### Syntax
 
-977 [HOLD] — Introduce a connective signature layer under FormalSystem so...
 873 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
   └─ 874 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
   └─ 876 [NOT STARTED] — PRIORITY RULING (2026-11-05, user): DEMOTED. The aim of the...
 
 ### Proof Mode
 
-960 [HOLD] — NO ModalTemporal MODULE OR CLASS...
-  └─ 944 [HOLD] — FAMILY LAYOUT REVISED (records/proof-mode-architecture.md): ⊡...
-    └─ 945 [HOLD] — NO ModalTemporal MODULE OR CLASS...
-      └─ 946 [HOLD] — NO ModalTemporal MODULE OR CLASS...
+960 [NOT STARTED] — NO ModalTemporal MODULE OR CLASS...
+  └─ 944 [NOT STARTED] — FAMILY LAYOUT REVISED (records/proof-mode-architecture.md): ⊡...
+    └─ 945 [NOT STARTED] — NO ModalTemporal MODULE OR CLASS...
+      └─ 946 [NOT STARTED] — NO ModalTemporal MODULE OR CLASS...
         └─ 947 [NOT STARTED] — REVISED: GATE ONE IS A SWEEP OVER A SELECTION OF LIBRARY...
-          └─ 949 [HOLD] — ARCHITECTURE (records/proof-mode-architecture.md): tier...
-            └─ 950 [HOLD] — ARCHITECTURE (records/proof-mode-architecture.md): tier...
+          └─ 949 [NOT STARTED] — ARCHITECTURE (records/proof-mode-architecture.md): tier...
+            └─ 950 [NOT STARTED] — ARCHITECTURE (records/proof-mode-architecture.md): tier...
               └─ 948 [NOT STARTED] — REVISED: GATE TWO IS A SWEEP OVER A SELECTION OF LIBRARY...
-                └─ 952 [HOLD] — NO ModalTemporal MODULE OR CLASS...
+                └─ 952 [NOT STARTED] — NO ModalTemporal MODULE OR CLASS...
                   └─ 953 [NOT STARTED] — With the interface as one class per operator family and...
-                  └─ 956 [HOLD] — ARCHITECTURE (records/proof-mode-architecture.md): tier...
+                  └─ 956 [NOT STARTED] — ARCHITECTURE (records/proof-mode-architecture.md): tier...
                     └─ 957 [NOT STARTED] — MILESTONE M11 (records/proof-mode.md), STREAM: research and...
                       └─ 967 [NOT STARTED] — REVISED (records/proof-mode.md, M14b;...
                   └─ 966 [NOT STARTED] — MILESTONE M14a (records/proof-mode.md), STREAM: closure...
                     └─ 967 [NOT STARTED] — REVISED (records/proof-mode.md, M14b;... (see above)
                   └─ 968 [NOT STARTED] — STRUCTURE. Organize the chapter by...
                   └─ 974 [NOT STARTED] — MILESTONE M21 (records/proof-mode.md), LANE: library, then...
-          └─ 951 [HOLD] — ARCHITECTURE (records/proof-mode-architecture.md): tier...
-            └─ 952 [HOLD] — NO ModalTemporal MODULE OR CLASS... (see above)
+          └─ 951 [NOT STARTED] — ARCHITECTURE (records/proof-mode-architecture.md): tier...
+            └─ 952 [NOT STARTED] — NO ModalTemporal MODULE OR CLASS... (see above)
           └─ 963 [NOT STARTED] — ARCHITECTURE (records/proof-mode-architecture.md): tier...
             └─ 964 [NOT STARTED] — PATH REVISED: the gate-one scripts this record designs the...
-              └─ 952 [HOLD] — NO ModalTemporal MODULE OR CLASS... (see above)
+              └─ 952 [NOT STARTED] — NO ModalTemporal MODULE OR CLASS... (see above)
           └─ 965 [NOT STARTED] — REVISED (records/proof-mode.md, M12): where proof-mode proofs...
   └─ 954 [NOT STARTED] — COORDINATION WITH OPEN CONTRIBUTIONS. Three stacked pull...
     └─ 963 [NOT STARTED] — ARCHITECTURE (records/proof-mode-architecture.md): tier... (see above)
   └─ 955 [NOT STARTED] — MILESTONE M2 (records/proof-mode.md), STREAM: closure...
     └─ 947 [NOT STARTED] — REVISED: GATE ONE IS A SWEEP OVER A SELECTION OF LIBRARY... (see above)
-  └─ 969 [HOLD] — LOCATION (binding over any module path named below): the view...
-    └─ 946 [HOLD] — NO ModalTemporal MODULE OR CLASS... (see above)
+  └─ 969 [NOT STARTED] — LOCATION (binding over any module path named below): the view...
+    └─ 946 [NOT STARTED] — NO ModalTemporal MODULE OR CLASS... (see above)
 962 [NOT STARTED] — MILESTONE M9b (records/proof-mode.md), STREAM: metatheory....
   └─ 953 [NOT STARTED] — With the interface as one class per operator family and... (see above)
 986 [NOT STARTED] — Report the real cause when a view fails to apply. applyView...
-  └─ 969 [HOLD] — LOCATION (binding over any module path named below): the view... (see above)
-987 [HOLD] — Two follow-ups owed after the temporal rules contribution...
-  └─ 950 [HOLD] — ARCHITECTURE (records/proof-mode-architecture.md): tier... (see above)
+  └─ 969 [NOT STARTED] — LOCATION (binding over any module path named below): the view... (see above)
+995 [NOT STARTED] — State the semantic proof mode and its soundness adapter, and...
 
 ## Tasks
+
+### 1000. Reconcile paper definitions of record
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Topic**: paper-alignment
+- **Dependencies**: None
+
+**Description**: Reconcile docs/reference/paper-definitions-of-record.md with the manuscript's operator-term restatement of lem:uniq and thm:s5. scripts/check-paper-definitions.sh reports both anchors drifting: the manuscript now carries % NEW CHANGE: comments restating each for operator terms T and U rather than the operator variable Q, with the recorded reason that leaving Q free lets the hypothesis generalize by I4 to every operator being objective, which comprehension at bottom refutes, so the variable form held only vacuously. The pinned record still carries the variable form. The gate is not a CI blocker: the manuscript lives in a separate repository that CI cannot see, so an absent paper is a neutral skip and this drift is visible only in a local run with the paper on disk. Decide whether the record is re-pinned to the operator-term statements and whether anything downstream cites the superseded variable form.
+
+---
+
+### 999. Repin challenge lean comparator snapshot
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: repo-hygiene
+- **Dependencies**: None
+
+**Description**: Re-pin the stale Challenge.lean Comparator snapshot against the connective signature layer, and decide how a non-elaborating snapshot gets detected. ORGANISATION.md records Challenge.lean as the git-pinned statement set produced by the lean extension's lean-challenge-snapshot.sh, its sorry bodies intentional because the module pins statement signatures rather than proofs. The committed copy predates the connective signature layer and no longer elaborates: lake env lean Challenge.lean reports six-plus errors because the restated theorems name clause-class fields that the signature refactor removed (UntlClause.untl, SnceClause.snce, AllFutureClause.allFuture, AllPastClause.allPast) and omit the new Has* binders, and because lines 40 onward reference Point, IffTransport and StarFormula without opening PointTransport or StarLanguage. All ten of its declarations are already landed and proved in the library (release_iff_forall and trigger_iff_forall in Semantics/TemporalIntervals.lean, the two persistence lemmas in Semantics/TemporalRules.lean, and the rest in Semantics/PointTransport.lean). The file is tracked but sits outside defaultTargets and every lean_lib root, so neither lake build nor any CI step observes it, and the snapshot --check comparison it feeds has no meaning while the whole file fails to elaborate. Decide whether re-pinning is a plain re-run of the snapshot step against the current tree and whether a staleness or elaboration check belongs anywhere; note that changing lean-challenge-snapshot.sh itself edits a source-store path under the nvim agent-system tree, so that half must be filed in the repository holding that source_dir, not here.
+
+---
+
+### 997. Gate coverage rename awareness and c16 roots
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Topic**: repo-hygiene
+- **Dependencies**: None
+
+**Description**: Make check-header-attribution.sh rename-aware and resolve C16's roots-batch ceiling, and rule on the --no-build blind spot that hides C14 and C16 from CI. The attribution gate's single git log --no-merges --name-only pass over four roots cannot take --follow (git requires exactly one pathspec for it), so commits before a rename report the old path and are dropped by the headed.txt filter; there are 404 rename records under FormalSystem/ alone. Measured today the gap costs nothing (only Automation/Tactics/Search.lean gains an author under --follow, and that author is the excluded Claude identity), but it is an unlisted false-negative channel: decide between a per-file --follow loop and another rename-recovery mechanism, weighed against the current one-pass cost model, and list the outcome among the script's STATED LIMIT holes. Separately, C16's roots batch in scripts/check-module-invariants.sh reports 6 entries above the pinned ceiling in scripts/c16-roots-baseline.txt: four are modules already baselined under other roots but carrying no row for the newer BimodalTools.TheoremLibraryPipelineMain root (CanonicalWire.Json defsWithUnderscore 3, ForwardProofGenerator defsWithUnderscore 1, JsonParse docBlame 8, TableauBridge docBlame 4), and two are new docBlame findings in test modules (BimodalLibTest.DiagnosticsTest, BimodalTest.Automation.ProofModeTemporalTest). Decide per entry whether to add the missing docstring or a justified baseline row; never a wholesale --update. Both halves sit in one blind spot worth ruling on: CI runs check-module-invariants.sh with --no-build, so C14's and C16's full-mode halves are checked by nothing automated, which is how a declaration pin naming a theorem that had been renamed survived unnoticed.
+
+---
+
+### 996. Standardize contributor attribution in headers
+- **Status**: [COMPLETED]
+- **Task Type**: lean4
+- **Topic**: repo-hygiene
+- **Dependencies**: None
+- **Research**: [996_standardize_contributor_attribution_in_headers/reports/01_contributor-attribution-headers.md]
+- **Plan**: [996_standardize_contributor_attribution_in_headers/plans/01_header-attribution-convention-gate.md]
+- **Summary**: [996_standardize_contributor_attribution_in_headers/summaries/01_header-attribution-convention-gate-summary.md]
+
+**Description**: Standardize contributor attribution in Lean copyright headers, and backfill the files already edited without it
+
+=== THE MEASURED GAP ===
+
+This repository uses the Mathlib-style file header: a `/- ... -/` block whose line 2 is `Copyright (c) YEAR HOLDER. All rights reserved.`, line 3 the Apache license line, and line 4 `Authors: NAMES`. Across FormalSystem/ and Tests/, 980 files carry `Authors: Benjamin Brast-McKie` and 54 carry `Authors: Tanner Duve`. ZERO files carry a joint `Authors:` line -- the multi-author form the header grammar supports is entirely unused.
+
+Of the 54 Tanner-headed files, 24 ALREADY carry commits authored by someone else (`git log --format=%an` per file, excluding Tanner), and not one of those 24 had its `Authors:` line updated. Examples: FormalSystem/Semantics/TemporalRules.lean (5 of 6 commits), FormalSystem/Semantics/TemporalIntervals.lean (5 of 6), Tests/BimodalTest/Semantics/TemporalRulesTest.lean (3 of 4), FormalSystem/Automation/ProofMode/TemporalBoolean.lean (2 of 3). The merged temporal-rules and pointed-semantics follow-up work ran straight through those files.
+
+NOTHING IN THE REPOSITORY OR THE AGENT SYSTEM ADDRESSES THIS:
+- `scripts/check-copyright-headers.sh` is the CI gate (run as `--strict FormalSystem BimodalTools BimodalLib`). It validates header SHAPE only: the `/-` delimiter, the regex `^Copyright \(c\) 20[0-9]{2} .+\. All rights reserved\.$`, the exact license line, `^Authors: [^ ].*[^.]$` on line 4, comma-terminated continuation lines, and closure by line 12. It is IDENTITY-BLIND -- it never compares the names against anything. Adding a contributor passes; omitting one passes equally.
+- `CONTRIBUTING.md` mentions only that every file has a module docstring and a copyright header -- no attribution policy.
+- `docs/development/LEAN_STYLE_GUIDE.md` has a Documentation Requirements section covering module and declaration docstrings, with no copyright-header or authorship content.
+- The agent system has nothing. A grep for `Authors:` across the whole deployed `.claude/` tree hits only literature-index templates. `rules/lean4.md` says nothing about headers. None of the registered PreToolUse hooks (task-references, record-versioning, destructive-git, bounded-waiter, task-creation-audit, python-state-write, git-push) touches file headers.
+
+CONSEQUENCE, stated plainly: under an autonomous dispatch, header attribution will not happen. Implementation agents receive no instruction to update an `Authors:` line, and the only mechanical check would not notice whether they did.
+
+=== WHAT THIS TASK DELIVERS ===
+
+1. A DECIDED CONVENTION, RECORDED DURABLY. The Mathlib convention is the obvious default and is already accepted by the existing checker: leave the original `Copyright (c) YEAR HOLDER` line untouched and append to `Authors:` -- `Authors: Tanner Duve, Benjamin Brast-McKie` -- including the multi-line continuation form (continuation lines ending in commas) the checker already validates. The convention MUST also state the THRESHOLD: what size or kind of change earns an `Authors:` entry, versus a typo fix or a mechanical lint repair that does not. A threshold-free rule either under-attributes or turns every whitespace fix into a header edit. Record it in CONTRIBUTING.md's "What a Contribution Must Satisfy" section or in docs/development/LEAN_STYLE_GUIDE.md, whichever is judged the right home, with the grounds recorded.
+
+2. A MECHANICAL BACKSTOP. A convention stated in prose is instruction-dependent, and this repository has already demonstrated what that yields: 24 files. Extend `scripts/check-copyright-headers.sh` with an identity check comparing each file's `Authors:` line against its distinct `git log --format=%an` committers, or add a separate lint beside it. Two design constraints: the check needs the same `--strict` / bucket-list / `--exclude` shape as the existing script so it composes with the CI step and `scripts/verify-all.sh`; and it needs a waiver mechanism, because a committer who only ran a mechanical fix must not be forced into an `Authors:` line (see the threshold in item 1). Mathlib's own `nolints.json` pattern and this repository's existing lint-suppression policy are the precedents to weigh.
+
+3. THE BACKFILL. Apply the decided convention to the files that already carry commits from a second author, judged individually against the threshold from item 1 -- NOT a blind sed over all 24. Re-derive the file list at implementation time rather than trusting this description's count; it moves as commits land.
+
+=== THE AGENT-INSTRUCTION HALF IS A ROUTE DECISION, DELIBERATELY NOT PRE-MADE ===
+
+A mechanical check CATCHES a missing attribution; it does not make an agent add one. For agents to do it during a dispatch, the convention has to reach their context through a rule matching `**/*.lean`. There are two routes and they are not equivalent:
+
+ROUTE A, repo-local. A rule at `.claude/rules/authorship-attribution.md`, protected from regeneration by an entry in `.syncprotect` (paths there are relative to the sync base directory, so the entry reads `rules/authorship-attribution.md`). Precedent: `.syncprotect` already protects `context/repo/project-overview.md` on exactly these grounds. Keeps a two-author convention naming specific people out of the shared source store.
+
+ROUTE B, shared source store. A rule under the lean extension's own source directory (resolve `.extensions.lean.source_dir` from `.claude-extensions.json`), stating the generic principle -- append to `Authors:` when you materially edit a file someone else authored -- with no names in it. Reaches every repository deploying the extension. NOTE: a task whose declared edit target is a source-store path must be filed in the repository whose filesystem contains that `source_dir`, so Route B is NOT in this task's edit scope. If research settles on it, spawn that task rather than editing across the boundary from here.
+
+The deliverable includes the route decision with its grounds, and Route A's implementation if that is the choice.
+
+=== REQUIRED: AN IDENTITY MAP, OR DELIVERABLE 2 IS NOT IMPLEMENTABLE ===
+
+Deliverable 2 above specifies the mechanical check as a comparison of each file's `Authors:` line against its `git log --format=%an` committers. That comparison CANNOT work as stated, and this is a material requirement on the check's design, not a caveat. The repository carries SIX distinct author name/email identity rows for THREE parties:
+
+```
+benbrastmckie <64314593+benbrastmckie@users.noreply.github.com>
+benbrastmckie <benbrastmckie@gmail.com>
+benbrastmckie <benjamin@logos-labs.ai>
+Benjamin Brast-McKie <64314593+benbrastmckie@users.noreply.github.com>
+Claude <noreply@anthropic.com>
+Tanner Duve <122851174+tannerduve@users.noreply.github.com>
+```
+
+Commit counts by author name: `benbrastmckie` 17766, `Claude` 46, `Tanner Duve` 9, `Benjamin Brast-McKie` 5.
+
+Two consequences follow, and the check must handle both:
+
+(a) AN IDENTITY MAP IS MANDATORY, MAINTAINED AS DATA. The git author string `benbrastmckie` never matches the header display name `Benjamin Brast-McKie`. An unmapped comparison therefore flags essentially every one of the ~1034 headed files, which is indistinguishable from no check at all. The check REQUIRES an explicit mapping from git author identity to header display name. Weigh `.mailmap` FIRST: it is git's own native mechanism for exactly this problem, `git log` honors it automatically with no lookup code on the checker side, and `git shortlog -sne` enumerates the rows that need folding. A checker-side data file is the FALLBACK, to be adopted only if `.mailmap` proves insufficient, with the reason recorded.
+
+(b) THE MAP NEEDS AN EXCLUSION SET, NOT MERELY A RENAME MAP. `Claude <noreply@anthropic.com>` authored 46 commits and is NOT a contributor that earns a header `Authors:` entry. A pure rename map cannot express that; an explicit exclusion set can. Further, agent-authored work also lands under the repository owner's own identity carrying `Co-Authored-By` trailers, which `%an` does not surface at all -- so the exclusion set cannot be derived from `%an` alone and must be stated deliberately.
+
+=== SCOPE ADDITION: THE REVERSE DIRECTION, BENJAMIN-HEADED FILES WITH TANNER COMMITS ===
+
+Deliverable 3's backfill, as scoped above, walks Tanner-headed files only. The reverse direction is also live. Six Benjamin-headed `.lean` files carry Tanner commits:
+
+```
+FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean     1 Tanner commit
+FormalSystem/Metalogic/Decidability/RaySummary/LadderStepFrag.lean  1
+Tests/BimodalTest.lean                                              4
+FormalSystem/Theorems.lean                                          1
+FormalSystem/Automation.lean                                        1
+FormalSystem/Semantics.lean                                         1
+```
+
+THE DISCRIMINATION IS ALREADY MEASURED AND SETTLED -- do NOT re-derive it. The last four are import-only barrel roots: each file's entire body below the header block is an `import` list, so a commit touching one adds or reorders import lines and is not authorship. The two `RaySummary/` files are genuine content edits.
+
+Accordingly: the two `RaySummary/` files are backfill candidates subject to the same per-file threshold as every other candidate, and the barrel-root exclusion is recorded as a REASONED exclusion with its grounds, not left as an oversight. The identity check must also not fire on barrel roots. Prefer achieving that through a rule that an import-only diff never earns attribution -- narrower and more durable than an enumerated exclusion list of filenames.
+
+=== PRECISION LIMIT: THE CHECK REPORTS CANDIDATES, NEVER VERDICTS ===
+
+This is a limit of the mechanism, not a gap in scope, and the check's contract must state it.
+
+Tanner's 54-file header footprint arrived in only 9 commits, several of them PR-shaped (`Add pointed temporal semantics and transport lemmas (#11)`, `Add checked rewriting and bounded simplification (#7)`). Inspected samples support the forward direction: on `FormalSystem/Semantics/TemporalRules.lean` the log is one Tanner commit plus five `benbrastmckie` commits, and those five are substantive task phases -- interval lemmas and the one next/prev encoding; promoting the generic succ/pred pair; primitive-tense persistence reaching L-minus -- not merges. The forward count of 24 is therefore sound in direction.
+
+But `%an` alone cannot distinguish a commit that MERGED someone's pull request from one that materially edited the file. The check therefore reports CANDIDATES, and the per-file threshold judgment from deliverable 1 settles each one. Design consequence: the check's exit status gates on UNREVIEWED CANDIDATES, not on a raw name mismatch -- a reviewed-and-waived candidate must not keep the gate red.
+
+=== SCOPE ADDITION: SURFACES CARRYING NO HEADER AT ALL ===
+
+Tanner has commits on roughly 30 non-`.lean` files, none of which carry a copyright header, so there is no `Authors:` line to repair: ten `docs/user-guide/proof-mode-*.md` guides, `docs/reference/tactic-reference.md`, ten `README.md` files including the repository root `README.md`, five `records/*.md` (`milestones.md`, `proof-mode.md`, `proof-mode-architecture.md`, `semantic-proof-mode.md`, `theorem-library.md`), and `scripts/measure-refactor-partitions.py`.
+
+Two positions must be STATED rather than left unaddressed:
+
+(a) WHETHER WRITTEN-RECORD AUTHORSHIP IS AN ATTRIBUTION SURFACE THIS REPOSITORY TRACKS AT ALL, covering `docs/`, `records/`, and `README` files. A defensible answer is no -- those files carry no header by convention and git history is their record -- but it must be stated, because the claim that attribution is fully repaired is otherwise false by omission.
+
+(b) `CITATION.cff` CARRIES A RECORDED DECISION. It names only `Brast-McKie, Benjamin` in its `authors:` list. It is the repository's most externally-visible attribution surface, it is consumed by citation tooling, and nothing else in this task touches it. Decide and record whether a substantial contributor to the published library belongs in that list. This is the one item here with consequences outside the repository.
+
+=== ALREADY CHECKED AND CLEARED, NOT TO BE RE-LITIGATED ===
+
+Rename history is not a source of undercount. `git log --follow` and plain `git log` return identical commit counts on the sampled backfill files, so no pre-rename history is missed by the per-file committer derivation. The derivation needs no `--follow` handling on this evidence.
+
+=== EDIT SCOPE ===
+
+scripts/check-copyright-headers.sh (or a new sibling lint script under scripts/)
+CONTRIBUTING.md and/or docs/development/LEAN_STYLE_GUIDE.md
+.github/workflows/ci.yml and scripts/verify-all.sh (wiring the new check, if it gates)
+.syncprotect and .claude/rules/authorship-attribution.md (Route A only)
+The Tanner-headed .lean files under FormalSystem/ and Tests/ that the threshold selects (re-derived at implementation time; 24 candidates as measured)
+.mailmap (the identity map, if `.mailmap` is the chosen mechanism)
+CITATION.cff (if the recorded decision is to add a contributor)
+FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean (reverse-direction candidate, judged against the threshold)
+FormalSystem/Metalogic/Decidability/RaySummary/LadderStepFrag.lean (reverse-direction candidate, judged against the threshold)
+
+NOT IN SCOPE: any path under the agent-system source store (see Route B above); the 980 Benjamin-headed files, except the two `RaySummary/` candidates named above; the four import-only barrel roots (`Tests/BimodalTest.lean`, `FormalSystem/Theorems.lean`, `FormalSystem/Automation.lean`, `FormalSystem/Semantics.lean`), excluded on the reasoned grounds recorded above; anything under Boneyard/, which is intentionally unheadered and already excluded by the checker's `*/Boneyard/*` glob.
+
+=== DONE WHEN ===
+
+The convention is recorded durably with its attribution threshold stated; a mechanical check enforces it with a waiver path and composes with the existing CI step; the selected backfill files carry correct joint `Authors:` lines and still pass `check-copyright-headers.sh --strict`; the agent-instruction route is decided with grounds, and implemented if Route A; and `lake build` plus the header checker are green.
+
+AND, equally gating:
+
+- An identity map exists -- `.mailmap` or the recorded fallback -- carrying its exclusion set, and the check runs CLEAN against the current tree: zero false positives across the ~1034 headed files.
+- The check's exit status gates on unreviewed candidates rather than raw name mismatches, and its output is worded as candidates, not verdicts.
+- The two `RaySummary/` files are each judged against the threshold with the judgment recorded, and the import-only barrel-root exclusion is recorded with its reason.
+- The written-record question (`docs/`, `records/`, `README`) and the `CITATION.cff` question each carry a recorded decision, whichever way each goes.
+- The claim "attribution is correct across this repository" is either TRUE, or accompanied by a stated, reasoned list of exactly what it excludes.
+
+=== RELEVANT CONTEXT ===
+
+`scripts/check-copyright-headers.sh`'s own header comment is unusually complete -- it explains why the script exists beside Mathlib's `linter.style.header` and exactly which trees that linter structurally cannot reach (the BimodalTools executable roots, each declaring a root-namespace `main`, and everything under Tests/, whose libraries declare `srcDir = "Tests"`). Read it before changing the predicate.
+
+The repository runs the Mathlib standard syntax-linter set (`weak.linter.mathlibStandardSet = true`), `lake lint` via `lintDriver = "batteries/runLinter"` against scripts/nolints.json, `lake exe lint-style`, and `lake exe mk_all --lib FormalSystem --check`. The lint-suppression policy, including every permanent opt-out, lives in docs/development/LEAN_STYLE_GUIDE.md.
+
+`git shortlog -sne` enumerates the six identity rows named above and is the command that regenerates them; `.mailmap`, if adopted, is read automatically by every later `git log` and `git shortlog` invocation, including the checker's own.
+
+CONTEXT ON THE TWO BACKLOG NEAR-MISSES, checked and ruled non-covering at creation time: the closed record `add_apache_headers_to_test_files` added MISSING headers to test files (presence, not attribution), and the closed record `line_limit_compliance_and_publication_residue` reported a copyright-header COUNT as verified (331/331). Neither checks or records which contributors a file's `Authors:` line should name.
+
+---
+
+### 995. Semantic mode and soundness adapter
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: proof-mode
+- **Dependencies**: Task 994
+
+**Description**: State the semantic proof mode and its soundness adapter, and say which half of it this repository builds. Milestone M12's gate (records/milestones.md Goal C) requires a record for the mode WITH its adapter that names the division explicitly, and this is that record. THE DIVISION, which is the first thing to fix and the reason this record is separate from the evaluator record: the tactic language for the mode arrives as an OUTSIDE CONTRIBUTION, not as work this repository schedules. The contribution that first carried it was declined as sited -- it overloaded the derivation tactics onto truth goals -- and the posted closing decision re-sited rather than discarded it: its congruence kit and generic composition, its position and polarity planner, its view rows and its transport structures all survive the move and return as a fresh pull request against main. What this repository owes is therefore NOT the tactic implementation but (a) the adapter's statement and the acceptance criteria that contribution will be measured against, and (b) the thin-layer boundary the mode must respect. THE ADAPTER: native TM and TM-plus derivations enter the semantic side through a ONE-WAY soundness adapter requiring frame satisfaction (fc.Sat F) and truth of the full context. One-way is the design, not a limitation to fix: a semantic proof does not become a derivation. State it once, over TruthEnv, in the shape the already-merged pointed soundness statement uses, so it is proved once for every language rather than per language. THE THIN-LAYER BOUNDARY, from records/semantic-proof-mode.md's open decision 1: the mode is a thin layer over the evaluator, which sits under FormalSystem/Semantics/. The mode may therefore depend on the evaluator and must not invert that dependency, and the evaluator must stay usable by its library clients without the tactic layer. The views tier is relevant and is NOT this record's to build: it sits BELOW the derivation tactics and imports none of them, which is exactly what lets a semantic mode reuse it; proof_mode_views_tier owns it. WHAT THE GATE ALSO REQUIRES, and what makes this record more than a statement of division: the goal shape and the witness interface that records/semantic-proof-mode.md leaves OPEN must be settled. The witness interface's current answer is the clause-ordered pattern, reopened only by a client that repeats an operator on a branch or an error report showing the exchanged-binder fault is common. The goal shape is genuinely unsettled and is this record's to settle, against the evaluator's actual clients rather than in the abstract. DEPENDENCY ON THE EVALUATOR RECORD: the evaluator is the thing this mode is a layer over, so that record runs first; an edge is filed to that effect. Do not restate the evaluator's own deliverables here. OUT OF SCOPE, explicitly: implementing the tactic language, which the contribution brings; and re-deciding the adoption threshold, which stays provisional until the measurement's step 3 reports. DONE WHEN: the adapter is stated once over TruthEnv with frame satisfaction and full-context truth as explicit hypotheses and is proved; the division between repository-built and contributed halves is written where a reviewer of the incoming pull request will read it, not only in this record; the goal shape is settled with the evidence that settled it; and the acceptance criteria the incoming contribution is measured against are stated before it arrives rather than after.
+
+---
+
+### 994. Semantic evaluator for pointed truth
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: semantics
+- **Dependencies**: None
+
+**Description**: Build the semantic evaluator: truth at a named point of a named model, checked rather than searched for. This is the half of Goal C (records/milestones.md, milestone M12) that THIS REPOSITORY BUILDS; the semantic proof mode and its soundness adapter are a separate record and arrive partly as an outside contribution. records/semantic-proof-mode.md is on main and is the design; it is the specification for this record, not background reading. SITING AND LAYERING, settled by that record's open decision 1: the evaluator sits beside the lemmas under FormalSystem/Semantics/ and the mode is a thin layer over it, NOT one module holding both. The alternative was considered and rejected there: a single module would buy one registry and one syntax at the cost of tying the evaluator's library clients to the tactic layer. OPERATOR RECOGNITION, settled by open decision 3: the evaluator imports NOTHING from FormalSystem/Automation/ProofMode/ and recognizes operators through its OWN rule registry, never FormalSystem/Tactic/FormulaSyntax.lean, which stops at TM-plus. CONSEQUENCE WORTH STATING because it is easy to get wrong: this record does NOT wait on the connective signature layer. The generic clause lemmas already apply at StarFormula, so the two L-star clients below are reachable today; the signature layer later merges the per-language keys, which is an improvement to this evaluator and not a precondition for it. THE FOUR INITIAL CLIENTS, from that record's own table, each an existing refutation whose model, witness data and statement stay FIXED -- measure the proofs of truth or falsity INSIDE the refutations first, then the complete declarations: FormalSystem/PlusLanguage/PlusNonValidities.lean refute_allFuture_stab (prove the universal premise, then refute stability at the supplied history and future time) and refute_stab_allFuture_past (compose stability, future and past clauses keeping the witness times explicit); FormalSystem/StarLanguage/StarNonValidities.lean refute_modal_future (evaluate the recall implication at the named history, future time and register environment) and refute_sentDet (use the existing witness theorem as a short control, measure the two atom obligations). Add an example exercising a clause only when an existing proof needs it. WHAT THE CLIENTS DO NOT EXERCISE, so do not build first: none of the four touches Until, Since or store. Their first rules wait for a client that does. Store and recall have NO clause class, so their rules are per-language registry entries rather than clause-generic ones, and refute_modal_future needs the recall entries. WITNESS INTERFACE: the clause-ordered pattern of records/semantic-proof-mode.md's own measurement, which that record's open decision 2 reopens only on a client that repeats an operator on a branch, or on an error report showing the exchanged-binder fault is common. Do not re-litigate it without one of those two triggers. ALREADY DECIDED ELSEWHERE, do not reopen: the grade of an evaluator-checked refutation (open decision 4) is decided by theorem_library_countermodels, which is COMPLETE -- read the grade off that record rather than deciding it here. The adoption threshold (open decision 5) is provisional until the measurement's step 3 reports and is not this record's to set. PIPELINE RELATION: the tableau finds a countermodel, the evaluator checks one it is given; the two form a pipeline where the tableau proposes and the evaluator certifies. The evaluator therefore has clients wherever the tableau has no verified verdict, today the stability operator and L-star. DONE WHEN: the evaluator is live under FormalSystem/Semantics/ with its own operator registry, it certifies the truth-or-falsity proofs inside all four named refutations, each client keeps its model and statement unchanged, lake build and lake test are green, and a #print axioms check on an evaluator-certified refutation shows no object-language axiom was involved.
+
+---
+
+### 993. Declare integration branch admission gate
+- **Status**: [COMPLETED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+- **Research**: [993_declare_integration_branch_admission_gate/reports/01_declare-integration-branch-admission-gate.md]
+- **Plan**: [993_declare_integration_branch_admission_gate/plans/01_declare-integration-branch-admission-gate.md]
+- **Summary**: [993_declare_integration_branch_admission_gate/summaries/01_declare-integration-branch-admission-gate-summary.md]
+
+**Description**: Declare integration_branch in .claude-extensions.json so that orchestration admission arms instead of falling back. Every /orchestrate invocation in this repository currently prints "ADVISORY: integration_branch is not declared in .claude-extensions.json; admission falls back to the checked-out branch and tests neither the branch nor the tree", so the branch-and-tree admission gate is disarmed on every run -- including a run dispatched from a feature branch while main has moved ahead, which is the observed working pattern here. The file today carries exactly two keys, extensions and version. context/standards/repo-level-declarations.md documents integration_branch as the name of the branch the orchestrator's admission check verifies, and its "Why .claude-extensions.json Survives a Hand-Authored Sibling Key" section establishes that a hand-authored sibling key beside the deploy-managed extensions key is the sanctioned way to add one: this is an edit to the project-root manifest, NOT a write under .claude/**, so .claude/rules/source-store-deploy-boundary.md does not apply and the task is correctly sited in this repository. DELIVERABLES. (1) The key declared with the branch this repository actually integrates on, read from practice rather than assumed -- recent work dispatches from dev/* feature branches and merges to main, so a declaration naming main would refuse every ordinary run and a declaration naming the current feature branch would go stale at the next branch. State which semantics the consumer actually implements before choosing: whether the declared value is the integration target or the branch work is required to sit on. (2) A falsification check that admission now arms: dispatch from a branch the declaration excludes and confirm the refusal fires, rather than only confirming the advisory stopped printing. An advisory that disappears because the key parsed is not evidence that the gate works. (3) worktree_isolation assessed in the same pass, since repo-level-declarations.md names it as the sibling key read by the same two consumers; declare it or record why not. (4) A recorded decision on whether admission should refuse or merely warn when the checked-out branch is not the declared one, given that orchestrating from a feature branch is the normal practice here and a refusing gate would block it. DO NOT silence the advisory by any route other than a real declaration -- suppressing the message while the gate stays disarmed is strictly worse than the present state, which at least announces itself every run.
+
+---
 
 ### 991. Depth zero gate verdict
 - **Status**: [COMPLETED]
@@ -157,10 +364,13 @@ next_project_number: 993
 ---
 
 ### 989. Pointed semantic lemmas after merge followups
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: None
+- **Research**: [989_pointed_semantic_lemmas_after_merge_followups/reports/01_pointed-semantic-lemmas-followups.md]
+- **Plan**: [989_pointed_semantic_lemmas_after_merge_followups/plans/01_pointed-semantic-lemmas-followups.md]
+- **Summary**: [989_pointed_semantic_lemmas_after_merge_followups/summaries/01_pointed-semantic-lemmas-followups-summary.md]
 
 **Description**: Three follow-ups named in the posted review of the pointed semantic lemmas contribution (branch feat/pointed-semantic-lemmas, milestone C1 of records/milestones.md) that no other record owns. None was a condition of merging. That contribution has merged, and FormalSystem/Semantics/TemporalRules.lean, FormalSystem/Semantics/PointTransport.lean and both of their test modules are on main, so this record is dispatchable. Re-read the merged tree first and drop whatever the contributor already did. (1) A POSITIVE READING for `release_iff` and `trigger_iff`: each is stated as the negation of an Until or Since clause; add the direct universal-existential form a refutation script uses, proved from the existing one. (2) DOCSTRINGS: module docstring titles for the three generic modules, and one spelling of the `assert_not_exists` lock (the directory uses `Axiom DerivationTree`). (3) LEMMAS: `allFuture_persist` and `allPast_persist` for L-minus, which has no `untl`; and star-language versions of the time-shift and state-local transport factories. Each new lemma is stated over the clause classes so it is proved once for every language, with a test, including one at the star language. Related and separate: `connective_signature_layer_shared_primitives` owns the named interval operators and the `next` and `prev` encoding; `promote_next_prev_covby_to_generic_lemmas` owns the `next_iff_covBy` promotion.
 
@@ -177,13 +387,15 @@ next_project_number: 993
 ---
 
 ### 987. Temporal rules followups fold names and progress tests
-- **Status**: [HOLD]
-- **Held**: 2026-11-24
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: proof-mode
 - **Dependencies**: None
+- **Research**: [987_temporal_rules_followups_fold_names_and_progress_tests/reports/01_temporal-rules-followups.md]
+- **Plan**: [987_temporal_rules_followups_fold_names_and_progress_tests/plans/01_temporal-rules-followups.md]
+- **Summary**: [987_temporal_rules_followups_fold_names_and_progress_tests/summaries/01_temporal-rules-followups-summary.md]
 
-**Description**: Two follow-ups owed after the temporal rules contribution (the pull request adding compositional temporal rules and persistent scope capture) merges; neither is a condition of merging it, and both are stated to the contributor as follow-ups. Every path below arrives with that contribution and is absent from main until it merges; re-read the merged tree first and drop whatever the contributor already did. (1) FOLD AND UNFOLD NAMES. The user-facing keywords were renamed so that `lfold` and `lunfold` name views only, but one layer down FormalSystem/Automation/ProofMode/TemporalZTime.lean still carries `luntilFold`, `luntilUnfold` and `binaryFold`, and the pure rules are still `untilFoldRule`, `untilUnfoldRule`, `untilFold`, `untilUnfoldCases` and their Since and TM+ mirrors: the same collision the keywords had, now in the identifiers. Rename them to the expand and contract vocabulary settled in records/proof-mode-architecture.md, repointing every use. (2) TESTS. `lprogress` has exactly one example, exercising its `cases` form only; add tests for its other forms, for the past direction and for TM+, and a negative test with `#guard_msgs` for each `throwError` path the contribution added that has none. ORDER: `proof_mode_until_since_intro_unfold_induction` builds on the same modules and runs after this record.
+**Description**: Follow-ups owed after the temporal rules contribution (the pull request adding compositional temporal rules and persistent scope capture) merges; none is a condition of merging it, and all are stated to the contributor as follow-ups. Every path below arrives with that contribution and is absent from main until it merges; re-read the merged tree first and drop whatever the contributor already did -- the status stamp of item (7) in particular may already be regenerated on the branch. OWNERSHIP CARVE-OUT: connective_signature_layer_shared_primitives owns the siting of the TM syntax that PlusLanguage/TemporalViews.lean declares under the TM-plus directory, and this record does not touch it. (1) FOLD AND UNFOLD NAMES. The user-facing keywords were renamed so that `lfold` and `lunfold` name views only, but one layer down FormalSystem/Automation/ProofMode/TemporalZTime.lean still carries `luntilFold`, `luntilUnfold` and `binaryFold`, and the pure rules are still `untilFoldRule`, `untilUnfoldRule`, `untilFold`, `untilUnfoldCases` and their Since and TM+ mirrors: the same collision the keywords had, now in the identifiers. Rename them to the expand and contract vocabulary settled in records/proof-mode-architecture.md, repointing every use. (2) TESTS. `lprogress` has exactly one example, exercising its `cases` form only; add tests for its other forms, for the past direction and for TM+, and a negative test with `#guard_msgs` for each `throwError` path the contribution added that has none. (3) INSTANCE-SYNTHESIS ORDERING IN applyDerivationProof, the one item with a behavioural consequence. In FormalSystem/Automation/ProofMode/Basic.lean the instance-synthesis loop runs BEFORE adaptProof and before the final isDefEq against the goal type, so at that point the rule's frame-class, context and formula metavariables are still unassigned except where the implication-chain match happened to assign them. An instance argument whose type mentions any of them therefore cannot be synthesized, and lapply hard-fails with "could not synthesize the required instance" where the previous code left an ordinary parameter goal the user could discharge. Move the loop after the conclusion unification, keeping the new diagnostic. THIS IS LATENT, NOT LIVE: a grep of FormalSystem/Theorems/ProofMode/ found no rule carrying an instance-implicit binder, so nothing in the tree triggers it today -- fix it as a regression guard, and add a test whose class type mentions a rule parameter, since the contribution's own ReviewInstance test uses a parameterless class and does not cover the path. (4) THE ORDERING CONTRACT IN THE DOCSTRING. applyDerivationProof is now public and its correctness depends on firstNewIndex being snapshotted BEFORE the proof term is elaborated; the docstring says only that holes created since firstNewIndex become new goals. A sibling caller reading the metavariable counter after elaborateProof -- the natural reading -- filters out every one of the rule's own parameter metavariables, so they never become goals and the surrounding by-block fails later with an opaque placeholder-synthesis error. State the ordering requirement in the doc comment. (5) THE BARE CATCH IN integerTimeGate. FormalSystem/Automation/ProofMode/Temporal.lean wraps resolveRuleParameters in a bare catch that rethrows a frame-class message, which swallows every exception rather than the frame-class ones: a maxRecDepth, an interrupt, or a Decidable-synthesis failure arising for some other reason is reported to the user as a frame-class problem, and resolveRuleParameters' own "incompatible concrete frame classes" diagnosis is discarded. Catch only the frame-class failure, or append the original message, so the pinned test text survives while the real cause reaches the user. THIS GATE IS ONE OF THE throwError PATHS ITEM (2) OWES A NEGATIVE TEST FOR: narrow the catch and write its `#guard_msgs` test together, as one piece of work in one module, rather than as two. (6) THREE WRONG MODULE DESCRIPTIONS. In FormalSystem/Automation/ProofMode/README.md the Carrying.lean row still holds a TODO-add-description placeholder; the Temporal.lean row still claims progress, which the contribution moved to TemporalBoolean.lean; and the Discrete.lean row still says Next/Previous scopes with explicit ZTime certificates, after that module gained linduction and after certificates became reused-or-decided rather than always explicit. The description column is hand-written and SURVIVES regeneration per scripts/check-module-invariants.sh, so --emit-inventory --check will not flag any of the three and they stay wrong until edited by hand. The sibling Theorems/ProofMode/README.md placeholder was filled in the same contribution, so the Carrying.lean row looks simply forgotten. (7) THE STATUS STAMP THAT CANNOT REPRODUCE ITS OWN COUNTS. typst/generated/status.typ records a stamp commit whose tree does not contain the nine new library files and four new test files its own counts include: it was regenerated while HEAD sat on another branch with the contribution's files in the working tree. Since scripts/typst-status-counts.sh sets the stamp from git rev-parse --short HEAD, regenerating it on the merged tree fixes both the stamp and the counts in one run. Verify the stamp commit's tree actually yields the recorded figures rather than only that the file changed. PROVENANCE: items (1) and (2) are the two follow-ups named in the posted review of the contribution; items (3) through (7) are the findings of the code review run against head af0cde818, none of which blocked the merge and none of which any other record owns. ORDER: proof_mode_until_since_intro_unfold_induction builds on the same modules and runs after this record. DONE WHEN: lake build and lake test are green; no identifier carries the old fold/unfold vocabulary; lprogress has coverage for its other forms, the past direction and TM+; every throwError path the contribution added has a #guard_msgs test; the instance-ordering test fails against the pre-fix ordering; each README description names what its module now contains; and the status stamp's commit reproduces the status counts.
 
 ---
 
@@ -198,25 +410,28 @@ next_project_number: 993
 ---
 
 ### 984. Promote next prev covby to generic lemmas
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: Task 989
+- **Research**: [984_promote_next_prev_covby_to_generic_lemmas/reports/01_promote-next-prev-covby-generic.md]
+- **Plan**: [984_promote_next_prev_covby_to_generic_lemmas/plans/01_promote-next-prev-covby-generic.md]
+- **Summary**: [984_promote_next_prev_covby_to_generic_lemmas/summaries/01_promote-next-prev-covby-generic-summary.md]
 
 **Description**: Promote next_iff_covBy and prev_iff_covBy of FormalSystem/SourceLanguage/SentenceTruth.lean onto the generic next_iff and prev_iff of FormalSystem/Semantics/TemporalRules.lean, now that that module is on main (it arrived with the pointed semantic lemmas contribution, milestone C1 of records/milestones.md, since merged). SentenceTruth.lean docstring calls the duplication deliberate and unresolved and names promotion of one shared lemma as the eventual fix, blocked because the other copy of the succ-form fact sits in FormalSystem/Metalogic/DiscreteNonCompactness.lean and the import would be upward. TemporalRules.lean is at layer 1, as is SentenceTruth.lean, so the promotion has no layering cost; next_iff (L := Formula) M τ t PUnit.unit φ was checked to inhabit the statement of next_iff_covBy. Deliverable: the base-language lemmas become instances or one-line corollaries of the generic ones (or are removed with their uses repointed), the copy in Metalogic/DiscreteNonCompactness.lean is repointed likewise, and the deliberate-and-unresolved note in the SentenceTruth.lean docstring is replaced by the current state. No statement changes for downstream users.
 
 ---
 
 ### 977. Connective signature layer shared primitives
-- **Status**: [HOLD]
-- **Held**: 2026-11-24
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: syntax
-- **Dependencies**: None
+- **Dependencies**: Task 984, Task 987, Task 989
 - **Research**: [977_connective_signature_layer_shared_primitives/reports/01_connective-signature-layer.md]
 - **Plan**: [977_connective_signature_layer_shared_primitives/plans/01_connective-signature-layer.md]
+- **Summary**: [977_connective_signature_layer_shared_primitives/summaries/02_connective-signature-layer-summary.md]
 
-**Description**: Introduce a connective signature layer under FormalSystem so that TM and TM+ share one primitive signature and one set of derived operators instead of PlusFormula being a verbatim copy of Formula. PRIMITIVES STAY MINIMAL. Formula (FormalSystem/Syntax/Formula.lean) has six constructors (atom, bot, imp, box, untl, snce) and PlusFormula (FormalSystem/PlusLanguage/Formula.lean) restates all six and adds stab for the stability operator; that minimality is correct for TM and TM+ and is to be preserved. Do NOT adopt cslib's non-minimal expansion to primitive diamond, allFuture and allPast (cslib Cslib/Logics/Modal/Basic.lean has primitive and, or, box, diamond; Cslib/Logics/Temporal/Syntax/Formula.lean has primitive allFuture and allPast; the rationale and the 11-primitive target for the Bimodal layer are in cslib specs/181_bimodal_primitive_dia_always_historically/reports/01_bimodal-primitive-expansion-research.md, and cslib task 181 is still NOT STARTED so its own tree is inconsistent with that target). Non-minimality exists there to let one syntax serve minimal and intuitionistic propositional bases, since each classical interdefinability fails in a weaker logic; TM and TM+ are classical, so adopting it here would buy nothing and would move most of the views tier out of views and into the derivation tier as theorems. THE DEFECT IS DUPLICATION, NOT THE PRIMITIVE CHOICE. Eighteen derived operators are defined verbatim in both syntax files: after, allFuture, allPast, always, and, diamond, kMinus, kPlus, neg, next, or, prev, reflectTime, someFuture, somePast, sometimes and top. This is the syntax-layer root of the tmX / plusX name-pair duplication, and it violates principle 5 of records/proof-mode-architecture.md (languages are instances of an interface, not copies of a file). MODEL TO FOLLOW. cslib Cslib/Foundations/Logic/Connectives.lean (224 lines) is a working instance of the wanted shape and is directly portable: one class per primitive operator (HasBot, HasImp, HasBox, HasUntil, HasSince, HasNext), then PropositionalConnectives extending HasBot and HasImp and supplying neg := phi -> bot and top := bot -> bot as DEFAULT FIELD VALUES so the derived Boolean operators are written once, then a hierarchy of ModalConnectives, FutureTemporalConnectives, TemporalConnectives, LTLConnectives and BimodalConnectives with a bridge instance from BimodalConnectives to ModalConnectives. Four cslib languages share that one definition of neg and top. Note one tension to resolve rather than copy: cslib's ModalConnectives is box-only and minimal while its concrete Modal.Proposition carries a primitive diamond, so interface and inductive disagree there. DELIVERABLE. A signature layer under FormalSystem carrying one class per primitive operator including a stability class for the TM+ operator, a propositional class supplying the derived Boolean operators once, and a bimodal class, with Formula and PlusFormula as instances and the eighteen doubled definitions written once. ALSO ASSESS reducibility: all 35 definitions in FormalSystem/Syntax/Formula.lean are opaque defs and cslib uses abbrev for its Boolean and dual definitions, which unfold definitionally; making the pure Boolean and dual definitions here reducible would let part of the views tier be definitional rather than a table of view rows with unfolding lemmas, which bears directly on the views tier design in records/proof-mode-architecture.md. SEQUENCING. This sits BELOW the proof mode and is a prerequisite for proof_mode_abstract_frontend_interface, whose object-level class is to package the connectives among its members and which should require this signature rather than re-package it; a dependency edge is filed to that effect. Keep the Atom type fixed as it is; cslib parameterizes Formula over the atom type but that is a separate and larger change and is out of scope here. The stability operator shares the Modal class: the family layout is fixed with it in Modal, the shared statement is a K core with T, 4 and 5 as further members, and docs/development/stability-operator-family.md gives the grounds. LANDING WINDOW. ORDER: this signature lands AFTER the temporal contribution merges, the order records/milestones.md recommends: the contribution merges at once and this signature rewrites its operators with the rest. Research and planning may run before the merge; implementation waits on it. On merging, that contribution adds FormalSystem/PlusLanguage/TemporalViews.lean, which declares `Formula.inclusiveUntil`, `Formula.inclusiveSince` and the TM expansions under the TM+ directory, and FormalSystem/Tactic/TemporalFormulaViews.lean, which registers twenty view rows about them. Deliverable (b) absorbs those definitions onto the signature, keeps the per-language names as instances, and repoints the view rows; it does not define the interval operators a second time. Research and planning may proceed now regardless of that undecided window; only implementation waits on the ruling. ADDITIONAL DELIVERABLES (done-when of milestone D1 in records/milestones.md). (a) StarFormula (FormalSystem/StarLanguage) is an instance beside Formula and PlusFormula; it carries its own copy of next among others. (b) The interval operators are defined once on the signature: inclusiveUntil, inclusiveSince, release, trigger, weakUntil and weakSince, agreeing in argument order with Formula.release, Formula.trigger, Formula.weakUntil and Formula.weakSince (see the Argument-order trap note on Formula.release), and the clause lemmas of FormalSystem/Semantics/TemporalIntervals.lean (inclusiveUntil_iff, release_iff, weakUntil_iff and their past duals; that module arrives with branch feat/pointed-semantic-lemmas) are restated about them instead of about inline derived formulas. (c) One next and prev encoding: TemporalRules.next and prev of FormalSystem/Semantics/TemporalRules.lean, Formula.next, PlusFormula.next, StarFormula.next and the copy in FormalSystem/Metalogic/Expressiveness/SeparationZ/Syntax.lean are one definition or are tied by rfl rows in Tests/BimodalTest/Semantics/ValidityLayerTest.lean. (d) FormalSystem/Tactic/FormulaSyntax.lean, which matches TM and TM+ operator names only, reads the signature so that operator recognition reaches L⋆; the semantic evaluator of records/semantic-proof-mode.md has L⋆ clients. FIRST QUESTION FOR RESEARCH, to settle before any design: ONE HOME FOR THE DERIVED OPERATORS. FormalSystem/Semantics/TruthClauses.lean already defines the derived operators once, generically over the clause classes (TruthEnv, BotClause, ImpClause, BoxClause, UntlClause, SnceClause, StabClause and their bundles): neg, top, and, or, diamond, someFuture, allFuture, kPlus, after, somePast, allPast, kMinus, always, among others, as abbrevs, and every language (L, L-plus, L-star, L-minus, Open, Hybrid, Quant) instantiates those classes. A syntactic signature layer that defines the same operators again would be a second generic copy beside the per-language ones, which is the duplication this task exists to remove. Decide, with the options and the evidence for each stated: (i) the signature is the syntactic half of the clause classes, the clause classes extend it, and the operators of TruthClauses.lean move down to it; (ii) the clause classes stay the one generic home and the per-language syntax files take their operators from them; (iii) two layers tied by rfl rows, and why that would not be a wrapper to rip out later. The answer fixes where the interval operators and the next and prev encoding of deliverables (b) and (c) live, what the temporal rules of the proof mode are stated about, and how deliverable (d) recognizes L-star operators. State the import and layering consequences (TruthClauses.lean is at the semantics layer; syntax sits below it) and the cost to the open contributions that build on the current definitions.
+**Description**: Introduce a connective signature layer under FormalSystem so that TM and TM+ share one primitive signature and one set of derived operators instead of PlusFormula being a verbatim copy of Formula. PRIMITIVES STAY MINIMAL. Formula (FormalSystem/Syntax/Formula.lean) has six constructors (atom, bot, imp, box, untl, snce) and PlusFormula (FormalSystem/PlusLanguage/Formula.lean) restates all six and adds stab for the stability operator; that minimality is correct for TM and TM+ and is to be preserved. Do NOT adopt cslib's non-minimal expansion to primitive diamond, allFuture and allPast (cslib Cslib/Logics/Modal/Basic.lean has primitive and, or, box, diamond; Cslib/Logics/Temporal/Syntax/Formula.lean has primitive allFuture and allPast; the rationale and the 11-primitive target for the Bimodal layer are in cslib specs/181_bimodal_primitive_dia_always_historically/reports/01_bimodal-primitive-expansion-research.md, and cslib task 181 is still NOT STARTED so its own tree is inconsistent with that target). Non-minimality exists there to let one syntax serve minimal and intuitionistic propositional bases, since each classical interdefinability fails in a weaker logic; TM and TM+ are classical, so adopting it here would buy nothing and would move most of the views tier out of views and into the derivation tier as theorems. THE DEFECT IS DUPLICATION, NOT THE PRIMITIVE CHOICE. Eighteen derived operators are defined verbatim in both syntax files: after, allFuture, allPast, always, and, diamond, kMinus, kPlus, neg, next, or, prev, reflectTime, someFuture, somePast, sometimes and top. This is the syntax-layer root of the tmX / plusX name-pair duplication, and it violates principle 5 of records/proof-mode-architecture.md (languages are instances of an interface, not copies of a file). MODEL TO FOLLOW. cslib Cslib/Foundations/Logic/Connectives.lean (224 lines) is a working instance of the wanted shape and is directly portable: one class per primitive operator (HasBot, HasImp, HasBox, HasUntil, HasSince, HasNext), then PropositionalConnectives extending HasBot and HasImp and supplying neg := phi -> bot and top := bot -> bot as DEFAULT FIELD VALUES so the derived Boolean operators are written once, then a hierarchy of ModalConnectives, FutureTemporalConnectives, TemporalConnectives, LTLConnectives and BimodalConnectives with a bridge instance from BimodalConnectives to ModalConnectives. Four cslib languages share that one definition of neg and top. Note one tension to resolve rather than copy: cslib's ModalConnectives is box-only and minimal while its concrete Modal.Proposition carries a primitive diamond, so interface and inductive disagree there. DELIVERABLE. A signature layer under FormalSystem carrying one class per primitive operator including a stability class for the TM+ operator, a propositional class supplying the derived Boolean operators once, and a bimodal class, with Formula and PlusFormula as instances and the eighteen doubled definitions written once. ALSO ASSESS reducibility: all 35 definitions in FormalSystem/Syntax/Formula.lean are opaque defs and cslib uses abbrev for its Boolean and dual definitions, which unfold definitionally; making the pure Boolean and dual definitions here reducible would let part of the views tier be definitional rather than a table of view rows with unfolding lemmas, which bears directly on the views tier design in records/proof-mode-architecture.md. SEQUENCING. This sits BELOW the proof mode and is a prerequisite for proof_mode_abstract_frontend_interface, whose object-level class is to package the connectives among its members and which should require this signature rather than re-package it; a dependency edge is filed to that effect. Keep the Atom type fixed as it is; cslib parameterizes Formula over the atom type but that is a separate and larger change and is out of scope here. The stability operator shares the Modal class: the family layout is fixed with it in Modal, the shared statement is a K core with T, 4 and 5 as further members, and docs/development/stability-operator-family.md gives the grounds. LANDING WINDOW. ORDER: SPLIT, not whole-task deferral. The signature layer, the instances, the generated bodies for the four formula types and the clause-class restatement (plan phases 1-6) land BEFORE the temporal contribution merges: that branch, checked at head 5ecc91d63, names no clause class, no TruthClauses operator and neither FormalSystem/Syntax/Formula.lean nor FormalSystem/PlusLanguage/Formula.lean, so there is no overlap to serialize. What waits on the merge is the part that absorbs that branch's own work: the interval operators and the one next/prev encoding (deliverable (b), plan phase 7), operator recognition through the signature (deliverable (d), plan phase 8), the closing gates (plan phase 9), and the two TemporalViews tasks of plan phase 5. Those are deferred because they would otherwise repoint twenty view rows onto a signature the contribution's author has not seen -- design work landing on the wrong desk, not a conflict to resolve. On merging, that contribution adds FormalSystem/PlusLanguage/TemporalViews.lean, which declares `Formula.inclusiveUntil`, `Formula.inclusiveSince` and the TM expansions under the TM+ directory, and FormalSystem/Tactic/TemporalFormulaViews.lean, which registers twenty view rows about them. Deliverable (b) absorbs those definitions onto the signature, keeps the per-language names as instances, and repoints the view rows; it does not define the interval operators a second time. Research and planning are done; implementation of plan phases 1-6 may proceed now, and only the deferred parts named under LANDING WINDOW wait. ADDITIONAL DELIVERABLES (done-when of milestone D1 in records/milestones.md). (a) StarFormula (FormalSystem/StarLanguage) is an instance beside Formula and PlusFormula; it carries its own copy of next among others. (b) The interval operators are defined once on the signature: inclusiveUntil, inclusiveSince, release, trigger, weakUntil and weakSince, agreeing in argument order with Formula.release, Formula.trigger, Formula.weakUntil and Formula.weakSince (see the Argument-order trap note on Formula.release), and the clause lemmas of FormalSystem/Semantics/TemporalIntervals.lean (inclusiveUntil_iff, release_iff, weakUntil_iff and their past duals; that module arrives with branch feat/pointed-semantic-lemmas) are restated about them instead of about inline derived formulas. (c) One next and prev encoding: TemporalRules.next and prev of FormalSystem/Semantics/TemporalRules.lean, Formula.next, PlusFormula.next, StarFormula.next and the copy in FormalSystem/Metalogic/Expressiveness/SeparationZ/Syntax.lean are one definition or are tied by rfl rows in Tests/BimodalTest/Semantics/ValidityLayerTest.lean. (d) FormalSystem/Tactic/FormulaSyntax.lean, which matches TM and TM+ operator names only, reads the signature so that operator recognition reaches L⋆; the semantic evaluator of records/semantic-proof-mode.md has L⋆ clients. FIRST QUESTION FOR RESEARCH, to settle before any design: ONE HOME FOR THE DERIVED OPERATORS. FormalSystem/Semantics/TruthClauses.lean already defines the derived operators once, generically over the clause classes (TruthEnv, BotClause, ImpClause, BoxClause, UntlClause, SnceClause, StabClause and their bundles): neg, top, and, or, diamond, someFuture, allFuture, kPlus, after, somePast, allPast, kMinus, always, among others, as abbrevs, and every language (L, L-plus, L-star, L-minus, Open, Hybrid, Quant) instantiates those classes. A syntactic signature layer that defines the same operators again would be a second generic copy beside the per-language ones, which is the duplication this task exists to remove. Decide, with the options and the evidence for each stated: (i) the signature is the syntactic half of the clause classes, the clause classes extend it, and the operators of TruthClauses.lean move down to it; (ii) the clause classes stay the one generic home and the per-language syntax files take their operators from them; (iii) two layers tied by rfl rows, and why that would not be a wrapper to rip out later. The answer fixes where the interval operators and the next and prev encoding of deliverables (b) and (c) live, what the temporal rules of the proof mode are stated about, and how deliverable (d) recognizes L-star operators. State the import and layering consequences (TruthClauses.lean is at the semantics layer; syntax sits below it) and the cost to the open contributions that build on the current definitions.
 
 ---
 
@@ -257,8 +472,7 @@ next_project_number: 993
 ---
 
 ### 969. Proof mode views tier
-- **Status**: [HOLD]
-- **Held**: 2026-11-24
+- **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: proof-mode
 - **Dependencies**: Task 960, Task 977, Task 986
@@ -351,8 +565,7 @@ next_project_number: 993
 ---
 
 ### 960. Proof mode split shared test and guide files
-- **Status**: [HOLD]
-- **Held**: 2026-11-24
+- **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: proof-mode
 - **Dependencies**: None
@@ -372,8 +585,7 @@ next_project_number: 993
 ---
 
 ### 956. Proof mode leads to invariance library
-- **Status**: [HOLD]
-- **Held**: 2026-11-24
+- **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: proof-mode
 - **Dependencies**: Task 948, Task 950, Task 952
@@ -413,8 +625,7 @@ next_project_number: 993
 ---
 
 ### 952. Proof mode abstract frontend interface
-- **Status**: [HOLD]
-- **Held**: 2026-11-24
+- **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: proof-mode
 - **Dependencies**: Task 948, Task 951, Task 963, Task 964, Task 969, Task 977
@@ -424,8 +635,7 @@ next_project_number: 993
 ---
 
 ### 951. Proof mode dense and real time rules
-- **Status**: [HOLD]
-- **Held**: 2026-11-24
+- **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: proof-mode
 - **Dependencies**: Task 947
@@ -435,8 +645,7 @@ next_project_number: 993
 ---
 
 ### 950. Proof mode until since intro unfold induction
-- **Status**: [HOLD]
-- **Held**: 2026-11-24
+- **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: proof-mode
 - **Dependencies**: Task 949, Task 987
@@ -446,8 +655,7 @@ next_project_number: 993
 ---
 
 ### 949. Proof mode linearity case tactic
-- **Status**: [HOLD]
-- **Held**: 2026-11-24
+- **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: proof-mode
 - **Dependencies**: Task 947
@@ -477,8 +685,7 @@ next_project_number: 993
 ---
 
 ### 946. Proof mode always sometimes scopes
-- **Status**: [HOLD]
-- **Held**: 2026-11-24
+- **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: proof-mode
 - **Dependencies**: Task 945, Task 969
@@ -488,8 +695,7 @@ next_project_number: 993
 ---
 
 ### 945. Proof mode cross modal scopes mf tf
-- **Status**: [HOLD]
-- **Held**: 2026-11-24
+- **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: proof-mode
 - **Dependencies**: Task 944
@@ -499,8 +705,7 @@ next_project_number: 993
 ---
 
 ### 944. Proof mode s5 aware box scopes
-- **Status**: [HOLD]
-- **Held**: 2026-11-24
+- **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: proof-mode
 - **Dependencies**: Task 960
@@ -1270,16 +1475,11 @@ POST-RELOCATION NOTE (2026-09-21). Task 634 has landed and moved Tests/BimodalTe
 ---
 
 ### 428. Engine totality at a quantified branch budget
-- **Status**: [BLOCKED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 465
 - **Parent**: Task 165
-- **Plan**:
-  - [428_engine_totality_at_a_quantified_branch_budget/plans/02_lexicographic-splitordered-measure.md]
-  - [428_engine_totality_at_a_quantified_branch_budget/plans/03_mint-bound-irreflexivity-totality.md]
-  - [428_engine_totality_at_a_quantified_branch_budget/plans/04_ordtimesknown-strengthening-totality.md]
-  - [428_engine_totality_at_a_quantified_branch_budget/plans/01_budget-totality-engine-repair.md]
 - **Summary**:
   - [428_engine_totality_at_a_quantified_branch_budget/summaries/02_lexicographic-splitordered-measure-summary.md]
   - [428_engine_totality_at_a_quantified_branch_budget/summaries/01_budget-totality-engine-repair-summary.md]
@@ -1290,6 +1490,7 @@ POST-RELOCATION NOTE (2026-09-21). Task 634 has landed and moved Tests/BimodalTe
   - [428_engine_totality_at_a_quantified_branch_budget/reports/01_budget-totality-refuted-and-repair.md]
   - [428_engine_totality_at_a_quantified_branch_budget/reports/02_splitordered-measure-blocker.md]
   - [428_engine_totality_at_a_quantified_branch_budget/reports/05_spawn-analysis.md]
+- **Plan**: [428_engine_totality_at_a_quantified_branch_budget/plans/06_residual-verdicts-and-closability.md]
 
 **Description**: Engine totality at a quantified branch budget. Owns obstruction O1 of the Phase 7.3 deadlock recorded in specs/165_establish_semantic_finite_model_property/reports/09_phase7-deadlock-blocker-research.md section "The four obstructions" (read it first; do not re-derive the refutation).
 

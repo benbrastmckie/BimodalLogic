@@ -1,22 +1,83 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-11-25T22:45:00Z",
+  "completed_at": "2026-11-25T23:50:00Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 2,
+    "axiom_count": 14,
+    "build_passed": true,
+    "notes": "vacuous_count 2 and axiom_count 14 equal the Phase 1 baseline; the two pattern matches (AnyPoint in Semantics/PointTransport.lean, int_domain_universal in Examples/TemporalStructures.lean) are not placeholders and were not written by this task. lake build (3029 jobs), lake test and lake lint exit 0. scripts/verify-all.sh exits 1 on readme-lint.sh (two stamps stale since 2026-11-23 and 2026-11-24 from other work) and check-paper-definitions.sh (paper drift); no finding is owed to this task. .claude/scripts/verify-touched.sh exits 1 in agent-tooling suites (116 passed, 16 failed of 142); the complete agent-system gate set is deferred to the batch stage."
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/977_connective_signature_layer_shared_primitives/plans/01_connective-signature-layer.md",
-      "summary": "Nine sequential phases (12.5 hours): landing gate on the temporal contribution, layer-0 signature module, sig% body generator with gate test, instances for nine formula types, generated bodies for L, L+, L-star and USForm, clause classes as Prop mixins (atomic batch), interval lemmas and one next/prev, signature-driven operator recognition, reducibility record and closing gates."
+      "type": "summary",
+      "path": "specs/977_connective_signature_layer_shared_primitives/summaries/02_connective-signature-layer-summary.md",
+      "summary": "All nine phases closed; Phase 9's C20, C35 and README-stamp findings repaired, with the remaining red gates attributed finding by finding."
     }
   ],
-  "next_steps": "Run /orchestrate 977 to execute the plan",
-  "metadata": {
-    "session_id": "sess_1795464911_3b5923_977",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 9,
-    "estimated_hours": 12.5,
-    "dependency_waves": [[1], [2], [3], [4], [5], [6], [7], [8], [9]]
+  "completion_data": {
+    "completion_summary": "A connective signature layer (FormalSystem/Syntax/Connectives.lean) now carries eight primitive-operator classes and the derived operators once; the nine formula types are instances, four take generated bodies, the clause classes are mixins over it, and operator recognition reads it. Phase 9 recorded the reducibility assessment, documented the layer, and repaired the citation and README-stamp findings the earlier phases introduced.",
+    "roadmap_items": []
   },
-  "memory_candidates": [],
-  "dispatch_seq": 5
+  "modified_files": [
+    "FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleMonadicBridge.lean",
+    "FormalSystem/Metalogic/Decidability/Tableau.lean",
+    "FormalSystem/Metalogic/Expressiveness/Kamp/DedekindINFDense.lean",
+    "FormalSystem/Metalogic/Expressiveness/Kamp/KMinusFaithfulRendering.lean",
+    "FormalSystem/Metalogic/Expressiveness/Kamp/KPlusFaithful.lean",
+    "FormalSystem/Metalogic/Expressiveness/Kamp/KPlusFaithfulRendering.lean",
+    "FormalSystem/Metalogic/Expressiveness/Kamp/PriorINF.lean",
+    "FormalSystem/Metalogic/Expressiveness/README.md",
+    "FormalSystem/Metalogic/Expressiveness/SeparationZ/README.md",
+    "FormalSystem/Metalogic/SoundnessLemmas/README.md",
+    "FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/NoGaps.lean",
+    "FormalSystem/NomicLanguage/README.md",
+    "Tests/BimodalTest/Metalogic/Decidability/TableauConformance.lean",
+    "scripts/lean-citation-manifest.json",
+    "specs/977_connective_signature_layer_shared_primitives/plans/01_connective-signature-layer.md",
+    "specs/977_connective_signature_layer_shared_primitives/summaries/02_connective-signature-layer-summary.md",
+    "specs/977_connective_signature_layer_shared_primitives/handoffs/phase-9-handoff-20261125T234500Z.md"
+  ],
+  "handoff_path": "specs/977_connective_signature_layer_shared_primitives/handoffs/phase-9-handoff-20261125T234500Z.md",
+  "sapience_notes": [
+    {
+      "subject": "BimodalLogic reanchor-lean-citations.py --by-name coverage",
+      "value": "finding is: `python3 scripts/reanchor-lean-citations.py --by-name --files F` re-points only a `F:NNN` citation whose declaration name is on the same line. A citation whose name sits on the previous line is left alone, and after a uniform shift it lands on a non-blank line, so C20 tier 1 of scripts/check-module-invariants.sh passes it stale. After any run, grep every citation of F and compare against the measured shift."
+    },
+    {
+      "subject": "BimodalLogic reanchor-lean-citations.py range citations",
+      "value": "finding is: the by-name mode re-pointed a named range citation `Syntax/Formula.lean:185-186` to `205-206`, the declaration's `def` line and the blank line after it, where the shifted docstring range was 193-194. The C20 run that followed did not report the blank range end. Range citations need a hand check after the tool runs."
+    },
+    {
+      "subject": "BimodalLogic readme-lint.sh staleness rule",
+      "value": "finding is: scripts/readme-lint.sh dates a directory by `git log -1 --format=%cs -- <dir>`, which is recursive. A one-line comment edit in a subdirectory file makes every ancestor README with a non-baselined stamp a stale-date finding, so a citation repair in Metalogic/WeakCanonical/DenseModelSurgery/ touches the staleness of Metalogic/WeakCanonical/README.md. A plan that edits a file must list each ancestor README whose stamp is not on scripts/readme-date-baseline.txt."
+    },
+    {
+      "subject": "BimodalLogic README Last-verified stamps hide prose drift",
+      "value": "finding is: all four READMEs restamped at the close of the connective-signature work had prose that disagreed with their directories: SeparationZ's hand-written line counts were wrong on nine of thirteen files, Expressiveness described its generated inventory table as hand-written and listed imports the directory does not have, and SoundnessLemmas listed two of six importers. readme-lint.sh checks the date, not the content; moving a stamp without reading the README certifies stale prose."
+    },
+    {
+      "subject": "BimodalLogic verify-all.sh vs check-module-invariants.sh",
+      "value": "finding is: scripts/verify-all.sh runs check-module-invariants.sh with --no-build, so C14's #print axioms half and C16's env-linter batches are not in it. On branch dev/m7-ladder-continuation at 2026-11-25 the full script fails on C14 (baseline row RaySummary.exists_kappa_collision_cellAt_ne_at_K4_clip not produced) and C16 (six entries above ceiling in BimodalLibTest, ProofModeTemporalTest and four BimodalTools modules) while verify-all.sh reports the script as passing."
+    },
+    {
+      "subject": "BimodalLogic verify-touched.sh in a stale deploy",
+      "value": "finding is: with the deployed .claude/ tree stale for the core extension, `bash .claude/scripts/verify-touched.sh` selected 142 suites, ran about 35 minutes and failed 16 of them in agent-tooling suites citing files missing under agent-system/extensions/, independent of which Lean or README files were touched. A foreground Bash call is cut near 180 s, so it has to be detached and polled by PID."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1795633130_733118",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "compliance_check": "skipped",
+    "phase": 9,
+    "commit": "caed8ba3b"
+  }
 }

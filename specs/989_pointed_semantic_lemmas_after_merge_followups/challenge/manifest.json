@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "task_number": 989,
+  "plan_path": "specs/989_pointed_semantic_lemmas_after_merge_followups/plans/01_pointed-semantic-lemmas-followups.md",
+  "project_root": "/home/benjamin/Projects/BimodalLogic",
+  "challenge_module": "Challenge",
+  "challenge_path": "Challenge.lean",
+  "theorem_names": [
+    "SameStateNowEnv",
+    "ShiftedEnv",
+    "allFuture_persist_of_tense",
+    "allPast_persist_of_tense",
+    "release_iff_forall",
+    "star_iffTransport_stateLocal",
+    "star_iffTransport_timeShift",
+    "trigger_iff_forall"
+  ],
+  "route": "plan-declared",
+  "commit": "5c2dd325330ac0578f5b0fcbf9821c49597d0122",
+  "content_sha256": "195d01a5fe43a1b05fa384156beec0a76cc58a5156cbce61c7cef01bdfc5a255",
+  "created_at": "2026-11-25T01:24:28Z"
+}

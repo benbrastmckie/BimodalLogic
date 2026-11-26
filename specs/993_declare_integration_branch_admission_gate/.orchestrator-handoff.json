@@ -1,0 +1,20 @@
+{
+  "status": "implemented",
+  "phases_completed": 2,
+  "phases_total": 2,
+  "summary": "Declared integration_branch=\"dev/m7-ladder-continuation\" and worktree_isolation=\"off\" as top-level sibling keys in the project-root .claude-extensions.json, proving the admission gate armed via a two-arm live falsification (a deliberately wrong declared branch produced a real off_integration_branch refusal; the correct declaration produced an armed admit, observed as dirty_primary_tree -- accepted per the plan's own contingency as positive branch-arm evidence). Recorded the two maintenance obligations the declaration creates (re-declare on fresh clone; update in the same action as any branch rename) in a new ## Orchestration Branch Declaration section of the tracked docs/project-info/MAINTENANCE.md, since the manifest itself is gitignored and uncommittable here. Two unrelated, pre-existing test failures were observed in the scoped verify-touched.sh batteries and recorded as non-blocking issues rather than fixed.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/993_declare_integration_branch_admission_gate/summaries/01_declare-integration-branch-admission-gate-summary.md",
+      "summary": "Implementation summary: admission gate armed, two-arm falsification evidence, maintenance obligations recorded."
+    },
+    {
+      "type": "plan",
+      "path": "specs/993_declare_integration_branch_admission_gate/plans/01_declare-integration-branch-admission-gate.md",
+      "summary": "2-phase plan, both phases [COMPLETED]: declare both admission keys behind a two-arm live --dry-run falsification, then record the re-declaration and branch-rename obligations in a tracked doc."
+    }
+  ],
+  "dispatch_seq": 6
+}

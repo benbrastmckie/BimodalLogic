@@ -1,0 +1,20 @@
+{
+  "status": "implemented",
+  "dispatch_seq": 3,
+  "phases_completed": 8,
+  "phases_total": 8,
+  "summary": "All eight plan phases are complete. Recorded the joint-`Authors:` convention and its attribution threshold in docs/development/LEAN_STYLE_GUIDE.md section 4, added .mailmap plus scripts/check-header-attribution.sh as the eleventh gate in both scripts/verify-all.sh and .github/workflows/ci.yml, and relaxed check-copyright-headers.sh's continuation-line predicate to accept Mathlib's real multi-line form. All 27 live attribution candidates are resolved: 17 headers backfilled to the joint form, 10 reviewed waivers each carrying its measurement. CITATION.cff names both contributors with release metadata deliberately unbumped, and the scope of the \"attribution is correct\" claim is recorded with its exclusion list.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/996_standardize_contributor_attribution_in_headers/summaries/01_header-attribution-convention-gate-summary.md",
+      "summary": "Implementation summary: convention and threshold recorded, .mailmap identity map, new eleventh gate wired, 17 headers backfilled plus 10 reviewed waivers, CITATION.cff amended."
+    },
+    {
+      "type": "plan",
+      "path": "specs/996_standardize_contributor_attribution_in_headers/plans/01_header-attribution-convention-gate.md",
+      "summary": "All eight phase headings marked [COMPLETED]; Phase 8 carries the scoped-discharge record for the batch-gate deferral."
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "status": "implemented",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true
+  },
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/984_promote_next_prev_covby_to_generic_lemmas/summaries/01_promote-next-prev-covby-generic-summary.md",
+      "summary": "Promoted the succ/pred characterization of X/Y into the generic clause layer and re-bodied all five base-language copies as one-line instances of it."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "FormalSystem/Semantics/TemporalRules.lean gained a generic next_iff_succ/prev_iff_pred pair over TruthEnv + UntlClause/SnceClause, with no attribute and no new import. All four SourceLanguage declarations and Metalogic.truthAt_next_iff were re-bodied as one-line applications of the generic pair with every name and statement byte-identical, sat_iff and truthAt_next_iterate re-proving verbatim and both C14 axiom pins unmoved. Every documentation surface recording the duplication as deliberate and unresolved now states the clause-layer design.",
+    "roadmap_items": []
+  },
+  "modified_files": [
+    "FormalSystem/Semantics/TemporalRules.lean",
+    "Tests/BimodalTest/Semantics/TemporalRulesTest.lean",
+    "FormalSystem/SourceLanguage/SentenceTruth.lean",
+    "FormalSystem/SourceLanguage/README.md",
+    "FormalSystem/SourceLanguage.lean",
+    "FormalSystem/Metalogic/DiscreteNonCompactness.lean",
+    "FormalSystem/Metalogic.lean",
+    "FormalSystem/Metalogic/AuxiliaryAtoms.lean",
+    "FormalSystem/Metalogic/README.md",
+    "FormalSystem/NomicLanguage/NomicTruth.lean",
+    "FormalSystem/NomicLanguage/README.md",
+    "FormalSystem/Semantics/README.md",
+    "FormalSystem/README.md",
+    "README.md",
+    "typst/generated/status.typ",
+    "specs/984_promote_next_prev_covby_to_generic_lemmas/plans/01_promote-next-prev-covby-generic.md",
+    "specs/984_promote_next_prev_covby_to_generic_lemmas/summaries/01_promote-next-prev-covby-generic-summary.md"
+  ],
+  "sapience_notes": [
+    {
+      "subject": "Lean clause-layer promotion is the cheap fix for a duplicated truth lemma blocked by an upward import",
+      "value": "In BimodalLogic, SentenceTruth.lean's docstring recorded its next/prev duplication with Metalogic/DiscreteNonCompactness.lean as deliberate and unresolved because consolidating would need an upward layer-1 -> Metalogic import. The actual resolution needed no upward edge at all: state the fact generically over the TruthEnv/UntlClause clause layer in Semantics/TemporalRules.lean (layer 1) and re-body both copies as its instances. A recorded 'blocked by layering' note is worth re-testing whenever an abstraction layer has been added since the note was written."
+    },
+    {
+      "subject": "Re-body, never delete-and-repoint, when a specialized copy feeds a simp set or an axiom pin",
+      "value": "Measured in BimodalLogic: SourceLanguage.sat_iff consumes next_iff_covBy/prev_iff_covBy as simp lemmas whose LHS is TruthAt … (Formula.next …), which the generic clause-layer LHS TruthEnv.T … (TemporalRules.next φ) does not syntactically match, so deleting the specialized names would break sat_iff even though the facts are identical. Independently, truthAt_next_iff/truthAt_next_iterate are pinned by fully qualified name against exact #print axioms strings at scripts/check-module-invariants.sh:2316-2317. Re-bodying keeps both surfaces intact; deletion breaks both."
+    },
+    {
+      "subject": "Promoting a Lean proof to a generic statement can shrink the axiom profile",
+      "value": "Re-bodying FormalSystem.SourceLanguage.next_iff_covBy/prev_iff_covBy as instances of the generic TemporalRules.next_iff/prev_iff dropped Quot.sound: [propext, Quot.sound] -> [propext]. The cause is the tactic route, not the statement -- the specialized proofs used simp only [Formula.next, Truth.untl_iff, Truth.bot_false] while the generic one rewrites with the clause lemma directly. The succ forms stayed at [propext, Classical.choice, Quot.sound]. Worth measuring per declaration after any re-body, since an improvement no baseline pins is free and a regression against a pinned one is a hard stop."
+    },
+    {
+      "subject": "The 'no code changed, only docstrings' diff check in common use is a false-positive generator",
+      "value": "The idiom git diff -U0 -- '*.lean' | grep '^+' | grep -vE '^\\+\\s*(--|/-|\\*|-\\)|$)' allowlists only comment-OPENER prefixes, so every continuation line inside an existing /-! … -/ or /-- … -/ block is reported as added code. A sound replacement: strip nested /- -/ and -- comments from each changed file at HEAD and in the working tree and compare the remainders -- that showed zero non-comment difference across three files the grep flagged."
+    },
+    {
+      "subject": "lake-build-guard.sh's result record is key=value, not JSON, and is the reliable way to get a build's PID",
+      "value": "<root>/.lake/build-guard.result is newline-separated key=value (state=, holder_pid=, exit_status=, pre/post_fingerprint=, scope_key=). Parsing it with json.load returns nothing and silently yields an empty holder_pid, which makes a kill -0 waiter exit immediately and look like WRITER_EXITED on a still-running build. Read it with grep '^holder_pid=' | cut -d= -f2. Separately, --no-share forces a genuine build rather than a replayed result, which matters when a final verdict must be a real run."
+    },
+    {
+      "subject": "verify-touched.sh's red is not automatically the calling task's red",
+      "value": "Confirmed again in BimodalLogic: a task touching 11 files had verify-touched.sh select 102 touched paths (it derives them from the whole working tree plus the committed diff against its own determined base, not from the task's modified_files) and run 95 suites. The one NEW failure, test-deploy-baseline-lib.sh, was attributable to the repository having no agent-system/ source store at all -- .claude/ is gitignored there, so the failing suite is in no commit of the task. Attribution has to be checked against the task's own modified_files before a scoped run's red is treated as the task's."
+    },
+    {
+      "subject": "Capture a moving gate baseline from a detached worktree at the task's base commit, not from a prior dispatch's note",
+      "value": "readme-lint.sh in BimodalLogic exits 1 at baseline, so its acceptance criterion is set equality of the new-stale finding set, not exit 0. Measuring that set at the base commit via git worktree add --detach <base> and diffing against scripts/readme-date-baseline.txt reproduced the predicted 7 directories exactly, and the same worktree confirmed check-module-invariants.sh --emit-inventory --check PASSed there. Under a multi-task batch a sibling can move either quantity between dispatches, so inheriting an earlier dispatch's number is unsafe."
+    },
+    {
+      "subject": "A fresh, ungrandfathered README stamp is mandatory work, not hygiene, and bumping a grandfathered one is a one-way loss",
+      "value": "BimodalLogic's readme-lint.sh compares each README's *Last verified:* stamp against git log -1 --format=%cs -- <dir>, with scripts/readme-date-baseline.txt grandfathering known-stale rows. Touching a directory whose README is currently fresh and absent from that baseline creates a genuine new finding unless the stamp is bumped; refreshing a grandfathered stamp permanently un-grandfathers that row and turns it into a PRUNE: candidate with no gate benefit. Two bumps were mandatory here (SourceLanguage, NomicLanguage) and three were deliberately left alone."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1795568175_0c8014",
+    "agent_type": "lean-implementation-agent",
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "task_dir": "specs/984_promote_next_prev_covby_to_generic_lemmas",
+    "compliance_check": "passed",
+    "verification_notes": "sorry_count 0 via lean-sorry-census.sh over the resolved source roots. vacuous_count 0 attributable: the repo-wide grep returns 2 hits (FormalSystem/Semantics/PointTransport.lean:215, FormalSystem/Examples/TemporalStructures.lean:495), both byte-identical at base commit 14c89dc3d and neither file in this task's diff. axiom_count 0 new declarations: git diff 14c89dc3d..HEAD -- '*.lean' | grep '^+axiom ' is empty; the repo-wide grep -rn '^axiom ' count of 14 is entirely wrapped prose lines beginning with the word axiom. Phase 5's full tier was discharged against the scoped narrowing verify-touched.sh per this dispatch's batch-gate directive; the complete gate set is DEFERRED to the orchestration close, not independently run. That scoped run: 84 passed, 1 failed (1 NEW), 10 skipped of 95, over 102 touched paths of which only 11 are this task's. The one NEW failure, .claude/scripts/tests/test-deploy-baseline-lib.sh, is non-attributable (no task-984 file referenced; .claude/ gitignored at .gitignore:107 so the suite is in no task-984 commit; agent-system/ source store absent from this repository entirely). Two further pre-existing non-attributable reds: check-module-invariants.sh C14 (pinned FormalSystem.Metalogic.Decidability.RaySummary.exists_kappa_collision_cellAt_ne_at_K4_clip absent from the measured set, also absent at base where only ..._clip_pre exists; the set difference is exactly that one line and neither of this task's pinned names moved) and C16 (6 entries above the c16-roots-baseline ceiling over other lakefile roots)."
+  }
+}

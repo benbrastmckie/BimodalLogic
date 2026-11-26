@@ -1,0 +1,82 @@
+{
+  "status": "implemented",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 14,
+    "build_passed": true
+  },
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/989_pointed_semantic_lemmas_after_merge_followups/summaries/01_pointed-semantic-lemmas-followups-summary.md",
+      "summary": "Ten new generic semantic declarations: positive readings for release and trigger, primitive-tense persistence reaching L-minus, and the two L-star transport factories with their env-aware point relations."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "All five plan phases landed the ten pinned declarations across four FormalSystem/Semantics modules with seven new test rows spanning L, L-minus, L-plus and L-star. Full guarded lake build green with zero diagnostics, zero sorries, axiom count unchanged at 14, and all six new theorems' axiom profiles matching the plan's predictions exactly. The three generic modules also took titled module docstrings and the directory-form assert_not_exists lock.",
+    "roadmap_items": []
+  },
+  "modified_files": [
+    "FormalSystem/Semantics/TemporalRules.lean",
+    "FormalSystem/Semantics/TemporalIntervals.lean",
+    "FormalSystem/Semantics/RankProgress.lean",
+    "FormalSystem/Semantics/PointTransport.lean",
+    "Tests/BimodalTest/Semantics/TemporalRulesTest.lean",
+    "Tests/BimodalTest/Semantics/PointTransportTest.lean",
+    "typst/generated/status.typ",
+    "README.md",
+    "specs/989_pointed_semantic_lemmas_after_merge_followups/plans/01_pointed-semantic-lemmas-followups.md",
+    "specs/989_pointed_semantic_lemmas_after_merge_followups/summaries/01_pointed-semantic-lemmas-followups-summary.md"
+  ],
+  "sapience_notes": [
+    {
+      "subject": "BimodalLogic FormalSystem/Semantics lock-form census",
+      "value": "The directory's assert_not_exists norm is the Axiom-rooted form: of 20 locks under FormalSystem/Semantics/**, 11 use exactly 'FormalSystem.ProofSystem.Axiom FormalSystem.ProofSystem.DerivationTree' and 5 more use a four-name form extending that prefix, so 16/20 share it. Measured on commit 5c2dd3253. Truth.lean and TruthTransport.lean are four-name, not two-name, despite being cited as the two-name templates."
+    },
+    {
+      "subject": "PointTransport.lean cannot take the Axiom-rooted lock",
+      "value": "FormalSystem/Semantics/PointTransport.lean's own import closure already puts Axiom and FrameClass in the environment via Semantics.HistoryMorphism -> PlusLanguage.PlusValidity -> Semantics.Validity -> Semantics.ValidityLayer -> Semantics.FrameClassValidity -> ProofSystem.Axioms, so naming Axiom in its lock is a compile error rather than a tightening. A DerivationTree-rooted lock naming the per-language derivation trees is the strongest claim it admits. Derivable need not be named: ProofSystem/Derivable.lean imports ProofSystem/Derivation.lean."
+    },
+    {
+      "subject": "Primitive-tense persistence is axiomatically cleaner than the untl-derived form",
+      "value": "Stating G/H persistence over AllFutureClause/AllPastClause alone yields [propext], while the existing untl-derived allFuture_persist is [propext, Classical.choice, Quot.sound]. The primitive-tense form also reaches L-minus, which instantiates TenseClauses and has no untl at all, so the untl-derived lemmas cannot be applied there. Measured by lean_verify on BimodalLogic at Lean v4.33.0-rc1."
+    },
+    {
+      "subject": "Shifted and SameStateNow leave Point.env unconstrained",
+      "value": "BimodalLogic's PointTransport relations Shifted and SameStateNow constrain only history and time, not Point.env. That is harmless where TruthEnv.Env is PUnit (L, L-plus) and false at L-star, whose env is the stored-time vector (fun F => Nat -> F.Duration). The fix is to ADD env-aware relations beside them rather than strengthen them, because the existing two-environment .intro signatures are consumed by plus_iffTransport_stateLocal and its test row; the strengthening is recovered from the new relation by .1."
+    },
+    {
+      "subject": "The (L := StarFormula) ascription on a generic point relation is load-bearing",
+      "value": "Writing IffTransport (ShiftedEnv (L := StarFormula) delta (fun v i => v i + delta)) requires the explicit L ascription: without it the shift function's v has nothing to fix its type against and elaboration fails with 'Function expected at v but this term has type TruthEnv.Env ?m F'. The same is needed at the .intro call site, plus an explicit (fun (v : Nat -> F.Duration) i => v i + delta). The ascription reads as redundant and is the kind of thing a cleanup pass deletes."
+    },
+    {
+      "subject": "verify-touched.sh suite count scales with specs/** artifacts, not code",
+      "value": "On a Lean-only task in BimodalLogic, verify-touched.sh selected 140 agent-system shell suites because the dispatch's own specs/** artifacts (plan, five handoffs) matched suite trigger maps, while all six Lean paths went to the OWED fallback record instead. The run takes well over 20 minutes. Size the outer timeout to the SELECTED SUITE COUNT before launching, and expect agent-system suite failures that name no file the task touched."
+    },
+    {
+      "subject": "A batch sibling's commits interleave into the branch range",
+      "value": "Under a multi-task /orchestrate batch on one shared integration branch, a sibling dispatch lands commits between this task's own phase commits, so git diff BASE..HEAD over-attributes the sibling's files. Take modified_files from a track-on-write list maintained during the run, never reconstructed from the branch range. Observed in BimodalLogic: task 993's commit landed between task 989's phase 2 and phase 3 commits."
+    },
+    {
+      "subject": "The harness backgrounds a Bash call at 180s regardless of the bounded-waiter idiom",
+      "value": "The canonical detach-plus-kill-0-wait idiom still gets moved to the background by the harness after 180 seconds in a single Bash call. The workable pattern is to capture the PID, let the call be backgrounded, then issue successive fresh Bash calls each running a bounded 'timeout 175 while kill -0 PID' loop on that captured PID until it reports WRITER_EXITED. That keeps liveness checks off ps/pgrep and off the log file."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1795568175_0c8014",
+    "agent_type": "lean-implementation-agent",
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "task_dir": "specs/989_pointed_semantic_lemmas_after_merge_followups",
+    "dispatch_seq": 3,
+    "compliance_check": "passed",
+    "phases_completed": 5,
+    "phases_total": 5,
+    "full_gate_set_deferred": true
+  }
+}

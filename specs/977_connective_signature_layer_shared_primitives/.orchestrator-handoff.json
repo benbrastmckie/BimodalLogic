@@ -1,15 +1,24 @@
 {
-  "status": "planned",
-  "summary": "Wrote a nine-phase sequential plan (12.5 hours) for the connective signature layer, following the research report's option (i): a layer-0 signature module, generated per-language bodies, clause classes as Prop mixins, one home for the interval operators and next/prev, and signature-driven recognition. Phase 1 is a landing gate that blocks until the temporal contribution (PR 8, still open) is on main. Carried figures were re-checked: 17 doubled operators, TemporalIntervals.lean already on main, clause-class names in 19 files, GenericSchemata.lean at 1440 lines. One issue was recorded to the issue log.",
-  "blockers": [],
-  "phases_completed": 0,
-  "phases_total": 9,
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 15,
+  "summary": "Phase 9 is closed and committed as caed8ba3b: the C20 citation findings, the C35 manifest and the four README stamps owed to this task are repaired, and lake build, lake test and lake lint are green. scripts/verify-all.sh still exits 1 on two checks whose findings predate this task (two stale README stamps from other work, paper-definitions drift). The scoped battery verify-touched.sh exits 1 in agent-tooling suites.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/977_connective_signature_layer_shared_primitives/plans/01_connective-signature-layer.md",
-      "summary": "Nine sequential phases, 12.5 hours; implementation gated on the temporal contribution merging."
+      "type": "summary",
+      "path": "specs/977_connective_signature_layer_shared_primitives/summaries/02_connective-signature-layer-summary.md",
+      "summary": "All nine phases closed, with each remaining red gate attributed finding by finding."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/977_connective_signature_layer_shared_primitives/handoffs/phase-9-handoff-20261125T234500Z.md",
+      "summary": "Phase 9 gate state, what the repair dispatch changed, and the carry-forward items outside file_scope."
     }
   ],
-  "dispatch_seq": 5
+  "phases_completed": 9,
+  "phases_total": 9,
+  "blockers": [],
+  "plan_markers_verified": true,
+  "continuation_path": "specs/977_connective_signature_layer_shared_primitives/handoffs/phase-9-handoff-20261125T234500Z.md",
+  "next_action_hint": "Run the deferred batch gate. verify-touched.sh exited 1 here (116 passed, 16 failed, 10 skipped of 142; fallback 83/2/10 of 95; Phase 5 measured 117/15), in agent-tooling suites citing a missing agent-system/extensions tree; the deployed core extension is reported stale. scripts/verify-all.sh is red only on readme-lint.sh (Metalogic/Conservativity/Star/README.md, Metalogic/WeakCanonical/README.md) and check-paper-definitions.sh, none owed to this task."
 }

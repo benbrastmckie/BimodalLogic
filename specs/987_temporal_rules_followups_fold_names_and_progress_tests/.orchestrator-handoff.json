@@ -1,0 +1,50 @@
+{
+  "status": "implemented",
+  "dispatch_seq": 5,
+  "phases_completed": 8,
+  "phases_total": 8,
+  "summary": "All eight phases of task 987 are complete and committed, closing every one of the seven temporal-rules follow-ups: the expand/contract rename across the pure rules and the automation layer, the instance-synthesis reordering in applyDerivationProof plus the firstNewIndex ordering contract its docstring was missing, the narrowed integerTimeGate catch, a sixteen-cell lprogress coverage matrix, #guard_msgs pins for every reachable throwError path the contribution added, three corrected module descriptions, and a regenerated status stamp. This dispatch ran the closing gates phase 8 still owed and flipped its marker: unscoped guarded lake build green (exit 0, 3027 jobs, zero error: lines), guarded lake test green (exit 0, zero error lines), and a detached worktree at stamp commit 3d141e284 reproducing every scalar in typst/generated/status.typ including formalsystem-line-count 422525. The complete gate set is deferred to the batch stage per the dispatch directive and was discharged in-dispatch as verify-touched.sh (84 passed, 1 unattributable failure, 10 baseline skips) plus readme-lint.sh run directly, whose four new stale rows match the plan's prediction member for member with zero in-territory rows.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/987_temporal_rules_followups_fold_names_and_progress_tests/summaries/01_temporal-rules-followups-summary.md",
+      "summary": "Implementation summary covering all eight phases, the two [COMPLETED WITH EXCLUSIONS] outcomes and their reasoned exclusions, the full closing-gate results, and four follow-ups left for other records."
+    },
+    {
+      "type": "plan",
+      "path": "specs/987_temporal_rules_followups_fold_names_and_progress_tests/plans/01_temporal-rules-followups.md",
+      "summary": "Plan with all eight phase headings at a terminal marker; phase 8 flipped to [COMPLETED] with completion notes recording the scoped discharge and the explicit deferral of the complete gate set."
+    }
+  ],
+  "modified_files": [
+    "FormalSystem/Automation/ProofMode/Basic.lean",
+    "FormalSystem/Automation/ProofMode/README.md",
+    "FormalSystem/Automation/ProofMode/Temporal.lean",
+    "FormalSystem/Automation/ProofMode/TemporalBoolean.lean",
+    "FormalSystem/Automation/ProofMode/TemporalZTime.lean",
+    "FormalSystem/Theorems/ProofMode/README.md",
+    "FormalSystem/Theorems/ProofMode/TemporalComposition/README.md",
+    "FormalSystem/Theorems/ProofMode/TemporalComposition/TemporalZTime.lean",
+    "README.md",
+    "Tests/BimodalTest/Automation/ProofModeCarryingTest.lean",
+    "Tests/BimodalTest/Automation/ProofModeTemporalBooleanProgressTest.lean",
+    "Tests/BimodalTest/Automation/ProofModeTemporalTest.lean",
+    "Tests/BimodalTest/Automation/ProofModeTemporalZTimeTest.lean",
+    "Tests/BimodalTest/Automation/ProofModeTest.lean",
+    "typst/generated/status.typ",
+    "specs/987_temporal_rules_followups_fold_names_and_progress_tests/plans/01_temporal-rules-followups.md",
+    "specs/987_temporal_rules_followups_fold_names_and_progress_tests/summaries/01_temporal-rules-followups-summary.md",
+    "specs/987_temporal_rules_followups_fold_names_and_progress_tests/.return-meta.json",
+    "specs/987_temporal_rules_followups_fold_names_and_progress_tests/.orchestrator-handoff.json"
+  ],
+  "metadata": {
+    "session_id": "sess_1795592741_687c4b",
+    "agent_type": "lean-implementation-agent",
+    "task_number": 987,
+    "phase": "implement",
+    "gate_deferral": "The complete gate set is deferred to the batch stage at the end of this /orchestrate invocation, per the dispatch's Batch Gate Deferral directive, and is attributed back to this task by its own modified_files. Deferred, not forgiven.",
+    "verification_passed": true,
+    "resume_note": "Third dispatch of this implementation; dispatches 3 and 4 were interrupted by session restarts after their substantive work had landed. No phase work was redone."
+  }
+}

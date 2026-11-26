@@ -3,6 +3,11 @@
 **Plan**: `plans/04_ordtimesknown-strengthening-totality.md`
 **Phases**: 17 of 17 `[COMPLETED]`. No phase `[BLOCKED]`.
 **Status**: partial — every phase closed and the module green, sorry-free and axiom-free, but the
+- **Task**: TBD
+- **Started**: TBD
+- **Completed**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 terminus carries **four named residual hypotheses** and two of the plan's premises did not survive
 contact with the source. Both are recorded below and in-source.
 

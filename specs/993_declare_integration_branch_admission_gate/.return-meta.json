@@ -1,0 +1,107 @@
+{
+  "status": "implemented",
+  "dispatch_seq": 6,
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/993_declare_integration_branch_admission_gate/summaries/01_declare-integration-branch-admission-gate-summary.md",
+      "summary": "Declared integration_branch and worktree_isolation in .claude-extensions.json, proved the admission gate armed via a two-arm live falsification, and recorded the maintenance obligations in docs/project-info/MAINTENANCE.md."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Declared integration_branch=\"dev/m7-ladder-continuation\" and worktree_isolation=\"off\" in the gitignored .claude-extensions.json, confirmed the admission gate armed via a real off_integration_branch refusal and a real admit (dirty_primary_tree, accepted per plan contingency), and added a tracked ## Orchestration Branch Declaration section to docs/project-info/MAINTENANCE.md recording the re-declaration and branch-rename obligations."
+  },
+  "modified_files": [
+    ".claude-extensions.json",
+    "docs/project-info/MAINTENANCE.md"
+  ],
+  "memory_candidates": [
+    {
+      "content": "A declared integration_branch/worktree_isolation pair in .claude-extensions.json cannot be proven to have armed /orchestrate's admission gate merely by observing the disarmed-gate advisory stop printing -- an unparseable or misread manifest fails open to the same silent-undeclared state. The falsification must assert the positive signal: a deliberately wrong declared branch must produce a real off_integration_branch stop (stderr banner + stop.reason), and the correct declaration must then produce no off_integration_branch stop and no advisory line, via a --dry-run admission probe (scripts/orchestrate-cycle-plan.sh --dry-run --state-file specs/state.json <task>).",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/993_declare_integration_branch_admission_gate/summaries/01_declare-integration-branch-admission-gate-summary.md",
+      "confidence": 0.85,
+      "suggested_keywords": [
+        "admission-gate",
+        "integration_branch",
+        "falsification",
+        "dry-run-probe",
+        "orchestrate-admission"
+      ]
+    },
+    {
+      "content": "A dirty_primary_tree verdict from the admission admit-arm probe is positive evidence the branch-identity test passed (that arm is only reachable after the branch test succeeds), not a failed admit -- treat it as a branch-arm PASS rather than retrying until a bare 'admit' appears, especially under a concurrent multi-task batch where a sibling's own in-scope files legitimately dirty the tree.",
+      "category": "PATTERN",
+      "source_artifact": "specs/993_declare_integration_branch_admission_gate/summaries/01_declare-integration-branch-admission-gate-summary.md",
+      "confidence": 0.8,
+      "suggested_keywords": [
+        "admission-gate",
+        "dirty_primary_tree",
+        "concurrent-dispatch",
+        "batch-admission-lib"
+      ]
+    }
+  ],
+  "sapience_notes": [
+    {
+      "subject": "BimodalLogic batch-admission-lib.sh integration_branch semantics",
+      "value": "The admission consumer tests pure branch-identity equality (git symbolic-ref -q --short HEAD against the declared string), with no ancestry, descendant, or merge-target relation in the predicate. The declared value therefore names the branch the primary tree is required to sit on, not an eventual merge target -- declaring the long-lived merge target (e.g. main) instead of the active working branch would refuse nearly every ordinary invocation.",
+      "predicate": "finding is",
+      "ko_type": "fact",
+      "confidence": 0.9,
+      "source_loc": ".claude/scripts/lib/batch-admission-lib.sh:255-340"
+    },
+    {
+      "subject": "BimodalLogic admission gate refuse-vs-warn implementation",
+      "value": "The implementation offers exactly two states once integration_branch admission is wired: undeclared (one disarmed-gate advisory, neither branch nor dirty-tree arm armed) or declared (hard refuse on any branch mismatch, every cycle). There is no soft warn-only mode to select between -- accepting hard-refuse is a decision to accept the only implemented behavior, not a choice among alternatives.",
+      "predicate": "finding is",
+      "ko_type": "fact",
+      "confidence": 0.9,
+      "source_loc": ".claude/scripts/lib/batch-admission-lib.sh"
+    },
+    {
+      "subject": "BimodalLogic .claude-extensions.json gitignore status",
+      "value": "The project-root .claude-extensions.json manifest is gitignored in this repository (as is the project-root CLAUDE.md), so a hand-authored declaration added to it cannot be committed -- git-commit-scoped.sh reports a non-failure exit 8/9 skip for it rather than a commit. A fresh clone of this repository therefore starts with no declaration at all and the admission gate's disarmed-state advisory reappears until the keys are re-declared.",
+      "predicate": "finding is",
+      "ko_type": "fact",
+      "confidence": 0.95,
+      "source_loc": "specs/993_declare_integration_branch_admission_gate/plans/01_declare-integration-branch-admission-gate.md"
+    },
+    {
+      "subject": "BimodalLogic maintenance-obligation siting decision",
+      "value": "Decided to record the integration_branch declaration's two maintenance obligations (re-declare on fresh clone; update in the same action as any working-branch rename) in the tracked docs/project-info/MAINTENANCE.md rather than beside the manifest itself or in the agent-system's own repo-level-declarations.md, because both the manifest and the project-root CLAUDE.md are gitignored (would not survive a fresh clone) and the agent-system doc is a deployed .claude/** artifact whose source store resolves to a different repository.",
+      "predicate": "decision is",
+      "ko_type": "decision",
+      "confidence": 0.85,
+      "source_loc": "docs/project-info/MAINTENANCE.md"
+    },
+    {
+      "subject": "BimodalLogic test-deploy-baseline-lib.sh warm-cache flake",
+      "value": "test-deploy-baseline-lib.sh's warm-cache gate-skip control case ('a genuinely matching warm-cache entry was expected to skip gate 1 but did not') failed on an otherwise-unrelated run of verify-touched.sh scoped to a pure-documentation edit, indicating a timing-sensitive assertion in that suite rather than a defect introduced by the edit under test.",
+      "predicate": "finding is",
+      "ko_type": "insight",
+      "confidence": 0.6,
+      "source_loc": ".claude/scripts/tests/test-deploy-baseline-lib.sh"
+    },
+    {
+      "subject": "BimodalLogic agent-system/extensions/core source_dir resolution",
+      "value": "This repository's deployed core extension declares source_dir as /home/benjamin/.config/nvim/agent-system/extensions/core (an external store), not a local agent-system/extensions/core tree under the project root. Several of this repo's own test suites (test-orchestrate-build-dispatch.sh, test-postflight-deploy-gate.sh, test-redeploy-checkpoint-promotion.sh, test-verify-deploy-gate-selection.sh, test-deploy-root-guard.sh, test-lint-dead-command-recommendations.sh, test-routing-resolution.sh, test-source-store-path-lib.sh) hardcode a project-root-relative agent-system/extensions/... path and fail in this environment regardless of what any given task changes.",
+      "predicate": "finding is",
+      "ko_type": "fact",
+      "confidence": 0.8,
+      "source_loc": ".claude-extensions.json"
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1795592741_687c4b",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "general-implementation-agent"
+    ],
+    "phases_completed": 2,
+    "phases_total": 2
+  }
+}

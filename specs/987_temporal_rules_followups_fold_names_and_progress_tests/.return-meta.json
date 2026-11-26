@@ -1,0 +1,118 @@
+{
+  "status": "implemented",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 14,
+    "build_passed": true,
+    "notes": "Unscoped guarded `lake build`: exit 0, 3027 jobs, zero `error:` lines over both captured streams; `.olean` confirmed newer than source for all five changed library modules. Guarded `lake test` (`lake-build-guard.sh build --timeout 1800 -- test`): exit 0, zero `error` lines. sorry census 0. The vacuous-definition grep reports 2 raw hits, both PRE-EXISTING in files this task never touched (FormalSystem/Semantics/PointTransport.lean:215, FormalSystem/Examples/TemporalStructures.lean:495, last changed by other tasks) and both false positives of the single-line pattern against deliberate total-relation content, so this task's own vacuous_count is 0. axiom_count 14 is UNCHANGED: 14 at the pre-task base and 14 at HEAD by identical measurement, zero `axiom` lines added by any task-987 commit, none anywhere in this task's territory. Stamp reproduction (the one DONE WHEN clause with no mechanical gate): a detached worktree at stamp commit 3d141e284 plus `scripts/typst-status-counts.sh --json` reproduced EVERY scalar in typst/generated/status.typ, formalsystem-line-count 422525 included."
+  },
+  "scoped_gate": {
+    "deferral": "The complete gate set was DEFERRED to the batch stage at the end of this /orchestrate invocation, per the dispatch's Batch Gate Deferral directive, and is attributed back to this task by its own modified_files. It was not independently run and is not forgiven.",
+    "discharged_as": [
+      "bash .claude/scripts/verify-touched.sh (no arguments; 127 touched paths resolved) -- 84 passed, 1 failed, 10 skipped, 95 total",
+      "bash scripts/readme-lint.sh run directly under the directive's UNMAPPABLE CRITERION carve-out: the narrowed battery mapped none of the 127 touched paths to a readme-lint suite even though three README.md files sit in this task's own commits, and readme-lint.sh exposes no path-scoping flag, so it necessarily ran unscoped"
+    ],
+    "failing_suite_attribution": "The single NEW failing suite, .claude/scripts/tests/test-deploy-baseline-lib.sh (29 of 30 assertions passing; the failure is the gate-cache control 'a genuinely matching warm-cache entry was expected to skip gate 1 but did not'), is unattributable to this task. Per-touched-file evidence: .claude/ is gitignored in full (.gitignore:107), so that suite file is untracked and byte-identical before and after all of this task's commits; none of those commits touches any .claude/, scripts/ or lib/ path; the failing assertion exercises verify-deploy.sh gate-cache warm-skip against a synthetic /tmp scratch target sharing no input with any path in this task's file scope; and the last commit to touch that machinery predates this task.",
+    "skipped_suite_attribution": "The 10 skips are this checkout's standing, task-independent baseline: the suites requiring a local agent-system/extensions/ source store, which this repository resolves externally via .claude-extensions.json.",
+    "readme_lint": "Exits 1 with exactly the four stale rows the plan predicted -- FormalSystem/Metalogic/Conservativity/Star/README.md, FormalSystem/Metalogic/Expressiveness/README.md, FormalSystem/Metalogic/WeakCanonical/README.md, FormalSystem/Tactic/README.md -- member for member, and ZERO in-territory rows, which is the positive confirmation that the three in-territory stamp bumps landed. Derived by differencing live STALE DATE findings against scripts/readme-date-baseline.txt (65 live vs 63 baseline rows). None of the four directories is touched by any commit of this task. The plan's Scope Hypothesis anticipated this exit status; the hypothesis to confirm was the SHAPE, and the shape holds."
+  },
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/987_temporal_rules_followups_fold_names_and_progress_tests/summaries/01_temporal-rules-followups-summary.md",
+      "summary": "All seven temporal-rules follow-ups implemented across eight phases: expand/contract rename, instance-synthesis reordering plus its docstring ordering contract, narrowed integerTimeGate catch, lprogress coverage matrix, guard_msgs pins for every reachable added throwError path, three corrected module descriptions, and a status stamp whose commit reproduces its own counts."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Retired the colliding fold/unfold identifier vocabulary in favour of expand/contract across both the pure rules and the automation layer; fixed the latent instance-synthesis ordering bug in applyDerivationProof and stated the firstNewIndex ordering contract its docstring was missing; narrowed integerTimeGate's bare catch so a non-frame-class failure reaches the user with its own message; grew lprogress coverage from one cases-only example to a sixteen-cell matrix over four forms by four directions; pinned every reachable throwError path the contribution added with a #guard_msgs test and recorded an in-source reason for each of the six no user syntax can reach; corrected three wrong module descriptions; and regenerated the status stamp so its commit's own tree reproduces every figure it records.",
+    "roadmap_items": []
+  },
+  "modified_files": [
+    "FormalSystem/Automation/ProofMode/Basic.lean",
+    "FormalSystem/Automation/ProofMode/README.md",
+    "FormalSystem/Automation/ProofMode/Temporal.lean",
+    "FormalSystem/Automation/ProofMode/TemporalBoolean.lean",
+    "FormalSystem/Automation/ProofMode/TemporalZTime.lean",
+    "FormalSystem/Theorems/ProofMode/README.md",
+    "FormalSystem/Theorems/ProofMode/TemporalComposition/README.md",
+    "FormalSystem/Theorems/ProofMode/TemporalComposition/TemporalZTime.lean",
+    "README.md",
+    "Tests/BimodalTest/Automation/ProofModeCarryingTest.lean",
+    "Tests/BimodalTest/Automation/ProofModeTemporalBooleanProgressTest.lean",
+    "Tests/BimodalTest/Automation/ProofModeTemporalTest.lean",
+    "Tests/BimodalTest/Automation/ProofModeTemporalZTimeTest.lean",
+    "Tests/BimodalTest/Automation/ProofModeTest.lean",
+    "typst/generated/status.typ",
+    "specs/987_temporal_rules_followups_fold_names_and_progress_tests/plans/01_temporal-rules-followups.md",
+    "specs/987_temporal_rules_followups_fold_names_and_progress_tests/summaries/01_temporal-rules-followups-summary.md",
+    "specs/987_temporal_rules_followups_fold_names_and_progress_tests/.return-meta.json",
+    "specs/987_temporal_rules_followups_fold_names_and_progress_tests/.orchestrator-handoff.json"
+  ],
+  "sapience_notes": [
+    {
+      "subject": "lake-build-guard.sh takes only `build` as its build-mode subcommand; the lake verb goes after `--`",
+      "value": "`lake-build-guard.sh test --timeout 1800 -- test` exits 77 (usage error) and prints the usage block. The guard's subcommands are status/preflight/build/result; `build` is the only one that wraps a lake invocation, and the lake verb is the first element of the argument vector after `--`. The correct form for a guarded test run is `lake-build-guard.sh build --timeout 1800 -- test`. The guard validates that vector's head against an allowlist and refuses an unrecognized one BEFORE launching anything, so the mistake is cheap but silent about the fix."
+    },
+    {
+      "subject": "verify-touched.sh's narrowed battery does not reach readme-lint.sh even when README files are in the touched set",
+      "value": "Measured on BimodalLogic: verify-touched.sh resolved 127 touched paths including three README.md files inside the task's own commits, and mapped none of them to any readme-lint suite. A phase whose verification criterion names readme-lint must therefore invoke scripts/readme-lint.sh directly under the dispatch directive's UNMAPPABLE CRITERION carve-out. readme-lint.sh also exposes no path-scoping flag, so that direct invocation necessarily runs repo-wide."
+    },
+    {
+      "subject": "readme-lint.sh does not label which stale rows are new; the new set must be computed by differencing against the baseline file",
+      "value": "The script prints every live `STALE DATE:` row undifferentiated and reports only a count in its RESULT line (`FAIL (4 new stale dates, 0 new missing dates)`). To name the four, extract the live row paths and `comm -23` them against the paths in scripts/readme-date-baseline.txt. On BimodalLogic this gave 65 live against 63 baseline rows. The script does separately print `PRUNE:` candidates for baseline rows no longer matching a live finding."
+    },
+    {
+      "subject": "A .claude/-resident test suite failure is structurally unattributable to a repository task in a deploy-boundary repo",
+      "value": "In BimodalLogic, .gitignore:107 ignores /.claude entirely, so every file under .claude/scripts/tests/ is untracked. A suite failing there is byte-identical before and after a task's commits and cannot have been caused by them — a stronger argument than 'the paths look unrelated'. Check `git check-ignore -v` on the suite path before spending effort attributing such a failure; combine with a `git show --name-only` sweep over the task's commits showing no .claude/, scripts/ or lib/ path."
+    },
+    {
+      "subject": "A git-grep axiom-count baseline computed with glob pathspecs silently undercounts against a grep -r over resolved source roots",
+      "value": "Comparing `grep -rn '^axiom '` over lean-src-roots.sh's resolved roots (14) against `git grep -c '^axiom ' <base> -- 'FormalSystem/**.lean' ...` (12) produced a false +2 regression signal. The glob pathspecs missed top-level root files like FormalSystem.lean. Always compute both sides with the SAME mechanism — git grep at both revisions over the same literal root list — before reporting an axiom-count delta."
+    },
+    {
+      "subject": "Regenerating a git-HEAD-stamped generated file on the merged tree fixes the stamp and its counts in one run",
+      "value": "typst/generated/status.typ records a stamp-commit from `git rev-parse --short HEAD`. When it was regenerated while HEAD sat on another branch with the contribution's files only in the working tree, the stamp named a commit whose tree could not reproduce the recorded counts. A single bare run of scripts/typst-status-counts.sh on the merged tree repaired both, and the fix is verifiable independently of any gate: `git worktree add --detach <scratch> <stamp-commit>` then `<scratch>/scripts/typst-status-counts.sh --json` (the --json path reads no .lake and takes no lock). typst-sync-check.sh cannot do this job — its Check 2 excludes the stamp fields and compares against the working tree, so it prints 'Nothing to fix' for a stale stamp whose counts already match."
+    },
+    {
+      "subject": "A pre-fix failure message embedding a metavariable number cannot be pinned with #guard_msgs",
+      "value": "The instance-synthesis ordering regression in applyDerivationProof fails pre-fix with `lapply could not synthesize the required instance FrameTag ?fc` — the `?m.N` / `?fc` token is not stable across elaborations, so a #guard_msgs pin on it is unreliable. The stable form is a POSITIVE example that compiles under the fixed ordering, with the pre-fix behaviour hand-verified once (reinstate the old ordering, rebuild, observe, restore the file byte-identically and confirm with `diff -q`) and recorded in a comment so a future reader knows what the example guards."
+    },
+    {
+      "subject": "A hand-written description column inside generated README fences survives regeneration, so a wrong description is invisible to the invariants check",
+      "value": "scripts/check-module-invariants.sh --emit-inventory carries the description column across verbatim when it regenerates a module inventory table. A stale or placeholder description (`<!-- TODO: add description -->`) therefore never trips `--emit-inventory --check` and stays wrong indefinitely until edited by hand. A hand edit inside the BEGIN GENERATED fences is the sanctioned fix and survives the next regeneration."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1795592741_687c4b",
+    "agent_type": "lean-implementation-agent",
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "delegation_depth": 3,
+    "dispatch_seq": 5,
+    "compliance_check": "skipped",
+    "compliance_note": "lean-plan-compliance-check.sh reports `skipped (no non-keyword identifiers found via each Goals bullet's leading identifier run)`. Expected and correct: the plan declares `<!-- lean-challenge-statements:none -->` and has no named theorem deliverable -- the eight renamed declarations are existing defs whose signatures are unchanged, and the new test material is examples and #guard_msgs blocks rather than named results.",
+    "phases_completed": 8,
+    "phases_total": 8,
+    "phase_outcomes": {
+      "1": "COMPLETED",
+      "2": "COMPLETED WITH EXCLUSIONS",
+      "3": "COMPLETED",
+      "4": "COMPLETED",
+      "5": "COMPLETED",
+      "6": "COMPLETED",
+      "7": "COMPLETED WITH EXCLUSIONS",
+      "8": "COMPLETED"
+    },
+    "resume_note": "This was the third dispatch of this implementation; dispatches 3 and 4 were interrupted by session restarts after their substantive work had landed. All eight phase commits were already on the branch at this dispatch's start (dd9cd1827, 064dbd5a6, 553466302, 253a4f1b6, 949c5e90d, e8b934625, 0e2e37472, 3d141e284, 572f668f3); this dispatch ran the closing gates phase 8 still owed, flipped phase 8's marker from [IN PROGRESS] to [COMPLETED] with its completion notes, wrote the summary, and replaced a stale .return-meta.json that still read status in_progress / stage_0_initialized / phases_completed 0.",
+    "known_gaps": [
+      "The 32 unchecked `- [ ]` checklist items remaining inside phases 1-7 were left as the prior dispatches left them. Those phases' headings are [COMPLETED] or [COMPLETED WITH EXCLUSIONS] and each carries its own commit, which is the authoritative record; this dispatch has no per-item evidence for them and did not bulk-tick them, per the pre-edit-gate contract's per-item-evidence requirement.",
+      "The 46 Kamp bounded-fix Fold/Unfold occurrences that Phase 1's criteria pin were verified by Phase 1 and were NOT re-derived at close. The headline retirement condition WAS re-confirmed this dispatch: zero occurrences of the old one-step Until/Since vocabulary anywhere under FormalSystem/Automation/ProofMode/ or FormalSystem/Theorems/ProofMode/, and no `?m.` in any Tests/BimodalTest/Automation/ pin."
+    ],
+    "concurrency_observation": "Sibling task 993 landed its own close commit 5988d4dc9 ('task 993: complete implementation') mid-dispatch, moving HEAD off 572f668f3. Checked git log before proceeding: the declared concurrent sibling under the same session id, touching only its own specs/ paths plus specs/TODO.md and specs/state.json. No .lean path and no task-987 path, so the status stamp's last-.lean-commit invariant was unaffected and the stamp stays valid."
+  }
+}

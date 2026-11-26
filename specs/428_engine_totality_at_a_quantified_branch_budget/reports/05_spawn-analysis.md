@@ -95,6 +95,13 @@ obligations that the register explicitly leaves open rather than refutes.
 
 ### New Task 3: Discharge `MintPaysForTime`
 - **Effort**: 10-15 hours
+- **Task**: TBD
+- **Started**: TBD
+- **Completed**: TBD
+- **Dependencies**: TBD
+- **Sources/Inputs**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 - **Task Type**: lean4
 - **Rationale**: The open mathematical core — both disjuncts (the ordering-length reading of
   "does a step mint a time" and the σ-hit/time-reuse obligation) are unresolved mathematics, not

@@ -1,0 +1,32 @@
+{
+  "status": "implemented",
+  "dispatch_seq": 3,
+  "phases_completed": 5,
+  "phases_total": 5,
+  "summary": "All five plan phases landed the ten pinned declarations across four FormalSystem/Semantics modules with seven new test rows spanning L, L-minus, L-plus and L-star: positive universal-existential readings for release and trigger, primitive-tense persistence reaching L-minus, and the two L-star transport factories over two new env-aware point relations. The three generic modules also took titled module docstrings and the directory-form assert_not_exists lock. Full guarded lake build green with zero diagnostics, zero sorries, axiom count unchanged at 14, and all six new theorems' axiom profiles matching the plan's predictions exactly; three repository Lean gates green and every red finding proven pre-existing and untouched-file-only.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/989_pointed_semantic_lemmas_after_merge_followups/summaries/01_pointed-semantic-lemmas-followups-summary.md",
+      "summary": "Implementation summary for the three after-merge follow-ups, with the full verification record."
+    },
+    {
+      "type": "plan",
+      "path": "specs/989_pointed_semantic_lemmas_after_merge_followups/plans/01_pointed-semantic-lemmas-followups.md",
+      "summary": "All five phases marked COMPLETED, with Phase 5 carrying the Verification Notes and the full-gate-set deferral record."
+    }
+  ],
+  "modified_files": [
+    "FormalSystem/Semantics/TemporalRules.lean",
+    "FormalSystem/Semantics/TemporalIntervals.lean",
+    "FormalSystem/Semantics/RankProgress.lean",
+    "FormalSystem/Semantics/PointTransport.lean",
+    "Tests/BimodalTest/Semantics/TemporalRulesTest.lean",
+    "Tests/BimodalTest/Semantics/PointTransportTest.lean",
+    "typst/generated/status.typ",
+    "README.md",
+    "specs/989_pointed_semantic_lemmas_after_merge_followups/plans/01_pointed-semantic-lemmas-followups.md",
+    "specs/989_pointed_semantic_lemmas_after_merge_followups/summaries/01_pointed-semantic-lemmas-followups-summary.md"
+  ]
+}

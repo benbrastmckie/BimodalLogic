@@ -1,0 +1,17 @@
+{
+  "phase": 2,
+  "phase_name": "Record the Maintenance Obligations the Declaration Creates",
+  "started_at": "2026-11-25T17:46:00Z",
+  "last_updated": "2026-11-25T17:50:00Z",
+  "objectives": [
+    {"id": 1, "description": "Re-read MAINTENANCE.md and locate ## Commit Message Standards section", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Add ## Orchestration Branch Declaration section after Commit Message Standards", "status": "done", "files_touched": ["docs/project-info/MAINTENANCE.md"]},
+    {"id": 3, "description": "Confirm no task-number/record-versioning language in added section", "status": "done", "files_touched": []},
+    {"id": 4, "description": "Verify links resolve (readme-lint.sh docs) and commit MAINTENANCE.md alone", "status": "done", "files_touched": ["docs/project-info/MAINTENANCE.md"]}
+  ],
+  "current_objective": 4,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "files_touched": ["docs/project-info/MAINTENANCE.md"],
+  "notes": "readme-lint.sh docs exited 0 (PASS, 0 broken references). Section placed immediately after ## Commit Message Standards, before ## Troubleshooting, matching the existing --- separator convention. verify-touched.sh docs/project-info/MAINTENANCE.md (Batch Gate Deferral scoped check): 84 passed, 1 failed (NEW), 10 skipped of 95 -- the one NEW failure (test-deploy-baseline-lib.sh) is an unrelated warm-cache gate-skip timing assertion, recorded via issue-record.sh (class verification-environment, severity minor). Phase closed COMPLETED on this evidence."
+}

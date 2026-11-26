@@ -1,0 +1,20 @@
+{
+  "dispatch_seq": 6,
+  "status": "implemented",
+  "phases_completed": 5,
+  "phases_total": 5,
+  "summary": "Added the generic next_iff_succ/prev_iff_pred pair to FormalSystem/Semantics/TemporalRules.lean over the TruthEnv clause layer, with no attribute and no new import, and re-bodied all four SourceLanguage declarations plus Metalogic.truthAt_next_iff as one-line applications of the generic pair with every name and statement byte-identical. sat_iff and truthAt_next_iterate re-prove verbatim, both C14 axiom pins measure unchanged, and next_iff_covBy/prev_iff_covBy improved from [propext, Quot.sound] to [propext]. Eight documentation surfaces now state the clause-layer design instead of recording the duplication as deliberate and unresolved, and the two mandatory fresh README stamps were bumped.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/984_promote_next_prev_covby_to_generic_lemmas/summaries/01_promote-next-prev-covby-generic-summary.md",
+      "summary": "Full implementation summary: what changed per file, the per-declaration axiom measurements, the gate battery results, and the scoped-vs-deferred gate accounting."
+    },
+    {
+      "type": "plan",
+      "path": "specs/984_promote_next_prev_covby_to_generic_lemmas/plans/01_promote-next-prev-covby-generic.md",
+      "summary": "All five phases marked [COMPLETED]; no deviations annotated."
+    }
+  ]
+}
