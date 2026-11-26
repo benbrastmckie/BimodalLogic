@@ -11,6 +11,8 @@ import FormalSystem.Semantics.HistoryMorphism
 import FormalSystem.PlusLanguage.PlusTruth
 import FormalSystem.PlusLanguage.PlusReversal
 import FormalSystem.PlusLanguage.PlusStateLocal
+import FormalSystem.StarLanguage.StarTruth
+import FormalSystem.StarLanguage.StarStateLocal
 
 /-!
 # Transport between pointed truth judgments
@@ -19,15 +21,65 @@ A point binds a history, time and evaluation environment at a frame. A fact cert
 truth forward along its stated relation, and a goal certificate transfers it backward. Theorem
 factories retain the hypotheses of the corresponding semantic transfer results for state locality,
 shifts, reflection and history morphisms.
+
+## Main Results
+
+- `FactTransport`, `GoalTransport`, `IffTransport` — the three certificate shapes, with `apply`,
+  `reduce`, `ofIff`, `trans` and `symm`
+- `SameStateNow`, `SameState`, `AnyPoint`, `Shifted`, `Reflected` — the point relations the
+  certificates are indexed by, each with an `.intro` at explicit points
+- `SameStateNowEnv`, `ShiftedEnv` — the env-aware strengthenings of `SameStateNow` and `Shifted`,
+  also with `.intro`, needed wherever the evaluation environment carries information
+- `CorrRel`, `IsoRel`, `AntiIsoRel`, `MorphRel` — the relations cut by a truth correspondence,
+  isomorphism, anti-isomorphism and history morphism
+- `iffTransport_truthCorr`, `iffTransport_truthIso`, `iffTransport_truthAntiIso`,
+  `iffTransport_timeShift`, `iffTransport_rev`, `iffTransport_box` — the TM factories
+- `plus_iffTransport_timeShift`, `plus_iffTransport_rev`, `plus_iffTransport_box`,
+  `plus_iffTransport_stab`, `plus_iffTransport_stateLocal`, `plus_iffTransport_stateLocalStab`,
+  `plus_iffTransport_histMorphism` — the TM⁺ factories
+- `star_iffTransport_timeShift`, `star_iffTransport_stateLocal` — the TM⋆ factories, over the
+  env-aware relations
+
+## Why this module's lock is not the directory form
+
+The locks across `FormalSystem/Semantics/` are rooted at `FormalSystem.ProofSystem.Axiom`. This
+module cannot take that form: its own import closure already puts `Axiom` and `FrameClass` into
+the environment, by the chain `FormalSystem.Semantics.HistoryMorphism →
+FormalSystem.PlusLanguage.PlusValidity → FormalSystem.Semantics.Validity →
+FormalSystem.Semantics.ValidityLayer → FormalSystem.Semantics.FrameClassValidity →
+FormalSystem.ProofSystem.Axioms`. Naming `Axiom` in the lock here is therefore a compile error,
+not a tightening. The lock is rooted at `FormalSystem.ProofSystem.DerivationTree` instead — the
+strongest claim this module's closure actually admits — and names the per-language derivation
+trees beside it — `FormalSystem.PlusLanguage.PlusDerivationTree` and, with the L⋆ imports the TM⋆
+factories need, `FormalSystem.StarLanguage.StarDerivationTree`.
+`FormalSystem.ProofSystem.Derivable` is implied and so not named:
+`ProofSystem/Derivable.lean` imports `ProofSystem/Derivation.lean`, which declares
+`DerivationTree`.
+
+## References
+
+* `FormalSystem/Semantics/TruthTransport.lean` — the semantic transfer results the TM factories
+  wrap
+* `FormalSystem/PlusLanguage/PlusStateLocal.lean` — `isPlusStateLocal_of_stateLocal`
+* `FormalSystem/StarLanguage/StarTruth.lean` — `starTruthAt_timeShift`
+* `FormalSystem/StarLanguage/StarStateLocal.lean` — `isStateLocal_of_stateLocal`
+* `FormalSystem/Semantics/HistoryMorphism.lean` — `HistMorphism` and `pullM`
+* `Tests/BimodalTest/Semantics/PointTransportTest.lean` — the per-relation test rows
+
+## Tags
+
+pointed-truth · transport · certificate · point-relation · state-locality · time-shift ·
+reflection · history-morphism
 -/
 
-assert_not_exists FormalSystem.ProofSystem.DerivationTree FormalSystem.ProofSystem.Derivable
-  FormalSystem.PlusLanguage.PlusDerivationTree
+assert_not_exists FormalSystem.ProofSystem.DerivationTree
+  FormalSystem.PlusLanguage.PlusDerivationTree FormalSystem.StarLanguage.StarDerivationTree
 
 namespace FormalSystem.Semantics.PointTransport
 
 open FormalSystem.Syntax
 open FormalSystem.PlusLanguage
+open FormalSystem.StarLanguage
 
 /-- A point of evaluation: a typed world history, a time and the evaluation environment. -/
 structure Point (L : Type) [TruthEnv L] (F : TaskFrame) where
@@ -175,6 +227,35 @@ def Shifted (Δ : F.Duration) (p q : Point L F) : Prop :=
 theorem Shifted.intro (σ : WorldHistory F) (t Δ : F.Duration) {e e' : TruthEnv.Env L F} :
     Shifted Δ (⟨σ.timeShift Δ, t, e⟩ : Point L F) ⟨σ, t + Δ, e'⟩ :=
   ⟨rfl, rfl⟩
+
+/-- `SameStateNow` **together with equality of the evaluation environments.** `SameStateNow`
+leaves `Point.env` unconstrained, which is harmless where the environment is `PUnit` (L, L⁺) and
+wrong at a language whose environment carries information, such as L⋆'s stored-time vector. This
+relation is added beside `SameStateNow` rather than replacing it: the weaker relation is what
+`plus_iffTransport_stateLocal` consumes, and the strengthening is recovered from this one by
+`.1`. -/
+def SameStateNowEnv (p q : Point L F) : Prop :=
+  SameStateNow p q ∧ p.env = q.env
+
+/-- `SameStateNowEnv` at explicit points, sharing one environment. -/
+theorem SameStateNowEnv.intro (τ σ : WorldHistory F) (t : F.Duration)
+    {e : TruthEnv.Env L F} (h : τ.state t = σ.state t) :
+    SameStateNowEnv (⟨τ, t, e⟩ : Point L F) ⟨σ, t, e⟩ :=
+  ⟨⟨rfl, h⟩, rfl⟩
+
+/-- `Shifted` **together with the matching shift of the evaluation environment**, given as an
+explicit `shift`. As with `SameStateNowEnv`, this is added beside `Shifted` rather than replacing
+it, so `plus_iffTransport_timeShift`'s two-environment signature is untouched; at L⋆ the shift is
+`fun v i => v i + Δ` on the stored-time vector. -/
+def ShiftedEnv (Δ : F.Duration) (shift : TruthEnv.Env L F → TruthEnv.Env L F)
+    (p q : Point L F) : Prop :=
+  Shifted Δ p q ∧ q.env = shift p.env
+
+/-- `ShiftedEnv` at explicit points. -/
+theorem ShiftedEnv.intro (σ : WorldHistory F) (t Δ : F.Duration)
+    (shift : TruthEnv.Env L F → TruthEnv.Env L F) (e : TruthEnv.Env L F) :
+    ShiftedEnv Δ shift (⟨σ.timeShift Δ, t, e⟩ : Point L F) ⟨σ, t + Δ, shift e⟩ :=
+  ⟨⟨rfl, rfl⟩, rfl⟩
 
 /-- `q` is the reflected point of the converse frame: reflected history, negated time. -/
 def Reflected (p : Point L F) (q : Point L' F.rev) : Prop :=
@@ -342,6 +423,37 @@ theorem plus_iffTransport_stateLocalStab {φ : PlusFormula} (hφ : φ.StateLocal
   exact plusStateLocal_stab_iff hφ M τ t
 
 end Plus
+
+/-! ## TM⋆ factories -/
+
+section Star
+variable {F : TaskFrame}
+
+/-- `starTruthAt_timeShift` as a certificate. The stored-time vector shifts with the time, so the
+relation is the env-aware `ShiftedEnv` rather than `Shifted`: at L⋆ the environment carries
+information, and leaving it unconstrained would make the statement false.
+
+The `(L := StarFormula)` ascription on the relation is load-bearing. Without it the shift function
+`fun v i => v i + Δ` has nothing to fix `v`'s type against, and elaboration fails with
+`Function expected at v but this term has type TruthEnv.Env ?m F`. -/
+theorem star_iffTransport_timeShift (M : TaskModel F) (Δ : F.Duration) (φ : StarFormula) :
+    IffTransport (ShiftedEnv (L := StarFormula) Δ (fun v i => v i + Δ)) M M φ φ := by
+  rintro ⟨τ, t, v⟩ ⟨σ, s, w⟩ ⟨⟨hτ, hs⟩, hw⟩
+  dsimp only at hτ hs hw
+  subst hτ hs hw
+  exact starTruthAt_timeShift M φ σ t Δ v
+
+/-- A formula in the syntactic state-local fragment transports between points with the same time,
+the same current state and the same stored-time vector (`isStateLocal_of_stateLocal`). The
+fragment excludes `U`/`S` and the register operators, so a bare `F p` or `G p` is not covered. -/
+theorem star_iffTransport_stateLocal {φ : StarFormula} (hφ : φ.StateLocal) (M : TaskModel F) :
+    IffTransport (SameStateNowEnv (L := StarFormula)) M M φ φ := by
+  rintro ⟨τ, t, v⟩ ⟨σ, s, w⟩ ⟨⟨hs, h⟩, hw⟩
+  dsimp only at hs h hw
+  subst hs hw
+  exact isStateLocal_of_stateLocal hφ F M τ σ t v h
+
+end Star
 
 section Morphism
 variable {D : TemporalOrder} {F' F : FrameOver D}

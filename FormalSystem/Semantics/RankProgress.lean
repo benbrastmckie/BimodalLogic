@@ -6,13 +6,35 @@ Authors: Tanner Duve
 
 import FormalSystem.Semantics.TruthClauses
 
-/-! Well-founded progress with an explicit later occurrence premise.
+/-!
+# Well-founded progress with an explicit later occurrence premise
 
 A decreasing rank or arrival at the target gives satisfaction now or at some later time.
 The pointed specialization interprets the target on a fixed history.
- -/
 
-assert_not_exists FormalSystem.ProofSystem.DerivationTree FormalSystem.ProofSystem.FrameClass
+The step premise asserts that a later point **exists**. That occurrence premise is what makes
+descent productive over a bare preorder of times: no discreteness, successor function or
+order cover is assumed anywhere in this module.
+
+## Main Results
+
+- `rank_progress` — the target holds now or at a strictly later point, over any preorder
+- `rank_progress_strict` — the strictly later form, from a point missing the target
+- `rank_progress_truth`, `rank_progress_truth_strict` — the pointed specializations, with the
+  target read as truth of a formula on a fixed history
+
+## References
+
+* `FormalSystem/Semantics/TruthClauses.lean` — the clause classes and `someFuture`
+* `FormalSystem/Semantics/TemporalRules.lean` — the eventuality bind rules
+* `Tests/BimodalTest/Semantics/TemporalRulesTest.lean` — the per-language test rows
+
+## Tags
+
+well-founded · rank · progress · eventuality · descent · generic
+-/
+
+assert_not_exists FormalSystem.ProofSystem.Axiom FormalSystem.ProofSystem.DerivationTree
 
 namespace FormalSystem.Semantics.RankProgress
 

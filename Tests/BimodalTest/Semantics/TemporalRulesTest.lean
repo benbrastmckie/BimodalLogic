@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tanner Duve
 -/
 
+import FormalSystem.MinusLanguage.MinusTruth
 import FormalSystem.PlusLanguage.PlusTruth
 import FormalSystem.StarLanguage.StarTruth
 import FormalSystem.Semantics.RankProgress
@@ -16,7 +17,8 @@ namespace BimodalTest.Semantics
 
 open FormalSystem.Semantics FormalSystem.Semantics.TruthClauses
 open FormalSystem.Semantics.TemporalRules FormalSystem.Semantics.TemporalIntervals
-open FormalSystem.Syntax FormalSystem.PlusLanguage FormalSystem.StarLanguage
+open FormalSystem.Syntax FormalSystem.MinusLanguage FormalSystem.PlusLanguage
+open FormalSystem.StarLanguage
 
 variable {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F} {t s : F.Duration}
 
@@ -35,6 +37,16 @@ example (A : StarFormula) (regs : ℕ → F.Duration) (cover : t ⋖ s)
 example (A : Formula) (h : TruthAt M τ t A.prev) :
     ∃ u : F.Duration, u ⋖ t ∧ TruthAt M τ u A :=
   (prev_iff (L := Formula) M τ t PUnit.unit A).mp h
+
+-- L⁻ has primitive `allFuture`/`allPast` and no `untl`, so the `untl`-derived persistence
+-- lemmas cannot reach it; the primitive-tense siblings can.
+example (P : MinusFormula) (h : MinusTruthAt M τ t (MinusFormula.allFuture P)) (hts : t < s) :
+    MinusTruthAt M τ s (MinusFormula.allFuture P) :=
+  allFuture_persist_of_tense (L := MinusFormula) (e := PUnit.unit) h hts
+
+example (P : MinusFormula) (h : MinusTruthAt M τ t (MinusFormula.allPast P)) (hst : s < t) :
+    MinusTruthAt M τ s (MinusFormula.allPast P) :=
+  allPast_persist_of_tense (L := MinusFormula) (e := PUnit.unit) h hst
 
 example (A B P : Formula) (hA : TruthAt M τ t A.someFuture) (hP : TruthAt M τ t P.allFuture)
     (step : ∀ s, t < s → TruthAt M τ s A → TruthAt M τ s P.allFuture →
@@ -82,6 +94,26 @@ example (event guard : Formula) (h : ∀ s, s < t → TruthAt M τ s event) :
     TruthAt M τ t (Formula.trigger event guard) :=
   (trigger_iff (L := Formula) M τ t PUnit.unit event guard).mpr
     (fun ⟨s, hst, hn, _⟩ => hn (h s hst))
+
+-- The positive reading names a witness rather than denying one: an event at every strictly
+-- later time discharges the left arm at each of them.
+example (event guard : Formula) (h : ∀ s, t < s → TruthAt M τ s event) :
+    TruthAt M τ t (Formula.release event guard) :=
+  (release_iff_forall (L := Formula) M τ t PUnit.unit event guard).mpr
+    fun s hts => Or.inl (h s hts)
+
+-- L⋆ has no named `release`, so the row spells the encoding and carries the stored-time vector.
+example (event guard : StarFormula) (regs : ℕ → F.Duration)
+    (h : ∀ s, t < s → StarTruthAt M τ s regs event) :
+    StarTruthAt M τ t regs (StarFormula.untl guard.neg event.neg).neg :=
+  (release_iff_forall (L := StarFormula) M τ t regs event guard).mpr
+    fun s hts => Or.inl (h s hts)
+
+-- A guard strictly between discharges the right arm; the past mirror.
+example (event guard : Formula) (h : ∀ s, s < t → ∃ r, s < r ∧ r < t ∧ TruthAt M τ r guard) :
+    TruthAt M τ t (Formula.trigger event guard) :=
+  (trigger_iff_forall (L := Formula) M τ t PUnit.unit event guard).mpr
+    fun s hst => Or.inr (h s hst)
 
 example (event guard : Formula) (h : ∀ s, t < s → TruthAt M τ s guard) :
     TruthAt M τ t (Formula.weakUntil event guard) :=

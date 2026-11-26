@@ -6,14 +6,34 @@ Authors: Tanner Duve
 
 import FormalSystem.Semantics.TruthClauses
 
-/-! Inclusive and weak temporal clauses, and their strict duals.
+/-!
+# Inclusive and weak temporal clauses, and their strict duals
 
 Inclusive Until and Since expand a derived formula into a half-open interval. The guard
 includes the current point when the witness is strictly later or earlier. Weak Until and
 Since retain strict endpoints and allow a continuing guard.
- -/
 
-assert_not_exists FormalSystem.ProofSystem.DerivationTree FormalSystem.ProofSystem.FrameClass
+Every clause is stated over the classes of `FormalSystem/Semantics/TruthClauses.lean`, so each
+reading is proved once for every language instantiating the classes it names.
+
+## Main Results
+
+- `inclusiveUntil_iff`, `inclusiveSince_iff` — the half-open interval readings
+- `release_iff`, `trigger_iff` — the strict duals, as the negation of an `U`/`S` clause
+- `weakUntil_iff`, `weakSince_iff` — strict `U`/`S` or a strict universal guard
+
+## References
+
+* `FormalSystem/Semantics/TruthClauses.lean` — the clause classes and `neg`, `or`, `and`
+* `FormalSystem/Semantics/TemporalRules.lean` — the covering-time and persistence rules
+* `Tests/BimodalTest/Semantics/TemporalRulesTest.lean` — the per-language test rows
+
+## Tags
+
+temporal · interval · until · since · release · trigger · weak-until · generic
+-/
+
+assert_not_exists FormalSystem.ProofSystem.Axiom FormalSystem.ProofSystem.DerivationTree
 
 namespace FormalSystem.Semantics.TemporalIntervals
 
@@ -81,6 +101,46 @@ theorem trigger_iff {L : Type} [TruthEnv L] [BotClause L] [ImpClause L] [SnceCla
       ¬ ∃ s, s < t ∧ ¬ TruthEnv.T M τ s e event ∧
         ∀ r, s < r → r < t → ¬ TruthEnv.T M τ r e guard := by
   simp only [neg_iff, SnceClause.snce_clause]
+
+/-- **The positive reading of release.** The same clause as `release_iff`, stated as a direct
+universal-existential claim rather than as the negation of an `U` clause: at every strictly later
+time the event holds, or the guard has already fired strictly in between. This is the form a
+refutation script consumes, since it names a witness rather than denying one. -/
+theorem release_iff_forall {L : Type} [TruthEnv L] [BotClause L] [ImpClause L] [UntlClause L]
+    {F : TaskFrame} (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) (event guard : L) :
+    TruthEnv.T M τ t e (neg (UntlClause.untl (neg guard) (neg event))) ↔
+      ∀ s : F.Duration, t < s → TruthEnv.T M τ s e event ∨
+        ∃ r : F.Duration, t < r ∧ r < s ∧ TruthEnv.T M τ r e guard := by
+  rw [release_iff]
+  constructor
+  · intro h s hts
+    by_contra hc
+    push Not at hc
+    exact h ⟨s, hts, hc.1, hc.2⟩
+  · rintro h ⟨s, hts, hne, hguard⟩
+    rcases h s hts with hev | ⟨r, htr, hrs, hg⟩
+    · exact hne hev
+    · exact hguard r htr hrs hg
+
+/-- **The positive reading of trigger**, the strict past mirror of `release_iff_forall`: at every
+strictly earlier time the event held, or the guard had already fired strictly in between. -/
+theorem trigger_iff_forall {L : Type} [TruthEnv L] [BotClause L] [ImpClause L] [SnceClause L]
+    {F : TaskFrame} (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) (event guard : L) :
+    TruthEnv.T M τ t e (neg (SnceClause.snce (neg guard) (neg event))) ↔
+      ∀ s : F.Duration, s < t → TruthEnv.T M τ s e event ∨
+        ∃ r : F.Duration, s < r ∧ r < t ∧ TruthEnv.T M τ r e guard := by
+  rw [trigger_iff]
+  constructor
+  · intro h s hst
+    by_contra hc
+    push Not at hc
+    exact h ⟨s, hst, hc.1, hc.2⟩
+  · rintro h ⟨s, hst, hne, hguard⟩
+    rcases h s hst with hev | ⟨r, hsr, hrt, hg⟩
+    · exact hne hev
+    · exact hguard r hsr hrt hg
 
 /-- Weak Until is strict Until or a strict universal guard; event first. -/
 theorem weakUntil_iff {L : Type} [TruthEnv L] [BotClause L] [ImpClause L] [UntlClause L]

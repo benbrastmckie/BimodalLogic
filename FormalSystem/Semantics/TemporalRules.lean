@@ -6,13 +6,38 @@ Authors: Tanner Duve
 
 import FormalSystem.Semantics.TruthClauses
 
-/-! Covering-time Next and Previous, strict G/H persistence, and F/P witness composition.
+/-!
+# Covering-time Next and Previous, persistence, and witness composition
 
 The rules work over the duration order of the frame. Next and Previous require an order
 cover. The bind rules carry only the named future or past guarantees to their witnesses.
- -/
 
-assert_not_exists FormalSystem.ProofSystem.DerivationTree FormalSystem.ProofSystem.FrameClass
+Every result is stated over the clause classes of `FormalSystem/Semantics/TruthClauses.lean`, so
+each one is proved once for every language instantiating the classes it names rather than at a
+single syntax.
+
+## Main Results
+
+- `next_iff`, `prev_iff` — `Xφ` and `Yφ` as existentials over a covering time
+- `next_at`, `prev_at` — elimination of `Xφ` and `Yφ` at a known covering time
+- `allFuture_persist`, `allPast_persist` — `Gφ` and `Hφ` persist along `<`
+- `allFuture_persist_of_tense`, `allPast_persist_of_tense` — the same persistence for a
+  tense-primitive language, asking for `AllFutureClause`/`AllPastClause` alone
+- `someFuture_bind`, `somePast_bind` — composition at an eventuality witness
+- `someFuture_bind_keeping`, `somePast_bind_keeping` — the same, carrying named `G`/`H` facts
+
+## References
+
+* `FormalSystem/Semantics/TruthClauses.lean` — the clause classes and the derived tense notation
+* `FormalSystem/Semantics/TemporalIntervals.lean` — the inclusive, weak and strict dual clauses
+* `Tests/BimodalTest/Semantics/TemporalRulesTest.lean` — the per-language test rows
+
+## Tags
+
+temporal · next · previous · persistence · eventuality · covering-time · generic
+-/
+
+assert_not_exists FormalSystem.ProofSystem.Axiom FormalSystem.ProofSystem.DerivationTree
 
 namespace FormalSystem.Semantics.TemporalRules
 
@@ -126,5 +151,32 @@ theorem somePast_bind_keeping [SnceClause L] {t : F.Duration} {A B : L} (keep : 
     body s hst (fun P hP => allPast_persist (hkeep P hP) hst) hs
 
 end Persistence
+
+section TensePersistence
+
+/-- `G P` persists to every strictly later point, for a **tense-primitive** language. This is the
+primitive-tense sibling of `allFuture_persist`: that one routes through `untl`, so it reaches only
+a language carrying `UntlClause`, while this one asks for `AllFutureClause` alone and so is the
+form L⁻ — which has `TenseClauses` and no `untl` — can use. -/
+theorem allFuture_persist_of_tense {L : Type} [TruthEnv L] [AllFutureClause L]
+    {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F} {e : TruthEnv.Env L F}
+    {t s : F.Duration} {P : L}
+    (h : TruthEnv.T M τ t e (AllFutureClause.allFuture P)) (hts : t < s) :
+    TruthEnv.T M τ s e (AllFutureClause.allFuture P) :=
+  (AllFutureClause.allFuture_clause M τ s e P).mpr fun u hsu =>
+    (AllFutureClause.allFuture_clause M τ t e P).mp h u (lt_trans hts hsu)
+
+/-- `H P` persists to every strictly earlier point, for a **tense-primitive** language: the
+primitive-tense sibling of `allPast_persist`, asking for `AllPastClause` alone and so reaching
+L⁻, which has no `snce`. -/
+theorem allPast_persist_of_tense {L : Type} [TruthEnv L] [AllPastClause L]
+    {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F} {e : TruthEnv.Env L F}
+    {t s : F.Duration} {P : L}
+    (h : TruthEnv.T M τ t e (AllPastClause.allPast P)) (hst : s < t) :
+    TruthEnv.T M τ s e (AllPastClause.allPast P) :=
+  (AllPastClause.allPast_clause M τ s e P).mpr fun u hus =>
+    (AllPastClause.allPast_clause M τ t e P).mp h u (lt_trans hus hst)
+
+end TensePersistence
 
 end FormalSystem.Semantics.TemporalRules

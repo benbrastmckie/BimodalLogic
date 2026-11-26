@@ -11,7 +11,7 @@ import FormalSystem.Semantics.PointTransport
 namespace BimodalTest.Semantics
 
 open FormalSystem.Semantics FormalSystem.Semantics.PointTransport
-open FormalSystem.Syntax FormalSystem.PlusLanguage
+open FormalSystem.Syntax FormalSystem.PlusLanguage FormalSystem.StarLanguage
 
 variable {F : TaskFrame} {M : TaskModel F}
 
@@ -51,6 +51,21 @@ example (A : PlusFormula) (p q : Point PlusFormula F) (h : SameState p q) :
 example (A : PlusFormula) (hA : A.StateLocal) (p q : Point PlusFormula F)
     (h : SameStateNow p q) : At M p A ↔ At M q A :=
   (plus_iffTransport_stateLocal hA M).apply h
+
+-- The L⋆ environment carries the stored-time vector, so the time-shift certificate is indexed by
+-- the env-aware `ShiftedEnv`. Both the `(L := StarFormula)` ascription and the explicit vector
+-- type on the shift are load-bearing at this call site.
+example (σ : WorldHistory F) (t Δ : F.Duration) (regs : ℕ → F.Duration) (A : StarFormula)
+    (hA : At M (⟨σ.timeShift Δ, t, regs⟩ : Point StarFormula F) A) :
+    At M (⟨σ, t + Δ, fun i => regs i + Δ⟩ : Point StarFormula F) A :=
+  (star_iffTransport_timeShift M Δ A).fact.apply
+    (ShiftedEnv.intro (L := StarFormula) σ t Δ (fun (v : ℕ → F.Duration) i => v i + Δ) regs) hA
+
+-- State locality at L⋆ needs the vector to agree as well as the state, hence `SameStateNowEnv`.
+example (τ σ : WorldHistory F) (t : F.Duration) (regs : ℕ → F.Duration) (A : StarFormula)
+    (hA : A.StateLocal) (h : τ.state t = σ.state t) :
+    At M (⟨τ, t, regs⟩ : Point StarFormula F) A ↔ At M (⟨σ, t, regs⟩ : Point StarFormula F) A :=
+  (star_iffTransport_stateLocal hA M).apply (SameStateNowEnv.intro (L := StarFormula) τ σ t h)
 
 example {D : TemporalOrder} {F' F : FrameOver D} (g : HistMorphism F' F)
     (M : TaskModel F.toTaskFrame) (A : PlusFormula) (p : Point PlusFormula F'.toTaskFrame)
