@@ -38,6 +38,22 @@ example (A : Formula) (h : TruthAt M τ t A.prev) :
     ∃ u : F.Duration, u ⋖ t ∧ TruthAt M τ u A :=
   (prev_iff (L := Formula) M τ t PUnit.unit A).mp h
 
+-- The discrete collapse at L: the covering witness is the successor.
+example [SuccOrder F.Duration] [NoMaxOrder F.Duration] (A : Formula)
+    (h : TruthAt M τ t A.next) : TruthAt M τ (Order.succ t) A :=
+  (next_iff_succ (L := Formula) M τ t PUnit.unit A).mp h
+
+-- The past mirror at L⁺.
+example [PredOrder F.Duration] [NoMinOrder F.Duration] (A : PlusFormula)
+    (h : PlusTruthAt M τ (Order.pred t) A) : PlusTruthAt M τ t A.prev :=
+  (prev_iff_pred (L := PlusFormula) M τ t PUnit.unit A).mpr h
+
+-- L⋆ threads the stored-time vector, so the collapse is exercised where `Env` is not `PUnit`.
+example [SuccOrder F.Duration] [NoMaxOrder F.Duration] (A : StarFormula)
+    (regs : ℕ → F.Duration) (h : StarTruthAt M τ (Order.succ t) regs A) :
+    StarTruthAt M τ t regs A.next :=
+  (next_iff_succ (L := StarFormula) M τ t regs A).mpr h
+
 -- L⁻ has primitive `allFuture`/`allPast` and no `untl`, so the `untl`-derived persistence
 -- lemmas cannot reach it; the primitive-tense siblings can.
 example (P : MinusFormula) (h : MinusTruthAt M τ t (MinusFormula.allFuture P)) (hts : t < s) :

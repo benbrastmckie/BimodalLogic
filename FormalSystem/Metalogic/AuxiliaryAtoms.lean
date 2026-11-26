@@ -119,10 +119,11 @@ immediate successor.
 This is the L⁺ twin of `SourceLanguage/SentenceTruth.lean`'s and
 `NomicLanguage/NomicTruth.lean`'s `next_iff_succ`. `PlusLanguage/PlusTruth.lean` carries no such
 clause, which is why it is proved here, at the one module that needs it. **Promotion candidate**:
-`PlusLanguage/PlusTruth.lean` is its eventual home, beside the other clause lemmas; promoting it
-is deliberately not done here, because that module is widely imported and no current client
-outside this one consumes the statement. A later reader should promote it and re-point this
-module's use sites rather than duplicate it, exactly as
+`Semantics/TemporalRules.lean`'s `next_iff_succ` states this fact generically over the clause
+layer and serves it at `PlusFormula`, so re-bodying this declaration as that lemma's `PlusFormula`
+instance is available follow-up work — the clause-layer statement is the home rather than
+`PlusLanguage/PlusTruth.lean`, which is `PlusFormula`-specific. A later reader should re-body it
+and keep the name rather than duplicate the argument, exactly as
 `Semantics.base_taskRel_eq_ofStepRel`'s own placement note asks.
 
 Paper: — (formalization-native; the manuscript states no `X` clause for L⁺)

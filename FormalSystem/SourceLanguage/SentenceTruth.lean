@@ -6,6 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.SourceLanguage.Sentence
 import FormalSystem.Semantics.Truth
+import FormalSystem.Semantics.TemporalRules
 import Mathlib.Order.Cover
 import Mathlib.Order.SuccPred.Basic
 
@@ -53,12 +54,12 @@ only the `CovBy` reading would be true but would not visibly certify what the so
 actually computes. Both are therefore stated, in that dependency order; the source repository's
 integer-time instantiation is what makes the corollary the operative reading there.
 
-`FormalSystem/Metalogic/DiscreteNonCompactness.lean`'s `truthAt_next_iff` states the same
-`succ`-form fact, and its own docstring already notes that its natural home is elsewhere. The
-duplication here is deliberate and unresolved: consolidating the two would mean importing
-`FormalSystem/Metalogic/` from this layer-1 module, which is an upward edge that
-`scripts/check-metalogic-cycles.sh` exists to prevent. Promotion of one shared lemma into
-`FormalSystem/Semantics/Truth.lean` is the eventual fix and is a separate concern.
+Both facts are proved once, generically, in `FormalSystem/Semantics/TemporalRules.lean`:
+`next_iff`/`prev_iff` over any temporal order, and `next_iff_succ`/`prev_iff_pred` as the discrete
+collapse. Those statements run over the clause layer of `FormalSystem/Semantics/TruthClauses.lean`,
+so one proof serves L, L⁺ and L⋆. The four declarations below are the `Formula` instances of that
+pair, kept as named declarations here because `sat_iff` consumes the `CovBy` forms as `simp`
+lemmas at `Formula`'s own syntax, which the generic left-hand sides do not match.
 
 ## The box clause is this library's, not the source repository's
 
@@ -92,8 +93,11 @@ and nothing here licenses removing it.
   proof runs on
 * `FormalSystem/PlusLanguage/PlusValidity.lean` `plusTruthAt_ofFormula`,
   `FormalSystem/QuantLanguage/QuantTruth.lean` `quantTruthAt_ofFormula` — the bridge template
-* `FormalSystem/Metalogic/DiscreteNonCompactness.lean` `truthAt_next_iff` — the pre-existing
-  `succ`-form characterization, duplicated here for the reason above
+* `FormalSystem/Semantics/TemporalRules.lean` — `next_iff`/`prev_iff` and
+  `next_iff_succ`/`prev_iff_pred`, the shared clause-layer source of the four characterizations
+  below
+* `FormalSystem/Metalogic/DiscreteNonCompactness.lean` `truthAt_next_iff` — the `succ`-form
+  reading as `Metalogic` consumes it, an instance of the same generic pair
 -/
 
 namespace FormalSystem.SourceLanguage
@@ -154,23 +158,13 @@ No discreteness is assumed. On a dense carrier the right-hand side is empty, whi
 reading: `next φ` is unsatisfiable there.
 -/
 theorem next_iff_covBy (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) (φ : Formula) :
-    TruthAt M τ t (Formula.next φ) ↔ ∃ s : F.Duration, t ⋖ s ∧ TruthAt M τ s φ := by
-  simp only [Formula.next, Truth.untl_iff, Truth.bot_false]
-  constructor
-  · rintro ⟨s, hts, hs, hgap⟩
-    exact ⟨s, ⟨hts, fun _r hr hrs => hgap _ hr hrs⟩, hs⟩
-  · rintro ⟨s, hcov, hs⟩
-    exact ⟨s, hcov.1, hs, fun _r hr hrs => hcov.2 hr hrs⟩
+    TruthAt M τ t (Formula.next φ) ↔ ∃ s : F.Duration, t ⋖ s ∧ TruthAt M τ s φ :=
+  TemporalRules.next_iff (L := Formula) M τ t PUnit.unit φ
 
 /-- **The unconditional characterization of `Formula.prev`**, dual of `next_iff_covBy`. -/
 theorem prev_iff_covBy (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) (φ : Formula) :
-    TruthAt M τ t (Formula.prev φ) ↔ ∃ s : F.Duration, s ⋖ t ∧ TruthAt M τ s φ := by
-  simp only [Formula.prev, Truth.snce_iff, Truth.bot_false]
-  constructor
-  · rintro ⟨s, hst, hs, hgap⟩
-    exact ⟨s, ⟨hst, fun _r hr hrt => hgap _ hr hrt⟩, hs⟩
-  · rintro ⟨s, hcov, hs⟩
-    exact ⟨s, hcov.1, hs, fun _r hr hrt => hcov.2 hr hrt⟩
+    TruthAt M τ t (Formula.prev φ) ↔ ∃ s : F.Duration, s ⋖ t ∧ TruthAt M τ s φ :=
+  TemporalRules.prev_iff (L := Formula) M τ t PUnit.unit φ
 
 /--
 **The discrete corollary for `Formula.next`.** On a carrier with successors and no maximum, the
@@ -178,35 +172,19 @@ covering witness of `next_iff_covBy` is `Order.succ t`, so `next φ` is `φ` at 
 
 This is the reading the source repository's integer-time instantiation computes. It is a corollary
 and not the statement: see the module docstring, and
-`FormalSystem/Metalogic/DiscreteNonCompactness.lean`'s `truthAt_next_iff`, which states the same
-fact for its own consumer.
+`FormalSystem/Semantics/TemporalRules.lean`'s `next_iff_succ`, the generic clause-layer statement
+this is the `Formula` instance of.
 -/
 theorem next_iff_succ [SuccOrder F.Duration] [NoMaxOrder F.Duration]
     (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) (φ : Formula) :
-    TruthAt M τ t (Formula.next φ) ↔ TruthAt M τ (Order.succ t) φ := by
-  rw [next_iff_covBy]
-  constructor
-  · rintro ⟨s, hcov, hs⟩
-    rcases lt_or_eq_of_le (Order.succ_le_of_lt hcov.1) with h | h
-    · exact absurd h (hcov.2 (Order.lt_succ t))
-    · exact h ▸ hs
-  · intro h
-    exact ⟨Order.succ t, ⟨Order.lt_succ t, fun _r hr hrs =>
-      absurd hr (not_lt.mpr (Order.le_of_lt_succ hrs))⟩, h⟩
+    TruthAt M τ t (Formula.next φ) ↔ TruthAt M τ (Order.succ t) φ :=
+  TemporalRules.next_iff_succ (L := Formula) M τ t PUnit.unit φ
 
 /-- **The discrete corollary for `Formula.prev`**, dual of `next_iff_succ`. -/
 theorem prev_iff_pred [PredOrder F.Duration] [NoMinOrder F.Duration]
     (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) (φ : Formula) :
-    TruthAt M τ t (Formula.prev φ) ↔ TruthAt M τ (Order.pred t) φ := by
-  rw [prev_iff_covBy]
-  constructor
-  · rintro ⟨s, hcov, hs⟩
-    rcases lt_or_eq_of_le (Order.le_pred_of_lt hcov.1) with h | h
-    · exact absurd (Order.pred_lt t) (hcov.2 h)
-    · exact h ▸ hs
-  · intro h
-    exact ⟨Order.pred t, ⟨Order.pred_lt t, fun _r hr =>
-      not_lt.mpr (Order.le_of_pred_lt hr)⟩, h⟩
+    TruthAt M τ t (Formula.prev φ) ↔ TruthAt M τ (Order.pred t) φ :=
+  TemporalRules.prev_iff_pred (L := Formula) M τ t PUnit.unit φ
 
 /-! ### The agreement theorem -/
 

@@ -36,7 +36,8 @@ that the two agree at every frame, model, history and time.
 - `SourceLanguage.SentenceTruth` — `Sat`, the native source-side evaluation; `sat_iff`, the
   agreement theorem against `Semantics.TruthAt` itself; and the `next`/`prev` characterizations
   `next_iff_covBy`, `prev_iff_covBy` (unconditional) with `next_iff_succ`, `prev_iff_pred` as
-  corollaries on a discrete carrier
+  corollaries on a discrete carrier — all four the `Formula` instances of the generic
+  clause-layer pair in `Semantics/TemporalRules.lean`
 
 ## What this component does and does not certify
 

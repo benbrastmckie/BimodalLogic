@@ -40,7 +40,7 @@ beside `lem:nomic-recovery`, which the (5)⇔(6) step consumes.
 | `Formula.lean` | 206 | `NomicFormula` — BL's six constructors plus the nomic modal `◈` — the derived operators with `Formula`'s right-hand sides (`top`, `neg`, `someFuture`, `somePast`, `allFuture`, `allPast`, `and`, `or`, `iff`, `diamond`, `always`, `next`), and the embedding `ofFormula` with `ofFormula_injective` and its `rfl` commutation pins |
 | `NomicFour.lean` | 258 | `app:nomic-four`: the shared countermodel `exists_refutation_of_not_uniform` (the sentence `△¬(p ∧ ◯q)` at a one-step violation of `⇒₁^v`), `four_validOn_iff_uniform`, `nomic_iff_box_validOn_iff_uniform` on the same sentence, and the invalidity claim `not_four_nomicValid` at `NomicHierarchy.F3` |
 | `NomicTenseFree.lean` | 310 | `prop:nomic-tense-free`: the fragment `TenseFree`, the state-set recursion `nomicSatSet` (total, with `lem:state-set`'s ignoring-set clause shared by `□` and `◈`), the bridge `tenseFree_satSet_iff` for an arbitrary bare `τ`, the collapse `nomic_iff_box_tenseFree`, and the five **S5** schemata `nomic_k_tenseFree`, `nomic_t_tenseFree`, `nomic_four_tenseFree`, `nomic_five_tenseFree`, `nomic_b_tenseFree` |
-| `NomicTruth.lean` | 298 | `NomicModel` and the seven-clause recursion `NomicTruthAt` carrying `def:nomic-frame`'s Nomic clause; the seven primitive clause lemmas (`atom_iff` … `nomic_iff`) and the nine derived ones (`neg_iff`, `and_iff`, `or_iff`, `iff_iff`, `someFuture_iff`, `somePast_iff`, `allFuture_iff`, `allPast_iff`, `diamond_iff`) with the two collapsed forms `always_iff` and `next_iff_succ`/`next_iff_add_one`; and the uniformity collapse `nomic_iff_box_of_uniform` |
+| `NomicTruth.lean` | 302 | `NomicModel` and the seven-clause recursion `NomicTruthAt` carrying `def:nomic-frame`'s Nomic clause; the seven primitive clause lemmas (`atom_iff` … `nomic_iff`) and the nine derived ones (`neg_iff`, `and_iff`, `or_iff`, `iff_iff`, `someFuture_iff`, `somePast_iff`, `allFuture_iff`, `allPast_iff`, `diamond_iff`) with the two collapsed forms `always_iff` and `next_iff_succ`/`next_iff_add_one`; and the uniformity collapse `nomic_iff_box_of_uniform` |
 | `NomicValidity.lean` | 118 | `NomicFrame.NomicValidOn` — validity as truth at every time along every nomologically possible world, which is where `τ ∈ H_F` enters — with seriality `nomic_serial` over every nomic frame and the collapse as a pair of validities, `nomicValidOn_nomic_iff_box_of_uniform` |
 <!-- END GENERATED -->
 
@@ -111,4 +111,4 @@ directory needs a row in that table.**
 
 ---
 
-*Last verified: 2026-10-15*
+*Last verified: 2026-11-24*

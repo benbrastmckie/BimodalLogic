@@ -38,12 +38,14 @@ Together these refute `CompactZTime` (`notCompactZTime`) and, by way of
 
 ## Note on `truthAt_next_iff` / `truthAt_next_iterate`
 
-These two lemmas are pure semantics with no completeness content, and are the first semantic
-characterisation of `Formula.next` anywhere in this development. Their natural eventual home is
-the `Truth` namespace of `FormalSystem/Semantics/Truth.lean`, beside `some_future_iff`,
-`future_iff` and `past_iff`; the needed `SuccOrder`/`NoMaxOrder` are already in scope there. They
-are kept here for now because `Truth.lean` sits near the root of the import graph and this module
-is their only consumer — promotion is the right move once a second consumer appears.
+These two lemmas are pure semantics with no completeness content. The fact itself is proved once,
+generically, in `FormalSystem/Semantics/TemporalRules.lean`: `next_iff` characterizes `X φ` over
+any temporal order and `next_iff_succ` is its discrete collapse, both stated over the clause layer
+of `FormalSystem/Semantics/TruthClauses.lean` so that one proof serves L, L⁺ and L⋆.
+`truthAt_next_iff` is the `Formula` instance of that statement, and `truthAt_next_iterate` is the
+iterated form this module's own refutation argument consumes. The clause layer is the home rather
+than `FormalSystem/Semantics/Truth.lean` because `Truth.lean` is `Formula`-specific and would
+serve only L.
 
 They are deliberately **not** `@[simp]`: were they promoted upstream, a simp-normal `next`
 rewrite would fire inside the proof-theoretic reasoning in `Theorems/DiscreteUnfolding.lean`.
@@ -64,20 +66,14 @@ variable {F : TaskFrame}
 /-- **Semantic characterisation of `Formula.next`.** On a discrete order with no maximum,
     `X φ` holds at `t` exactly when `φ` holds at `Order.succ t`.
 
-    Unfolding the `untl` clause of `TruthAt`, `TruthAt t (next φ)` reads
-    `∃ s > t, φ(s) ∧ ∀ r ∈ (t, s), ⊥` — the empty-gap condition forces `s = Order.succ t`. -/
+    The `Formula` instance of `Semantics.TemporalRules.next_iff_succ`. Unfolding the `untl` clause
+    of `TruthAt`, `TruthAt t (next φ)` reads `∃ s > t, φ(s) ∧ ∀ r ∈ (t, s), ⊥` — the empty-gap
+    condition forces `s = Order.succ t`, which is what the generic lemma proves over the clause
+    layer. -/
 theorem truthAt_next_iff [SuccOrder F.Duration] [NoMaxOrder F.Duration]
     (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) (φ : Formula) :
-    TruthAt M τ t (Formula.next φ) ↔ TruthAt M τ (Order.succ t) φ := by
-  constructor
-  · rintro ⟨s, hts, hs, hgap⟩
-    have h1 : Order.succ t ≤ s := Order.succ_le_of_lt hts
-    rcases lt_or_eq_of_le h1 with h | h
-    · exact absurd (hgap (Order.succ t) (Order.lt_succ t) h) not_false
-    · exact h ▸ hs
-  · intro h
-    exact ⟨Order.succ t, Order.lt_succ t, h, fun r hr hrs =>
-      absurd hr (not_lt.mpr (Order.le_of_lt_succ hrs))⟩
+    TruthAt M τ t (Formula.next φ) ↔ TruthAt M τ (Order.succ t) φ :=
+  Semantics.TemporalRules.next_iff_succ (L := Formula) M τ t PUnit.unit φ
 
 /-- Iterated form of `truthAt_next_iff`: `Xⁿ φ` at `t` is `φ` at the `n`-th successor of `t`. -/
 theorem truthAt_next_iterate [SuccOrder F.Duration] [NoMaxOrder F.Duration]

@@ -67,8 +67,9 @@ that a future reader does not take it for carelessness.
 * JPL paper `thm:nomic-uniform`, closing sentence — the collapse `nomic_iff_box_of_uniform`
 * `FormalSystem/Semantics/Truth.lean` — `TruthAt`, the recursion mirrored here
 * `FormalSystem/Semantics/TruthClauses.lean` — the abstract clause layer, and why it is unusable
-* `FormalSystem/Metalogic/DiscreteNonCompactness.lean` — `truthAt_next_iff`, which `next_iff_succ`
-  transcribes
+* `FormalSystem/Semantics/TemporalRules.lean` — `next_iff`/`next_iff_succ`, the generic
+  clause-layer statement `next_iff_succ` here transcribes; the clause layer itself is unusable at
+  this syntax, so the transcription stands rather than an instantiation
 
 ## Tags
 
@@ -251,8 +252,11 @@ theorem always_iff (φ : NomicFormula) :
 The collapsed clause for `next` on a discrete order with no maximum: `◯φ` holds at `x` iff `φ`
 holds at `Order.succ x`.
 
-Transcribed from `FormalSystem/Metalogic/DiscreteNonCompactness.lean`'s `truthAt_next_iff`: the
-`untl` clause's empty-gap condition forces the witness to be the immediate successor.
+Transcribed from `FormalSystem/Semantics/TemporalRules.lean`'s `next_iff_succ`: the `untl`
+clause's empty-gap condition forces the witness to be the immediate successor. That generic lemma
+cannot be instantiated here — this module has no `TruthEnv` instance and evaluates `NomicTruthAt`
+over `NomicModel`/`NomicFrame`, a different point shape — so the argument is transcribed rather
+than applied.
 -/
 theorem next_iff_succ [SuccOrder (↑D : Type)] [NoMaxOrder (↑D : Type)] (φ : NomicFormula) :
     NomicTruthAt M τ x (NomicFormula.next φ) ↔ NomicTruthAt M τ (Order.succ x) φ := by

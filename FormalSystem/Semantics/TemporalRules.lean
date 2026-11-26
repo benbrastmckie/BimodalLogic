@@ -20,6 +20,9 @@ single syntax.
 
 - `next_iff`, `prev_iff` — `Xφ` and `Yφ` as existentials over a covering time
 - `next_at`, `prev_at` — elimination of `Xφ` and `Yφ` at a known covering time
+- `next_iff_succ`, `prev_iff_pred` — the discrete collapse of the covering-time reading to
+  `Order.succ`/`Order.pred` on a carrier with successors and no maximum (resp. predecessors and
+  no minimum)
 - `allFuture_persist`, `allPast_persist` — `Gφ` and `Hφ` persist along `<`
 - `allFuture_persist_of_tense`, `allPast_persist_of_tense` — the same persistence for a
   tense-primitive language, asking for `AllFutureClause`/`AllPastClause` alone
@@ -91,6 +94,47 @@ theorem prev_at [SnceClause L] {M : TaskModel F} {τ : WorldHistory F} {t s : F.
   exact CovBy.unique_left hcov' hcov ▸ hφ
 
 end NextPrev
+
+section DiscreteCollapse
+variable {L : Type} [TruthEnv L] [BotClause L] {F : TaskFrame}
+
+/-- **The discrete collapse of `next_iff`.** On a carrier with successors and no maximum the
+covering witness is `Order.succ t`, so `Xφ` is `φ` at the successor.
+
+`next_iff` is the theorem and this is its corollary: the covering-time reading holds over any
+temporal order, while this one needs discreteness. On a dense carrier `Xφ` is unsatisfiable, so a
+reading that asserted the successor form unconditionally would be false. -/
+theorem next_iff_succ [UntlClause L] [SuccOrder F.Duration] [NoMaxOrder F.Duration]
+    (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) (φ : L) :
+    TruthEnv.T M τ t e (next φ) ↔ TruthEnv.T M τ (Order.succ t) e φ := by
+  rw [next_iff]
+  constructor
+  · rintro ⟨s, hcov, hs⟩
+    rcases lt_or_eq_of_le (Order.succ_le_of_lt hcov.1) with h | h
+    · exact absurd h (hcov.2 (Order.lt_succ t))
+    · exact h ▸ hs
+  · intro h
+    exact ⟨Order.succ t, ⟨Order.lt_succ t, fun _r hr hrs =>
+      absurd hr (not_lt.mpr (Order.le_of_lt_succ hrs))⟩, h⟩
+
+/-- **The discrete collapse of `prev_iff`**, dual of `next_iff_succ`. `prev_iff` is the theorem;
+this is the corollary that discreteness buys. -/
+theorem prev_iff_pred [SnceClause L] [PredOrder F.Duration] [NoMinOrder F.Duration]
+    (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+    (e : TruthEnv.Env L F) (φ : L) :
+    TruthEnv.T M τ t e (prev φ) ↔ TruthEnv.T M τ (Order.pred t) e φ := by
+  rw [prev_iff]
+  constructor
+  · rintro ⟨s, hcov, hs⟩
+    rcases lt_or_eq_of_le (Order.le_pred_of_lt hcov.1) with h | h
+    · exact absurd (Order.pred_lt t) (hcov.2 h)
+    · exact h ▸ hs
+  · intro h
+    exact ⟨Order.pred t, ⟨Order.pred_lt t, fun _r hr =>
+      not_lt.mpr (Order.le_of_pred_lt hr)⟩, h⟩
+
+end DiscreteCollapse
 
 section Persistence
 variable {L : Type} [TruthEnv L] [BotClause L] [ImpClause L] {F : TaskFrame}

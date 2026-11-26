@@ -248,8 +248,9 @@ theorem (Reynolds 1992, Section 8 Theorem 6) at the chronicle bridge and reading
   `ModelExistenceBase` and their Dense siblings), proved in `Compactness.lean`, together with
   the refuted Discrete and Dedekind ones
 - **DiscreteNonCompactness.lean**: the machine-checked discharge of one of those obstructions —
-  the `{F p} ∪ {¬Xⁿ p}` witness, the first semantic characterisation of `Formula.next`
-  (`truthAt_next_iff`), and the two refutations `notCompactZTime` and
+  the `{F p} ∪ {¬Xⁿ p}` witness, the `Formula` instance of the generic clause-layer
+  characterisation of `next` from `../Semantics/TemporalRules.lean` (`truthAt_next_iff`, with its
+  iterated form `truthAt_next_iterate`), and the two refutations `notCompactZTime` and
   `notStrongCompletenessZTime`
 - **DedekindNonCompactness.lean**: its Dedekind sibling, and the discharge of the last remaining
   obstruction — the `{G(⊤ S ¬q), F(G ¬q)} ∪ {Xqⁿ⊤ : n ∈ ℕ}` witness (`dedWitness`, with

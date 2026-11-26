@@ -83,6 +83,12 @@ corollary to the statement would make this component silently false on a dense c
 `next φ` is unsatisfiable — see `../Metalogic/DedekindNonCompactness.lean`. The source repository's
 integer-time instantiation is what makes the corollary the operative reading there.
 
+Both readings are proved once over the clause layer, in `../Semantics/TemporalRules.lean`
+(`next_iff`/`prev_iff` and `next_iff_succ`/`prev_iff_pred`), so one proof serves L, L⁺ and L⋆. The
+four declarations here are the `Formula` instances of that pair; they stay as named declarations
+because `sat_iff` consumes the `CovBy` forms as `simp` lemmas at `Formula`'s own syntax, which the
+generic left-hand sides do not match.
+
 ## The box clause: same time here, all times there
 
 `Semantics.TruthAt`'s box clause quantifies over every world history at the **same** time. The
@@ -99,7 +105,7 @@ Python evaluator that is only extensionally equivalent under a frame property.
 | File | Lines | Description |
 |------|------:|-------------|
 | `Sentence.lean` | 321 | `Sentence` — the source AST, 18 constructors (nine primitive operators, eight defined, plus atoms), `untl`/`snce` guard-first; `tr : Sentence → Formula`, the elimination into L's six primitives; the twelve `rfl` push-through equations; `tr_cond_ne`, `tr_someFut_ne`, `tr_somePast_ne` — the three rows that deliberately do not push through; `tr_not_injective` — the elimination is lossy by construction |
-| `SentenceTruth.lean` | 253 | `Sat` — the native source-side truth evaluation, 18 clauses, mirroring the source repository's own reference evaluator with two recorded departures (`TruthAt`'s same-time box clause; `⋖` rather than `t ± 1`); `sat_iff` — the agreement theorem against `TruthAt` itself, over every frame, model, history and time; `next_iff_covBy`/`prev_iff_covBy` — unconditional; `next_iff_succ`/`prev_iff_pred` — the discrete corollaries |
+| `SentenceTruth.lean` | 231 | `Sat` — the native source-side truth evaluation, 18 clauses, mirroring the source repository's own reference evaluator with two recorded departures (`TruthAt`'s same-time box clause; `⋖` rather than `t ± 1`); `sat_iff` — the agreement theorem against `TruthAt` itself, over every frame, model, history and time; `next_iff_covBy`/`prev_iff_covBy` — unconditional; `next_iff_succ`/`prev_iff_pred` — the discrete corollaries |
 <!-- END GENERATED -->
 
 The sibling aggregator is `../SourceLanguage.lean`. The library root, the repository-root
@@ -129,7 +135,6 @@ Comparison must be on **parsed JSON, not bytes**.
 | That the source repository's implementation of the elimination is correct | **Not formalized, and not formalizable from here.** The theorem certifies the encoding; the conformance channel is the only link to running code |
 | A proof system, soundness or completeness result for `Sentence` | **Not formalized.** The component is a translation reference; the logic lives on the `Formula` side |
 | A `TruthEnv`/`*Clauses` instance for `Sentence` | **Not formalized, by design.** The abstract clause layer is built for languages whose primitives are the shared five; eighteen constructors are not that shape, and the instance machinery would cost more than the `simp` proof it replaces |
-| Consolidation with `../Metalogic/DiscreteNonCompactness.lean`'s `truthAt_next_iff` | **Not done, deliberately.** The duplication is recorded in `SentenceTruth.lean`'s docstring; importing `Metalogic` from this layer would be an upward edge |
 | The stability modal `⊡` and the source repository's other non-bimodal operator families | **Out of scope.** Only the bimodal operator collection is covered |
 
 ## Module Invariants
@@ -153,4 +158,4 @@ directory needs a row in that table.**
 
 ---
 
-*Last verified: 2026-09-27*
+*Last verified: 2026-11-24*

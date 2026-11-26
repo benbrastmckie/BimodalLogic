@@ -283,7 +283,7 @@ release version lives in `Version.lean`.
 | `HybridLanguage.lean` | 135 | Re-export for the HybridLanguage component: L⁺ plus the same-state modality `[≡]`, state registers and the state binder `↓` (semantic only; no proof system) |
 | `Init.lean` | 36 | Library-wide root, modelled on `Mathlib.Init`: the linters and common tactics every module is meant to inherit |
 | `MainResults.lean` | 296 | One page listing the headline soundness/completeness metatheory, with the kernel's own `#print axioms` audit beside each result |
-| `Metalogic.lean` | 307 | Re-export for Metalogic submodule |
+| `Metalogic.lean` | 308 | Re-export for Metalogic submodule |
 | `MinusLanguage.lean` | 69 | <!-- TODO: add description --> |
 | `NomicLanguage.lean` | 38 | <!-- TODO: add description --> |
 | `OpenLanguage.lean` | 145 | Re-export for the OpenLanguage component: L^▷, L⁺ plus the open-future modal `▷` and the open-past modal `◁`, with its proof system — sound, conservative over TM⁺ in both directions and over TM at all four classes; no completeness claim |
@@ -291,7 +291,7 @@ release version lives in `Version.lean`.
 | `ProofSystem.lean` | 95 | Re-export for ProofSystem submodule |
 | `QuantLanguage.lean` | 106 | Re-export for the QuantLanguage component: the base language plus propositional quantifiers `∀p`, relative to a family of admissible propositions (semantic only; no proof system) |
 | `Semantics.lean` | 370 | Re-export for Semantics submodule |
-| `SourceLanguage.lean` | 79 | Re-export for the SourceLanguage component: the source sentence language (seventeen operators plus atoms), its elimination `tr` into L's six primitives, and the agreement theorem `sat_iff` (semantic only; no proof system) |
+| `SourceLanguage.lean` | 80 | Re-export for the SourceLanguage component: the source sentence language (seventeen operators plus atoms), its elimination `tr` into L's six primitives, and the agreement theorem `sat_iff` (semantic only; no proof system) |
 | `StarLanguage.lean` | 81 | <!-- TODO: add description --> |
 | `Syntax.lean` | 93 | Re-export for Syntax submodule |
 | `Tactic.lean` | 39 | Sibling aggregator for `Tactic/`, the layer-0 metaprogramming directory |
