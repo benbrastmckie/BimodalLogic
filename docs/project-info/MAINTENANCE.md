@@ -440,6 +440,25 @@ Update documentation: [brief description]
 
 ---
 
+## Orchestration Branch Declaration
+
+The project-root `.claude-extensions.json` declares `integration_branch` and `worktree_isolation`
+as top-level sibling keys beside the loader-owned `extensions` and `version` keys, so that
+orchestration admission tests the checked-out branch and the working tree on every invocation
+instead of falling back to an undeclared, disarmed state.
+
+That file is gitignored, so a fresh clone starts with no declaration at all: before admission
+tests anything, both keys must be re-declared there, or admission falls back to the disarmed
+state and prints its advisory on the first invocation.
+
+Renaming the long-lived working branch requires updating `integration_branch` in the same action.
+Admission tests plain branch-name equality against the declared value, so a stale declaration
+refuses every subsequent invocation with `off_integration_branch`. The refusal is self-documenting
+rather than silent: its message names both the declared branch and the checked-out one, naming the
+exact fix.
+
+---
+
 ## Troubleshooting
 
 ### Desynchronized Sorry Counts

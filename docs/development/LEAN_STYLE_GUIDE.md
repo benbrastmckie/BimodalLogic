@@ -405,6 +405,113 @@ def modus_ponens (Γ : Context) (φ ψ : Formula)
   (h1 : Γ ⊢ φ.imp ψ) (h2 : Γ ⊢ φ) : Γ ⊢ ψ := ...
 ```
 
+### Copyright-Header Authorship
+
+Every file opens with the Mathlib-shaped header block: a `Copyright (c) YEAR HOLDER. All rights
+reserved.` line, the Apache license line, and an `Authors:` line. The `Authors:` line names the
+people who wrote the file's content, and it is maintained as the file changes hands.
+
+**The form.** Leave the `Copyright (c) YEAR HOLDER. All rights reserved.` line untouched — it
+records the original copyright, not the current contributor set. Append to `Authors:` instead,
+comma-separated, with the original author first:
+
+```lean
+/-
+Copyright (c) 2025 Tanner Duve. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Tanner Duve, Benjamin Brast-McKie
+-/
+```
+
+A single line is preferred. Once one line grows unwieldy, the multi-line continuation form is
+available — continuation lines are indented and the block still closes by line 12:
+
+```lean
+Authors: Tanner Duve, Benjamin Brast-McKie,
+  Third Contributor
+```
+
+**The threshold.** Not every commit touching a file earns an `Authors:` entry. A change *earns*
+one when it:
+
+- adds, removes, or alters a declaration (`def`, `theorem`, `lemma`, `instance`, `structure`);
+- adds, removes, or alters a proof;
+- adds, removes, or alters the substance of a docstring.
+
+A change *does not earn* one when it is:
+
+- an import-list edit (adding, removing, or reordering imports);
+- a mechanical rename or naming-convention propagation;
+- a lint repair or whitespace fix;
+- a typo fix;
+- a generated-file regeneration (`mk_all`, README inventories, `typst/generated/`);
+- a merge of someone else's pull request, as distinct from editing the file within it.
+
+**The mechanical backstop.** `scripts/check-header-attribution.sh` compares each headed file's
+`Authors:` line against the file's distinct `git log` authors, folded through `.mailmap`. It
+reports *candidates*, never verdicts: `git log` cannot distinguish a committer who merged a pull
+request from one who materially edited the file, so the threshold above settles each candidate.
+
+Reviewing a candidate and declining it is recorded in `scripts/header-attribution-baseline.txt`,
+one row per waived file and identity, stamped with the file's current `Authors:` block — line 4
+and any continuation lines up to the closing `-/`, which is the same span the gate reads names
+from — so any later change to that block un-grandfathers the row. Waivers follow the §10
+Lint-Suppression Policy idiom: scoped to one file and one identity, never blanket, with the
+reason recorded at the row.
+
+**Scope of the claim.** "Attribution is correct across this repository" is true only of the
+`.lean` files under `FormalSystem/`, `Tests/`, `BimodalTools/` and `BimodalLib/` — 1007 headed
+files, every one of which either names each contributor the threshold selects or carries a
+reviewed waiver row. The following are decisions about what that claim excludes, not caveats
+about what was missed.
+
+- **Written-record surfaces are not an attribution surface this repository tracks.** Measured
+  live: 50 non-`.lean` files carry commits from a second contributor, and **none of them carries
+  a copyright header** — 10 under `docs/`, 6 under `records/`, 19 `README.md` files including the
+  repository root, 1 under `scripts/`, 19 under `specs/`, 1 generated. There is no `Authors:`
+  line on any of them to repair, and git history is their record. Two of those groups are
+  narrowed twice over: `specs/` is the unmaintained development record per `CONTRIBUTING.md` §3,
+  and `typst/generated/` is generated, not authored.
+
+- **The barrel-root exclusion is the import-only-diff rule, not a filename list.** A committer
+  whose whole `+`/`-` footprint on a file is `import` and blank lines does not earn attribution,
+  so `FormalSystem/Semantics.lean`, `FormalSystem/Theorems.lean` and `Tests/BimodalTest.lean`
+  clear the gate by rule rather than by name. `FormalSystem/Automation.lean` does not: its
+  footprint carries one non-import line (a docs cross-reference inside the module docstring), and
+  it holds a reviewed waiver row recording exactly that. These four files are **not** exempt
+  because their bodies are import lists — that claim is measured false; they carry 27, 73, 79 and
+  297 non-import body lines.
+
+- **The gate reports candidates, never verdicts.** `git log` records who authored a commit, not
+  whether that commit merged someone else's pull request or materially edited the file. The
+  threshold above settles each candidate; the gate's exit status counts only candidates nobody has
+  reviewed yet.
+
+- **A co-author contributed only by a `Co-Authored-By` trailer would be missed.** The derivation
+  reads `%aN`, which does not surface trailers at all. Measured today: all 16 distinct trailer
+  values in the history are Claude model variants or `OpenCode`, so no human is affected — but
+  the hole is real and the survey is worth re-running when a third party joins.
+
+- **`Claude <noreply@anthropic.com>` is excluded by name, in the gate's code.** `.mailmap` can
+  rename and merge identities but has no "drop" form, so a non-contributing identity cannot be
+  handled there.
+
+- **`CITATION.cff` names both contributors, with the release metadata deliberately unbumped.**
+  Its top-level `authors:` list names the authors of the *software* as a published work — a
+  separate list from the `references:` entry's paper authors — and it now carries
+  `Duve, Tanner` alongside `Brast-McKie, Benjamin`. `version` and `date-released` were left at
+  `1.0.0` / `2026-09-07` on purpose: correcting an already-released record's attribution is not
+  itself a release, and bumping either field would assert a release that did not happen.
+
+- **The agent-side rule is working-copy-local.** `.claude/rules/authorship-attribution.md` puts
+  this convention into an agent's context mid-dispatch, but both it and the `.syncprotect` entry
+  protecting it are gitignored (`/.claude` and `/.syncprotect`), so neither reaches a clone, CI,
+  or a collaborator. This section and `scripts/check-header-attribution.sh` are the convention's
+  tracked record.
+
+- **`Boneyard/` is out of scope** and is intentionally unheadered. It is a top-level directory
+  outside all four scanned roots, so it needs no exclusion argument.
+
 ## 5. Deprecation Protocol
 
 ### Marking Deprecated Definitions

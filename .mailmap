@@ -1,0 +1,29 @@
+# .mailmap -- author-identity folding for this repository.
+#
+# WHY THIS EXISTS: the copyright headers on every `.lean` file carry an `Authors:` line naming
+# contributors by DISPLAY name (`Benjamin Brast-McKie`), while git records the same person under
+# several commit identities (`benbrastmckie` under three different addresses). Comparing the two
+# therefore needs a map, and this is git's own native mechanism for it:
+# `scripts/check-header-attribution.sh` reads NO lookup table of its own, it just asks git for
+# `%aN` and git applies the rows below. Without this file that comparison would flag essentially
+# every headed file in the tree, which is indistinguishable from no check at all.
+#
+# NO CONFIG NEEDED: git reads `.mailmap` from the repository root automatically, so every later
+# `git log`/`git shortlog` -- including the checker's own invocation -- is already folded.
+# Caveat worth knowing: only the capital-letter placeholders honour this file. `%aN`/`%aE` are
+# folded; `%an`/`%ae` are NOT, on git 2.54.0, and `--use-mailmap` does not rescue them. See the
+# header comment of scripts/check-header-attribution.sh for what getting that wrong costs.
+#
+# NOT AN EXCLUSION MECHANISM: a mailmap can rename and merge identities but has no "drop" form,
+# so an identity that should earn no `Authors:` entry at all (`Claude <noreply@anthropic.com>`)
+# cannot be handled here. That lives in the checker's own exclusion set.
+#
+# REGENERATE the row inventory with: git shortlog -sne HEAD
+#
+# The fourth row below is cosmetic -- those commits are all merges, which the checker skips with
+# `--no-merges` -- and is kept so `git shortlog` reports one party rather than two.
+
+Benjamin Brast-McKie <benjamin@logos-labs.ai> benbrastmckie <benbrastmckie@gmail.com>
+Benjamin Brast-McKie <benjamin@logos-labs.ai> benbrastmckie <64314593+benbrastmckie@users.noreply.github.com>
+Benjamin Brast-McKie <benjamin@logos-labs.ai> benbrastmckie <benjamin@logos-labs.ai>
+Benjamin Brast-McKie <benjamin@logos-labs.ai> Benjamin Brast-McKie <64314593+benbrastmckie@users.noreply.github.com>

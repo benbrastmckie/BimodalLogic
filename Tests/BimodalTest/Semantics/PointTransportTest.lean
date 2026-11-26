@@ -1,7 +1,7 @@
 /-
 Copyright (c) 2026 Tanner Duve. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Tanner Duve
+Authors: Tanner Duve, Benjamin Brast-McKie
 -/
 
 import FormalSystem.Semantics.PointTransport

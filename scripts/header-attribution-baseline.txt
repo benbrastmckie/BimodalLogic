@@ -1,0 +1,80 @@
+# scripts/header-attribution-baseline.txt -- reviewed attribution waivers
+#
+# One row per reviewed-and-declined candidate: `<path>|<identity>|<stamp>`, three
+# `|`-separated fields, where <stamp> is the file's `Authors:` block at review time: line 4
+# verbatim, plus any continuation lines up to the closing `-/`, joined with single spaces.
+# That span is exactly the one the gate reads the name set from, so a stamp cannot match
+# while the names it was reviewed against have changed. A pipe separator rather than a
+# space because two of the three fields contain spaces (a display name, and the whole
+# `Authors:` block).
+#
+# WHAT A ROW MEANS: scripts/check-header-attribution.sh reported `<identity>` as a
+# candidate on `<path>`, a human judged that candidate against the threshold in
+# docs/development/LEAN_STYLE_GUIDE.md section 4 ("Copyright-Header Authorship"), and the
+# judgment was that the change does not earn an `Authors:` entry. The gate's exit status
+# counts UNREVIEWED candidates only, so a row here takes the gate from red to green --
+# which is exactly why every row carries its reason as a preceding comment, naming the
+# measurement the judgment rests on rather than a category label.
+#
+# THIS FILE ONLY EVER SHRINKS. A row grandfathers its candidate only while the file still
+# carries the exact recorded stamp: editing any line of the `Authors:` block permanently
+# un-grandfathers the row, after which the gate re-reports the candidate until it is
+# reviewed again. Never add a row to quiet a new finding -- judge the finding, and if it
+# meets the threshold, append the name to the header instead.
+#
+# Modelled on scripts/readme-date-baseline.txt, which already implements exactly this
+# stamp-based un-grandfathering. Rows are sorted by path.
+
+# FormalSystem/Automation.lean -- barrel root. Tanner Duve's whole footprint is commit
+# 8e9af692 at +3/-0: one `import FormalSystem.Automation.ProofMode` line and one one-line
+# docs pointer (`docs/user-guide/derivation-proof-mode.md`) added inside the existing module
+# docstring. The import line is cleared by the import-only rule; the single pointer line is
+# what survives it, and a one-line cross-reference is not a docstring whose substance
+# changed. NOTE on the grounds: this file is NOT exempt because "its body is an import list"
+# -- that claim is measured false (27 non-import body lines here; 73 / 79 / 297 in the three
+# sibling barrel roots). The exemption is the import-only-diff rule plus this one measured
+# residual line.
+FormalSystem/Automation.lean|Tanner Duve|Authors: Benjamin Brast-McKie
+# FormalSystem/Automation/ProofMode/Carrying.lean -- Benjamin Brast-McKie's whole footprint
+# is commit 5f8156d1 at +1/-1, one call site retargeted from `operatorArgs? judgment.language`
+# to `operatorArgs? judgment.language.formulaType`. A caller migration forced by a signature
+# change elsewhere: a mechanical propagation, not authorship.
+FormalSystem/Automation/ProofMode/Carrying.lean|Benjamin Brast-McKie|Authors: Tanner Duve
+# FormalSystem/Automation/ProofMode/Discrete.lean -- commit 9ad4b32a at +2/-2, two call sites,
+# the same `judgment.language` -> `judgment.language.formulaType` propagation. Nothing else.
+FormalSystem/Automation/ProofMode/Discrete.lean|Benjamin Brast-McKie|Authors: Tanner Duve
+# FormalSystem/Automation/ProofMode/Meta.lean -- commit 9ad4b32a at +2/-2: one `formulaApp`
+# argument list extended with `operatorConst` and one `operatorArgs?` call site retargeted.
+# Both are forced by the same upstream signature change; no declaration, proof or docstring
+# of this module changed.
+FormalSystem/Automation/ProofMode/Meta.lean|Benjamin Brast-McKie|Authors: Tanner Duve
+# FormalSystem/Automation/ProofMode/Modal.lean -- commit 9ad4b32a at +12/-11: nine call sites
+# carrying the same `judgment.language` -> `judgment.language.formulaType` propagation, plus
+# the line re-wraps it forces. The near-equal +/- counts are the signature of a rename sweep.
+FormalSystem/Automation/ProofMode/Modal.lean|Benjamin Brast-McKie|Authors: Tanner Duve
+# FormalSystem/Automation/ProofMode/Rewriting.lean -- commit 9ad4b32a at +5/-5, five
+# `rigidOperatorArgs? j.language` -> `j.language.formulaType` call sites. Same sweep.
+FormalSystem/Automation/ProofMode/Rewriting.lean|Benjamin Brast-McKie|Authors: Tanner Duve
+# FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean -- Tanner Duve's whole
+# footprint is commit 640c44a6 at +1/-1, one docstring occurrence of `Zrel_of_kappa_eq`
+# rewritten to `Zrel.of_kappa_eq`. That commit's ENTIRE footprint across the repository is
+# these two RaySummary files (verified live: 1/1 and 8/8, no third path), propagating one
+# rename to satisfy the ladder-naming and paper-anchor checks.
+FormalSystem/Metalogic/Decidability/RaySummary/LadderAgree.lean|Tanner Duve|Authors: Benjamin Brast-McKie
+# FormalSystem/Metalogic/Decidability/RaySummary/LadderStepFrag.lean -- same commit 640c44a6,
+# +8/-8: the `Zrel_of_kappa_eq` -> `Zrel.of_kappa_eq` rename at the theorem's own declaration
+# site and four citing docstrings, one two-sentence docstring remark dropped, and one
+# `Paper: -` anchor added to satisfy the paper-anchor check. No statement, proof or definition
+# changed: the theorem's binders and conclusion are byte-identical across the rename.
+FormalSystem/Metalogic/Decidability/RaySummary/LadderStepFrag.lean|Tanner Duve|Authors: Benjamin Brast-McKie
+# FormalSystem/Tactic/FormulaPositions.lean -- commit 9ad4b32a at +4/-4, four call sites
+# retargeted from `language.operatorName` to `operatorConst language.formulaType`. Same
+# rename sweep as the ProofMode files above.
+FormalSystem/Tactic/FormulaPositions.lean|Benjamin Brast-McKie|Authors: Tanner Duve
+# FormalSystem/Theorems/ProofMode/TemporalComposition/TemporalZTime.lean -- commit dd9cd182
+# at +38/-36: the `untilFold`/`sinceFold` -> `untilContract`/`sinceContract` and
+# `untilUnfoldCases`/`untilUnfoldRule` -> `untilExpandCases`/`untilExpandRule` naming
+# propagation, plus the continuation-line re-wraps the longer names force. Inspected at -U2:
+# every `.ofTMSubst (assign4 guard event guard guard)` line that appears as an addition has
+# its identical deletion one line up, re-wrapped. No proof term changed.
+FormalSystem/Theorems/ProofMode/TemporalComposition/TemporalZTime.lean|Benjamin Brast-McKie|Authors: Tanner Duve

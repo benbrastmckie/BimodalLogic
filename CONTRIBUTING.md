@@ -40,7 +40,10 @@ bash scripts/verify-all.sh            # CI's repository checks; over ten minutes
   mirroring the library path. A tactic's error messages are tested too. See
   [Testing Standards](docs/development/TESTING_STANDARDS.md).
 - **Style.** Follow the [Lean Style Guide](docs/development/LEAN_STYLE_GUIDE.md). Every public
-  declaration has a docstring; every file has a module docstring and a copyright header.
+  declaration has a docstring; every file has a module docstring and a copyright header, whose
+  `Authors:` line names every contributor whose change to the file meets the threshold in
+  [§4 Copyright-Header Authorship](docs/development/LEAN_STYLE_GUIDE.md#copyright-header-authorship)
+  — append to that line, comma-separated, and leave the `Copyright (c)` line untouched.
 - **Placement.** Imports run downward through the layers in
   [ORGANISATION.md](ORGANISATION.md). A capability covered by a record under `records/` sits
   where that record says.

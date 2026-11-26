@@ -20,15 +20,29 @@
 #   - the 13 `BimodalTools/*Main.lean` executable roots. `./BimodalTools.lean` exists, but it
 #     cannot import them: each declares a root-namespace `main`, and two cannot share one
 #     environment. No root file will ever directly import them.
-#   - everything under Tests/ (65 files). `BimodalTest` and `BimodalToolsTest` declare
+#   - everything under Tests/ (115 files). `BimodalTest` and `BimodalToolsTest` declare
 #     `srcDir = "Tests"`, so their roots are `Tests/BimodalTest.lean` and
 #     `Tests/BimodalToolsTest.lean`; `./BimodalTest.lean` does not exist and will not.
-# CI runs `--strict FormalSystem BimodalTools BimodalLib`, which covers the first group (and
-# re-covers the two libraries, redundantly but cheaply). Tests/ is NOT in the CI invocation; it is clean under
-# `--strict Tests` today, and adding it is a one-word change to the CI step.
+# CI runs `--strict FormalSystem Tests BimodalTools BimodalLib`, which covers both groups (and
+# re-covers the two libraries, redundantly but cheaply). Those four roots are exactly the scope
+# of the attribution claim in docs/development/LEAN_STYLE_GUIDE.md section 4, which this
+# script's identity half (scripts/check-header-attribution.sh) gates over the same list: a root
+# dropped from either invocation makes that gate green over a subset while the claim speaks for
+# all 1007 headed files.
 #
 # The predicate below mirrors Mathlib's `copyrightHeaderChecks`
 # (Mathlib/Tactic/Linter/Header.lean), which is the check cslib CI enforces.
+#
+# RELAXED CONTINUATION ARM: the continuation-line test used to require a trailing comma on
+# EVERY line of a multi-line `Authors:` block, including the last. That is stricter than
+# Mathlib's own `authorsLineChecks` in a direction Mathlib does not go -- Mathlib's real
+# multi-line form leaves the final names line without a comma -- and it was measured to
+# `exit 1` on exactly that form. Since a header gains a second `Authors:` name as soon as a
+# second contributor edits a file (see docs/development/LEAN_STYLE_GUIDE.md section 4,
+# "Copyright-Header Authorship"), the form a third contributor needs was blocked by a rule
+# no upstream convention asks for. The arm now accepts a comma-free continuation line when,
+# and only when, its successor is the closing `-/`; see the inline note at the arm itself for
+# what stayed strict.
 #
 # Usage:
 #   check-copyright-headers.sh [ROOT ...]        # report counts + write bucket lists
@@ -106,14 +120,29 @@ while IFS= read -r f; do
   sed -n 2p "$f" | grep -Eq '^Copyright \(c\) 20[0-9]{2} .+\. All rights reserved\.$' || ok=0
   [ "$(sed -n 3p "$f")" = "$LICENSE_LINE" ] || ok=0
   # Authors block: line 4 must be `Authors: <names>` not ending in a period;
-  # continuation lines must end in a comma; block terminates with `-/` by line 12.
+  # continuation lines must end in a comma, EXCEPT the final one (see the note on the
+  # relaxed arm in this script's header); block terminates with `-/` by line 12.
   sed -n 4p "$f" | grep -Eq '^Authors: [^ ].*[^.]$' || ok=0
   closed=0
   for n in 4 5 6 7 8 9 10 11 12; do
     ln=$(sed -n "${n}p" "$f")
     if [ "$ln" = "-/" ]; then closed=1; break; fi
     if [ "$n" -gt 4 ]; then
-      case "$ln" in Authors:*|*,) ;; *) ok=0 ;; esac
+      case "$ln" in
+        Authors:*|*,) ;;
+        *)
+          # Relaxed arm: accept a continuation line with no trailing comma when it is the
+          # LAST line of the block -- its successor closes it with `-/`. Nothing else is
+          # loosened: the line must be non-blank and must not end in a period, so a stray
+          # mid-block line, a blank line, and a period-terminated names line all still fail.
+          nxt=$(sed -n "$((n+1))p" "$f")
+          if [ "$nxt" = "-/" ] && [ -n "${ln//[[:space:]]/}" ]; then
+            case "$ln" in *.) ok=0 ;; esac
+          else
+            ok=0
+          fi
+          ;;
+      esac
     fi
   done
   [ "$closed" = 1 ] || ok=0

@@ -6,6 +6,8 @@ authors:
   - family-names: Brast-McKie
     given-names: Benjamin
     email: benjamin@logos-labs.ai
+  - family-names: Duve
+    given-names: Tanner
 repository-code: "https://github.com/benbrastmckie/BimodalLogic"
 abstract: >-
   A Lean 4 formalization of TM, the bimodal logic of Tense and Modality, which combines S5

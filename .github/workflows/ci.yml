@@ -24,6 +24,23 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
+        with:
+          # Full history is REQUIRED, not a nicety. Two check steps below derive their
+          # findings from `git log` over this checkout:
+          #   - check-header-attribution.sh reads `git log --no-merges --name-only` to find
+          #     each headed file's distinct authors. At the default depth of 1 the single
+          #     commit is grafted with no reachable parents, so git diffs it against the
+          #     empty tree and every .lean file reads as touched by that one commit's
+          #     author (measured: 30 unreviewed candidates and exit 1, against 0 candidates
+          #     and 10 waived pairs in a full clone). On `pull_request` the single commit is
+          #     the auto-merge commit, which `--no-merges` drops entirely -- zero candidates,
+          #     i.e. green by construction, the exact failure the script's own header warns
+          #     about ("indistinguishable from no check at all").
+          #   - readme-lint.sh dates each directory with `git log -1 --format=%cs`. It
+          #     detects a shallow clone and SKIPS its whole stale-date sub-check rather than
+          #     report garbage, so at depth 1 that check silently does not run.
+          # docs.yml and release.yml already set this.
+          fetch-depth: 0
 
       - name: Build, test, and lint with Lean
         id: lean-action
@@ -176,9 +193,12 @@ jobs:
           bash scripts/check-module-invariants.sh --no-build
           echo "::endgroup::"
 
-      # BimodalTools and BimodalLib are named explicitly because this script defaults to
-      # ROOTS=("FormalSystem"). Both libraries are outside that default, so without the further
+      # All four headed trees are named explicitly because this script defaults to
+      # ROOTS=("FormalSystem"). The other three are outside that default, so without the further
       # arguments their modules would leave this gate's denominator and it would keep passing.
+      # The four roots are exactly the scope of the attribution claim in
+      # docs/development/LEAN_STYLE_GUIDE.md section 4, so this list and that claim stand or
+      # fall together.
       - name: Check copyright headers (scripts/check-copyright-headers.sh --strict)
         id: copyright-headers
         continue-on-error: true
@@ -187,8 +207,30 @@ jobs:
           set -euo pipefail
           # No --exclude: the archive left FormalSystem/ entirely (ADR-010), so the former
           # '*/Boneyard/*' exclusion no longer excludes anything from these scanned roots.
-          echo "::group::bash scripts/check-copyright-headers.sh --strict FormalSystem BimodalTools BimodalLib"
-          bash scripts/check-copyright-headers.sh --strict FormalSystem BimodalTools BimodalLib
+          echo "::group::bash scripts/check-copyright-headers.sh --strict FormalSystem Tests BimodalTools BimodalLib"
+          bash scripts/check-copyright-headers.sh --strict FormalSystem Tests BimodalTools BimodalLib
+          echo "::endgroup::"
+
+      # Same ROOTS=("FormalSystem") default hazard as the step above, so all four headed trees
+      # are named explicitly here too. Tests/ carries 115 of the 1007 headed files and most of
+      # the repository's jointly-authored `Authors:` lines, so a three-root invocation leaves
+      # the joint-authorship surface unguarded. This gate is the identity half of the header
+      # contract: its sibling above validates header SHAPE and never compares the `Authors:`
+      # names against anything.
+      - name: Check header attribution (scripts/check-header-attribution.sh --strict)
+        id: header-attribution
+        continue-on-error: true
+        if: ${{ !cancelled() }}
+        run: |
+          set -euo pipefail
+          # Reports attribution CANDIDATES, never verdicts: git cannot distinguish a commit
+          # that merged a pull request from one that materially edited the file. The gate is
+          # red only on UNREVIEWED candidates -- one reviewed against the threshold in
+          # docs/development/LEAN_STYLE_GUIDE.md section 4 and recorded in
+          # scripts/header-attribution-baseline.txt does not keep it red. No --exclude, for
+          # the same reason as the step above.
+          echo "::group::bash scripts/check-header-attribution.sh --strict FormalSystem Tests BimodalTools BimodalLib"
+          bash scripts/check-header-attribution.sh --strict FormalSystem Tests BimodalTools BimodalLib
           echo "::endgroup::"
 
       # Same reason as the step above: readme-lint.sh also defaults to ROOTS=("FormalSystem"),
@@ -347,7 +389,7 @@ jobs:
           echo
           echo "=== Check step outcomes ==="
 
-          expected=10
+          expected=11
           seen=0
           passed=0
           failed=0
@@ -374,6 +416,7 @@ jobs:
           report "check-evidence-probes.sh"              "${{ steps.evidence-probes.outcome }}"
           report "check-module-invariants.sh --no-build" "${{ steps.module-invariants.outcome }}"
           report "check-copyright-headers.sh --strict"   "${{ steps.copyright-headers.outcome }}"
+          report "check-header-attribution.sh --strict"  "${{ steps.header-attribution.outcome }}"
           report "readme-lint.sh"                        "${{ steps.readme-lint.outcome }}"
           report "check-metalogic-cycles.sh"             "${{ steps.metalogic-cycles.outcome }}"
           report "typst-sync-check.sh"                   "${{ steps.typst-sync.outcome }}"
