@@ -142,12 +142,6 @@ instance : TruthEnv StarFormula where
 /-- L⋆'s six **shared** primitive operators and their clauses, identical to L⁺'s with `v`
 threaded inert. The two register operators are deliberately absent. -/
 instance : StabClauses StarFormula where
-  bot := StarFormula.bot
-  imp := StarFormula.imp
-  box := StarFormula.box
-  untl := StarFormula.untl
-  snce := StarFormula.snce
-  stab := StarFormula.stab
   bot_clause _ _ _ _ := fun h => h
   imp_clause _ _ _ _ _ _ := Iff.rfl
   box_clause _ _ _ _ _ := Iff.rfl

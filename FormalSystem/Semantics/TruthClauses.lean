@@ -6,6 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Semantics.TaskModel
 import FormalSystem.Semantics.PartialHistory
+import FormalSystem.Syntax.Connectives
 
 /-!
 # The derived-operator clause layer, written once over abstract truth clauses
@@ -15,10 +16,14 @@ This module does the same one level down, for the *clause* layer: the characteri
 `neg_iff`, `and_iff`, `diamond_iff`, `someFuture_iff`, … that every object language proves for
 its own derived operators, from its own primitive clauses, by exactly the same argument.
 
-The structure is one class per **primitive operator**, each bundling the operator with its truth
-clause, over a base `TruthEnv` carrying the pointed truth relation. A language instantiates the
-operator classes it has; the derived operators and their characterization lemmas then come for
-free, tiered by which primitives are present. Nothing here imports anything language-specific,
+The structure is one `Prop`-valued class per **primitive operator**, holding that operator's truth
+clause alone, over a base `TruthEnv` carrying the pointed truth relation. The operator itself
+comes from the connective signature of `FormalSystem/Syntax/Connectives.lean`: `BotClause L`
+takes `[HasBot L]` as an instance binder and states its clause about `HasBot.bot`, and likewise
+for the others. The derived operators are the `Sig` operators of that module, so they are
+defined once for syntax and semantics alike. A language instantiates the clause classes for the
+primitives it has; the characterization lemmas of the derived operators then come for free,
+tiered by which primitives are present. Nothing here imports anything language-specific,
 and nothing here recurses on a formula.
 
 **The environment parameter.** `TruthEnv.T` carries one extra argument beyond `(M, τ, t)`: an
@@ -33,10 +38,14 @@ operators behave identically in both point shapes.
 - `TruthEnv` — the pointed truth relation with an inert environment
 - `AtomClause`, `BotClause`, `ImpClause`, `BoxClause`, `UntlClause`, `SnceClause`,
   `StabClause`, `AllFutureClause`, `AllPastClause` — one class per primitive operator, each
-  carrying the operator and its truth clause
-- `TruthClauses.neg`, `.top`, `.and`, `.or`, `.diamond`, `.someFuture`, `.somePast`,
-  `.allFuture`, `.allPast`, `.always`, `.dstab`, `.kPlus`, `.kMinus` — the derived operators,
-  and the tense-primitive alternatives `.someFuture'`, `.somePast'`, `.always'`
+  carrying its truth clause; all but `AtomClause` are `Prop`-valued mixins over the signature
+  class of the same operator
+- `BoolClauses`, `UntlClauses`, `TenseClauses`, `StabClauses` — the bundles, for the instance side
+
+The derived operators the lemmas are about — `Sig.neg`, `.top`, `.and`, `.or`, `.diamond`,
+`.someFuture`, `.somePast`, `.allFuture`, `.allPast`, `.always`, `.dstab`, `.kPlus`, `.kMinus`,
+`.after`, and the tense-primitive alternatives `.someFuture'`, `.somePast'`, `.always'` — are
+defined in `FormalSystem/Syntax/Connectives.lean`, not here.
 
 ## Main Results
 
@@ -56,8 +65,9 @@ operators behave identically in both point shapes.
 
 ### What a fifth language must supply
 
-A `TruthEnv` instance, then one bundle instance covering the primitive operators it has. The
-whole of L's obligation, verbatim:
+One signature instance per primitive operator, beside the formula type; a `TruthEnv` instance;
+then one bundle instance covering the clauses of the primitive operators it has. The whole of L's
+obligation at the semantics layer, verbatim:
 
 ```
 instance : TruthEnv Formula where
@@ -65,8 +75,6 @@ instance : TruthEnv Formula where
   T M τ t _ φ := TruthAt M τ t φ
 
 instance : UntlClauses Formula where
-  bot := Formula.bot;  imp := Formula.imp;  box := Formula.box
-  untl := Formula.untl;  snce := Formula.snce
   bot_clause _ _ _ _ := fun h => h
   imp_clause _ _ _ _ _ _ := Iff.rfl
   box_clause _ _ _ _ _ := Iff.rfl
@@ -123,8 +131,9 @@ offered to a shared clause class.
 
 ### The `rfl` bridges
 
-A language's own derived-operator `def`s coincide with the `abbrev`s here only because they are
-the same Łukasiewicz/`untl` encodings **character for character** — `neg φ := imp φ bot`,
+A language's own derived-operator `def`s coincide with the `Sig` operators the lemmas here are
+stated about, either because their bodies are generated from `Sig` or because they are the same
+Łukasiewicz/`untl` encodings **character for character** — `neg φ := imp φ bot`,
 `and φ ψ := neg (imp φ (neg ψ))`, `someFuture φ := untl top φ`, and so on. That coincidence is
 what lets a wrapper delegate without a `show`. All four languages satisfy it today, for every
 operator; it is pinned by the `example … := rfl` lines in
@@ -179,6 +188,8 @@ truth-clauses · abstraction · typeclass · derived-operators · extension-cont
 
 namespace FormalSystem.Semantics
 
+open FormalSystem.Syntax
+
 /-!
 ## The base: a pointed truth relation with an inert environment
 -/
@@ -204,8 +215,9 @@ class TruthEnv (L : Type) where
 /-!
 ## One class per primitive operator
 
-Each carries the operator and its truth clause. The clause statements are copied from
-`Semantics/Truth.lean`'s `TruthAt`, with `e` threaded inert.
+Each holds the truth clause of the operator its signature class supplies (`AtomClause` alone
+carries its constructor, there being no signature class for atoms). The clause statements are
+copied from `Semantics/Truth.lean`'s `TruthAt`, with `e` threaded inert.
 -/
 
 /--
@@ -224,51 +236,41 @@ class AtomClause (L : Type) [TruthEnv L] where
     TruthEnv.T M τ t e (atom p) ↔ M.valuation (τ.state t) p
 
 /-- The falsum, false at every point. -/
-class BotClause (L : Type) [TruthEnv L] where
-  /-- The falsum constructor. -/
-  bot : L
+class BotClause (L : Type) [TruthEnv L] [HasBot L] : Prop where
   /-- `⊥` is false at every point. -/
   bot_clause : ∀ {F : TaskFrame} (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
-    (e : TruthEnv.Env L F), ¬ TruthEnv.T M τ t e bot
+    (e : TruthEnv.Env L F), ¬ TruthEnv.T M τ t e HasBot.bot
 
 /-- Material implication. -/
-class ImpClause (L : Type) [TruthEnv L] where
-  /-- The implication constructor. -/
-  imp : L → L → L
+class ImpClause (L : Type) [TruthEnv L] [HasImp L] : Prop where
   /-- Truth of an implication is the material conditional. -/
   imp_clause : ∀ {F : TaskFrame} (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ ψ : L),
-    TruthEnv.T M τ t e (imp φ ψ) ↔ (TruthEnv.T M τ t e φ → TruthEnv.T M τ t e ψ)
+    TruthEnv.T M τ t e (HasImp.imp φ ψ) ↔ (TruthEnv.T M τ t e φ → TruthEnv.T M τ t e ψ)
 
 /-- The modal box: truth at every world history at the current time. -/
-class BoxClause (L : Type) [TruthEnv L] where
-  /-- The box constructor. -/
-  box : L → L
+class BoxClause (L : Type) [TruthEnv L] [HasBox L] : Prop where
   /-- `□φ` holds iff `φ` holds at every world history at the current time. -/
   box_clause : ∀ {F : TaskFrame} (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ : L),
-    TruthEnv.T M τ t e (box φ) ↔ ∀ σ : WorldHistory F, TruthEnv.T M σ t e φ
+    TruthEnv.T M τ t e (HasBox.box φ) ↔ ∀ σ : WorldHistory F, TruthEnv.T M σ t e φ
 
 /-- Strict `until`, guard first. -/
-class UntlClause (L : Type) [TruthEnv L] where
-  /-- The `until` constructor, guard first. -/
-  untl : L → L → L
+class UntlClause (L : Type) [TruthEnv L] [HasUntl L] : Prop where
   /-- `untl ψ φ` holds iff `φ` holds at some strictly future time with `ψ` throughout the open
   interval between. -/
   untl_clause : ∀ {F : TaskFrame} (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (ψ φ : L),
-    TruthEnv.T M τ t e (untl ψ φ) ↔ ∃ s : F.Duration, t < s ∧ TruthEnv.T M τ s e φ ∧
+    TruthEnv.T M τ t e (HasUntl.untl ψ φ) ↔ ∃ s : F.Duration, t < s ∧ TruthEnv.T M τ s e φ ∧
       ∀ r : F.Duration, t < r → r < s → TruthEnv.T M τ r e ψ
 
 /-- Strict `since`, guard first. -/
-class SnceClause (L : Type) [TruthEnv L] where
-  /-- The `since` constructor, guard first. -/
-  snce : L → L → L
+class SnceClause (L : Type) [TruthEnv L] [HasSnce L] : Prop where
   /-- `snce ψ φ` holds iff `φ` held at some strictly past time with `ψ` throughout the open
   interval between. -/
   snce_clause : ∀ {F : TaskFrame} (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (ψ φ : L),
-    TruthEnv.T M τ t e (snce ψ φ) ↔ ∃ s : F.Duration, s < t ∧ TruthEnv.T M τ s e φ ∧
+    TruthEnv.T M τ t e (HasSnce.snce ψ φ) ↔ ∃ s : F.Duration, s < t ∧ TruthEnv.T M τ s e φ ∧
       ∀ r : F.Duration, s < r → r < t → TruthEnv.T M τ r e ψ
 
 /--
@@ -278,32 +280,26 @@ present time**.
 The agreement relation is the plain state equation `τ.state t = σ.state t`: world histories carry
 a non-dependent state accessor, so no separate same-state relation is needed.
 -/
-class StabClause (L : Type) [TruthEnv L] where
-  /-- The stability constructor. -/
-  stab : L → L
+class StabClause (L : Type) [TruthEnv L] [HasStab L] : Prop where
   /-- `⊡φ` holds iff `φ` holds at every world history in the same state at the current time. -/
   stab_clause : ∀ {F : TaskFrame} (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ : L),
-    TruthEnv.T M τ t e (stab φ) ↔ ∀ σ : WorldHistory F, τ.state t = σ.state t →
+    TruthEnv.T M τ t e (HasStab.stab φ) ↔ ∀ σ : WorldHistory F, τ.state t = σ.state t →
       TruthEnv.T M σ t e φ
 
 /-- The **primitive** universal future, for a tense-primitive language. -/
-class AllFutureClause (L : Type) [TruthEnv L] where
-  /-- The universal-future constructor. -/
-  allFuture : L → L
+class AllFutureClause (L : Type) [TruthEnv L] [HasAllFuture L] : Prop where
   /-- `Gφ` holds iff `φ` holds at every strictly future time. -/
   allFuture_clause : ∀ {F : TaskFrame} (M : TaskModel F) (τ : WorldHistory F)
     (t : F.Duration) (e : TruthEnv.Env L F) (φ : L),
-    TruthEnv.T M τ t e (allFuture φ) ↔ ∀ s : F.Duration, t < s → TruthEnv.T M τ s e φ
+    TruthEnv.T M τ t e (HasAllFuture.allFuture φ) ↔ ∀ s : F.Duration, t < s → TruthEnv.T M τ s e φ
 
 /-- The **primitive** universal past, for a tense-primitive language. -/
-class AllPastClause (L : Type) [TruthEnv L] where
-  /-- The universal-past constructor. -/
-  allPast : L → L
+class AllPastClause (L : Type) [TruthEnv L] [HasAllPast L] : Prop where
   /-- `Hφ` holds iff `φ` holds at every strictly past time. -/
   allPast_clause : ∀ {F : TaskFrame} (M : TaskModel F) (τ : WorldHistory F)
     (t : F.Duration) (e : TruthEnv.Env L F) (φ : L),
-    TruthEnv.T M τ t e (allPast φ) ↔ ∀ s : F.Duration, s < t → TruthEnv.T M τ s e φ
+    TruthEnv.T M τ t e (HasAllPast.allPast φ) ↔ ∀ s : F.Duration, s < t → TruthEnv.T M τ s e φ
 
 /-!
 ## Capability bundles
@@ -315,37 +311,34 @@ their proofs consume, so nothing here widens a lemma's requirements.
 -/
 
 /-- The Boolean-plus-modal core: `⊥`, `→`, `□`. -/
-class BoolClauses (L : Type) [TruthEnv L] extends BotClause L, ImpClause L, BoxClause L
+class BoolClauses (L : Type) [TruthEnv L] [HasBot L] [HasImp L] [HasBox L] : Prop
+  extends BotClause L, ImpClause L, BoxClause L
 
 /-- The Boolean core with the strict temporal primitives `U` and `S`: L, L⁺ and L⋆'s shape. -/
-class UntlClauses (L : Type) [TruthEnv L] extends BoolClauses L, UntlClause L, SnceClause L
+class UntlClauses (L : Type) [TruthEnv L] [HasBot L] [HasImp L] [HasBox L] [HasUntl L]
+    [HasSnce L] : Prop
+  extends BoolClauses L, UntlClause L, SnceClause L
 
 /-- The Boolean core with the **primitive** universal tenses `G` and `H`: L⁻'s shape. -/
-class TenseClauses (L : Type) [TruthEnv L] extends BoolClauses L, AllFutureClause L, AllPastClause L
+class TenseClauses (L : Type) [TruthEnv L] [HasBot L] [HasImp L] [HasBox L] [HasAllFuture L]
+    [HasAllPast L] : Prop
+  extends BoolClauses L, AllFutureClause L, AllPastClause L
 
 /-- `UntlClauses` with the stability modal `⊡`: L⁺ and L⋆'s shape. -/
-class StabClauses (L : Type) [TruthEnv L] extends UntlClauses L, StabClause L
+class StabClauses (L : Type) [TruthEnv L] [HasBot L] [HasImp L] [HasBox L] [HasUntl L]
+    [HasSnce L] [HasStab L] : Prop
+  extends UntlClauses L, StabClause L
 
 namespace TruthClauses
+
+open FormalSystem.Syntax.Sig
 
 /-!
 ## The Boolean tier: `bot`, `imp`, `box`
 -/
 
 section Boolean
-variable {L : Type} [TruthEnv L] [BotClause L] [ImpClause L] {F : TaskFrame}
-
-/-- Negation (`¬φ`): `φ → ⊥`. -/
-abbrev neg (φ : L) : L := ImpClause.imp φ BotClause.bot
-
-/-- Verum (`⊤`): `⊥ → ⊥`. -/
-abbrev top : L := ImpClause.imp (BotClause.bot : L) BotClause.bot
-
-/-- Conjunction (`φ ∧ ψ`): `¬(φ → ¬ψ)`. -/
-abbrev and (φ ψ : L) : L := neg (ImpClause.imp φ (neg ψ))
-
-/-- Disjunction (`φ ∨ ψ`): `¬φ → ψ`. -/
-abbrev or (φ ψ : L) : L := ImpClause.imp (neg φ) ψ
+variable {L : Type} [TruthEnv L] [HasBot L] [BotClause L] [HasImp L] [ImpClause L] {F : TaskFrame}
 
 
 /-- Truth of `¬φ`.
@@ -358,6 +351,7 @@ theorem neg_iff (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
   rw [neg, ImpClause.imp_clause]
   exact ⟨fun h hφ => BotClause.bot_clause M τ t e (h hφ), fun h hφ => absurd hφ h⟩
 
+omit [BotClause L] in
 /-- `⊤` is true everywhere. -/
 theorem top_true (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) : TruthEnv.T M τ t e (top : L) := by
@@ -368,7 +362,7 @@ theorem top_true (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
 theorem and_iff (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ ψ : L) :
     TruthEnv.T M τ t e (and φ ψ) ↔ (TruthEnv.T M τ t e φ ∧ TruthEnv.T M τ t e ψ) := by
-  rw [and, neg_iff, ImpClause.imp_clause, neg_iff]
+  rw [Sig.and, neg_iff, ImpClause.imp_clause, neg_iff]
   constructor
   · intro h
     exact ⟨by_contra fun hφ => h (fun hh => absurd hh hφ), by_contra fun hψ => h (fun _ => hψ)⟩
@@ -379,7 +373,7 @@ theorem and_iff (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
 theorem or_iff (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ ψ : L) :
     TruthEnv.T M τ t e (or φ ψ) ↔ (TruthEnv.T M τ t e φ ∨ TruthEnv.T M τ t e ψ) := by
-  rw [or, ImpClause.imp_clause, neg_iff]
+  rw [Sig.or, ImpClause.imp_clause, neg_iff]
   exact ⟨fun h => by_cases (fun hφ => Or.inl hφ) (fun hφ => Or.inr (h hφ)),
     fun h hn => h.elim (fun hφ => absurd hφ hn) id⟩
 
@@ -390,10 +384,8 @@ end Boolean
 -/
 
 section Modal
-variable {L : Type} [TruthEnv L] [BotClause L] [ImpClause L] [BoxClause L] {F : TaskFrame}
-
-/-- Possibility (`◇φ`): `¬□¬φ`. -/
-abbrev diamond (φ : L) : L := neg (BoxClause.box (neg φ))
+variable {L : Type} [TruthEnv L] [HasBot L] [BotClause L] [HasImp L] [ImpClause L] [HasBox L]
+  [BoxClause L] {F : TaskFrame}
 
 /-- Truth of `◇φ` (`¬□¬φ`): `φ` holds at *some* world history at the current time. The classical
 `¬∀¬ ↔ ∃` step over the box clause. -/
@@ -420,14 +412,10 @@ duals. This is L, L⁺ and L⋆'s shape; the tense-primitive alternative is the 
 -/
 
 section Future
-variable {L : Type} [TruthEnv L] [BotClause L] [ImpClause L] [UntlClause L] {F : TaskFrame}
+variable {L : Type} [TruthEnv L] [HasBot L] [BotClause L] [HasImp L] [ImpClause L] [HasUntl L]
+  [UntlClause L] {F : TaskFrame}
 
-/-- Existential future (`Fφ`): `⊤ U φ`. -/
-abbrev someFuture (φ : L) : L := UntlClause.untl top φ
-
-/-- Universal future (`Gφ`): `¬F¬φ`. -/
-abbrev allFuture (φ : L) : L := neg (someFuture (neg φ))
-
+omit [BotClause L] in
 /-- Truth of `Fφ`: `φ` holds at some strictly future time. The `⊤` guard is discharged by
 `top_true`. -/
 theorem someFuture_iff (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
@@ -448,9 +436,6 @@ theorem allFuture_iff (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     exact h ⟨s, hs, (neg_iff M τ s e φ).mpr hc⟩
   · rintro h ⟨s, hs, hn⟩
     exact ((neg_iff M τ s e φ).mp hn) (h s hs)
-
-/-- Reynolds' forward gap operator (`K⁺φ`): `¬U(¬φ, ⊤)`, guard-first. -/
-abbrev kPlus (φ : L) : L := neg (UntlClause.untl (neg φ) top)
 
 /-- `K⁺φ` at `t`: every point above `t` has a `φ`-point strictly between. -/
 theorem kPlus_iff (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
@@ -481,11 +466,8 @@ proofs of it.
 -/
 
 section After
-variable {L : Type} [TruthEnv L] [BotClause L] [ImpClause L] [UntlClause L] {F : TaskFrame}
-
-/-- `def:event-operators`' After operator: `After(φ,ψ) := ¬φ U (φ ∧ ψ)`. Guard-first, so the
-event is pinned to the first strictly future `φ`-time and `ψ` is read there. -/
-abbrev after (φ ψ : L) : L := UntlClause.untl (neg φ) (and φ ψ)
+variable {L : Type} [TruthEnv L] [HasBot L] [BotClause L] [HasImp L] [ImpClause L] [HasUntl L]
+  [UntlClause L] {F : TaskFrame}
 
 /--
 `z` is the **next `φ`-time** after `t` along `τ`: strictly future, with `φ` true there and false
@@ -496,7 +478,7 @@ def IsNextTime (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) (e : Tru
     (φ : L) (z : F.Duration) : Prop :=
   t < z ∧ TruthEnv.T M τ z e φ ∧ ∀ r : F.Duration, t < r → r < z → ¬ TruthEnv.T M τ r e φ
 
-omit [BotClause L] [ImpClause L] [UntlClause L] in
+omit [BotClause L] [ImpClause L] [UntlClause L] [HasBot L] [HasImp L] [HasUntl L] in
 /--
 **Next-`φ`-time uniqueness.** Any two next `φ`-times after `t` coincide: were they distinct, the
 earlier would lie strictly between `t` and the later, where the later's own open-interval clause
@@ -564,14 +546,10 @@ end After
 -/
 
 section Past
-variable {L : Type} [TruthEnv L] [BotClause L] [ImpClause L] [SnceClause L] {F : TaskFrame}
+variable {L : Type} [TruthEnv L] [HasBot L] [BotClause L] [HasImp L] [ImpClause L] [HasSnce L]
+  [SnceClause L] {F : TaskFrame}
 
-/-- Existential past (`Pφ`): `⊤ S φ`. -/
-abbrev somePast (φ : L) : L := SnceClause.snce top φ
-
-/-- Universal past (`Hφ`): `¬P¬φ`. -/
-abbrev allPast (φ : L) : L := neg (somePast (neg φ))
-
+omit [BotClause L] in
 /-- Truth of `Pφ`: `φ` held at some strictly past time. -/
 theorem somePast_iff (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ : L) :
@@ -591,9 +569,6 @@ theorem allPast_iff (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     exact h ⟨s, hs, (neg_iff M τ s e φ).mpr hc⟩
   · rintro h ⟨s, hs, hn⟩
     exact ((neg_iff M τ s e φ).mp hn) (h s hs)
-
-/-- Reynolds' backward gap operator (`K⁻φ`): `¬S(¬φ, ⊤)`, guard-first. -/
-abbrev kMinus (φ : L) : L := neg (SnceClause.snce (neg φ) top)
 
 /-- `K⁻φ` at `t`: the past mirror of `kPlus_iff`. -/
 theorem kMinus_iff (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
@@ -618,11 +593,9 @@ end Past
 -/
 
 section Always
-variable {L : Type} [TruthEnv L] [BotClause L] [ImpClause L] [UntlClause L] [SnceClause L]
+variable {L : Type} [TruthEnv L] [HasBot L] [BotClause L] [HasImp L] [ImpClause L] [HasUntl L]
+  [UntlClause L] [HasSnce L] [SnceClause L]
   {F : TaskFrame}
-
-/-- Temporal `always` (`△φ`): `Hφ ∧ (φ ∧ Gφ)`. -/
-abbrev always (φ : L) : L := and (allPast φ) (and φ (allFuture φ))
 
 /-- Truth of `△φ` in three-conjunct form: past, present, future. The **introduction** shape,
 mirroring the association of `always` itself. Collapsing the three cases into one unrestricted
@@ -641,10 +614,8 @@ end Always
 -/
 
 section Stab
-variable {L : Type} [TruthEnv L] [BotClause L] [ImpClause L] [StabClause L] {F : TaskFrame}
-
-/-- The dual stability modal (`⟐φ`): `¬⊡¬φ`. -/
-abbrev dstab (φ : L) : L := neg (StabClause.stab (neg φ))
+variable {L : Type} [TruthEnv L] [HasBot L] [BotClause L] [HasImp L] [ImpClause L] [HasStab L]
+  [StabClause L] {F : TaskFrame}
 
 /-- Truth of `⟐φ`: some world history in the same state at the current time satisfies `φ`. The
 classical `¬∀¬ ↔ ∃` step over the stability clause. -/
@@ -673,11 +644,9 @@ and no language has both.
 -/
 
 section TenseFuture
-variable {L : Type} [TruthEnv L] [BotClause L] [ImpClause L] [AllFutureClause L]
+variable {L : Type} [TruthEnv L] [HasBot L] [BotClause L] [HasImp L] [ImpClause L] [HasAllFuture L]
+  [AllFutureClause L]
   {F : TaskFrame}
-
-/-- Existential future from the primitive universal one (`Fφ`): `¬G¬φ`. -/
-abbrev someFuture' (φ : L) : L := neg (AllFutureClause.allFuture (neg φ))
 
 /-- Truth of `Fφ` when the universal future is primitive. The classical `¬∀¬ ↔ ∃` step. -/
 theorem someFuture_iff_of_allFuture (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
@@ -696,10 +665,8 @@ theorem someFuture_iff_of_allFuture (M : TaskModel F) (τ : WorldHistory F) (t :
 end TenseFuture
 
 section TensePast
-variable {L : Type} [TruthEnv L] [BotClause L] [ImpClause L] [AllPastClause L] {F : TaskFrame}
-
-/-- Existential past from the primitive universal one (`Pφ`): `¬H¬φ`. -/
-abbrev somePast' (φ : L) : L := neg (AllPastClause.allPast (neg φ))
+variable {L : Type} [TruthEnv L] [HasBot L] [BotClause L] [HasImp L] [ImpClause L] [HasAllPast L]
+  [AllPastClause L] {F : TaskFrame}
 
 /-- Truth of `Pφ` when the universal past is primitive. -/
 theorem somePast_iff_of_allPast (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
@@ -718,12 +685,9 @@ theorem somePast_iff_of_allPast (M : TaskModel F) (τ : WorldHistory F) (t : F.D
 end TensePast
 
 section TenseAlways
-variable {L : Type} [TruthEnv L] [BotClause L] [ImpClause L] [AllFutureClause L]
-  [AllPastClause L] {F : TaskFrame}
-
-/-- Temporal `always` over the primitive tenses (`△φ`): `Hφ ∧ (φ ∧ Gφ)`. -/
-abbrev always' (φ : L) : L :=
-  and (AllPastClause.allPast φ) (and φ (AllFutureClause.allFuture φ))
+variable {L : Type} [TruthEnv L] [HasBot L] [BotClause L] [HasImp L] [ImpClause L] [HasAllFuture L]
+  [AllFutureClause L]
+  [HasAllPast L] [AllPastClause L] {F : TaskFrame}
 
 /-- Truth of `△φ` in three-conjunct form, over the primitive tenses. -/
 theorem always_iff_of_tense (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)

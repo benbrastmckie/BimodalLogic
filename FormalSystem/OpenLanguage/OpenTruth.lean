@@ -105,12 +105,6 @@ instance : TruthEnv OpenFormula where
 
 /-- L^▷'s six inherited primitive operators and their clauses. -/
 instance : StabClauses OpenFormula where
-  bot := OpenFormula.bot
-  imp := OpenFormula.imp
-  box := OpenFormula.box
-  untl := OpenFormula.untl
-  snce := OpenFormula.snce
-  stab := OpenFormula.stab
   bot_clause _ _ _ _ := fun h => h
   imp_clause _ _ _ _ _ _ := Iff.rfl
   box_clause _ _ _ _ _ := Iff.rfl

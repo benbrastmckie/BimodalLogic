@@ -25,7 +25,8 @@ order cover is assumed anywhere in this module.
 
 ## References
 
-* `FormalSystem/Semantics/TruthClauses.lean` — the clause classes and `someFuture`
+* `FormalSystem/Semantics/TruthClauses.lean` — the clause classes
+* `FormalSystem/Syntax/Connectives.lean` — `someFuture`
 * `FormalSystem/Semantics/TemporalRules.lean` — the eventuality bind rules
 * `Tests/BimodalTest/Semantics/TemporalRulesTest.lean` — the per-language test rows
 
@@ -39,6 +40,7 @@ assert_not_exists FormalSystem.ProofSystem.Axiom FormalSystem.ProofSystem.Deriva
 namespace FormalSystem.Semantics.RankProgress
 
 open TruthClauses
+open FormalSystem.Syntax FormalSystem.Syntax.Sig
 
 section Progress
 
@@ -76,8 +78,10 @@ theorem rank_progress_strict {D : Type*} [Preorder D] {α : Type*} {r : α → �
     {t : D} (ht : I t) (hnow : ¬ Q t) : ∃ u, t < u ∧ Q u :=
   (rank_progress hwf I Q rank step ht).resolve_left hnow
 
-variable {L : Type} [TruthEnv L] [BotClause L] [ImpClause L] [UntlClause L] {F : TaskFrame}
+variable {L : Type} [TruthEnv L] [HasBot L] [BotClause L] [HasImp L] [ImpClause L] [HasUntl L]
+  [UntlClause L] {F : TaskFrame}
 
+omit [BotClause L] in
 /-- `rank_progress` along a fixed history with a pointed-truth target: `ψ` now, or `F ψ`. -/
 theorem rank_progress_truth (M : TaskModel F) (τ : WorldHistory F) (e : TruthEnv.Env L F)
     (ψ : L) {α : Type*} {r : α → α → Prop} (hwf : WellFounded r)
@@ -89,6 +93,7 @@ theorem rank_progress_truth (M : TaskModel F) (τ : WorldHistory F) (e : TruthEn
   (rank_progress hwf I (fun s => TruthEnv.T M τ s e ψ) rank step ht).imp_right
     (someFuture_iff M τ t e ψ).mpr
 
+omit [BotClause L] in
 /-- Strict pointed-truth progress: `F ψ`, when `ψ` is false now. -/
 theorem rank_progress_truth_strict (M : TaskModel F) (τ : WorldHistory F) (e : TruthEnv.Env L F)
     (ψ : L) {α : Type*} {r : α → α → Prop} (hwf : WellFounded r)

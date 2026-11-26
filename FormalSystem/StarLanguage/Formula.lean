@@ -157,57 +157,57 @@ Each right-hand side is copied verbatim from `PlusLanguage/Formula.lean`, so tha
 commutes with it by `rfl` (see the pins at the end of the file). -/
 
 /-- Top (`⊤`): `⊥ → ⊥`. Mirrors `PlusFormula.top`. -/
-def top : StarFormula := StarFormula.bot.imp StarFormula.bot
+def top : StarFormula := sig% Sig.top
 
 /-- Negation (`¬φ`): `φ → ⊥`. Mirrors `PlusFormula.neg`. -/
-def neg (φ : StarFormula) : StarFormula := φ.imp bot
+def neg (φ : StarFormula) : StarFormula := sig% Sig.neg φ
 
 /-- Existential future (`Fφ`): `⊤ U φ`. Mirrors `PlusFormula.someFuture`. -/
-def someFuture (φ : StarFormula) : StarFormula := StarFormula.untl StarFormula.top φ
+def someFuture (φ : StarFormula) : StarFormula := sig% Sig.someFuture φ
 
 /-- Existential past (`Pφ`): `⊤ S φ`. Mirrors `PlusFormula.somePast`. -/
-def somePast (φ : StarFormula) : StarFormula := StarFormula.snce StarFormula.top φ
+def somePast (φ : StarFormula) : StarFormula := sig% Sig.somePast φ
 
 /-- Universal future (`Gφ`): `¬F¬φ`. Mirrors `PlusFormula.allFuture`. -/
-def allFuture (φ : StarFormula) : StarFormula := (someFuture φ.neg).neg
+def allFuture (φ : StarFormula) : StarFormula := sig% Sig.allFuture φ
 
 /-- Universal past (`Hφ`): `¬P¬φ`. Mirrors `PlusFormula.allPast`. -/
-def allPast (φ : StarFormula) : StarFormula := (somePast φ.neg).neg
+def allPast (φ : StarFormula) : StarFormula := sig% Sig.allPast φ
 
 /-- Reynolds' `K⁺`: `¬U(¬φ, ⊤)` in guard-first order. Mirrors `PlusFormula.kPlus`. -/
-def kPlus (φ : StarFormula) : StarFormula := (StarFormula.untl φ.neg StarFormula.top).neg
+def kPlus (φ : StarFormula) : StarFormula := sig% Sig.kPlus φ
 
 /-- Reynolds' `K⁻`: `¬S(¬φ, ⊤)` in guard-first order. Mirrors `PlusFormula.kMinus`. -/
-def kMinus (φ : StarFormula) : StarFormula := (StarFormula.snce φ.neg StarFormula.top).neg
+def kMinus (φ : StarFormula) : StarFormula := sig% Sig.kMinus φ
 
 /-- Conjunction (`φ ∧ ψ`): `¬(φ → ¬ψ)`. Mirrors `PlusFormula.and`. -/
-def and (φ ψ : StarFormula) : StarFormula := (φ.imp ψ.neg).neg
+def and (φ ψ : StarFormula) : StarFormula := sig% Sig.and φ ψ
 
 /-- Disjunction (`φ ∨ ψ`): `¬φ → ψ`. Mirrors `PlusFormula.or`. -/
-def or (φ ψ : StarFormula) : StarFormula := φ.neg.imp ψ
+def or (φ ψ : StarFormula) : StarFormula := sig% Sig.or φ ψ
 
 /-- Biconditional (`φ ↔ ψ`): `(φ → ψ) ∧ (ψ → φ)`. Mirrors `PlusFormula.iff`. -/
 def iff (φ ψ : StarFormula) : StarFormula := (φ.imp ψ).and (ψ.imp φ)
 
 /-- Modal possibility (`◇φ`): `¬□¬φ`. Mirrors `PlusFormula.diamond`. -/
-def diamond (φ : StarFormula) : StarFormula := φ.neg.box.neg
+def diamond (φ : StarFormula) : StarFormula := sig% Sig.diamond φ
 
 /-- Temporal `always` (`△φ`): `Hφ ∧ (φ ∧ Gφ)`. Mirrors `PlusFormula.always`. -/
-def always (φ : StarFormula) : StarFormula := φ.allPast.and (φ.and φ.allFuture)
+def always (φ : StarFormula) : StarFormula := sig% Sig.always φ
 
 /-- Temporal `sometimes` (`▽φ`): `¬△¬φ`. Mirrors `PlusFormula.sometimes`. -/
-def sometimes (φ : StarFormula) : StarFormula := φ.neg.always.neg
+def sometimes (φ : StarFormula) : StarFormula := sig% Sig.sometimes φ
 
 /-- Next-step (`Xφ`): `⊥ U φ`. Mirrors `PlusFormula.next`. -/
-def next (φ : StarFormula) : StarFormula := StarFormula.untl StarFormula.bot φ
+def next (φ : StarFormula) : StarFormula := sig% Sig.next φ
 
 /-- Previous-step (`Yφ`): `⊥ S φ`. Mirrors `PlusFormula.prev`. -/
-def prev (φ : StarFormula) : StarFormula := StarFormula.snce StarFormula.bot φ
+def prev (φ : StarFormula) : StarFormula := sig% Sig.prev φ
 
 /-! ### The `⊡`-specific operators, mirrored from L⁺ -/
 
 /-- The dual stability modal `⟐φ := ¬⊡¬φ`. Mirrors `PlusFormula.dstab`. -/
-def dstab (φ : StarFormula) : StarFormula := neg (.stab (neg φ))
+def dstab (φ : StarFormula) : StarFormula := sig% Sig.dstab φ
 
 /-- `Will φ := ⊡Gφ`. Mirrors `PlusFormula.Will`. -/
 def Will (φ : StarFormula) : StarFormula := .stab (allFuture φ)

@@ -35,16 +35,16 @@ namespace FormalSystem.PlusLanguage
 namespace PlusFormula
 
 /-- Release, event first like `Formula.release`: `release φ ψ = ¬(¬ψ U ¬φ)`. -/
-def release (φ ψ : PlusFormula) : PlusFormula := (PlusFormula.untl ψ.neg φ.neg).neg
+def release (φ ψ : PlusFormula) : PlusFormula := sig% FormalSystem.Syntax.Sig.release φ ψ
 
 /-- Trigger, the past mirror of `release`: `trigger φ ψ = ¬(¬ψ S ¬φ)`. -/
-def trigger (φ ψ : PlusFormula) : PlusFormula := (PlusFormula.snce ψ.neg φ.neg).neg
+def trigger (φ ψ : PlusFormula) : PlusFormula := sig% FormalSystem.Syntax.Sig.trigger φ ψ
 
 /-- Weak Until, event first: `weakUntil φ ψ = (ψ U φ) ∨ G ψ`. -/
-def weakUntil (φ ψ : PlusFormula) : PlusFormula := (PlusFormula.untl ψ φ).or ψ.allFuture
+def weakUntil (φ ψ : PlusFormula) : PlusFormula := sig% FormalSystem.Syntax.Sig.weakUntil φ ψ
 
 /-- Weak Since, event first: `weakSince φ ψ = (ψ S φ) ∨ H ψ`. -/
-def weakSince (φ ψ : PlusFormula) : PlusFormula := (PlusFormula.snce ψ φ).or ψ.allPast
+def weakSince (φ ψ : PlusFormula) : PlusFormula := sig% FormalSystem.Syntax.Sig.weakSince φ ψ
 
 /-- Strong Release, event first: `strongRelease φ ψ = ψ U (ψ ∧ φ)`. -/
 def strongRelease (φ ψ : PlusFormula) : PlusFormula := PlusFormula.untl ψ (PlusFormula.and ψ φ)
@@ -58,11 +58,11 @@ def before (φ ψ : PlusFormula) : PlusFormula :=
 
 /-- Inclusive Until, guard first: `event ∨ (guard ∧ U guard event)`. Derived from strict U. -/
 def inclusiveUntil (guard event : PlusFormula) : PlusFormula :=
-  event.or (guard.and (PlusFormula.untl guard event))
+  sig% FormalSystem.Syntax.Sig.inclusiveUntil guard event
 
 /-- Inclusive Since, guard first: `event ∨ (guard ∧ S guard event)`. Derived from strict S. -/
 def inclusiveSince (guard event : PlusFormula) : PlusFormula :=
-  event.or (guard.and (PlusFormula.snce guard event))
+  sig% FormalSystem.Syntax.Sig.inclusiveSince guard event
 
 /-! ### Literal expansions, usable as rewrite equalities -/
 
@@ -128,12 +128,10 @@ end FormalSystem.PlusLanguage
 namespace FormalSystem.Syntax.Formula
 
 /-- Inclusive Until, guard first: `event ∨ (guard ∧ U guard event)`. Derived from strict U. -/
-def inclusiveUntil (guard event : Formula) : Formula :=
-  event.or (guard.and (Formula.untl guard event))
+def inclusiveUntil (guard event : Formula) : Formula := sig% Sig.inclusiveUntil guard event
 
 /-- Inclusive Since, guard first: `event ∨ (guard ∧ S guard event)`. Derived from strict S. -/
-def inclusiveSince (guard event : Formula) : Formula :=
-  event.or (guard.and (Formula.snce guard event))
+def inclusiveSince (guard event : Formula) : Formula := sig% Sig.inclusiveSince guard event
 
 /-! ### Literal expansions of the existing TM views, usable as rewrite equalities -/
 

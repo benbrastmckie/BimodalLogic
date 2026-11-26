@@ -139,52 +139,52 @@ Each right-hand side is copied verbatim from `Syntax/Formula.lean`, so that `ofF
 commutes with it by `rfl` (see the pins at the end of the file). -/
 
 /-- Top (`⊤`): `⊥ → ⊥`. Mirrors `Formula.top`. -/
-def top : PlusFormula := PlusFormula.bot.imp PlusFormula.bot
+def top : PlusFormula := sig% Sig.top
 
 /-- Negation (`¬φ`): `φ → ⊥`. Mirrors `Formula.neg`. -/
-def neg (φ : PlusFormula) : PlusFormula := φ.imp bot
+def neg (φ : PlusFormula) : PlusFormula := sig% Sig.neg φ
 
 /-- Existential future (`Fφ`): `⊤ U φ`. Mirrors `Formula.someFuture`. -/
-def someFuture (φ : PlusFormula) : PlusFormula := PlusFormula.untl PlusFormula.top φ
+def someFuture (φ : PlusFormula) : PlusFormula := sig% Sig.someFuture φ
 
 /-- Existential past (`Pφ`): `⊤ S φ`. Mirrors `Formula.somePast`. -/
-def somePast (φ : PlusFormula) : PlusFormula := PlusFormula.snce PlusFormula.top φ
+def somePast (φ : PlusFormula) : PlusFormula := sig% Sig.somePast φ
 
 /-- Universal future (`Gφ`): `¬F¬φ`. Mirrors `Formula.allFuture`. -/
-def allFuture (φ : PlusFormula) : PlusFormula := (someFuture φ.neg).neg
+def allFuture (φ : PlusFormula) : PlusFormula := sig% Sig.allFuture φ
 
 /-- Universal past (`Hφ`): `¬P¬φ`. Mirrors `Formula.allPast`. -/
-def allPast (φ : PlusFormula) : PlusFormula := (somePast φ.neg).neg
+def allPast (φ : PlusFormula) : PlusFormula := sig% Sig.allPast φ
 
 /-- Reynolds' `K⁺`: `¬U(¬φ, ⊤)` in guard-first order. Mirrors `Formula.kPlus`. -/
-def kPlus (φ : PlusFormula) : PlusFormula := (PlusFormula.untl φ.neg PlusFormula.top).neg
+def kPlus (φ : PlusFormula) : PlusFormula := sig% Sig.kPlus φ
 
 /-- Reynolds' `K⁻`: `¬S(¬φ, ⊤)` in guard-first order. Mirrors `Formula.kMinus`. -/
-def kMinus (φ : PlusFormula) : PlusFormula := (PlusFormula.snce φ.neg PlusFormula.top).neg
+def kMinus (φ : PlusFormula) : PlusFormula := sig% Sig.kMinus φ
 
 /-- Conjunction (`φ ∧ ψ`): `¬(φ → ¬ψ)`. Mirrors `Formula.and`. -/
-def and (φ ψ : PlusFormula) : PlusFormula := (φ.imp ψ.neg).neg
+def and (φ ψ : PlusFormula) : PlusFormula := sig% Sig.and φ ψ
 
 /-- Disjunction (`φ ∨ ψ`): `¬φ → ψ`. Mirrors `Formula.or`. -/
-def or (φ ψ : PlusFormula) : PlusFormula := φ.neg.imp ψ
+def or (φ ψ : PlusFormula) : PlusFormula := sig% Sig.or φ ψ
 
 /-- Biconditional (`φ ↔ ψ`): `(φ → ψ) ∧ (ψ → φ)`. -/
 def iff (φ ψ : PlusFormula) : PlusFormula := (φ.imp ψ).and (ψ.imp φ)
 
 /-- Modal possibility (`◇φ`): `¬□¬φ`. Mirrors `Formula.diamond`. -/
-def diamond (φ : PlusFormula) : PlusFormula := φ.neg.box.neg
+def diamond (φ : PlusFormula) : PlusFormula := sig% Sig.diamond φ
 
 /-- Temporal `always` (`△φ`): `Hφ ∧ (φ ∧ Gφ)`. Mirrors `Formula.always`. -/
-def always (φ : PlusFormula) : PlusFormula := φ.allPast.and (φ.and φ.allFuture)
+def always (φ : PlusFormula) : PlusFormula := sig% Sig.always φ
 
 /-- Temporal `sometimes` (`▽φ`): `¬△¬φ`. Mirrors `Formula.sometimes`. -/
-def sometimes (φ : PlusFormula) : PlusFormula := φ.neg.always.neg
+def sometimes (φ : PlusFormula) : PlusFormula := sig% Sig.sometimes φ
 
 /-- Next-step (`Xφ`): `⊥ U φ`. Mirrors `Formula.next`. -/
-def next (φ : PlusFormula) : PlusFormula := PlusFormula.untl PlusFormula.bot φ
+def next (φ : PlusFormula) : PlusFormula := sig% Sig.next φ
 
 /-- Previous-step (`Yφ`): `⊥ S φ`. Mirrors `Formula.prev`. -/
-def prev (φ : PlusFormula) : PlusFormula := PlusFormula.snce PlusFormula.bot φ
+def prev (φ : PlusFormula) : PlusFormula := sig% Sig.prev φ
 
 /-- After (`def:event-operators`): `¬φ U (φ ∧ ψ)`. Mirrors `Formula.after` right-hand side for
 right-hand side, so `ofFormula` commutes with it by `rfl` (pinned at the end of this file).
@@ -192,13 +192,13 @@ right-hand side, so `ofFormula` commutes with it by `rfl` (pinned at the end of 
 No `reflect_time_after` companion: `After` has no past dual in the paper, so a push-through
 lemma would have to invent one. The `cor:after-negation-stable` statements
 (`PlusLanguage/PlusValidity.lean`) are the only consumers. -/
-def after (φ ψ : PlusFormula) : PlusFormula := PlusFormula.untl φ.neg (φ.and ψ)
+def after (φ ψ : PlusFormula) : PlusFormula := sig% Sig.after φ ψ
 
 /-! ### The `⊡`-specific operators (`sub:RestrictedModalities`) -/
 
 /-- The dual stability modal `⟐φ := ¬⊡¬φ` (`sub:RestrictedModalities`): `φ` holds in *some* world
 sharing the present world state. -/
-def dstab (φ : PlusFormula) : PlusFormula := neg (.stab (neg φ))
+def dstab (φ : PlusFormula) : PlusFormula := sig% Sig.dstab φ
 
 /-- `Will φ := ⊡Gφ` (`sub:RestrictedModalities`): settled to hold at every future time. -/
 def Will (φ : PlusFormula) : PlusFormula := .stab (allFuture φ)

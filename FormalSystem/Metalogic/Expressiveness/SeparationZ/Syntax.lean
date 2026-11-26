@@ -6,6 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Init
 import FormalSystem.Syntax.Connectives
+import FormalSystem.Syntax.ConnectivesElab
 import Mathlib.Data.Int.LeastGreatest
 import Mathlib.Order.Basic
 
@@ -91,37 +92,37 @@ Each right-hand side is the one its `PlusFormula` counterpart carries, so that `
 commutes with it by `rfl`. -/
 
 /-- Top: `⊥ → ⊥`. -/
-def top : USForm := USForm.bot.imp USForm.bot
+def top : USForm := sig% FormalSystem.Syntax.Sig.top
 
 /-- Negation: `φ → ⊥`. -/
-def neg (φ : USForm) : USForm := φ.imp USForm.bot
+def neg (φ : USForm) : USForm := sig% FormalSystem.Syntax.Sig.neg φ
 
 /-- Conjunction: `¬(φ → ¬ψ)`. -/
-def and (φ ψ : USForm) : USForm := (φ.imp ψ.neg).neg
+def and (φ ψ : USForm) : USForm := sig% FormalSystem.Syntax.Sig.and φ ψ
 
 /-- Disjunction: `¬φ → ψ`. -/
-def or (φ ψ : USForm) : USForm := φ.neg.imp ψ
+def or (φ ψ : USForm) : USForm := sig% FormalSystem.Syntax.Sig.or φ ψ
 
 /-- Biconditional: `(φ → ψ) ∧ (ψ → φ)`. -/
 def iff (φ ψ : USForm) : USForm := (φ.imp ψ).and (ψ.imp φ)
 
 /-- Existential future `Fφ`: `⊤ U φ`. -/
-def someFuture (φ : USForm) : USForm := USForm.untl top φ
+def someFuture (φ : USForm) : USForm := sig% FormalSystem.Syntax.Sig.someFuture φ
 
 /-- Existential past `Pφ`: `⊤ S φ`. -/
-def somePast (φ : USForm) : USForm := USForm.snce top φ
+def somePast (φ : USForm) : USForm := sig% FormalSystem.Syntax.Sig.somePast φ
 
 /-- Universal future `Gφ`: `¬F¬φ`. -/
-def allFuture (φ : USForm) : USForm := (someFuture φ.neg).neg
+def allFuture (φ : USForm) : USForm := sig% FormalSystem.Syntax.Sig.allFuture φ
 
 /-- Universal past `Hφ`: `¬P¬φ`. -/
-def allPast (φ : USForm) : USForm := (somePast φ.neg).neg
+def allPast (φ : USForm) : USForm := sig% FormalSystem.Syntax.Sig.allPast φ
 
 /-- Next step `Xφ`: `⊥ U φ`. -/
-def next (φ : USForm) : USForm := USForm.untl USForm.bot φ
+def next (φ : USForm) : USForm := sig% FormalSystem.Syntax.Sig.next φ
 
 /-- Previous step `Yφ`: `⊥ S φ`. -/
-def prev (φ : USForm) : USForm := USForm.snce USForm.bot φ
+def prev (φ : USForm) : USForm := sig% FormalSystem.Syntax.Sig.prev φ
 
 end USForm
 

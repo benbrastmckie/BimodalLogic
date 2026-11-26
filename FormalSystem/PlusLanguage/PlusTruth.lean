@@ -104,12 +104,6 @@ instance : TruthEnv PlusFormula where
 
 /-- L⁺'s six primitive operators and their clauses: L's five plus the stability modal. -/
 instance : StabClauses PlusFormula where
-  bot := PlusFormula.bot
-  imp := PlusFormula.imp
-  box := PlusFormula.box
-  untl := PlusFormula.untl
-  snce := PlusFormula.snce
-  stab := PlusFormula.stab
   bot_clause _ _ _ _ := fun h => h
   imp_clause _ _ _ _ _ _ := Iff.rfl
   box_clause _ _ _ _ _ := Iff.rfl

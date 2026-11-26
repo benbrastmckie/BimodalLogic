@@ -6,6 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Syntax.Atom
 import FormalSystem.Syntax.Connectives
+import FormalSystem.Syntax.ConnectivesElab
 
 /-!
 # Formula - Syntax for Bimodal Logic TM
@@ -139,10 +140,10 @@ namespace Formula
 def atomS (s : String) : Formula := atom (Atom.mkBase s)
 
 /-- Top (⊤, verum, tautology): ⊥ → ⊥ -/
-def top : Formula := Formula.bot.imp Formula.bot
+def top : Formula := sig% Sig.top
 
 /-- Negation (¬φ) as derived operator: φ → ⊥ -/
-def neg (φ : Formula) : Formula := φ.imp bot
+def neg (φ : Formula) : Formula := sig% Sig.neg φ
 
 /--
 Existential future operator (Fφ, "φ will be true at some future time").
@@ -152,7 +153,7 @@ This means: there exists a future time where φ is true.
 
 **DSL Notation**: `F φ`, labelled *Some Future* (the paper's `\future`)
 -/
-def someFuture (φ : Formula) : Formula := Formula.untl Formula.top φ
+def someFuture (φ : Formula) : Formula := sig% Sig.someFuture φ
 
 /--
 Existential past operator (Pφ, "φ was true at some past time").
@@ -162,7 +163,7 @@ This means: there exists a past time where φ is true.
 
 **DSL Notation**: `P φ`, labelled *Some Past* (the paper's `\past`)
 -/
-def somePast (φ : Formula) : Formula := Formula.snce Formula.top φ
+def somePast (φ : Formula) : Formula := sig% Sig.somePast φ
 
 /--
 Universal future operator (Gφ, "φ will always be true").
@@ -172,7 +173,7 @@ This means: φ holds at all strictly future times.
 
 **DSL Notation**: `G φ`, labelled *All Future* (the paper's `\Future`)
 -/
-def allFuture (φ : Formula) : Formula := (someFuture φ.neg).neg
+def allFuture (φ : Formula) : Formula := sig% Sig.allFuture φ
 
 /--
 Universal past operator (Hφ, "φ has always been true").
@@ -182,7 +183,7 @@ This means: φ holds at all strictly past times.
 
 **DSL Notation**: `H φ`, labelled *All Past* (the paper's `\Past`)
 -/
-def allPast (φ : Formula) : Formula := (somePast φ.neg).neg
+def allPast (φ : Formula) : Formula := sig% Sig.allPast φ
 
 /--
 Reynolds' `K⁺` operator: `K⁺A = ¬U(⊤, ¬A)` — "A holds arbitrarily soon in the future",
@@ -201,7 +202,7 @@ downstream of `ProofSystem/`, so it is not importable from `Axioms.lean` in any 
 
 Used to state `Axiom.prior_U_gap` and `Axiom.sep`.
 -/
-def kPlus (φ : Formula) : Formula := (Formula.untl φ.neg Formula.top).neg
+def kPlus (φ : Formula) : Formula := sig% Sig.kPlus φ
 
 /--
 Reynolds' `K⁻` operator: `K⁻A = ¬S(⊤, ¬A)` — the past dual of `kPlus`, "A held arbitrarily
@@ -214,7 +215,7 @@ Same name-collision caveat as `kPlus`: do not confuse with `Metalogic`'s `kminus
 
 Used to state `DerivedAxioms.priorSGap` and `Axiom.sep`.
 -/
-def kMinus (φ : Formula) : Formula := (Formula.snce φ.neg Formula.top).neg
+def kMinus (φ : Formula) : Formula := sig% Sig.kMinus φ
 
 /--
 Structural complexity of a formula (number of connectives + 1).
@@ -433,17 +434,17 @@ def countImplications : Formula → Nat
 /--
 Conjunction (φ ∧ ψ) as derived operator: ¬(φ → ¬ψ)
 -/
-def and (φ ψ : Formula) : Formula := (φ.imp ψ.neg).neg
+def and (φ ψ : Formula) : Formula := sig% Sig.and φ ψ
 
 /--
 Disjunction (φ ∨ ψ) as derived operator: ¬φ → ψ
 -/
-def or (φ ψ : Formula) : Formula := φ.neg.imp ψ
+def or (φ ψ : Formula) : Formula := sig% Sig.or φ ψ
 
 /--
 Modal diamond/possibility (◇φ) as derived operator: ¬□¬φ
 -/
-def diamond (φ : Formula) : Formula := φ.neg.box.neg
+def diamond (φ : Formula) : Formula := sig% Sig.diamond φ
 
 /--
 Temporal 'always' operator (△φ, "eternal truth" - φ holds at all times).
@@ -460,7 +461,7 @@ Note: The paper uses this definition for the TL axiom `△φ → G(Hφ)` which
 is trivially valid: if φ holds at ALL times, then at any future time z,
 φ holds at all times w < z (since "all times" includes all such w).
 -/
-def always (φ : Formula) : Formula := φ.allPast.and (φ.and φ.allFuture)
+def always (φ : Formula) : Formula := sig% Sig.always φ
 
 /--
 The paper's **CO** formula (Cauchy/completeness-of-order principle), as a *named abbreviation*:
@@ -500,12 +501,12 @@ def co (φ : Formula) : Formula :=
 /-- Next-step operator: X(phi) = `untl bot phi`, rendered `U(phi, bot)` in the prefix notation
     (which is event-first, the reverse of the constructor's guard-first arguments).
     X(phi) at t means phi holds at t+1 (event=phi at immediate successor, guard=bot vacuous). -/
-def next (φ : Formula) : Formula := Formula.untl Formula.bot φ
+def next (φ : Formula) : Formula := sig% Sig.next φ
 
 /-- Previous-step operator: Y(phi) = `snce bot phi`, rendered `S(phi, bot)` in the prefix notation
     (which is event-first, the reverse of the constructor's guard-first arguments).
     Y(phi) at t means phi holds at t-1 (event=phi at immediate predecessor, guard=bot vacuous). -/
-def prev (φ : Formula) : Formula := Formula.snce Formula.bot φ
+def prev (φ : Formula) : Formula := sig% Sig.prev φ
 
 /--
 Derived reflexive future operator (G'φ := φ ∧ Gφ, "now and always in the future").
@@ -534,7 +535,7 @@ Release(φ, ψ) = ¬(¬φ U ¬ψ). Guard-first (`untl guard event`):
 Semantically: ψ must hold at all future times until and including when φ first holds
 (and if φ never holds, ψ must hold forever).
 -/
-def release (φ ψ : Formula) : Formula := (Formula.untl ψ.neg φ.neg).neg
+def release (φ ψ : Formula) : Formula := sig% Sig.release φ ψ
 
 /--
 After operator A(φ, ψ) — `def:event-operators`' `After(φ,ψ) := ¬φ U (φ ∧ ψ)`.
@@ -546,7 +547,7 @@ is pinned to the **first** strictly future `φ`-time and `ψ` is read there.
 `lem:after-negation`, whose semantic content is
 `FormalSystem.Metalogic.SoundnessLemmas.after_negation_valid`.
 -/
-def after (φ ψ : Formula) : Formula := Formula.untl φ.neg (φ.and ψ)
+def after (φ ψ : Formula) : Formula := sig% Sig.after φ ψ
 
 /--
 Before operator B(φ, ψ) — `def:event-operators`' `Before(φ,ψ) := Release(ψ,¬φ) ∧ fφ`.
@@ -576,7 +577,7 @@ Weak_until(φ, ψ) = (ψ U φ) ∨ G(ψ). Guard-first (`untl guard event`):
 `untl ψ φ` = "ψ holds until φ", so weakUntil adds the possibility that
 the guard ψ holds forever (the event φ may never occur).
 -/
-def weakUntil (φ ψ : Formula) : Formula := (Formula.untl ψ φ).or ψ.allFuture
+def weakUntil (φ ψ : Formula) : Formula := sig% Sig.weakUntil φ ψ
 
 /--
 Trigger operator T(φ, ψ) — dual of Since (past analog of Release).
@@ -584,7 +585,7 @@ Trigger operator T(φ, ψ) — dual of Since (past analog of Release).
 Trigger(φ, ψ) = ¬(¬φ S ¬ψ). Guard-first (`snce guard event`):
 `snce ψ.neg φ.neg` = "¬ψ held since ¬φ was true", negating gives trigger.
 -/
-def trigger (φ ψ : Formula) : Formula := (Formula.snce ψ.neg φ.neg).neg
+def trigger (φ ψ : Formula) : Formula := sig% Sig.trigger φ ψ
 
 /--
 Weak Since operator WS(φ, ψ) — Since without the liveness requirement.
@@ -593,7 +594,7 @@ Weak_since(φ, ψ) = (ψ S φ) ∨ H(ψ). Guard-first (`snce guard event`):
 `snce ψ φ` = "ψ held since φ", so weakSince adds the possibility that
 the guard ψ held forever in the past (the event φ may never have occurred).
 -/
-def weakSince (φ ψ : Formula) : Formula := (Formula.snce ψ φ).or ψ.allPast
+def weakSince (φ ψ : Formula) : Formula := sig% Sig.weakSince φ ψ
 
 /-- Strong Release operator M(φ, ψ) — ψ U (ψ ∧ φ). Dual of weak until. -/
 def strongRelease (φ ψ : Formula) : Formula := Formula.untl ψ (Formula.and ψ φ)
@@ -618,7 +619,7 @@ where p = somePast and f = someFuture (existential duals).
 
 Equivalently, `sometimes φ = ¬(always ¬φ)` by De Morgan's laws.
 -/
-def sometimes (φ : Formula) : Formula := φ.neg.always.neg
+def sometimes (φ : Formula) : Formula := sig% Sig.sometimes φ
 
 /-- Notation for temporal 'always' operator using upward triangle.
     Represents universal temporal quantification: φ holds at all times (past, present, future).

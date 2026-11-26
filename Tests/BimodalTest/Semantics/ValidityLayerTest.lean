@@ -5,6 +5,11 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Semantics.TruthClauses
+import FormalSystem.Semantics.TemporalRules
+import FormalSystem.Semantics.TemporalIntervals
+import FormalSystem.PlusLanguage.TemporalViews
+import FormalSystem.NomicLanguage.Formula
+import FormalSystem.Metalogic.Expressiveness.SeparationZ.Syntax
 import FormalSystem.StarLanguage.StarValidity
 import FormalSystem.MinusLanguage.MinusValidity
 import FormalSystem.OpenLanguage.OpenValidity
@@ -159,19 +164,19 @@ so it is pinned here. -/
 section LOperators
 variable (φ ψ : Syntax.Formula)
 
-example : Syntax.Formula.neg φ = TruthClauses.neg φ := rfl
-example : (Syntax.Formula.top : Syntax.Formula) = TruthClauses.top := rfl
-example : Syntax.Formula.and φ ψ = TruthClauses.and φ ψ := rfl
-example : Syntax.Formula.or φ ψ = TruthClauses.or φ ψ := rfl
-example : Syntax.Formula.diamond φ = TruthClauses.diamond φ := rfl
-example : Syntax.Formula.someFuture φ = TruthClauses.someFuture φ := rfl
-example : Syntax.Formula.somePast φ = TruthClauses.somePast φ := rfl
-example : Syntax.Formula.allFuture φ = TruthClauses.allFuture φ := rfl
-example : Syntax.Formula.allPast φ = TruthClauses.allPast φ := rfl
-example : Syntax.Formula.always φ = TruthClauses.always φ := rfl
+example : Syntax.Formula.neg φ = Syntax.Sig.neg φ := rfl
+example : (Syntax.Formula.top : Syntax.Formula) = Syntax.Sig.top := rfl
+example : Syntax.Formula.and φ ψ = Syntax.Sig.and φ ψ := rfl
+example : Syntax.Formula.or φ ψ = Syntax.Sig.or φ ψ := rfl
+example : Syntax.Formula.diamond φ = Syntax.Sig.diamond φ := rfl
+example : Syntax.Formula.someFuture φ = Syntax.Sig.someFuture φ := rfl
+example : Syntax.Formula.somePast φ = Syntax.Sig.somePast φ := rfl
+example : Syntax.Formula.allFuture φ = Syntax.Sig.allFuture φ := rfl
+example : Syntax.Formula.allPast φ = Syntax.Sig.allPast φ := rfl
+example : Syntax.Formula.always φ = Syntax.Sig.always φ := rfl
 
-example : Syntax.Formula.kPlus φ = TruthClauses.kPlus φ := rfl
-example : Syntax.Formula.kMinus φ = TruthClauses.kMinus φ := rfl
+example : Syntax.Formula.kPlus φ = Syntax.Sig.kPlus φ := rfl
+example : Syntax.Formula.kMinus φ = Syntax.Sig.kMinus φ := rfl
 example (p : Syntax.Atom) : Syntax.Formula.atom p = AtomClause.atom p := rfl
 
 end LOperators
@@ -186,14 +191,14 @@ section LMinusOperators
 open MinusLanguage
 variable (φ ψ : MinusFormula)
 
-example : MinusFormula.neg φ = TruthClauses.neg φ := rfl
-example : (MinusFormula.top : MinusFormula) = TruthClauses.top := rfl
-example : MinusFormula.and φ ψ = TruthClauses.and φ ψ := rfl
-example : MinusFormula.or φ ψ = TruthClauses.or φ ψ := rfl
-example : MinusFormula.diamond φ = TruthClauses.diamond φ := rfl
-example : MinusFormula.someFuture φ = TruthClauses.someFuture' φ := rfl
-example : MinusFormula.somePast φ = TruthClauses.somePast' φ := rfl
-example : MinusFormula.always φ = TruthClauses.always' φ := rfl
+example : MinusFormula.neg φ = Syntax.Sig.neg φ := rfl
+example : (MinusFormula.top : MinusFormula) = Syntax.Sig.top := rfl
+example : MinusFormula.and φ ψ = Syntax.Sig.and φ ψ := rfl
+example : MinusFormula.or φ ψ = Syntax.Sig.or φ ψ := rfl
+example : MinusFormula.diamond φ = Syntax.Sig.diamond φ := rfl
+example : MinusFormula.someFuture φ = Syntax.Sig.someFuture' φ := rfl
+example : MinusFormula.somePast φ = Syntax.Sig.somePast' φ := rfl
+example : MinusFormula.always φ = Syntax.Sig.always' φ := rfl
 
 example (p : Syntax.Atom) : MinusFormula.atom p = AtomClause.atom p := rfl
 
@@ -203,20 +208,20 @@ section LPlusOperators
 open PlusLanguage
 variable (φ ψ : PlusFormula)
 
-example : PlusFormula.neg φ = TruthClauses.neg φ := rfl
-example : (PlusFormula.top : PlusFormula) = TruthClauses.top := rfl
-example : PlusFormula.and φ ψ = TruthClauses.and φ ψ := rfl
-example : PlusFormula.or φ ψ = TruthClauses.or φ ψ := rfl
-example : PlusFormula.diamond φ = TruthClauses.diamond φ := rfl
-example : PlusFormula.someFuture φ = TruthClauses.someFuture φ := rfl
-example : PlusFormula.somePast φ = TruthClauses.somePast φ := rfl
-example : PlusFormula.allFuture φ = TruthClauses.allFuture φ := rfl
-example : PlusFormula.allPast φ = TruthClauses.allPast φ := rfl
-example : PlusFormula.always φ = TruthClauses.always φ := rfl
-example : PlusFormula.dstab φ = TruthClauses.dstab φ := rfl
+example : PlusFormula.neg φ = Syntax.Sig.neg φ := rfl
+example : (PlusFormula.top : PlusFormula) = Syntax.Sig.top := rfl
+example : PlusFormula.and φ ψ = Syntax.Sig.and φ ψ := rfl
+example : PlusFormula.or φ ψ = Syntax.Sig.or φ ψ := rfl
+example : PlusFormula.diamond φ = Syntax.Sig.diamond φ := rfl
+example : PlusFormula.someFuture φ = Syntax.Sig.someFuture φ := rfl
+example : PlusFormula.somePast φ = Syntax.Sig.somePast φ := rfl
+example : PlusFormula.allFuture φ = Syntax.Sig.allFuture φ := rfl
+example : PlusFormula.allPast φ = Syntax.Sig.allPast φ := rfl
+example : PlusFormula.always φ = Syntax.Sig.always φ := rfl
+example : PlusFormula.dstab φ = Syntax.Sig.dstab φ := rfl
 
-example : PlusFormula.kPlus φ = TruthClauses.kPlus φ := rfl
-example : PlusFormula.kMinus φ = TruthClauses.kMinus φ := rfl
+example : PlusFormula.kPlus φ = Syntax.Sig.kPlus φ := rfl
+example : PlusFormula.kMinus φ = Syntax.Sig.kMinus φ := rfl
 example (p : Syntax.Atom) : PlusFormula.atom p = AtomClause.atom p := rfl
 
 end LPlusOperators
@@ -225,20 +230,20 @@ section LStarOperators
 open StarLanguage
 variable (φ ψ : StarFormula)
 
-example : StarFormula.neg φ = TruthClauses.neg φ := rfl
-example : (StarFormula.top : StarFormula) = TruthClauses.top := rfl
-example : StarFormula.and φ ψ = TruthClauses.and φ ψ := rfl
-example : StarFormula.or φ ψ = TruthClauses.or φ ψ := rfl
-example : StarFormula.diamond φ = TruthClauses.diamond φ := rfl
-example : StarFormula.someFuture φ = TruthClauses.someFuture φ := rfl
-example : StarFormula.somePast φ = TruthClauses.somePast φ := rfl
-example : StarFormula.allFuture φ = TruthClauses.allFuture φ := rfl
-example : StarFormula.allPast φ = TruthClauses.allPast φ := rfl
-example : StarFormula.always φ = TruthClauses.always φ := rfl
-example : StarFormula.dstab φ = TruthClauses.dstab φ := rfl
+example : StarFormula.neg φ = Syntax.Sig.neg φ := rfl
+example : (StarFormula.top : StarFormula) = Syntax.Sig.top := rfl
+example : StarFormula.and φ ψ = Syntax.Sig.and φ ψ := rfl
+example : StarFormula.or φ ψ = Syntax.Sig.or φ ψ := rfl
+example : StarFormula.diamond φ = Syntax.Sig.diamond φ := rfl
+example : StarFormula.someFuture φ = Syntax.Sig.someFuture φ := rfl
+example : StarFormula.somePast φ = Syntax.Sig.somePast φ := rfl
+example : StarFormula.allFuture φ = Syntax.Sig.allFuture φ := rfl
+example : StarFormula.allPast φ = Syntax.Sig.allPast φ := rfl
+example : StarFormula.always φ = Syntax.Sig.always φ := rfl
+example : StarFormula.dstab φ = Syntax.Sig.dstab φ := rfl
 
-example : StarFormula.kPlus φ = TruthClauses.kPlus φ := rfl
-example : StarFormula.kMinus φ = TruthClauses.kMinus φ := rfl
+example : StarFormula.kPlus φ = Syntax.Sig.kPlus φ := rfl
+example : StarFormula.kMinus φ = Syntax.Sig.kMinus φ := rfl
 example (p : Syntax.Atom) : StarFormula.atom p = AtomClause.atom p := rfl
 
 end LStarOperators
@@ -247,20 +252,20 @@ section LOpenOperators
 open OpenLanguage
 variable (φ ψ : OpenFormula)
 
-example : OpenFormula.neg φ = TruthClauses.neg φ := rfl
-example : (OpenFormula.top : OpenFormula) = TruthClauses.top := rfl
-example : OpenFormula.and φ ψ = TruthClauses.and φ ψ := rfl
-example : OpenFormula.or φ ψ = TruthClauses.or φ ψ := rfl
-example : OpenFormula.diamond φ = TruthClauses.diamond φ := rfl
-example : OpenFormula.someFuture φ = TruthClauses.someFuture φ := rfl
-example : OpenFormula.somePast φ = TruthClauses.somePast φ := rfl
-example : OpenFormula.allFuture φ = TruthClauses.allFuture φ := rfl
-example : OpenFormula.allPast φ = TruthClauses.allPast φ := rfl
-example : OpenFormula.always φ = TruthClauses.always φ := rfl
-example : OpenFormula.dstab φ = TruthClauses.dstab φ := rfl
+example : OpenFormula.neg φ = Syntax.Sig.neg φ := rfl
+example : (OpenFormula.top : OpenFormula) = Syntax.Sig.top := rfl
+example : OpenFormula.and φ ψ = Syntax.Sig.and φ ψ := rfl
+example : OpenFormula.or φ ψ = Syntax.Sig.or φ ψ := rfl
+example : OpenFormula.diamond φ = Syntax.Sig.diamond φ := rfl
+example : OpenFormula.someFuture φ = Syntax.Sig.someFuture φ := rfl
+example : OpenFormula.somePast φ = Syntax.Sig.somePast φ := rfl
+example : OpenFormula.allFuture φ = Syntax.Sig.allFuture φ := rfl
+example : OpenFormula.allPast φ = Syntax.Sig.allPast φ := rfl
+example : OpenFormula.always φ = Syntax.Sig.always φ := rfl
+example : OpenFormula.dstab φ = Syntax.Sig.dstab φ := rfl
 
-example : OpenFormula.kPlus φ = TruthClauses.kPlus φ := rfl
-example : OpenFormula.kMinus φ = TruthClauses.kMinus φ := rfl
+example : OpenFormula.kPlus φ = Syntax.Sig.kPlus φ := rfl
+example : OpenFormula.kMinus φ = Syntax.Sig.kMinus φ := rfl
 example (p : Syntax.Atom) : OpenFormula.atom p = AtomClause.atom p := rfl
 
 end LOpenOperators
@@ -269,17 +274,17 @@ section LHybridOperators
 open HybridLanguage
 variable (φ ψ : HybridFormula)
 
-example : HybridFormula.neg φ = TruthClauses.neg φ := rfl
-example : (HybridFormula.top : HybridFormula) = TruthClauses.top := rfl
-example : HybridFormula.and φ ψ = TruthClauses.and φ ψ := rfl
-example : HybridFormula.or φ ψ = TruthClauses.or φ ψ := rfl
-example : HybridFormula.diamond φ = TruthClauses.diamond φ := rfl
-example : HybridFormula.someFuture φ = TruthClauses.someFuture φ := rfl
-example : HybridFormula.somePast φ = TruthClauses.somePast φ := rfl
-example : HybridFormula.allFuture φ = TruthClauses.allFuture φ := rfl
-example : HybridFormula.allPast φ = TruthClauses.allPast φ := rfl
-example : HybridFormula.always φ = TruthClauses.always φ := rfl
-example : HybridFormula.dstab φ = TruthClauses.dstab φ := rfl
+example : HybridFormula.neg φ = Syntax.Sig.neg φ := rfl
+example : (HybridFormula.top : HybridFormula) = Syntax.Sig.top := rfl
+example : HybridFormula.and φ ψ = Syntax.Sig.and φ ψ := rfl
+example : HybridFormula.or φ ψ = Syntax.Sig.or φ ψ := rfl
+example : HybridFormula.diamond φ = Syntax.Sig.diamond φ := rfl
+example : HybridFormula.someFuture φ = Syntax.Sig.someFuture φ := rfl
+example : HybridFormula.somePast φ = Syntax.Sig.somePast φ := rfl
+example : HybridFormula.allFuture φ = Syntax.Sig.allFuture φ := rfl
+example : HybridFormula.allPast φ = Syntax.Sig.allPast φ := rfl
+example : HybridFormula.always φ = Syntax.Sig.always φ := rfl
+example : HybridFormula.dstab φ = Syntax.Sig.dstab φ := rfl
 
 example (p : Syntax.Atom) : HybridFormula.atom p = AtomClause.atom p := rfl
 
@@ -292,20 +297,85 @@ section LQuantOperators
 open QuantLanguage
 variable (φ ψ : QuantFormula)
 
-example : QuantFormula.neg φ = TruthClauses.neg φ := rfl
-example : (QuantFormula.top : QuantFormula) = TruthClauses.top := rfl
-example : QuantFormula.and φ ψ = TruthClauses.and φ ψ := rfl
-example : QuantFormula.or φ ψ = TruthClauses.or φ ψ := rfl
-example : QuantFormula.diamond φ = TruthClauses.diamond φ := rfl
-example : QuantFormula.someFuture φ = TruthClauses.someFuture φ := rfl
-example : QuantFormula.somePast φ = TruthClauses.somePast φ := rfl
-example : QuantFormula.allFuture φ = TruthClauses.allFuture φ := rfl
-example : QuantFormula.allPast φ = TruthClauses.allPast φ := rfl
-example : QuantFormula.always φ = TruthClauses.always φ := rfl
+example : QuantFormula.neg φ = Syntax.Sig.neg φ := rfl
+example : (QuantFormula.top : QuantFormula) = Syntax.Sig.top := rfl
+example : QuantFormula.and φ ψ = Syntax.Sig.and φ ψ := rfl
+example : QuantFormula.or φ ψ = Syntax.Sig.or φ ψ := rfl
+example : QuantFormula.diamond φ = Syntax.Sig.diamond φ := rfl
+example : QuantFormula.someFuture φ = Syntax.Sig.someFuture φ := rfl
+example : QuantFormula.somePast φ = Syntax.Sig.somePast φ := rfl
+example : QuantFormula.allFuture φ = Syntax.Sig.allFuture φ := rfl
+example : QuantFormula.allPast φ = Syntax.Sig.allPast φ := rfl
+example : QuantFormula.always φ = Syntax.Sig.always φ := rfl
 
 example (p : Syntax.Atom) : QuantFormula.atom p = AtomClause.atom p := rfl
 
 end LQuantOperators
+
+/-! ## One `next`/`prev` encoding, and the interval operators
+
+`Sig.next` and `Sig.prev` are the one `⊥ U φ` / `⊥ S φ` encoding: the covering-time rules of
+`Semantics/TemporalRules.lean` are stated about them, and each language's own `next`/`prev` is
+the same term. The six interval operators of `Syntax/Connectives.lean` are likewise the terms the
+per-language names abbreviate and the terms the clause lemmas of
+`Semantics/TemporalIntervals.lean` are stated about. `NomicFormula` has `next` and no `prev`. -/
+
+section NextPrev
+open Metalogic.Expressiveness.SeparationZ NomicLanguage
+
+example (φ : Syntax.Formula) : Syntax.Formula.next φ = Syntax.Sig.next φ := rfl
+example (φ : Syntax.Formula) : Syntax.Formula.prev φ = Syntax.Sig.prev φ := rfl
+example (φ : PlusFormula) : PlusFormula.next φ = Syntax.Sig.next φ := rfl
+example (φ : PlusFormula) : PlusFormula.prev φ = Syntax.Sig.prev φ := rfl
+example (φ : StarFormula) : StarFormula.next φ = Syntax.Sig.next φ := rfl
+example (φ : StarFormula) : StarFormula.prev φ = Syntax.Sig.prev φ := rfl
+example (φ : USForm) : USForm.next φ = Syntax.Sig.next φ := rfl
+example (φ : USForm) : USForm.prev φ = Syntax.Sig.prev φ := rfl
+example (φ : NomicFormula) : NomicFormula.next φ = Syntax.Sig.next φ := rfl
+
+end NextPrev
+
+section IntervalOperators
+variable (φ ψ : Syntax.Formula) (φ' ψ' : PlusFormula)
+
+-- `release`, `trigger`, `weakUntil`, `weakSince` are event first; the inclusive pair is guard
+-- first.
+example : Syntax.Formula.release φ ψ = Syntax.Sig.release φ ψ := rfl
+example : Syntax.Formula.trigger φ ψ = Syntax.Sig.trigger φ ψ := rfl
+example : Syntax.Formula.weakUntil φ ψ = Syntax.Sig.weakUntil φ ψ := rfl
+example : Syntax.Formula.weakSince φ ψ = Syntax.Sig.weakSince φ ψ := rfl
+example : Syntax.Formula.inclusiveUntil φ ψ = Syntax.Sig.inclusiveUntil φ ψ := rfl
+example : Syntax.Formula.inclusiveSince φ ψ = Syntax.Sig.inclusiveSince φ ψ := rfl
+
+example : PlusFormula.release φ' ψ' = Syntax.Sig.release φ' ψ' := rfl
+example : PlusFormula.trigger φ' ψ' = Syntax.Sig.trigger φ' ψ' := rfl
+example : PlusFormula.weakUntil φ' ψ' = Syntax.Sig.weakUntil φ' ψ' := rfl
+example : PlusFormula.weakSince φ' ψ' = Syntax.Sig.weakSince φ' ψ' := rfl
+example : PlusFormula.inclusiveUntil φ' ψ' = Syntax.Sig.inclusiveUntil φ' ψ' := rfl
+example : PlusFormula.inclusiveSince φ' ψ' = Syntax.Sig.inclusiveSince φ' ψ' := rfl
+
+end IntervalOperators
+
+/-! L⋆ declares no `release` of its own. The restated clause lemma reaches it through the
+signature all the same: the statement names `Sig.release` at `StarFormula`, and the stored-time
+vector rides along as the environment. -/
+
+section IntervalAtLStar
+variable {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F} {t : F.Duration}
+
+example (event guard : StarFormula) (regs : ℕ → F.Duration)
+    (h : ∀ s, t < s → StarTruthAt M τ s regs event) :
+    StarTruthAt M τ t regs (Syntax.Sig.release event guard) :=
+  (TemporalIntervals.release_iff (L := StarFormula) M τ t regs event guard).mpr
+    (fun ⟨s, hts, hn, _⟩ => hn (h s hts))
+
+example (guard event : StarFormula) (regs : ℕ → F.Duration)
+    (h : StarTruthAt M τ t regs event) :
+    StarTruthAt M τ t regs (Syntax.Sig.inclusiveUntil guard event) :=
+  (TemporalIntervals.inclusiveUntil_iff (L := StarFormula) M τ t regs guard event).mpr
+    ⟨t, le_rfl, h, fun _ ht hs => absurd hs (not_lt.mpr ht)⟩
+
+end IntervalAtLStar
 
 /-! ## A toy fifth language: the extension contract, exercised end to end
 
@@ -356,19 +426,21 @@ instance : TruthEnv Toy where
   Env _ := PUnit
   T M τ t _ φ := ToyTruthAt M τ t φ
 
-/-- Obligation 2 of the clause-layer contract: the Boolean bundle, every clause field `Iff.rfl`
+/-- Obligation 2 of the clause-layer contract: one signature instance per primitive operator. -/
+instance : Syntax.HasBot Toy := ⟨Toy.bot⟩
+instance : Syntax.HasImp Toy := ⟨Toy.imp⟩
+instance : Syntax.HasBox Toy := ⟨Toy.box⟩
+
+/-- Obligation 3 of the clause-layer contract: the Boolean bundle, every clause field `Iff.rfl`
 or `fun h => h` — which is the compiler confirming `ToyTruthAt` has the shared clause shapes. -/
 instance : BoolClauses Toy where
-  bot := Toy.bot
-  imp := Toy.imp
-  box := Toy.box
   bot_clause _ _ _ _ := fun h => h
   imp_clause _ _ _ _ _ _ := Iff.rfl
   box_clause _ _ _ _ _ := Iff.rfl
 
 /-! ### What that bought
 
-Every `example` below elaborates from the three instances above and nothing else. -/
+Every `example` below elaborates from the instances above and nothing else. -/
 
 section Inherited
 variable (F : TaskFrame) [F.IsRegular] (P : TaskFrame → Prop) (fc : ProofSystem.FrameClass)
@@ -412,21 +484,21 @@ example (h : ¬ GenericValid φ) :
   GenericValid.of_not h
 
 -- The whole Boolean clause tier, at the toy language's own truth relation.
-example : ToyTruthAt M τ t (TruthClauses.neg φ) ↔ ¬ ToyTruthAt M τ t φ :=
+example : ToyTruthAt M τ t (Syntax.Sig.neg φ) ↔ ¬ ToyTruthAt M τ t φ :=
   TruthClauses.neg_iff (L := Toy) M τ t PUnit.unit φ
 
-example : ToyTruthAt M τ t (TruthClauses.top : Toy) :=
+example : ToyTruthAt M τ t (Syntax.Sig.top : Toy) :=
   TruthClauses.top_true (L := Toy) M τ t PUnit.unit
 
-example : ToyTruthAt M τ t (TruthClauses.and φ ψ) ↔
+example : ToyTruthAt M τ t (Syntax.Sig.and φ ψ) ↔
     (ToyTruthAt M τ t φ ∧ ToyTruthAt M τ t ψ) :=
   TruthClauses.and_iff (L := Toy) M τ t PUnit.unit φ ψ
 
-example : ToyTruthAt M τ t (TruthClauses.or φ ψ) ↔
+example : ToyTruthAt M τ t (Syntax.Sig.or φ ψ) ↔
     (ToyTruthAt M τ t φ ∨ ToyTruthAt M τ t ψ) :=
   TruthClauses.or_iff (L := Toy) M τ t PUnit.unit φ ψ
 
-example : ToyTruthAt M τ t (TruthClauses.diamond φ) ↔
+example : ToyTruthAt M τ t (Syntax.Sig.diamond φ) ↔
     ∃ σ : WorldHistory F, ToyTruthAt M σ t φ :=
   TruthClauses.diamond_iff (L := Toy) M τ t PUnit.unit φ
 

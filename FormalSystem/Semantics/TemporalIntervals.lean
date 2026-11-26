@@ -24,7 +24,9 @@ reading is proved once for every language instantiating the classes it names.
 
 ## References
 
-* `FormalSystem/Semantics/TruthClauses.lean` — the clause classes and `neg`, `or`, `and`
+* `FormalSystem/Semantics/TruthClauses.lean` — the clause classes
+* `FormalSystem/Syntax/Connectives.lean` — the interval operators `inclusiveUntil`,
+  `inclusiveSince`, `release`, `trigger`, `weakUntil`, `weakSince` the clauses are stated about
 * `FormalSystem/Semantics/TemporalRules.lean` — the covering-time and persistence rules
 * `Tests/BimodalTest/Semantics/TemporalRulesTest.lean` — the per-language test rows
 
@@ -38,15 +40,16 @@ assert_not_exists FormalSystem.ProofSystem.Axiom FormalSystem.ProofSystem.Deriva
 namespace FormalSystem.Semantics.TemporalIntervals
 
 open TruthClauses
+open FormalSystem.Syntax FormalSystem.Syntax.Sig
 
 section Generic
-variable {L : Type} [TruthEnv L] [BotClause L] [ImpClause L] {F : TaskFrame}
+variable {L : Type} [TruthEnv L] [HasBot L] [BotClause L] [HasImp L] [ImpClause L] {F : TaskFrame}
 
 /-- **Inclusive Until.** `e ∨ (g ∧ U g e)` holds at `t` exactly when `e` holds at some `s ≥ t`
 and `g` holds on the half-open interval `[t, s)`. -/
-theorem inclusiveUntil_iff [UntlClause L] (M : TaskModel F) (τ : WorldHistory F)
+theorem inclusiveUntil_iff [HasUntl L] [UntlClause L] (M : TaskModel F) (τ : WorldHistory F)
     (t : F.Duration) (e : TruthEnv.Env L F) (g ev : L) :
-    TruthEnv.T M τ t e (or ev (and g (UntlClause.untl g ev))) ↔
+    TruthEnv.T M τ t e (inclusiveUntil g ev) ↔
       ∃ s : F.Duration, t ≤ s ∧ TruthEnv.T M τ s e ev ∧
         ∀ r : F.Duration, t ≤ r → r < s → TruthEnv.T M τ r e g := by
   rw [or_iff, and_iff, UntlClause.untl_clause]
@@ -64,9 +67,9 @@ theorem inclusiveUntil_iff [UntlClause L] (M : TaskModel F) (τ : WorldHistory F
 
 /-- **Inclusive Since**, the past mirror: `e ∨ (g ∧ S g e)` holds at `t` exactly when `e` held
 at some `s ≤ t` and `g` holds on the half-open interval `(s, t]`. -/
-theorem inclusiveSince_iff [SnceClause L] (M : TaskModel F) (τ : WorldHistory F)
+theorem inclusiveSince_iff [HasSnce L] [SnceClause L] (M : TaskModel F) (τ : WorldHistory F)
     (t : F.Duration) (e : TruthEnv.Env L F) (g ev : L) :
-    TruthEnv.T M τ t e (or ev (and g (SnceClause.snce g ev))) ↔
+    TruthEnv.T M τ t e (inclusiveSince g ev) ↔
       ∃ s : F.Duration, s ≤ t ∧ TruthEnv.T M τ s e ev ∧
         ∀ r : F.Duration, s < r → r ≤ t → TruthEnv.T M τ r e g := by
   rw [or_iff, and_iff, SnceClause.snce_clause]
@@ -85,19 +88,21 @@ theorem inclusiveSince_iff [SnceClause L] (M : TaskModel F) (τ : WorldHistory F
 end Generic
 
 /-- Exact strict release clause; event first, guard second, with no inclusive endpoints. -/
-theorem release_iff {L : Type} [TruthEnv L] [BotClause L] [ImpClause L] [UntlClause L]
+theorem release_iff {L : Type} [TruthEnv L] [HasBot L] [BotClause L] [HasImp L] [ImpClause L]
+    [HasUntl L] [UntlClause L]
     {F : TaskFrame} (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (event guard : L) :
-    TruthEnv.T M τ t e (neg (UntlClause.untl (neg guard) (neg event))) ↔
+    TruthEnv.T M τ t e (release event guard) ↔
       ¬ ∃ s, t < s ∧ ¬ TruthEnv.T M τ s e event ∧
         ∀ r, t < r → r < s → ¬ TruthEnv.T M τ r e guard := by
   simp only [neg_iff, UntlClause.untl_clause]
 
 /-- The strict past mirror of release, event first. -/
-theorem trigger_iff {L : Type} [TruthEnv L] [BotClause L] [ImpClause L] [SnceClause L]
+theorem trigger_iff {L : Type} [TruthEnv L] [HasBot L] [BotClause L] [HasImp L] [ImpClause L]
+    [HasSnce L] [SnceClause L]
     {F : TaskFrame} (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (event guard : L) :
-    TruthEnv.T M τ t e (neg (SnceClause.snce (neg guard) (neg event))) ↔
+    TruthEnv.T M τ t e (trigger event guard) ↔
       ¬ ∃ s, s < t ∧ ¬ TruthEnv.T M τ s e event ∧
         ∀ r, s < r → r < t → ¬ TruthEnv.T M τ r e guard := by
   simp only [neg_iff, SnceClause.snce_clause]
@@ -106,10 +111,11 @@ theorem trigger_iff {L : Type} [TruthEnv L] [BotClause L] [ImpClause L] [SnceCla
 universal-existential claim rather than as the negation of an `U` clause: at every strictly later
 time the event holds, or the guard has already fired strictly in between. This is the form a
 refutation script consumes, since it names a witness rather than denying one. -/
-theorem release_iff_forall {L : Type} [TruthEnv L] [BotClause L] [ImpClause L] [UntlClause L]
+theorem release_iff_forall {L : Type} [TruthEnv L] [HasBot L] [BotClause L] [HasImp L] [ImpClause L]
+    [HasUntl L] [UntlClause L]
     {F : TaskFrame} (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (event guard : L) :
-    TruthEnv.T M τ t e (neg (UntlClause.untl (neg guard) (neg event))) ↔
+    TruthEnv.T M τ t e (neg (HasUntl.untl (neg guard) (neg event))) ↔
       ∀ s : F.Duration, t < s → TruthEnv.T M τ s e event ∨
         ∃ r : F.Duration, t < r ∧ r < s ∧ TruthEnv.T M τ r e guard := by
   rw [release_iff]
@@ -125,10 +131,11 @@ theorem release_iff_forall {L : Type} [TruthEnv L] [BotClause L] [ImpClause L] [
 
 /-- **The positive reading of trigger**, the strict past mirror of `release_iff_forall`: at every
 strictly earlier time the event held, or the guard had already fired strictly in between. -/
-theorem trigger_iff_forall {L : Type} [TruthEnv L] [BotClause L] [ImpClause L] [SnceClause L]
+theorem trigger_iff_forall {L : Type} [TruthEnv L] [HasBot L] [BotClause L] [HasImp L] [ImpClause L]
+    [HasSnce L] [SnceClause L]
     {F : TaskFrame} (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (event guard : L) :
-    TruthEnv.T M τ t e (neg (SnceClause.snce (neg guard) (neg event))) ↔
+    TruthEnv.T M τ t e (neg (HasSnce.snce (neg guard) (neg event))) ↔
       ∀ s : F.Duration, s < t → TruthEnv.T M τ s e event ∨
         ∃ r : F.Duration, s < r ∧ r < t ∧ TruthEnv.T M τ r e guard := by
   rw [trigger_iff]
@@ -143,20 +150,22 @@ theorem trigger_iff_forall {L : Type} [TruthEnv L] [BotClause L] [ImpClause L] [
     · exact hguard r hsr hrt hg
 
 /-- Weak Until is strict Until or a strict universal guard; event first. -/
-theorem weakUntil_iff {L : Type} [TruthEnv L] [BotClause L] [ImpClause L] [UntlClause L]
+theorem weakUntil_iff {L : Type} [TruthEnv L] [HasBot L] [BotClause L] [HasImp L] [ImpClause L]
+    [HasUntl L] [UntlClause L]
     {F : TaskFrame} (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (event guard : L) :
-    TruthEnv.T M τ t e (or (UntlClause.untl guard event) (allFuture guard)) ↔
+    TruthEnv.T M τ t e (weakUntil event guard) ↔
       (∃ s, t < s ∧ TruthEnv.T M τ s e event ∧
         ∀ r, t < r → r < s → TruthEnv.T M τ r e guard) ∨
       ∀ s, t < s → TruthEnv.T M τ s e guard := by
   simp only [or_iff, UntlClause.untl_clause, allFuture_iff]
 
 /-- The strict past mirror of weak Until, event first. -/
-theorem weakSince_iff {L : Type} [TruthEnv L] [BotClause L] [ImpClause L] [SnceClause L]
+theorem weakSince_iff {L : Type} [TruthEnv L] [HasBot L] [BotClause L] [HasImp L] [ImpClause L]
+    [HasSnce L] [SnceClause L]
     {F : TaskFrame} (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (event guard : L) :
-    TruthEnv.T M τ t e (or (SnceClause.snce guard event) (allPast guard)) ↔
+    TruthEnv.T M τ t e (weakSince event guard) ↔
       (∃ s, s < t ∧ TruthEnv.T M τ s e event ∧
         ∀ r, s < r → r < t → TruthEnv.T M τ r e guard) ∨
       ∀ s, s < t → TruthEnv.T M τ s e guard := by

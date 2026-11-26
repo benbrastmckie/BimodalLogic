@@ -131,11 +131,6 @@ instance : TruthEnv QuantFormula where
 
 /-- The five inherited primitive operators and their clauses. -/
 instance : UntlClauses QuantFormula where
-  bot := QuantFormula.bot
-  imp := QuantFormula.imp
-  box := QuantFormula.box
-  untl := QuantFormula.untl
-  snce := QuantFormula.snce
   bot_clause _ _ _ _ := fun h => h
   imp_clause _ _ _ _ _ _ := Iff.rfl
   box_clause _ _ _ _ _ := Iff.rfl

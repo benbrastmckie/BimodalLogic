@@ -126,11 +126,6 @@ instance : TruthEnv MinusFormula where
 /-- L⁻'s five primitive operators and their clauses; the tenses are `allFuture`/`allPast`
 themselves, not `untl`/`snce`. -/
 instance : TenseClauses MinusFormula where
-  bot := MinusFormula.bot
-  imp := MinusFormula.imp
-  box := MinusFormula.box
-  allFuture := MinusFormula.allFuture
-  allPast := MinusFormula.allPast
   bot_clause _ _ _ _ := fun h => h
   imp_clause _ _ _ _ _ _ := Iff.rfl
   box_clause _ _ _ _ _ := Iff.rfl

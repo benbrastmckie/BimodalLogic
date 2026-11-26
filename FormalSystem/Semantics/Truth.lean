@@ -258,11 +258,6 @@ instance : TruthEnv Formula where
 /-- L's five shared primitive operators and their clauses; `bot`/`imp`/`box` plus the strict
 `untl`/`snce` pair. -/
 instance : UntlClauses Formula where
-  bot := Formula.bot
-  imp := Formula.imp
-  box := Formula.box
-  untl := Formula.untl
-  snce := Formula.snce
   bot_clause _ _ _ _ := fun h => h
   imp_clause _ _ _ _ _ _ := Iff.rfl
   box_clause _ _ _ _ _ := Iff.rfl

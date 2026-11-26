@@ -101,12 +101,13 @@ namespace FormalSystem.Metalogic.SoundnessLemmas
 open FormalSystem.Syntax
 open FormalSystem.Semantics
 open FormalSystem.Semantics.TruthClauses
+open FormalSystem.Syntax.Sig
 
-variable {L : Type} [TruthEnv L] [ImpClause L] {F : TaskFrame}
+variable {L : Type} [TruthEnv L] [HasImp L] [ImpClause L] {F : TaskFrame}
 
-/-! `[BotClause L]` is deliberately **not** a module-level section variable: a lemma whose
-statement mentions `neg`, `top`, `and`, `or`, `diamond` or `dstab` takes it as its own binder,
-and one that does not is stated without it. That is the grain invariant
+/-! `[HasBot L] [BotClause L]` is deliberately **not** a module-level section variable: a lemma
+whose statement mentions `neg`, `top`, `and`, `or`, `diamond` or `dstab` takes it as its own
+binder, and one that does not is stated without it. That is the grain invariant
 `Semantics/TruthClauses.lean`'s contract asks for, checked here by the compiler's
 `unusedSectionVars` linter rather than by inspection. -/
 
@@ -123,29 +124,30 @@ section Propositional
 theorem generic_prop_k (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ ψ χ : L) :
     TruthEnv.T M τ t e
-      (ImpClause.imp (ImpClause.imp φ (ImpClause.imp ψ χ))
-        (ImpClause.imp (ImpClause.imp φ ψ) (ImpClause.imp φ χ))) := by
+      (HasImp.imp (HasImp.imp φ (HasImp.imp ψ χ))
+        (HasImp.imp (HasImp.imp φ ψ) (HasImp.imp φ χ))) := by
   simp only [ImpClause.imp_clause]
   exact fun h1 h2 h3 => h1 h3 (h2 h3)
 
 /-- Propositional S (weakening), stated once. -/
 theorem generic_prop_s (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ ψ : L) :
-    TruthEnv.T M τ t e (ImpClause.imp φ (ImpClause.imp ψ φ)) := by
+    TruthEnv.T M τ t e (HasImp.imp φ (HasImp.imp ψ φ)) := by
   simp only [ImpClause.imp_clause]
   exact fun h _ => h
 
 /-- Ex falso quodlibet, from the `bot` clause alone. -/
-theorem generic_ex_falso [BotClause L] (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+theorem generic_ex_falso [HasBot L] [BotClause L] (M : TaskModel F) (τ : WorldHistory F)
+    (t : F.Duration)
     (e : TruthEnv.Env L F) (φ : L) :
-    TruthEnv.T M τ t e (ImpClause.imp (BotClause.bot : L) φ) := by
+    TruthEnv.T M τ t e (HasImp.imp (HasBot.bot : L) φ) := by
   rw [ImpClause.imp_clause]
   exact fun h => absurd h (BotClause.bot_clause M τ t e)
 
 /-- Peirce's law, by classical case analysis on `φ`. -/
 theorem generic_peirce (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ ψ : L) :
-    TruthEnv.T M τ t e (ImpClause.imp (ImpClause.imp (ImpClause.imp φ ψ) φ) φ) := by
+    TruthEnv.T M τ t e (HasImp.imp (HasImp.imp (HasImp.imp φ ψ) φ) φ) := by
   simp only [ImpClause.imp_clause]
   intro h
   by_cases hφ : TruthEnv.T M τ t e φ
@@ -162,35 +164,36 @@ T, 4, B and the 5-collapse are each one step off the clause.
 -/
 
 section Modal
-variable [BoxClause L]
+variable [HasBox L] [BoxClause L]
 
 /-- Modal T: the evaluation history is itself a world history, so `□` reflects. -/
 theorem generic_modal_t (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ : L) :
-    TruthEnv.T M τ t e (ImpClause.imp (BoxClause.box φ) φ) := by
+    TruthEnv.T M τ t e (HasImp.imp (HasBox.box φ) φ) := by
   rw [ImpClause.imp_clause, BoxClause.box_clause]
   exact fun h => h τ
 
 /-- Modal 4: the `box` clause quantifies over every world history, so it is idempotent. -/
 theorem generic_modal_4 (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ : L) :
-    TruthEnv.T M τ t e (ImpClause.imp (BoxClause.box φ) (BoxClause.box (BoxClause.box φ))) := by
+    TruthEnv.T M τ t e (HasImp.imp (HasBox.box φ) (HasBox.box (HasBox.box φ))) := by
   simp only [ImpClause.imp_clause, BoxClause.box_clause]
   exact fun h _ => h
 
 /-- Modal B, through `diamond_iff` at the witness `τ`. -/
-theorem generic_modal_b [BotClause L] (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+theorem generic_modal_b [HasBot L] [BotClause L] (M : TaskModel F) (τ : WorldHistory F)
+    (t : F.Duration)
     (e : TruthEnv.Env L F) (φ : L) :
-    TruthEnv.T M τ t e (ImpClause.imp φ (BoxClause.box (diamond φ))) := by
+    TruthEnv.T M τ t e (HasImp.imp φ (HasBox.box (diamond φ))) := by
   rw [ImpClause.imp_clause, BoxClause.box_clause]
   intro h σ
   rw [diamond_iff]
   exact ⟨τ, h⟩
 
 /-- Modal 5 collapse: `◇□φ → □φ`. -/
-theorem generic_modal_5_collapse [BotClause L] (M : TaskModel F) (τ : WorldHistory F)
+theorem generic_modal_5_collapse [HasBot L] [BotClause L] (M : TaskModel F) (τ : WorldHistory F)
     (t : F.Duration) (e : TruthEnv.Env L F) (φ : L) :
-    TruthEnv.T M τ t e (ImpClause.imp (diamond (BoxClause.box φ)) (BoxClause.box φ)) := by
+    TruthEnv.T M τ t e (HasImp.imp (diamond (HasBox.box φ)) (HasBox.box φ)) := by
   rw [ImpClause.imp_clause]
   intro h
   rw [diamond_iff] at h
@@ -202,8 +205,8 @@ theorem generic_modal_5_collapse [BotClause L] (M : TaskModel F) (τ : WorldHist
 theorem generic_modal_k_dist (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ ψ : L) :
     TruthEnv.T M τ t e
-      (ImpClause.imp (BoxClause.box (ImpClause.imp φ ψ))
-        (ImpClause.imp (BoxClause.box φ) (BoxClause.box ψ))) := by
+      (HasImp.imp (HasBox.box (HasImp.imp φ ψ))
+        (HasImp.imp (HasBox.box φ) (HasBox.box ψ))) := by
   simp only [ImpClause.imp_clause, BoxClause.box_clause]
   exact fun h1 h2 σ => h1 σ (h2 σ)
 
@@ -218,21 +221,21 @@ state equation `τ.state t = σ.state t`.
 -/
 
 section Stab
-variable [StabClause L]
+variable [HasStab L] [StabClause L]
 
 /-- SK: K for `⊡`, from the universal-quantifier shape of the `stab` clause. -/
 theorem generic_stab_k (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ ψ : L) :
     TruthEnv.T M τ t e
-      (ImpClause.imp (StabClause.stab (ImpClause.imp φ ψ))
-        (ImpClause.imp (StabClause.stab φ) (StabClause.stab ψ))) := by
+      (HasImp.imp (HasStab.stab (HasImp.imp φ ψ))
+        (HasImp.imp (HasStab.stab φ) (HasStab.stab ψ))) := by
   simp only [ImpClause.imp_clause, StabClause.stab_clause]
   exact fun h1 h2 σ hs => h1 σ hs (h2 σ hs)
 
 /-- ST: state equality is reflexive. -/
 theorem generic_stab_t (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ : L) :
-    TruthEnv.T M τ t e (ImpClause.imp (StabClause.stab φ) φ) := by
+    TruthEnv.T M τ t e (HasImp.imp (HasStab.stab φ) φ) := by
   rw [ImpClause.imp_clause, StabClause.stab_clause]
   exact fun h => h τ rfl
 
@@ -240,15 +243,16 @@ theorem generic_stab_t (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
 theorem generic_stab_4 (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ : L) :
     TruthEnv.T M τ t e
-      (ImpClause.imp (StabClause.stab φ) (StabClause.stab (StabClause.stab φ))) := by
+      (HasImp.imp (HasStab.stab φ) (HasStab.stab (HasStab.stab φ))) := by
   simp only [ImpClause.imp_clause, StabClause.stab_clause]
   intro h σ hσ ρ hρ
   exact h ρ (hσ.trans hρ)
 
 /-- S5 for `⊡`: state equality at a fixed time is symmetric. -/
-theorem generic_stab_5 [BotClause L] (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+theorem generic_stab_5 [HasBot L] [BotClause L] (M : TaskModel F) (τ : WorldHistory F)
+    (t : F.Duration)
     (e : TruthEnv.Env L F) (φ : L) :
-    TruthEnv.T M τ t e (ImpClause.imp (dstab φ) (StabClause.stab (dstab φ))) := by
+    TruthEnv.T M τ t e (HasImp.imp (dstab φ) (HasStab.stab (dstab φ))) := by
   rw [ImpClause.imp_clause]
   intro h
   rw [StabClause.stab_clause]
@@ -260,19 +264,19 @@ theorem generic_stab_5 [BotClause L] (M : TaskModel F) (τ : WorldHistory F) (t 
 end Stab
 
 section BoxStab
-variable [BoxClause L] [StabClause L]
+variable [HasBox L] [BoxClause L] [HasStab L] [StabClause L]
 
 /-- MS: the same-state histories are a subfamily of all of them, so `□` is stronger than `⊡`. -/
 theorem generic_box_stab (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ : L) :
-    TruthEnv.T M τ t e (ImpClause.imp (BoxClause.box φ) (StabClause.stab φ)) := by
+    TruthEnv.T M τ t e (HasImp.imp (HasBox.box φ) (HasStab.stab φ)) := by
   rw [ImpClause.imp_clause, BoxClause.box_clause, StabClause.stab_clause]
   exact fun h σ _ => h σ
 
 end BoxStab
 
 section AtomStab
-variable [AtomClause L] [StabClause L]
+variable [AtomClause L] [HasStab L] [StabClause L]
 
 /-- AS, stated once: the atom clause reads the world state alone, which the `stab` clause fixes.
 
@@ -282,7 +286,7 @@ route cannot be reused by L⋆ or L^▷. Over the clause interface it is three l
 theorem generic_atom_stab (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (p : Atom) :
     TruthEnv.T M τ t e
-      (ImpClause.imp (AtomClause.atom p) (StabClause.stab (AtomClause.atom p))) := by
+      (HasImp.imp (AtomClause.atom p) (HasStab.stab (AtomClause.atom p))) := by
   rw [ImpClause.imp_clause, StabClause.stab_clause]
   intro h σ hs
   rw [AtomClause.atom_clause] at h ⊢
@@ -305,8 +309,9 @@ one.
 -/
 
 section Seriality
-variable [BotClause L] [UntlClause L]
+variable [HasBot L] [BotClause L] [HasUntl L] [UntlClause L]
 
+omit [BotClause L] in
 /-- TS, bare: `F⊤`. The order has no maximum. -/
 theorem generic_serial_future (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) :
@@ -315,27 +320,30 @@ theorem generic_serial_future (M : TaskModel F) (τ : WorldHistory F) (t : F.Dur
   obtain ⟨s, hts⟩ := exists_gt t
   exact ⟨s, hts, top_true M τ s e⟩
 
+omit [BotClause L] in
 /-- `⊤ → F⊤`: `generic_serial_future` under a trivially true antecedent. -/
 theorem generic_serial_future_imp (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) :
-    TruthEnv.T M τ t e (ImpClause.imp (top : L) (someFuture (top : L))) := by
+    TruthEnv.T M τ t e (HasImp.imp (top : L) (someFuture (top : L))) := by
   rw [ImpClause.imp_clause]
   exact fun _ => generic_serial_future M τ t e
 
 end Seriality
 
 section SerialityPast
-variable [BotClause L] [SnceClause L]
+variable [HasBot L] [BotClause L] [HasSnce L] [SnceClause L]
 
+omit [BotClause L] in
 /-- `⊤ → P⊤`. The order has no minimum. -/
 theorem generic_serial_past (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) :
-    TruthEnv.T M τ t e (ImpClause.imp (top : L) (somePast (top : L))) := by
+    TruthEnv.T M τ t e (HasImp.imp (top : L) (somePast (top : L))) := by
   rw [ImpClause.imp_clause, somePast_iff]
   intro _
   obtain ⟨s, hst⟩ := exists_lt t
   exact ⟨s, hst, top_true M τ s e⟩
 
+omit [BotClause L] in
 /-- `P⊤`, bare: `generic_serial_past` at the true antecedent. -/
 theorem generic_serial_past_bare (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) :
@@ -353,14 +361,14 @@ and no order fact beyond transitivity enters.
 -/
 
 section MonoFuture
-variable [BotClause L] [UntlClause L]
+variable [HasBot L] [BotClause L] [HasUntl L] [UntlClause L]
 
 /-- BX2G: the guard of an `until` may be weakened under `G`. -/
 theorem generic_left_mono_until_G (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ χ ψ : L) :
     TruthEnv.T M τ t e
-      (ImpClause.imp (allFuture (ImpClause.imp φ χ))
-        (ImpClause.imp (UntlClause.untl φ ψ) (UntlClause.untl χ ψ))) := by
+      (HasImp.imp (allFuture (HasImp.imp φ χ))
+        (HasImp.imp (HasUntl.untl φ ψ) (HasUntl.untl χ ψ))) := by
   rw [ImpClause.imp_clause]
   intro h_G
   rw [allFuture_iff] at h_G
@@ -374,8 +382,8 @@ theorem generic_left_mono_until_G (M : TaskModel F) (τ : WorldHistory F) (t : F
 theorem generic_right_mono_until (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ ψ χ : L) :
     TruthEnv.T M τ t e
-      (ImpClause.imp (allFuture (ImpClause.imp φ ψ))
-        (ImpClause.imp (UntlClause.untl χ φ) (UntlClause.untl χ ψ))) := by
+      (HasImp.imp (allFuture (HasImp.imp φ ψ))
+        (HasImp.imp (HasUntl.untl χ φ) (HasUntl.untl χ ψ))) := by
   rw [ImpClause.imp_clause]
   intro h_G
   rw [allFuture_iff] at h_G
@@ -387,14 +395,14 @@ theorem generic_right_mono_until (M : TaskModel F) (τ : WorldHistory F) (t : F.
 end MonoFuture
 
 section MonoPast
-variable [BotClause L] [SnceClause L]
+variable [HasBot L] [BotClause L] [HasSnce L] [SnceClause L]
 
 /-- BX2H, the past mirror of `generic_left_mono_until_G`. -/
 theorem generic_left_mono_since_H (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ χ ψ : L) :
     TruthEnv.T M τ t e
-      (ImpClause.imp (allPast (ImpClause.imp φ χ))
-        (ImpClause.imp (SnceClause.snce φ ψ) (SnceClause.snce χ ψ))) := by
+      (HasImp.imp (allPast (HasImp.imp φ χ))
+        (HasImp.imp (HasSnce.snce φ ψ) (HasSnce.snce χ ψ))) := by
   rw [ImpClause.imp_clause]
   intro h_H
   rw [allPast_iff] at h_H
@@ -408,8 +416,8 @@ theorem generic_left_mono_since_H (M : TaskModel F) (τ : WorldHistory F) (t : F
 theorem generic_right_mono_since (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ ψ χ : L) :
     TruthEnv.T M τ t e
-      (ImpClause.imp (allPast (ImpClause.imp φ ψ))
-        (ImpClause.imp (SnceClause.snce χ φ) (SnceClause.snce χ ψ))) := by
+      (HasImp.imp (allPast (HasImp.imp φ ψ))
+        (HasImp.imp (HasSnce.snce χ φ) (HasSnce.snce χ ψ))) := by
   rw [ImpClause.imp_clause]
   intro h_H
   rw [allPast_iff] at h_H
@@ -421,12 +429,12 @@ theorem generic_right_mono_since (M : TaskModel F) (τ : WorldHistory F) (t : F.
 end MonoPast
 
 section Connection
-variable [BotClause L] [UntlClause L] [SnceClause L]
+variable [HasBot L] [BotClause L] [HasUntl L] [UntlClause L] [HasSnce L] [SnceClause L]
 
 /-- BX4: what is true now is always going to have been true. -/
 theorem generic_connect_future (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ : L) :
-    TruthEnv.T M τ t e (ImpClause.imp φ (allFuture (somePast φ))) := by
+    TruthEnv.T M τ t e (HasImp.imp φ (allFuture (somePast φ))) := by
   rw [ImpClause.imp_clause]
   intro h
   rw [allFuture_iff]
@@ -437,7 +445,7 @@ theorem generic_connect_future (M : TaskModel F) (τ : WorldHistory F) (t : F.Du
 /-- BX4', the past mirror of `generic_connect_future`. -/
 theorem generic_connect_past (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ : L) :
-    TruthEnv.T M τ t e (ImpClause.imp φ (allPast (someFuture φ))) := by
+    TruthEnv.T M τ t e (HasImp.imp φ (allPast (someFuture φ))) := by
   rw [ImpClause.imp_clause]
   intro h
   rw [allPast_iff]
@@ -469,14 +477,14 @@ instead, and the two axes should not be conflated.
 -/
 
 section Enrichment
-variable [BotClause L] [UntlClause L] [SnceClause L]
+variable [HasBot L] [BotClause L] [HasUntl L] [UntlClause L] [HasSnce L] [SnceClause L]
 
 /-- BX13: an `until` may be enriched with a `since` back to the present. -/
 theorem generic_enrichment_until (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ ψ p : L) :
     TruthEnv.T M τ t e
-      (ImpClause.imp (and p (UntlClause.untl φ ψ))
-        (UntlClause.untl φ (and ψ (SnceClause.snce φ p)))) := by
+      (HasImp.imp (and p (HasUntl.untl φ ψ))
+        (HasUntl.untl φ (and ψ (HasSnce.snce φ p)))) := by
   rw [ImpClause.imp_clause]
   simp only [and_iff, UntlClause.untl_clause, SnceClause.snce_clause]
   rintro ⟨h_pt, s, hts, h_ψs, h_guard⟩
@@ -486,8 +494,8 @@ theorem generic_enrichment_until (M : TaskModel F) (τ : WorldHistory F) (t : F.
 theorem generic_enrichment_since (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ ψ p : L) :
     TruthEnv.T M τ t e
-      (ImpClause.imp (and p (SnceClause.snce φ ψ))
-        (SnceClause.snce φ (and ψ (UntlClause.untl φ p)))) := by
+      (HasImp.imp (and p (HasSnce.snce φ ψ))
+        (HasSnce.snce φ (and ψ (HasUntl.untl φ p)))) := by
   rw [ImpClause.imp_clause]
   simp only [and_iff, UntlClause.untl_clause, SnceClause.snce_clause]
   rintro ⟨h_pt, s, hst, h_ψs, h_guard⟩
@@ -496,14 +504,14 @@ theorem generic_enrichment_since (M : TaskModel F) (τ : WorldHistory F) (t : F.
 end Enrichment
 
 section AccumFuture
-variable [BotClause L] [UntlClause L]
+variable [HasBot L] [BotClause L] [HasUntl L] [UntlClause L]
 
 /-- BX5: the guard of an `until` may absorb the `until` itself. -/
 theorem generic_self_accum_until (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ ψ : L) :
     TruthEnv.T M τ t e
-      (ImpClause.imp (UntlClause.untl φ ψ)
-        (UntlClause.untl (and φ (UntlClause.untl φ ψ)) ψ)) := by
+      (HasImp.imp (HasUntl.untl φ ψ)
+        (HasUntl.untl (and φ (HasUntl.untl φ ψ)) ψ)) := by
   rw [ImpClause.imp_clause]
   simp only [and_iff, UntlClause.untl_clause]
   rintro ⟨s, hts, h_ψs, h_guard⟩
@@ -514,8 +522,8 @@ theorem generic_self_accum_until (M : TaskModel F) (τ : WorldHistory F) (t : F.
 theorem generic_absorb_until (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ ψ : L) :
     TruthEnv.T M τ t e
-      (ImpClause.imp (UntlClause.untl φ (and φ (UntlClause.untl φ ψ)))
-        (UntlClause.untl φ ψ)) := by
+      (HasImp.imp (HasUntl.untl φ (and φ (HasUntl.untl φ ψ)))
+        (HasUntl.untl φ ψ)) := by
   rw [ImpClause.imp_clause]
   simp only [and_iff, UntlClause.untl_clause]
   rintro ⟨s₁, hts₁, ⟨h_φs₁, s₂, hs₁s₂, h_ψs₂, h_guard₂⟩, h_guard₁⟩
@@ -530,10 +538,10 @@ theorem generic_absorb_until (M : TaskModel F) (τ : WorldHistory F) (t : F.Dura
 theorem generic_linear_until (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ ψ χ θ : L) :
     TruthEnv.T M τ t e
-      (ImpClause.imp (and (UntlClause.untl φ ψ) (UntlClause.untl χ θ))
-        (or (or (UntlClause.untl (and φ χ) (and ψ θ))
-              (UntlClause.untl (and φ χ) (and ψ χ)))
-          (UntlClause.untl (and φ χ) (and φ θ)))) := by
+      (HasImp.imp (and (HasUntl.untl φ ψ) (HasUntl.untl χ θ))
+        (or (or (HasUntl.untl (and φ χ) (and ψ θ))
+              (HasUntl.untl (and φ χ) (and ψ χ)))
+          (HasUntl.untl (and φ χ) (and φ θ)))) := by
   rw [ImpClause.imp_clause]
   simp only [and_iff, or_iff, UntlClause.untl_clause]
   rintro ⟨⟨s₁, hts₁, h_ψs₁, h_guard₁⟩, s₂, hts₂, h_θs₂, h_guard₂⟩
@@ -549,10 +557,10 @@ theorem generic_linear_until (M : TaskModel F) (τ : WorldHistory F) (t : F.Dura
 theorem generic_linear_until_paper (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ ψ χ θ : L) :
     TruthEnv.T M τ t e
-      (ImpClause.imp (and (UntlClause.untl φ ψ) (UntlClause.untl χ θ))
-        (or (UntlClause.untl (and φ χ) (and ψ θ))
-          (or (UntlClause.untl (and φ χ) (and ψ χ))
-            (UntlClause.untl (and φ χ) (and φ θ))))) := by
+      (HasImp.imp (and (HasUntl.untl φ ψ) (HasUntl.untl χ θ))
+        (or (HasUntl.untl (and φ χ) (and ψ θ))
+          (or (HasUntl.untl (and φ χ) (and ψ χ))
+            (HasUntl.untl (and φ χ) (and φ θ))))) := by
   rw [ImpClause.imp_clause]
   simp only [and_iff, or_iff, UntlClause.untl_clause]
   rintro ⟨⟨s₁, hts₁, h_ψs₁, h_guard₁⟩, s₂, hts₂, h_θs₂, h_guard₂⟩
@@ -567,14 +575,14 @@ theorem generic_linear_until_paper (M : TaskModel F) (τ : WorldHistory F) (t : 
 end AccumFuture
 
 section AccumPast
-variable [BotClause L] [SnceClause L]
+variable [HasBot L] [BotClause L] [HasSnce L] [SnceClause L]
 
 /-- BX5', the past mirror of `generic_self_accum_until`. -/
 theorem generic_self_accum_since (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ ψ : L) :
     TruthEnv.T M τ t e
-      (ImpClause.imp (SnceClause.snce φ ψ)
-        (SnceClause.snce (and φ (SnceClause.snce φ ψ)) ψ)) := by
+      (HasImp.imp (HasSnce.snce φ ψ)
+        (HasSnce.snce (and φ (HasSnce.snce φ ψ)) ψ)) := by
   rw [ImpClause.imp_clause]
   simp only [and_iff, SnceClause.snce_clause]
   rintro ⟨s, hst, h_ψs, h_guard⟩
@@ -585,8 +593,8 @@ theorem generic_self_accum_since (M : TaskModel F) (τ : WorldHistory F) (t : F.
 theorem generic_absorb_since (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ ψ : L) :
     TruthEnv.T M τ t e
-      (ImpClause.imp (SnceClause.snce φ (and φ (SnceClause.snce φ ψ)))
-        (SnceClause.snce φ ψ)) := by
+      (HasImp.imp (HasSnce.snce φ (and φ (HasSnce.snce φ ψ)))
+        (HasSnce.snce φ ψ)) := by
   rw [ImpClause.imp_clause]
   simp only [and_iff, SnceClause.snce_clause]
   rintro ⟨s₁, hs₁t, ⟨h_φs₁, s₂, hs₂s₁, h_ψs₂, h_guard₂⟩, h_guard₁⟩
@@ -600,10 +608,10 @@ theorem generic_absorb_since (M : TaskModel F) (τ : WorldHistory F) (t : F.Dura
 theorem generic_linear_since (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ ψ χ θ : L) :
     TruthEnv.T M τ t e
-      (ImpClause.imp (and (SnceClause.snce φ ψ) (SnceClause.snce χ θ))
-        (or (or (SnceClause.snce (and φ χ) (and ψ θ))
-              (SnceClause.snce (and φ χ) (and ψ χ)))
-          (SnceClause.snce (and φ χ) (and φ θ)))) := by
+      (HasImp.imp (and (HasSnce.snce φ ψ) (HasSnce.snce χ θ))
+        (or (or (HasSnce.snce (and φ χ) (and ψ θ))
+              (HasSnce.snce (and φ χ) (and ψ χ)))
+          (HasSnce.snce (and φ χ) (and φ θ)))) := by
   rw [ImpClause.imp_clause]
   simp only [and_iff, or_iff, SnceClause.snce_clause]
   rintro ⟨⟨s₁, hs₁t, h_ψs₁, h_guard₁⟩, s₂, hs₂t, h_θs₂, h_guard₂⟩
@@ -619,10 +627,10 @@ theorem generic_linear_since (M : TaskModel F) (τ : WorldHistory F) (t : F.Dura
 theorem generic_linear_since_paper (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ ψ χ θ : L) :
     TruthEnv.T M τ t e
-      (ImpClause.imp (and (SnceClause.snce φ ψ) (SnceClause.snce χ θ))
-        (or (SnceClause.snce (and φ χ) (and ψ θ))
-          (or (SnceClause.snce (and φ χ) (and ψ χ))
-            (SnceClause.snce (and φ χ) (and φ θ))))) := by
+      (HasImp.imp (and (HasSnce.snce φ ψ) (HasSnce.snce χ θ))
+        (or (HasSnce.snce (and φ χ) (and ψ θ))
+          (or (HasSnce.snce (and φ χ) (and ψ χ))
+            (HasSnce.snce (and φ χ) (and φ θ))))) := by
   rw [ImpClause.imp_clause]
   simp only [and_iff, or_iff, SnceClause.snce_clause]
   rintro ⟨⟨s₁, hs₁t, h_ψs₁, h_guard₁⟩, s₂, hs₂t, h_θs₂, h_guard₂⟩
@@ -653,12 +661,13 @@ to the same `simp only` as the primitive clause.
 -/
 
 section LinearityFuture
-variable [BotClause L] [UntlClause L]
+variable [HasBot L] [BotClause L] [HasUntl L] [UntlClause L]
 
+omit [BotClause L] in
 /-- BX10: an `until` witness is a future witness. -/
 theorem generic_until_F (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ ψ : L) :
-    TruthEnv.T M τ t e (ImpClause.imp (UntlClause.untl φ ψ) (someFuture ψ)) := by
+    TruthEnv.T M τ t e (HasImp.imp (HasUntl.untl φ ψ) (someFuture ψ)) := by
   rw [ImpClause.imp_clause]
   intro h
   rw [someFuture_iff]
@@ -666,10 +675,11 @@ theorem generic_until_F (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
   obtain ⟨s, hts, h_ψs, -⟩ := h
   exact ⟨s, hts, h_ψs⟩
 
+omit [BotClause L] in
 /-- BX12: `F` is `U` at the trivial guard. -/
 theorem generic_F_until_equiv (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ : L) :
-    TruthEnv.T M τ t e (ImpClause.imp (someFuture φ) (UntlClause.untl (top : L) φ)) := by
+    TruthEnv.T M τ t e (HasImp.imp (someFuture φ) (HasUntl.untl (top : L) φ)) := by
   rw [ImpClause.imp_clause]
   intro h
   rw [someFuture_iff] at h
@@ -681,7 +691,7 @@ theorem generic_F_until_equiv (M : TaskModel F) (τ : WorldHistory F) (t : F.Dur
 theorem generic_temp_linearity (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ ψ : L) :
     TruthEnv.T M τ t e
-      (ImpClause.imp (and (someFuture φ) (someFuture ψ))
+      (HasImp.imp (and (someFuture φ) (someFuture ψ))
         (or (someFuture (and φ ψ))
           (or (someFuture (and φ (someFuture ψ)))
             (someFuture (and (someFuture φ) ψ))))) := by
@@ -697,7 +707,7 @@ theorem generic_temp_linearity (M : TaskModel F) (τ : WorldHistory F) (t : F.Du
 theorem generic_temp_linearity_paper (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ ψ : L) :
     TruthEnv.T M τ t e
-      (ImpClause.imp (and (someFuture φ) (someFuture ψ))
+      (HasImp.imp (and (someFuture φ) (someFuture ψ))
         (or (someFuture (and (someFuture φ) ψ))
           (or (someFuture (and φ ψ))
             (someFuture (and φ (someFuture ψ)))))) := by
@@ -712,12 +722,13 @@ theorem generic_temp_linearity_paper (M : TaskModel F) (τ : WorldHistory F) (t 
 end LinearityFuture
 
 section LinearityPast
-variable [BotClause L] [SnceClause L]
+variable [HasBot L] [BotClause L] [HasSnce L] [SnceClause L]
 
+omit [BotClause L] in
 /-- BX10', the past mirror of `generic_until_F`. -/
 theorem generic_since_P (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ ψ : L) :
-    TruthEnv.T M τ t e (ImpClause.imp (SnceClause.snce φ ψ) (somePast ψ)) := by
+    TruthEnv.T M τ t e (HasImp.imp (HasSnce.snce φ ψ) (somePast ψ)) := by
   rw [ImpClause.imp_clause]
   intro h
   rw [somePast_iff]
@@ -725,10 +736,11 @@ theorem generic_since_P (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
   obtain ⟨s, hst, h_ψs, -⟩ := h
   exact ⟨s, hst, h_ψs⟩
 
+omit [BotClause L] in
 /-- BX12', the past mirror of `generic_F_until_equiv`. -/
 theorem generic_P_since_equiv (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ : L) :
-    TruthEnv.T M τ t e (ImpClause.imp (somePast φ) (SnceClause.snce (top : L) φ)) := by
+    TruthEnv.T M τ t e (HasImp.imp (somePast φ) (HasSnce.snce (top : L) φ)) := by
   rw [ImpClause.imp_clause]
   intro h
   rw [somePast_iff] at h
@@ -740,7 +752,7 @@ theorem generic_P_since_equiv (M : TaskModel F) (τ : WorldHistory F) (t : F.Dur
 theorem generic_temp_linearity_past (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ ψ : L) :
     TruthEnv.T M τ t e
-      (ImpClause.imp (and (somePast φ) (somePast ψ))
+      (HasImp.imp (and (somePast φ) (somePast ψ))
         (or (somePast (and φ ψ))
           (or (somePast (and φ (somePast ψ)))
             (somePast (and (somePast φ) ψ))))) := by
@@ -757,7 +769,7 @@ theorem generic_temp_linearity_past (M : TaskModel F) (τ : WorldHistory F) (t :
 theorem generic_temp_linearity_past_paper (M : TaskModel F) (τ : WorldHistory F)
     (t : F.Duration) (e : TruthEnv.Env L F) (φ ψ : L) :
     TruthEnv.T M τ t e
-      (ImpClause.imp (and (somePast φ) (somePast ψ))
+      (HasImp.imp (and (somePast φ) (somePast ψ))
         (or (somePast (and (somePast φ) ψ))
           (or (somePast (and φ ψ))
             (somePast (and φ (somePast ψ)))))) := by
@@ -804,13 +816,13 @@ lemma's statement, so they need no separate generic form.
 -/
 
 section Gap
-variable [BotClause L] [UntlClause L]
+variable [HasBot L] [BotClause L] [HasUntl L] [UntlClause L]
 
 /-- `U(⊥,⊤)` at `t` says there is a point strictly above `t` with nothing strictly between: the
 guard `⊥` forbids every intruder and the event `⊤` is free. -/
 theorem generic_gap_iff (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) :
-    TruthEnv.T M τ t e (UntlClause.untl (BotClause.bot : L) top) ↔
+    TruthEnv.T M τ t e (HasUntl.untl (HasBot.bot : L) top) ↔
       ∃ s : F.Duration, t < s ∧ ∀ r : F.Duration, t < r → r < s → False := by
   rw [UntlClause.untl_clause]
   constructor
@@ -825,8 +837,8 @@ group is the whole argument, which is why the statement mentions no history and 
 as `Semantics/Truth.lean`'s `truthAt_gap_shift` does not. -/
 theorem generic_gap_shift (M : TaskModel F) (τ : WorldHistory F) (t u : F.Duration)
     (e : TruthEnv.Env L F)
-    (h : TruthEnv.T M τ t e (UntlClause.untl (BotClause.bot : L) top)) :
-    TruthEnv.T M τ u e (UntlClause.untl (BotClause.bot : L) top) := by
+    (h : TruthEnv.T M τ t e (HasUntl.untl (HasBot.bot : L) top)) :
+    TruthEnv.T M τ u e (HasUntl.untl (HasBot.bot : L) top) := by
   rw [generic_gap_iff] at h ⊢
   obtain ⟨s, hts, hguard⟩ := h
   refine ⟨u + (s - t), lt_add_of_pos_right u (sub_pos.mpr hts), fun c huc hcs => ?_⟩
@@ -842,8 +854,8 @@ theorem generic_gap_shift (M : TaskModel F) (τ : WorldHistory F) (t u : F.Durat
 theorem generic_discrete_propagate_fwd (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) :
     TruthEnv.T M τ t e
-      (ImpClause.imp (UntlClause.untl (BotClause.bot : L) top)
-        (allFuture (UntlClause.untl (BotClause.bot : L) top))) := by
+      (HasImp.imp (HasUntl.untl (HasBot.bot : L) top)
+        (allFuture (HasUntl.untl (HasBot.bot : L) top))) := by
   rw [ImpClause.imp_clause]
   intro h
   rw [allFuture_iff]
@@ -852,12 +864,12 @@ theorem generic_discrete_propagate_fwd (M : TaskModel F) (τ : WorldHistory F) (
 end Gap
 
 section Cogap
-variable [BotClause L] [SnceClause L]
+variable [HasBot L] [BotClause L] [HasSnce L] [SnceClause L]
 
 /-- `S(⊥,⊤)` at `t`: the past mirror of `generic_gap_iff`. -/
 theorem generic_cogap_iff (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) :
-    TruthEnv.T M τ t e (SnceClause.snce (BotClause.bot : L) top) ↔
+    TruthEnv.T M τ t e (HasSnce.snce (HasBot.bot : L) top) ↔
       ∃ s : F.Duration, s < t ∧ ∀ r : F.Duration, s < r → r < t → False := by
   rw [SnceClause.snce_clause]
   constructor
@@ -869,8 +881,8 @@ theorem generic_cogap_iff (M : TaskModel F) (τ : WorldHistory F) (t : F.Duratio
 /-- Co-gaps translate, the past mirror of `generic_gap_shift`. -/
 theorem generic_cogap_shift (M : TaskModel F) (τ : WorldHistory F) (t u : F.Duration)
     (e : TruthEnv.Env L F)
-    (h : TruthEnv.T M τ t e (SnceClause.snce (BotClause.bot : L) top)) :
-    TruthEnv.T M τ u e (SnceClause.snce (BotClause.bot : L) top) := by
+    (h : TruthEnv.T M τ t e (HasSnce.snce (HasBot.bot : L) top)) :
+    TruthEnv.T M τ u e (HasSnce.snce (HasBot.bot : L) top) := by
   rw [generic_cogap_iff] at h ⊢
   obtain ⟨s, hst, hguard⟩ := h
   refine ⟨u - (t - s), sub_lt_self u (sub_pos.mpr hst), fun c huc hcu => ?_⟩
@@ -888,8 +900,8 @@ of any schema, so it is named here, mirroring
 theorem generic_discrete_propagate_fwd_reflect_time (M : TaskModel F) (τ : WorldHistory F)
     (t : F.Duration) (e : TruthEnv.Env L F) :
     TruthEnv.T M τ t e
-      (ImpClause.imp (SnceClause.snce (BotClause.bot : L) top)
-        (allPast (SnceClause.snce (BotClause.bot : L) top))) := by
+      (HasImp.imp (HasSnce.snce (HasBot.bot : L) top)
+        (allPast (HasSnce.snce (HasBot.bot : L) top))) := by
   rw [ImpClause.imp_clause]
   intro h
   rw [allPast_iff]
@@ -898,14 +910,14 @@ theorem generic_discrete_propagate_fwd_reflect_time (M : TaskModel F) (τ : Worl
 end Cogap
 
 section GapMixed
-variable [BotClause L] [UntlClause L] [SnceClause L]
+variable [HasBot L] [BotClause L] [HasUntl L] [UntlClause L] [HasSnce L] [SnceClause L]
 
 /-- **A gap above is a gap below.** Reflect the witness through `t`. Its two directions are what
 make the two `discrete_symm_*` schemata one term each. -/
 theorem generic_gap_iff_cogap (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) :
-    TruthEnv.T M τ t e (UntlClause.untl (BotClause.bot : L) top) ↔
-      TruthEnv.T M τ t e (SnceClause.snce (BotClause.bot : L) top) := by
+    TruthEnv.T M τ t e (HasUntl.untl (HasBot.bot : L) top) ↔
+      TruthEnv.T M τ t e (HasSnce.snce (HasBot.bot : L) top) := by
   rw [generic_gap_iff, generic_cogap_iff]
   constructor
   · rintro ⟨s, hts, hguard⟩
@@ -931,8 +943,8 @@ theorem generic_gap_iff_cogap (M : TaskModel F) (τ : WorldHistory F) (t : F.Dur
 theorem generic_discrete_symm_fwd (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) :
     TruthEnv.T M τ t e
-      (ImpClause.imp (UntlClause.untl (BotClause.bot : L) top)
-        (SnceClause.snce (BotClause.bot : L) top)) := by
+      (HasImp.imp (HasUntl.untl (HasBot.bot : L) top)
+        (HasSnce.snce (HasBot.bot : L) top)) := by
   rw [ImpClause.imp_clause]
   exact fun h => (generic_gap_iff_cogap M τ t e).mp h
 
@@ -940,8 +952,8 @@ theorem generic_discrete_symm_fwd (M : TaskModel F) (τ : WorldHistory F) (t : F
 theorem generic_discrete_symm_bwd (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) :
     TruthEnv.T M τ t e
-      (ImpClause.imp (SnceClause.snce (BotClause.bot : L) top)
-        (UntlClause.untl (BotClause.bot : L) top)) := by
+      (HasImp.imp (HasSnce.snce (HasBot.bot : L) top)
+        (HasUntl.untl (HasBot.bot : L) top)) := by
   rw [ImpClause.imp_clause]
   exact fun h => (generic_gap_iff_cogap M τ t e).mpr h
 
@@ -949,8 +961,8 @@ theorem generic_discrete_symm_bwd (M : TaskModel F) (τ : WorldHistory F) (t : F
 theorem generic_discrete_propagate_bwd (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) :
     TruthEnv.T M τ t e
-      (ImpClause.imp (UntlClause.untl (BotClause.bot : L) top)
-        (allPast (UntlClause.untl (BotClause.bot : L) top))) := by
+      (HasImp.imp (HasUntl.untl (HasBot.bot : L) top)
+        (allPast (HasUntl.untl (HasBot.bot : L) top))) := by
   rw [ImpClause.imp_clause]
   intro h
   rw [allPast_iff]
@@ -960,8 +972,8 @@ theorem generic_discrete_propagate_bwd (M : TaskModel F) (τ : WorldHistory F) (
 theorem generic_discrete_propagate_bwd_reflect_time (M : TaskModel F) (τ : WorldHistory F)
     (t : F.Duration) (e : TruthEnv.Env L F) :
     TruthEnv.T M τ t e
-      (ImpClause.imp (SnceClause.snce (BotClause.bot : L) top)
-        (allFuture (SnceClause.snce (BotClause.bot : L) top))) := by
+      (HasImp.imp (HasSnce.snce (HasBot.bot : L) top)
+        (allFuture (HasSnce.snce (HasBot.bot : L) top))) := by
   rw [ImpClause.imp_clause]
   intro h
   rw [allFuture_iff]
@@ -970,15 +982,15 @@ theorem generic_discrete_propagate_bwd_reflect_time (M : TaskModel F) (τ : Worl
 end GapMixed
 
 section GapBox
-variable [BotClause L] [BoxClause L] [UntlClause L]
+variable [HasBot L] [BotClause L] [HasBox L] [BoxClause L] [HasUntl L] [UntlClause L]
 
 /-- `U(⊤,⊥) → □(U(⊤,⊥))`: the gap is a fact about the duration order, so it holds at every world
 history. `generic_gap_iff`'s right-hand side mentions no history, which is the whole proof. -/
 theorem generic_discrete_box_necessity (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) :
     TruthEnv.T M τ t e
-      (ImpClause.imp (UntlClause.untl (BotClause.bot : L) top)
-        (BoxClause.box (UntlClause.untl (BotClause.bot : L) top))) := by
+      (HasImp.imp (HasUntl.untl (HasBot.bot : L) top)
+        (HasBox.box (HasUntl.untl (HasBot.bot : L) top))) := by
   rw [ImpClause.imp_clause]
   intro h
   rw [BoxClause.box_clause]
@@ -988,14 +1000,14 @@ theorem generic_discrete_box_necessity (M : TaskModel F) (τ : WorldHistory F) (
 end GapBox
 
 section CogapBox
-variable [BotClause L] [BoxClause L] [SnceClause L]
+variable [HasBot L] [BotClause L] [HasBox L] [BoxClause L] [HasSnce L] [SnceClause L]
 
 /-- The temporal dual of `generic_discrete_box_necessity`: `S(⊤,⊥) → □(S(⊤,⊥))`. -/
 theorem generic_discrete_box_necessity_reflect_time (M : TaskModel F) (τ : WorldHistory F)
     (t : F.Duration) (e : TruthEnv.Env L F) :
     TruthEnv.T M τ t e
-      (ImpClause.imp (SnceClause.snce (BotClause.bot : L) top)
-        (BoxClause.box (SnceClause.snce (BotClause.bot : L) top))) := by
+      (HasImp.imp (HasSnce.snce (HasBot.bot : L) top)
+        (HasBox.box (HasSnce.snce (HasBot.bot : L) top))) := by
   rw [ImpClause.imp_clause]
   intro h
   rw [BoxClause.box_clause]
@@ -1005,12 +1017,12 @@ theorem generic_discrete_box_necessity_reflect_time (M : TaskModel F) (τ : Worl
 end CogapBox
 
 section DensityFuture
-variable [BotClause L] [UntlClause L] [DenselyOrdered F.Duration]
+variable [HasBot L] [BotClause L] [HasUntl L] [UntlClause L] [DenselyOrdered F.Duration]
 
 /-- DN: `GGφ → Gφ` on a dense order. -/
 theorem generic_density (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ : L) :
-    TruthEnv.T M τ t e (ImpClause.imp (allFuture (allFuture φ)) (allFuture φ)) := by
+    TruthEnv.T M τ t e (HasImp.imp (allFuture (allFuture φ)) (allFuture φ)) := by
   rw [ImpClause.imp_clause]
   intro h_GG
   rw [allFuture_iff] at h_GG
@@ -1022,7 +1034,7 @@ theorem generic_density (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
 /-- The dense indicator: `¬U(⊤,⊥)`. A dense order has no gap. -/
 theorem generic_dense_indicator (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) :
-    TruthEnv.T M τ t e (neg (UntlClause.untl (BotClause.bot : L) top)) := by
+    TruthEnv.T M τ t e (neg (HasUntl.untl (HasBot.bot : L) top)) := by
   rw [neg_iff, generic_gap_iff]
   rintro ⟨s, hts, hguard⟩
   obtain ⟨r, htr, hrs⟩ := exists_between hts
@@ -1031,13 +1043,13 @@ theorem generic_dense_indicator (M : TaskModel F) (τ : WorldHistory F) (t : F.D
 end DensityFuture
 
 section DensityPast
-variable [BotClause L] [SnceClause L] [DenselyOrdered F.Duration]
+variable [HasBot L] [BotClause L] [HasSnce L] [SnceClause L] [DenselyOrdered F.Duration]
 
 /-- The temporal dual of `generic_density`: `HHφ → Hφ`. There is no `density_past` schema, so this
 dual is named here, mirroring `Metalogic/Soundness.lean`'s `density_reflect_time_valid`. -/
 theorem generic_density_reflect_time (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ : L) :
-    TruthEnv.T M τ t e (ImpClause.imp (allPast (allPast φ)) (allPast φ)) := by
+    TruthEnv.T M τ t e (HasImp.imp (allPast (allPast φ)) (allPast φ)) := by
   rw [ImpClause.imp_clause]
   intro h_HH
   rw [allPast_iff] at h_HH
@@ -1049,7 +1061,7 @@ theorem generic_density_reflect_time (M : TaskModel F) (τ : WorldHistory F) (t 
 /-- The temporal dual of the dense indicator: `¬S(⊤,⊥)`. -/
 theorem generic_dense_indicator_reflect_time (M : TaskModel F) (τ : WorldHistory F)
     (t : F.Duration) (e : TruthEnv.Env L F) :
-    TruthEnv.T M τ t e (neg (SnceClause.snce (BotClause.bot : L) top)) := by
+    TruthEnv.T M τ t e (neg (HasSnce.snce (HasBot.bot : L) top)) := by
   rw [neg_iff, generic_cogap_iff]
   rintro ⟨s, hst, hguard⟩
   obtain ⟨r, hsr, hrt⟩ := exists_between hst
@@ -1058,13 +1070,14 @@ theorem generic_dense_indicator_reflect_time (M : TaskModel F) (τ : WorldHistor
 end DensityPast
 
 section PriorZFuture
-variable [BotClause L] [UntlClause L] [SuccOrder F.Duration] [IsSuccArchimedean F.Duration]
+variable [HasBot L] [BotClause L] [HasUntl L] [UntlClause L] [SuccOrder F.Duration]
+  [IsSuccArchimedean F.Duration]
 
 /-- Prior-UZ: the nearest `φ`-point above `t` witnesses `U(¬φ, φ)`. -/
 theorem generic_prior_UZ (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ : L) :
     TruthEnv.T M τ t e
-      (ImpClause.imp (someFuture φ) (UntlClause.untl (neg φ) φ)) := by
+      (HasImp.imp (someFuture φ) (HasUntl.untl (neg φ) φ)) := by
   rw [ImpClause.imp_clause]
   intro h
   rw [someFuture_iff] at h
@@ -1078,8 +1091,8 @@ theorem generic_prior_UZ (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration
 theorem generic_z1 (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ : L) :
     TruthEnv.T M τ t e
-      (ImpClause.imp (allFuture (ImpClause.imp (allFuture φ) φ))
-        (ImpClause.imp (someFuture (allFuture φ)) (allFuture φ))) := by
+      (HasImp.imp (allFuture (HasImp.imp (allFuture φ) φ))
+        (HasImp.imp (someFuture (allFuture φ)) (allFuture φ))) := by
   rw [ImpClause.imp_clause]
   intro h_GGpIp
   rw [ImpClause.imp_clause]
@@ -1097,14 +1110,15 @@ theorem generic_z1 (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
 end PriorZFuture
 
 section PriorZPast
-variable [BotClause L] [SnceClause L] [PredOrder F.Duration] [IsPredArchimedean F.Duration]
+variable [HasBot L] [BotClause L] [HasSnce L] [SnceClause L] [PredOrder F.Duration]
+  [IsPredArchimedean F.Duration]
 
 /-- Prior-SZ, the past dual — through `exists_nearest_lt`, which is itself `exists_nearest_gt`
 at `Dᵒᵈ`. The dualisation is of the *carrier*, never of the formula. -/
 theorem generic_prior_SZ (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ : L) :
     TruthEnv.T M τ t e
-      (ImpClause.imp (somePast φ) (SnceClause.snce (neg φ) φ)) := by
+      (HasImp.imp (somePast φ) (HasSnce.snce (neg φ) φ)) := by
   rw [ImpClause.imp_clause]
   intro h
   rw [somePast_iff] at h
@@ -1119,8 +1133,8 @@ the schemata, so this dual is named here — mirroring `SoundnessLemmas.z1_past_
 theorem generic_z1_reflect_time (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ : L) :
     TruthEnv.T M τ t e
-      (ImpClause.imp (allPast (ImpClause.imp (allPast φ) φ))
-        (ImpClause.imp (somePast (allPast φ)) (allPast φ))) := by
+      (HasImp.imp (allPast (HasImp.imp (allPast φ) φ))
+        (HasImp.imp (somePast (allPast φ)) (allPast φ))) := by
   rw [ImpClause.imp_clause]
   intro h_HHpIp
   rw [ImpClause.imp_clause]
@@ -1157,7 +1171,7 @@ A third ordering trap, after Phase 3's and Phase 5's: `kPlus ψ` is `neg (untl (
 -/
 
 section DedekindFuture
-variable [BotClause L] [UntlClause L]
+variable [HasBot L] [BotClause L] [HasUntl L] [UntlClause L]
 
 /-- Prior-U, gap form. The least upper bound of the set of times whose whole open past back to
 `t` satisfies `φ` is the gap point. -/
@@ -1165,8 +1179,8 @@ theorem generic_prior_U_gap (M : TaskModel F) (τ : WorldHistory F) (t : F.Durat
     (e : TruthEnv.Env L F) (φ : L)
     (h_lub : ∀ X : Set F.Duration, X.Nonempty → BddAbove X → ∃ x, IsLUB X x) :
     TruthEnv.T M τ t e
-      (ImpClause.imp (and (UntlClause.untl φ top) (someFuture (neg φ)))
-        (UntlClause.untl φ (or (neg φ) (kPlus (neg φ))))) := by
+      (HasImp.imp (and (HasUntl.untl φ top) (someFuture (neg φ)))
+        (HasUntl.untl φ (or (neg φ) (kPlus (neg φ))))) := by
   rw [ImpClause.imp_clause]
   intro h_ant
   rw [and_iff] at h_ant
@@ -1211,15 +1225,15 @@ theorem generic_prior_U_gap (M : TaskModel F) (τ : WorldHistory F) (t : F.Durat
 end DedekindFuture
 
 section DedekindPast
-variable [BotClause L] [SnceClause L]
+variable [HasBot L] [BotClause L] [HasSnce L] [SnceClause L]
 
 /-- Prior-S, gap form: the past dual, through `SoundnessLemmas.exists_isGLB_of_lub`. -/
 theorem generic_prior_S_gap (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ : L)
     (h_lub : ∀ X : Set F.Duration, X.Nonempty → BddAbove X → ∃ x, IsLUB X x) :
     TruthEnv.T M τ t e
-      (ImpClause.imp (and (SnceClause.snce φ top) (somePast (neg φ)))
-        (SnceClause.snce φ (or (neg φ) (kMinus (neg φ))))) := by
+      (HasImp.imp (and (HasSnce.snce φ top) (somePast (neg φ)))
+        (HasSnce.snce φ (or (neg φ) (kMinus (neg φ))))) := by
   rw [ImpClause.imp_clause]
   intro h_ant
   rw [and_iff] at h_ant
@@ -1264,7 +1278,8 @@ theorem generic_prior_S_gap (M : TaskModel F) (τ : WorldHistory F) (t : F.Durat
 end DedekindPast
 
 section Sep
-variable [BotClause L] [UntlClause L] [SnceClause L] [DenselyOrdered F.Duration]
+variable [HasBot L] [BotClause L] [HasUntl L] [UntlClause L] [HasSnce L] [SnceClause L]
+  [DenselyOrdered F.Duration]
 
 /-- **Sep.** The order-theoretic core is `SoundnessLemmas.sep_order`, consumed unchanged at
 `P := {u | TruthEnv.T M τ u e φ}`; nothing about any object language enters it.
@@ -1277,8 +1292,8 @@ theorem generic_sep (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (e : TruthEnv.Env L F) (φ : L)
     (h_lub : ∀ X : Set F.Duration, X.Nonempty → BddAbove X → ∃ x, IsLUB X x) :
     TruthEnv.T M τ t e
-      (ImpClause.imp
-        (and (kPlus φ) (neg (kPlus (and φ (UntlClause.untl (neg φ) φ)))))
+      (HasImp.imp
+        (and (kPlus φ) (neg (kPlus (and φ (HasUntl.untl (neg φ) φ)))))
         (kPlus (and (kPlus φ) (kMinus φ)))) := by
   rw [ImpClause.imp_clause]
   intro h_ant
@@ -1323,8 +1338,8 @@ theorem generic_sep_reflect_time (M : TaskModel F) (τ : WorldHistory F) (t : F.
     (e : TruthEnv.Env L F) (φ : L)
     (h_lub : ∀ X : Set F.Duration, X.Nonempty → BddAbove X → ∃ x, IsLUB X x) :
     TruthEnv.T M τ t e
-      (ImpClause.imp
-        (and (kMinus φ) (neg (kMinus (and φ (SnceClause.snce (neg φ) φ)))))
+      (HasImp.imp
+        (and (kMinus φ) (neg (kMinus (and φ (HasSnce.snce (neg φ) φ)))))
         (kMinus (and (kMinus φ) (kPlus φ)))) := by
   rw [ImpClause.imp_clause]
   intro h_ant
@@ -1394,7 +1409,7 @@ fixes one `e` rather than quantifying it).
 -/
 
 section ModalFuture
-variable [BotClause L] [BoxClause L] [UntlClause L]
+variable [HasBot L] [BotClause L] [HasBox L] [BoxClause L] [HasUntl L] [UntlClause L]
 
 /-- MF, generically: `□φ → □Gφ` under homogeneity. `hhom` is the only semantic input, and it is
 load-bearing — nothing else in the proof could supply `φ` at a later time. -/
@@ -1403,7 +1418,7 @@ theorem generic_modal_future (M : TaskModel F) (τ : WorldHistory F) (t : F.Dura
     (hhom : ∀ (σ : WorldHistory F) (s : F.Duration), t < s →
       (∀ ρ : WorldHistory F, TruthEnv.T M ρ t e φ) → TruthEnv.T M σ s e φ) :
     TruthEnv.T M τ t e
-      (ImpClause.imp (BoxClause.box φ) (BoxClause.box (allFuture φ))) := by
+      (HasImp.imp (HasBox.box φ) (HasBox.box (allFuture φ))) := by
   rw [ImpClause.imp_clause]
   intro h
   rw [BoxClause.box_clause] at h
@@ -1416,7 +1431,7 @@ theorem generic_modal_future (M : TaskModel F) (τ : WorldHistory F) (t : F.Dura
 end ModalFuture
 
 section ModalPast
-variable [BotClause L] [BoxClause L] [SnceClause L]
+variable [HasBot L] [BotClause L] [HasBox L] [BoxClause L] [HasSnce L] [SnceClause L]
 
 /-- MF's temporal dual, `□φ → □Hφ`, under past homogeneity. No `modal_past` schema exists, so
 this dual is named here, exactly as `starValid_modal_future_reflect_time` is. -/
@@ -1425,7 +1440,7 @@ theorem generic_modal_future_reflect_time (M : TaskModel F) (τ : WorldHistory F
     (hhom : ∀ (σ : WorldHistory F) (s : F.Duration), s < t →
       (∀ ρ : WorldHistory F, TruthEnv.T M ρ t e φ) → TruthEnv.T M σ s e φ) :
     TruthEnv.T M τ t e
-      (ImpClause.imp (BoxClause.box φ) (BoxClause.box (allPast φ))) := by
+      (HasImp.imp (HasBox.box φ) (HasBox.box (allPast φ))) := by
   rw [ImpClause.imp_clause]
   intro h
   rw [BoxClause.box_clause] at h
