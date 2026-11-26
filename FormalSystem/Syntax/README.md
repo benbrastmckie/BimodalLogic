@@ -9,8 +9,10 @@ Core syntactic definitions for TM bimodal logic formulas.
 |------|-------|-------------|
 | `Atom.lean` | 215 | `Atom`: Propositional atom type with decidable equality |
 | `BigConj.lean` | 51 | `bigConj`: Big conjunction over a list of formulas |
+| `Connectives.lean` | 258 | `HasBot`, `HasImp`, …: one class per primitive operator, with the derived operators written once in `Sig` |
+| `ConnectivesElab.lean` | 111 | `sig%`: generates the body of a per-language operator from its `Sig` definition, one layer deep, and rejects a body in which a signature constant survives |
 | `Context.lean` | 210 | `Context`: Type alias for `List Formula` (proof contexts) |
-| `Formula.lean` | 830 | `Formula`: Inductive formula type with modal and temporal operators |
+| `Formula.lean` | 837 | `Formula`: Inductive formula type with modal and temporal operators |
 | `SubformulaClosure.lean` | 38 | Sibling aggregator for `SubformulaClosure/` |
 | `Subformulas.lean` | 236 | `subformulas`: Subformula relation and listing function |
 | `SubformulaClosure/` | — | Subformula closure as `Finset` for BFMCS construction (4 files) |

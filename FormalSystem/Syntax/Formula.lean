@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Syntax.Atom
+import FormalSystem.Syntax.Connectives
 
 /-!
 # Formula - Syntax for Bimodal Logic TM
@@ -106,6 +107,12 @@ inductive Formula : Type where
       (`def:BLplus-language`). -/
   | snce : Formula → Formula → Formula
   deriving Repr, DecidableEq, BEq, Hashable, Countable
+
+instance : HasBot Formula := ⟨Formula.bot⟩
+instance : HasImp Formula := ⟨Formula.imp⟩
+instance : HasBox Formula := ⟨Formula.box⟩
+instance : HasUntl Formula := ⟨Formula.untl⟩
+instance : HasSnce Formula := ⟨Formula.snce⟩
 
 /-!
 ### Infinite and Denumerable Instances

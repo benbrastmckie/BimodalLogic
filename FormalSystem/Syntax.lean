@@ -4,6 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
+import FormalSystem.Syntax.Connectives
+import FormalSystem.Syntax.ConnectivesElab
 import FormalSystem.Syntax.Formula
 import FormalSystem.Syntax.Context
 import FormalSystem.Syntax.Subformulas
@@ -18,6 +20,11 @@ plus context types for proof assumptions.
 
 ## Submodules
 
+- `Connectives`: the connective signature — one class per primitive operator (`HasBot`,
+  `HasImp`, `HasBox`, `HasUntl`, `HasSnce`, `HasStab`, `HasAllFuture`, `HasAllPast`) and the
+  derived operators written once over them in namespace `Sig`
+- `ConnectivesElab`: the `sig%` term elaborator, which generates the body of a per-language
+  operator from its signature definition, one layer deep
 - `Formula`: Inductive formula type with 6 primitives (atom, bot, imp, box, untl, snce)
   plus derived operators (neg, and, or, diamond, somePast, someFuture, allPast, allFuture,
   always, sometimes) and decidable equality

@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Syntax.Atom
+import FormalSystem.Syntax.Connectives
 
 /-!
 # `MinusFormula` — the tense-primitive base language L⁻
@@ -93,6 +94,12 @@ inductive MinusFormula : Type where
       This is G, *not* the existential F — see the polarity warning in the module docstring. -/
   | allFuture : MinusFormula → MinusFormula
   deriving Repr, DecidableEq, BEq, Hashable, Countable
+
+instance : HasBot MinusFormula := ⟨MinusFormula.bot⟩
+instance : HasImp MinusFormula := ⟨MinusFormula.imp⟩
+instance : HasBox MinusFormula := ⟨MinusFormula.box⟩
+instance : HasAllFuture MinusFormula := ⟨MinusFormula.allFuture⟩
+instance : HasAllPast MinusFormula := ⟨MinusFormula.allPast⟩
 
 namespace MinusFormula
 

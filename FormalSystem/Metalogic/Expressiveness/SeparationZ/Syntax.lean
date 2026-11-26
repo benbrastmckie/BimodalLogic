@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Init
+import FormalSystem.Syntax.Connectives
 import Mathlib.Data.Int.LeastGreatest
 import Mathlib.Order.Basic
 
@@ -76,6 +77,11 @@ inductive USForm : Type where
   /-- Since, guard first and event second: GHR's `S(event, guard)`. -/
   | snce : USForm → USForm → USForm
   deriving Repr, DecidableEq
+
+instance : FormalSystem.Syntax.HasBot USForm := ⟨USForm.bot⟩
+instance : FormalSystem.Syntax.HasImp USForm := ⟨USForm.imp⟩
+instance : FormalSystem.Syntax.HasUntl USForm := ⟨USForm.untl⟩
+instance : FormalSystem.Syntax.HasSnce USForm := ⟨USForm.snce⟩
 
 namespace USForm
 

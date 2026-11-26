@@ -6,6 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Syntax.Formula
 import FormalSystem.Syntax.Context
+import FormalSystem.Syntax.Connectives
 
 /-!
 # `PlusFormula` — the language L⁺: L plus the stability modal `⊡`
@@ -106,6 +107,13 @@ inductive PlusFormula : Type where
       world state. -/
   | stab : PlusFormula → PlusFormula
   deriving Repr, DecidableEq, Countable
+
+instance : HasBot PlusFormula := ⟨PlusFormula.bot⟩
+instance : HasImp PlusFormula := ⟨PlusFormula.imp⟩
+instance : HasBox PlusFormula := ⟨PlusFormula.box⟩
+instance : HasUntl PlusFormula := ⟨PlusFormula.untl⟩
+instance : HasSnce PlusFormula := ⟨PlusFormula.snce⟩
+instance : HasStab PlusFormula := ⟨PlusFormula.stab⟩
 
 /-- `PlusFormula.atom` is injective. -/
 theorem PlusFormula.atom_injective : Function.Injective PlusFormula.atom := by

@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.PlusLanguage.Formula
+import FormalSystem.Syntax.Connectives
 
 /-!
 # `OpenFormula` — the language L^▷: L⁺ plus the open-future and open-past modals
@@ -105,6 +106,13 @@ inductive OpenFormula : Type where
   with the world of evaluation from the time of evaluation onward. -/
   | opast : OpenFormula → OpenFormula
   deriving Repr, DecidableEq, Countable
+
+instance : HasBot OpenFormula := ⟨OpenFormula.bot⟩
+instance : HasImp OpenFormula := ⟨OpenFormula.imp⟩
+instance : HasBox OpenFormula := ⟨OpenFormula.box⟩
+instance : HasUntl OpenFormula := ⟨OpenFormula.untl⟩
+instance : HasSnce OpenFormula := ⟨OpenFormula.snce⟩
+instance : HasStab OpenFormula := ⟨OpenFormula.stab⟩
 
 namespace OpenFormula
 

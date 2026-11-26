@@ -748,6 +748,8 @@ import FormalSystem.StarLanguage.StarValidity
 import FormalSystem.Syntax
 import FormalSystem.Syntax.Atom
 import FormalSystem.Syntax.BigConj
+import FormalSystem.Syntax.Connectives
+import FormalSystem.Syntax.ConnectivesElab
 import FormalSystem.Syntax.Context
 import FormalSystem.Syntax.Formula
 import FormalSystem.Syntax.SubformulaClosure

@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Syntax.Formula
+import FormalSystem.Syntax.Connectives
 
 /-!
 # `QuantFormula` — the base language plus propositional quantifiers
@@ -97,6 +98,12 @@ inductive QuantFormula : Type where
   an admissible proposition. -/
   | all : Atom → QuantFormula → QuantFormula
   deriving Repr, DecidableEq, Countable
+
+instance : HasBot QuantFormula := ⟨QuantFormula.bot⟩
+instance : HasImp QuantFormula := ⟨QuantFormula.imp⟩
+instance : HasBox QuantFormula := ⟨QuantFormula.box⟩
+instance : HasUntl QuantFormula := ⟨QuantFormula.untl⟩
+instance : HasSnce QuantFormula := ⟨QuantFormula.snce⟩
 
 namespace QuantFormula
 

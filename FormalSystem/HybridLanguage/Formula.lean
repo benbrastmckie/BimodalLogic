@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.PlusLanguage.Formula
+import FormalSystem.Syntax.Connectives
 
 /-!
 # `HybridFormula` — L⁺ plus the same-state modality, state registers and the state binder
@@ -130,6 +131,13 @@ inductive HybridFormula : Type where
   `φ`. -/
   | bind : ℕ → HybridFormula → HybridFormula
   deriving Repr, DecidableEq, Countable
+
+instance : HasBot HybridFormula := ⟨HybridFormula.bot⟩
+instance : HasImp HybridFormula := ⟨HybridFormula.imp⟩
+instance : HasBox HybridFormula := ⟨HybridFormula.box⟩
+instance : HasUntl HybridFormula := ⟨HybridFormula.untl⟩
+instance : HasSnce HybridFormula := ⟨HybridFormula.snce⟩
+instance : HasStab HybridFormula := ⟨HybridFormula.stab⟩
 
 namespace HybridFormula
 

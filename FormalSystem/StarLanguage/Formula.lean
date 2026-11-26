@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.PlusLanguage.Formula
+import FormalSystem.Syntax.Connectives
 
 /-!
 # `StarFormula` — the language L⋆: L⁺ plus the time store/recall operators
@@ -124,6 +125,13 @@ inductive StarFormula : Type where
       `i`. -/
   | timeRecall : ℕ → StarFormula → StarFormula
   deriving Repr, DecidableEq, Countable
+
+instance : HasBot StarFormula := ⟨StarFormula.bot⟩
+instance : HasImp StarFormula := ⟨StarFormula.imp⟩
+instance : HasBox StarFormula := ⟨StarFormula.box⟩
+instance : HasUntl StarFormula := ⟨StarFormula.untl⟩
+instance : HasSnce StarFormula := ⟨StarFormula.snce⟩
+instance : HasStab StarFormula := ⟨StarFormula.stab⟩
 
 /-- `StarFormula.atom` is injective. -/
 theorem StarFormula.atom_injective : Function.Injective StarFormula.atom := by

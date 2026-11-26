@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Syntax.Formula
+import FormalSystem.Syntax.Connectives
 
 /-!
 # `NomicFormula` — the language of BL plus the nomic operator
@@ -96,6 +97,12 @@ inductive NomicFormula : Type where
   law-history at the world state occupied at the time of evaluation. -/
   | nomic : NomicFormula → NomicFormula
   deriving Repr, DecidableEq, Countable
+
+instance : HasBot NomicFormula := ⟨NomicFormula.bot⟩
+instance : HasImp NomicFormula := ⟨NomicFormula.imp⟩
+instance : HasBox NomicFormula := ⟨NomicFormula.box⟩
+instance : HasUntl NomicFormula := ⟨NomicFormula.untl⟩
+instance : HasSnce NomicFormula := ⟨NomicFormula.snce⟩
 
 namespace NomicFormula
 
